@@ -21,8 +21,19 @@ You can also do many other things with `eoc` commands:
 
   * `parse` converts EO program to XMIR files
   * `optimize` reorganizes XMIR files and prepares them for transpilation
+  * `demu` removes `cage` and `memory` objects
+  * `dejump` removes `goto` objects
+  * `infer` suggests object names where it's possible to infer them
+  * `flatten` moves inner objects to upper level
   * `transpile` converts XMIR to target programming language
   * `compile` converts target language to binaries
   * `run` executes the binaries
 
-There will be more.
+This command line toolkit integrates other tools available in
+this GitHub organization, such as:
+
+  * `eo-parser.java`
+  * `eo-cli.java`
+  * `phimu.rust`
+
+There will be more...
