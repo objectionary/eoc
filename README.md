@@ -1,3 +1,5 @@
+<img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
+
 First, you install [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html).
 
 Then, you install [eoc](https://crates.io/crates/eoc):
