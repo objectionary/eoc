@@ -38,7 +38,7 @@ program
   .option('-t, --target <path>');
 
 program.command('parse')
-  .description('Parse EO source code into XMIR')
+  .description('parse EO source code into XMIR')
   // .argument('<test>', 'test argument')
   // .option('--a', 'test text')
   .option('-b, --bbb <char>', 'test text', ',')

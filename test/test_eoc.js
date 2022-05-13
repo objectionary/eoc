@@ -54,7 +54,7 @@ describe('eoc', function() {
 
   it('prints help screen', function(done) {
     eoc(['--help'], function(stdout) {
-      assert(stdout.includes('eoc'));
+      assert(stdout.includes('Usage: eoc'));
       done();
     });
   });
