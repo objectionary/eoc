@@ -1,7 +1,7 @@
 assets:
   npmrc: objectionary/secrets#npmrc
 install: |
-  npm install --no-color --only=dev
+  npm install --no-color --include dev
   pdd -f /dev/null -v
 release:
   script: |
