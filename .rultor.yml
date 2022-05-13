@@ -3,6 +3,7 @@ assets:
 install: |
   pip install git+https://chromium.googlesource.com/external/gyp
   npm install --no-color grunt
+  npm install --no-color mocha
   npm install --no-color --include dev
   pdd -f /dev/null -v
 release:
