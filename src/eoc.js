@@ -23,6 +23,8 @@
  * SOFTWARE.
  */
 
+const exec = require('child_process').exec;
+
 const {Command} = require('commander');
 const program = new Command();
 
@@ -41,6 +43,14 @@ program.command('parse')
   // .option('--a', 'test text')
   .option('-b, --bbb <char>', 'test text', ',')
   .action((str, options) => {
+    exec('echo BOOM', function(error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+             console.log('exec error: ' + error);
+        }
+    });
+    console.log(program.opts());
     console.log('hello, world!');
   });
 
