@@ -8,12 +8,14 @@
     "eoc": "./src/eoc.js"
   },
   "devDependencies": {
+    "blanket": "1.2.3",
+    "commander": "9.2.0",
     "eslint": "5.15.3",
     "eslint-config-google": "0.12.0",
     "grunt": "^1.5.2",
     "grunt-contrib-clean": "2.0.0",
     "grunt-eslint": "21.0.0",
-    "mocha": "6.1.4",
-    "commander": "9.2.0"
+    "grunt-mocha-test": "0.13.3",
+    "mochawesome": "7.1.3"
   }
 }

@@ -22,36 +22,9 @@
  * SOFTWARE.
  */
 
-module.exports = function(grunt) {
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    clean: ['coverage'],
-    mochaTest: {
-      test: {
-        options: {
-          reporter: 'spec',
-          require: 'blanket',
-        },
-        src: ['test/**/*.js'],
-      },
-      coverage: {
-        options: {
-          reporter: 'mochawesome',
-         // quiet: true,
-          captureFile: 'coverage.html',
-        },
-        src: ['test/**/*.js'],
-      },
-    },
-    eslint: {
-      options: {
-        configFile: '.eslintrc.json',
-      },
-      target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-    },
+describe('eoc', function() {
+  it('prints its own version', function(done) {
+    // assert.equal(1, 1);
+    done();
   });
-  grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['mochaTest', 'eslint']);
-};
+});
