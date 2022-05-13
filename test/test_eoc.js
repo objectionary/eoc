@@ -22,9 +22,33 @@
  * SOFTWARE.
  */
 
+/**
+ * Helper to run EOC command line tool.
+ *
+ * @param {Array} args - Array of args
+ * @param {Function} fn - Callback
+ * @return {Mixed} The result of exec()
+ */
+function eoc(args, fn) {
+  return exec(
+    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`,
+    (error, stdout, stderr) => {
+      assert.equal(null, error);
+      assert.equal('', stderr);
+      return fn(stdout);
+    }
+  );
+}
+
+const assert = require('assert');
+const path = require('path');
+const exec = require('child_process').exec;
+
 describe('eoc', function() {
   it('prints its own version', function(done) {
-    // assert.equal(1, 1);
-    done();
+    eoc(['--version'], function(stdout) {
+      assert.equal(require('../src/version.js') + '\n', stdout);
+      done();
+    });
   });
 });
