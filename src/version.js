@@ -23,25 +23,4 @@
  * SOFTWARE.
  */
 
-const {Command} = require('commander');
-const program = new Command();
-
-program
-  .name('eoc')
-  .description('EO command-line toolkit')
-  .version(require('./version'));
-
-program
-  .option('-s, --sources <path>')
-  .option('-t, --target <path>');
-
-program.command('parse')
-  .description('Parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
-  .action((str, options) => {
-    console.log('hello, world!');
-  });
-
-program.parse();
+module.exports = '0.0.0';
