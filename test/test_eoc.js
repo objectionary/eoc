@@ -30,6 +30,8 @@
  * @return {Mixed} The result of exec()
  */
 function eoc(args, fn) {
+  const path = require('path');
+  const exec = require('child_process').exec;
   return exec(
     `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`,
     (error, stdout, stderr) => {
@@ -41,8 +43,6 @@ function eoc(args, fn) {
 }
 
 const assert = require('assert');
-const path = require('path');
-const exec = require('child_process').exec;
 
 describe('eoc', function() {
   it('prints its own version', function(done) {
