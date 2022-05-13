@@ -51,4 +51,11 @@ describe('eoc', function() {
       done();
     });
   });
+
+  it('prints help screen', function(done) {
+    eoc(['--help'], function(stdout) {
+      assert(stdout.includes('eoc'));
+      done();
+    });
+  });
 });
