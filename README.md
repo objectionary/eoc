@@ -1,5 +1,7 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
+[![grunt](https://github.com/objectionary/eoc/actions/workflows/grunt.yml/badge.svg)](https://github.com/objectionary/eoc/actions/workflows/grunt.yml)
+
 First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
 Then, you install [eolang](...) package:
