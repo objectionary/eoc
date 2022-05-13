@@ -7,9 +7,11 @@
   "bin": {
     "eoc": "./src/eoc.js"
   },
+  "dependencies": {
+    "commander": "9.2.0"
+  },
   "devDependencies": {
     "blanket": "1.2.3",
-    "commander": "9.2.0",
     "eslint": "5.15.3",
     "eslint-config-google": "0.12.0",
     "grunt": "^1.5.3",

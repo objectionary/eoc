@@ -38,20 +38,20 @@ program
   .option('-t, --target <path>');
 
 program.command('parse')
-  .description('parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
-  .action((str, options) => {
-    exec('echo BOOM', function(error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-        if (error !== null) {
-             console.log('exec error: ' + error);
-        }
+    .description('parse EO source code into XMIR')
+    // .argument('<test>', 'test argument')
+    // .option('--a', 'test text')
+    .option('-b, --bbb <char>', 'test text', ',')
+    .action((str, options) => {
+        exec('echo BOOM', function(error, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+            if (error !== null) {
+                console.log('exec error: ' + error);
+            }
+        });
+        console.log(program.opts());
+        console.log('hello, world!');
     });
-    console.log(program.opts());
-    console.log('hello, world!');
-  });
 
 program.parse();
