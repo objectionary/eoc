@@ -1,8 +1,6 @@
 assets:
   npmrc: objectionary/secrets#npmrc
 install: |
-  sudo apt-get -y update
-  sudo npm install --no-color --global grunt
   npm install --no-color
   pdd -f /dev/null -v
 release:
@@ -15,7 +13,7 @@ release:
     npm publish --no-color --userconfig=../npmrc
 merge:
   script: |-
-    grunt
+    grunt --no-color
 deploy:
   script: |-
     echo "There is nothing to deploy"
