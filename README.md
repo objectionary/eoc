@@ -1,11 +1,11 @@
-<img src="https://www.yegor256.com/images/books/elegant-objects/cactus.svg" height="100px" />
+<img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
-First, you install [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html).
+First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
-Then, you install [eoc](https://crates.io/crates/eoc):
+Then, you install [eolang](...) package:
 
 ```
-$ cargo install eoc
+$ npm install eolang
 ```
 
 Then, you write a [EO](https://www.eolang.org) program in a few `.eo` files
@@ -14,7 +14,7 @@ in the current directory.
 Then, for example, you compile it to Java and run:
 
 ```
-$ eoc compile run
+$ eoc run
 ```
 
 That's it.
@@ -23,6 +23,7 @@ You can also do many other things with `eoc` commands:
 
   * `parse` converts EO program to XMIR files
   * `optimize` reorganizes XMIR files and prepares them for transpilation
+  * `translate` converts Java/C++/Python/etc. program to EO program
   * `demu` removes `cage` and `memory` objects
   * `dejump` removes `goto` objects
   * `infer` suggests object names where it's possible to infer them
@@ -31,11 +32,5 @@ You can also do many other things with `eoc` commands:
   * `compile` converts target language to binaries
   * `run` executes the binaries
 
-This command line toolkit integrates other tools available in
-this GitHub organization, such as:
-
-  * `eo-parser.java`
-  * `eo-cli.java`
-  * `phimu.rust`
-
-There will be more...
+This command line toolkit simply integrates other tools available in
+[@objectionary](https://github.com/objectionary) GitHub organization.
