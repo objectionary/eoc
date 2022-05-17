@@ -39,11 +39,13 @@ module.exports.runSync = function runSync(args) {
 /**
  * Assert that all files exist.
  *
+ * @param {String} stdout - The stdout printed
+ * @param {String} home - The location of files to match
  * @param {Array} paths - Array of file paths
  */
 module.exports.assertFilesExist = function assertFilesExist(stdout, home, paths) {
   const path = require('path');
   const assert = require('assert');
   const fs = require('fs');
-  paths.forEach(p => assert(fs.existsSync(path.resolve(home, p)), stdout));
+  paths.forEach((p) => assert(fs.existsSync(path.resolve(home, p)), stdout));
 };

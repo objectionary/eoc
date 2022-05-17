@@ -23,14 +23,13 @@
  */
 
 const fs = require('fs');
-const assert = require('assert');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('assemble a simple .EO program', function(done) {
     this.timeout(20000);
-    home = path.resolve('temp/assemble/simple');
+    home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
@@ -42,7 +41,12 @@ describe('eoc', function() {
     ]);
     assertFilesExist(
       stdout, home,
-      ['target/03-optimize/simple.xmir']
+      [
+        'target/eo-foreign.csv',
+        'target/01-parse/simple.xmir',
+        'target/02-steps/simple',
+        'target/03-optimize/simple.xmir',
+      ]
     );
     done();
   });

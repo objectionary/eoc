@@ -28,6 +28,9 @@ SOFTWARE.
   <artifactId>eoc</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
+    <sourceDirectory>${eo.generatedDir}</sourceDirectory>
+    <directory>${eo.targetDir}</directory>
+    <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <plugins>
       <plugin>
         <groupId>org.eolang</groupId>

@@ -23,14 +23,13 @@
  */
 
 const fs = require('fs');
-const assert = require('assert');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('transpiles a simple .EO program', function(done) {
     this.timeout(20000);
-    home = path.resolve('temp/transpile/simple');
+    home = path.resolve('temp/test-transpile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');

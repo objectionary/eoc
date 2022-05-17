@@ -23,14 +23,13 @@
  */
 
 const fs = require('fs');
-const assert = require('assert');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
-  it('compiles a simple .EO program into Java', function(done) {
-    this.timeout(20000);
-    home = path.resolve('temp/compile/simple');
+  it('compiles a simple .EO program into Java bytecode .class files', function(done) {
+    this.timeout(50000);
+    home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
@@ -41,7 +40,7 @@ describe('eoc', function() {
         '',
         '[args...] > app',
         '  stdout "Hello, world!" > @',
-        ''
+        '',
       ].join('\n')
     );
     runSync([
@@ -58,7 +57,13 @@ describe('eoc', function() {
     ]);
     assertFilesExist(
       stdout, home,
-      ['target/classes/EOfoo/EObar/EOapp.class']
+      [
+        'target/generated-sources/EOfoo/EObar/EOapp.java',
+        'target/generated-sources/EOorg/EOeolang/EObytes.java',
+        'target/classes/EOfoo/EObar/EOapp.class',
+        'target/classes/org/eolang/Phi.class',
+        'target/classes/EOorg/EOeolang/EOint.class',
+      ]
     );
     done();
   });

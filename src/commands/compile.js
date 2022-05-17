@@ -23,7 +23,6 @@
  * SOFTWARE.
  */
 
-const path = require('path');
 const mvnw = require('../mvnw');
 
 /**
@@ -33,9 +32,9 @@ const mvnw = require('../mvnw');
 module.exports = function compile(opts) {
   mvnw([
     'compiler:compile',
-    `-Dmaven.compiler.target=${opts.target}`,
-    `-Dmaven.compiler.source=${opts.target}/generated-sources`,
-    `-Dproject.build.directory=${opts.target}`,
-    `-Deo.foreignFormat=csv`,
+    `-Dmaven.compiler.source=1.8`,
+    `-Dmaven.compiler.target=1.8`,
+    `-Deo.targetDir=${opts.target}`,
+    `-Deo.generatedDir=${opts.target}/generated-sources`,
   ]);
 };

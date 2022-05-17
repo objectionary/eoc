@@ -33,6 +33,7 @@ const mvnw = require('../mvnw');
 module.exports = function register(opts) {
   mvnw([
     'eo:register',
+    `-Deo.targetDir=${opts.target}`,
     `-Deo.sourcesDir=${opts.sources}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
