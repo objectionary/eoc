@@ -23,20 +23,18 @@
  */
 
 const assert = require('assert');
-const run = require('./run');
+const runSync = require('./run');
 
 describe('eoc', function() {
   it('prints its own version', function(done) {
-    run(['--version'], function(stdout) {
-      assert.equal(require('../src/version.js') + '\n', stdout);
-      done();
-    });
+    const stdout = runSync(['--version']);
+    assert.equal(require('../src/version.js') + '\n', stdout);
+    done();
   });
 
   it('prints help screen', function(done) {
-    run(['--help'], function(stdout) {
-      assert(stdout.includes('Usage: eoc'));
-      done();
-    });
+    const stdout = runSync(['--help']);
+    assert(stdout.includes('Usage: eoc'));
+    done();
   });
 });

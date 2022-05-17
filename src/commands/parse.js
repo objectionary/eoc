@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,16 +24,18 @@
  */
 
 const path = require('path');
-const execSync = require('child_process').execSync;
+const mvnw = require('../mvnw');
 
 /**
- * Helper to run EOC command line tool.
- *
- * @param {Array} args - Array of args
- * @return {String} Stdout
+ * Command to parse .EO into .XMIR.
+ * @param {Hash} opts - All options
  */
-module.exports = function runSync(args) {
-  return execSync(
-    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`
-  ).toString();
+module.exports = function parse(opts) {
+  mvnw([
+    'eo:register', 'eo:parse',
+    `-Deo.sourcesDir=${opts.sources}`,
+    `-Deo.targetDir=${opts.target}`,
+    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
+    `-Deo.foreignFormat=csv`,
+  ]);
 };

@@ -41,7 +41,14 @@ program.command('parse')
   // .option('--a', 'test text')
   .option('-b, --bbb <char>', 'test text', ',')
   .action((str, options) => {
-    const cmd = require('./parse');
+    const cmd = require('./commands/parse');
+    cmd(program.opts());
+  });
+
+program.command('optimize')
+  .description('optimize XMIR files')
+  .action((str, options) => {
+    const cmd = require('./commands/optimize');
     cmd(program.opts());
   });
 

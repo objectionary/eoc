@@ -7,3 +7,4 @@ coverage.html
 package-lock.json
 target/
 .mvn/
+temp/

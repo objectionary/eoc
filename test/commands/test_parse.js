@@ -22,17 +22,25 @@
  * SOFTWARE.
  */
 
+const fs = require('fs');
+const assert = require('assert');
 const path = require('path');
-const execSync = require('child_process').execSync;
+const runSync = require('../run');
 
-/**
- * Helper to run EOC command line tool.
- *
- * @param {Array} args - Array of args
- * @return {String} Stdout
- */
-module.exports = function runSync(args) {
-  return execSync(
-    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`
-  ).toString();
-};
+describe('eoc', function() {
+  it('parses simple .EO program', function(done) {
+    this.timeout(20000);
+    home = path.resolve('temp/parse/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    const stdout = runSync([
+      'parse', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+    ]);
+    assert(
+      fs.existsSync(path.resolve(home, 'target/01-parse/simple.xmir')),
+      stdout
+    );
+    done();
+  });
+});

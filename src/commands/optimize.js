@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -22,27 +23,18 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
-const assert = require('assert');
-const run = require('./run');
 const path = require('path');
+const mvnw = require('../mvnw');
 
-describe('eoc', function() {
-  it('parses simple .EO program', function(done) {
-    this.timeout(5000);
-    home = path.resolve('temp/parse/simple');
-    fs.rmSync(home, {recursive: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    run(
-      ['parse', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target')],
-      function(stdout) {
-        assert(
-          fs.existsSync(path.resolve(home, 'target/01-parse/simple.xmir')),
-          stdout
-        );
-        done();
-      }
-    );
-  });
-});
+/**
+ * Command to optimize .XMIR files.
+ * @param {Hash} opts - All options
+ */
+module.exports = function optimize(opts) {
+  mvnw([
+    'eo:optimize',
+    `-Deo.targetDir=${opts.target}`,
+    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
+    `-Deo.foreignFormat=csv`,
+  ]);
+};

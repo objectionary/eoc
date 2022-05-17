@@ -24,21 +24,15 @@
  */
 
 /**
- * Command to parse .EO into .XMIR.
- * @param {Hash} opts - All options
+ * Run mvnw with provided commands.
+ * @param {Hash} args - All arguments to pass to it
  */
-module.exports = function parse(opts) {
+module.exports = function mvnw(args) {
   const path = require('path');
   const {spawn} = require('child_process');
   const mvn = spawn(
     path.resolve('./eo-maven/mvnw'),
-    [
-      'eo:register', 'eo:parse',
-      `-Deo.sourcesDir=${opts.sources}`,
-      `-Deo.targetDir=${opts.target}`,
-      `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
-      `-Deo.foreignFormat=csv`,
-    ],
+    args,
     {cwd: 'eo-maven'}
   );
   mvn.stdout.pipe(process.stdout);
