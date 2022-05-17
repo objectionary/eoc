@@ -35,20 +35,17 @@ program
   .option('-s, --sources <path>', 'directory with .EO sources', 'src')
   .option('-t, --target <path>', 'directory with all generated files', 'target');
 
-program.command('parse')
-  .description('parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
+program.command('register')
+  .description('register all visible EO source files')
   .action((str, options) => {
-    const cmd = require('./commands/parse');
+    const cmd = require('./commands/register');
     cmd(program.opts());
   });
 
-program.command('optimize')
-  .description('optimize XMIR files')
+program.command('assemble')
+  .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, options) => {
-    const cmd = require('./commands/optimize');
+    const cmd = require('./commands/assemble');
     cmd(program.opts());
   });
 

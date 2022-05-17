@@ -28,23 +28,18 @@ const path = require('path');
 const runSync = require('../run');
 
 describe('eoc', function() {
-  it('optimizes simple .XMIR program', function(done) {
+  it('registers simple .EO program', function(done) {
     this.timeout(20000);
-    home = path.resolve('temp/optimize/simple');
+    home = path.resolve('temp/register/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    const stdout1 = runSync([
-      'parse', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+    const stdout = runSync([
+      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assert(
-      fs.existsSync(path.resolve(home, 'target/01-parse/simple.xmir')),
-      stdout1
-    );
-    const stdout2 = runSync(['optimize', '-t', path.resolve(home, 'target')]);
-    assert(
-      fs.existsSync(path.resolve(home, 'target/01-parse/simple.xmir')),
-      stdout2
+      fs.existsSync(path.resolve(home, 'target/eo-foreign.csv')),
+      stdout
     );
     done();
   });

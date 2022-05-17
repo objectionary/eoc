@@ -27,13 +27,13 @@ const path = require('path');
 const mvnw = require('../mvnw');
 
 /**
- * Command to optimize .XMIR files.
+ * Command to register .EO sources.
  * @param {Hash} opts - All options
  */
-module.exports = function optimize(opts) {
+module.exports = function register(opts) {
   mvnw([
-    'eo:optimize',
-    `-Deo.targetDir=${opts.target}`,
+    'eo:register',
+    `-Deo.sourcesDir=${opts.sources}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
   ]);

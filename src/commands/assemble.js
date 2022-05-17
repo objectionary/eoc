@@ -27,13 +27,12 @@ const path = require('path');
 const mvnw = require('../mvnw');
 
 /**
- * Command to parse .EO into .XMIR.
+ * Command to assemble .XMIR files.
  * @param {Hash} opts - All options
  */
-module.exports = function parse(opts) {
+module.exports = function assemble(opts) {
   mvnw([
-    'eo:register', 'eo:parse',
-    `-Deo.sourcesDir=${opts.sources}`,
+    'eo:assemble',
     `-Deo.targetDir=${opts.target}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
