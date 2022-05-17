@@ -70,4 +70,11 @@ program.command('link')
     cmd(program.opts());
   });
 
+program.command('dataize')
+  .description('run the single executable binary and dataize an object')
+  .action((str, options) => {
+    const cmd = require('./commands/dataize');
+    cmd(program.args[1], program.opts());
+  });
+
 program.parse();

@@ -30,7 +30,7 @@ You can also do many other things with `eoc` commands
   * `transpile` converts XMIR to target programming language
   * `compile` converts target language to binaries
   * `link` puts all binaries together into a single executable binary
-  * `run` executes the binaries
+  * `dataize` executes the binary and dataize a single object
 
 There are also commands that help manipulate with XMIR and EO sources:
 
