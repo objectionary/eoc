@@ -27,9 +27,9 @@ const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
-  it('compiles a simple .EO program into Java bytecode .class files', function(done) {
+  it('compiles a simple .EO program into an executable .JAR', function(done) {
     this.timeout(100000);
-    home = path.resolve('temp/test-compile/simple');
+    home = path.resolve('temp/test-link/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
@@ -52,8 +52,11 @@ describe('eoc', function() {
     runSync([
       'transpile', '-t', path.resolve(home, 'target'),
     ]);
-    const stdout = runSync([
+    runSync([
       'compile', '-t', path.resolve(home, 'target'),
+    ]);
+    const stdout = runSync([
+      'link', '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
@@ -63,6 +66,7 @@ describe('eoc', function() {
         'target/classes/EOfoo/EObar/EOapp.class',
         'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOint.class',
+        'target/eoc.jar',
       ]
     );
     done();

@@ -57,9 +57,16 @@ program.command('transpile')
   });
 
 program.command('compile')
-  .description('compiles target language sources into an executable binary')
+  .description('compiles target language sources into binaries')
   .action((str, options) => {
     const cmd = require('./commands/compile');
+    cmd(program.opts());
+  });
+
+program.command('link')
+  .description('link together all binaries into a single executable binary')
+  .action((str, options) => {
+    const cmd = require('./commands/link');
     cmd(program.opts());
   });
 

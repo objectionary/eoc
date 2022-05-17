@@ -26,15 +26,12 @@
 const mvnw = require('../mvnw');
 
 /**
- * Command to compile target language into binaries.
+ * Command to link binaries into a single executable binary.
  * @param {Hash} opts - All options
  */
-module.exports = function compile(opts) {
+module.exports = function link(opts) {
   mvnw([
-    'compiler:compile',
-    `-Dmaven.compiler.source=1.8`,
-    `-Dmaven.compiler.target=1.8`,
+    'jar:jar',
     `-Deo.targetDir=${opts.target}`,
-    `-Deo.generatedDir=${opts.target}/generated-sources`,
   ]);
 };
