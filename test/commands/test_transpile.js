@@ -25,7 +25,7 @@
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const runSync = require('../run');
+const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('transpiles a simple .EO program', function(done) {
@@ -43,9 +43,9 @@ describe('eoc', function() {
     const stdout = runSync([
       'transpile', '-t', path.resolve(home, 'target'),
     ]);
-    assert(
-      fs.existsSync(path.resolve(home, 'target/generated-sources/EOsimple.java')),
-      stdout
+    assertFilesExist(
+      stdout, home,
+      ['target/generated-sources/EOsimple.java']
     );
     done();
   });

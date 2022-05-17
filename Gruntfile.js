@@ -25,7 +25,7 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    clean: ['coverage'],
+    clean: ['coverage', 'temp', 'mochawesome-report', 'coverage.html'],
     mochaTest: {
       test: {
         options: {

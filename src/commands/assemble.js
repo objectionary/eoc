@@ -34,7 +34,10 @@ module.exports = function assemble(opts) {
   mvnw([
     'eo:assemble',
     `-Deo.targetDir=${opts.target}`,
+    `-Deo.outputDir=${opts.target}/classes`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
+    `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
+    `-Deo.placedFormat=csv`,
   ]);
 };

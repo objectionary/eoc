@@ -28,18 +28,37 @@ const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
-  it('registers simple .EO program', function(done) {
+  it('compiles a simple .EO program into Java', function(done) {
     this.timeout(20000);
-    home = path.resolve('temp/register/simple');
+    home = path.resolve('temp/compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    const stdout = runSync([
+    fs.writeFileSync(
+      path.resolve(home, 'src/simple.eo'),
+      [
+        '+package foo.bar',
+        '+alias org.eolang.io.stdout',
+        '',
+        '[args...] > app',
+        '  stdout "Hello, world!" > @',
+        ''
+      ].join('\n')
+    );
+    runSync([
       'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+    ]);
+    runSync([
+      'assemble', '-t', path.resolve(home, 'target'),
+    ]);
+    runSync([
+      'transpile', '-t', path.resolve(home, 'target'),
+    ]);
+    const stdout = runSync([
+      'compile', '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
-      ['target/eo-foreign.csv']
+      ['target/classes/EOfoo/EObar/EOapp.class']
     );
     done();
   });

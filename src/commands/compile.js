@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,16 +24,18 @@
  */
 
 const path = require('path');
-const execSync = require('child_process').execSync;
+const mvnw = require('../mvnw');
 
 /**
- * Helper to run EOC command line tool.
- *
- * @param {Array} args - Array of args
- * @return {String} Stdout
+ * Command to compile target language into an executable binary.
+ * @param {Hash} opts - All options
  */
-module.exports = function runSync(args) {
-  return execSync(
-    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`
-  ).toString();
+module.exports = function compile(opts) {
+  mvnw([
+    'compiler:compile',
+    `-Dmaven.compiler.target=${opts.target}`,
+    `-Dmaven.compiler.source=${opts.target}/generated-sources`,
+    `-Dproject.build.directory=${opts.target}`,
+    `-Deo.foreignFormat=csv`,
+  ]);
 };

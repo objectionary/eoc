@@ -56,4 +56,11 @@ program.command('transpile')
     cmd(program.opts());
   });
 
+program.command('compile')
+  .description('compiles target language sources into an executable binary')
+  .action((str, options) => {
+    const cmd = require('./commands/compile');
+    cmd(program.opts());
+  });
+
 program.parse();

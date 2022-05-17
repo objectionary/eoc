@@ -25,7 +25,7 @@
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const runSync = require('../run');
+const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('assemble a simple .EO program', function(done) {
@@ -40,9 +40,9 @@ describe('eoc', function() {
     const stdout = runSync([
       'assemble', '-t', path.resolve(home, 'target'),
     ]);
-    assert(
-      fs.existsSync(path.resolve(home, 'target/03-optimize/simple.xmir')),
-      stdout
+    assertFilesExist(
+      stdout, home,
+      ['target/03-optimize/simple.xmir']
     );
     done();
   });

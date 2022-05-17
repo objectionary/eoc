@@ -22,25 +22,28 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
-const assert = require('assert');
-const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+/**
+ * Helper to run EOC command line tool.
+ *
+ * @param {Array} args - Array of args
+ * @return {String} Stdout
+ */
+module.exports.runSync = function runSync(args) {
+  const path = require('path');
+  const execSync = require('child_process').execSync;
+  return execSync(
+    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`
+  ).toString();
+};
 
-describe('eoc', function() {
-  it('registers simple .EO program', function(done) {
-    this.timeout(20000);
-    home = path.resolve('temp/register/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    const stdout = runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    assertFilesExist(
-      stdout, home,
-      ['target/eo-foreign.csv']
-    );
-    done();
-  });
-});
+/**
+ * Assert that all files exist.
+ *
+ * @param {Array} paths - Array of file paths
+ */
+module.exports.assertFilesExist = function assertFilesExist(stdout, home, paths) {
+  const path = require('path');
+  const assert = require('assert');
+  const fs = require('fs');
+  paths.forEach(p => assert(fs.existsSync(path.resolve(home, p)), stdout));
+};

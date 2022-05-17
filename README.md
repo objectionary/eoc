@@ -29,6 +29,7 @@ You can also do many other things with `eoc` commands
   * `assemble` parses EO files into XMIR, optimizes them, pulls foreign EO objects
   * `transpile` converts XMIR to target programming language
   * `compile` converts target language to binaries
+  * `link` puts all binaries together into a single executable binary
   * `run` executes the binaries
 
 There are also commands that help manipulate with XMIR and EO sources:
