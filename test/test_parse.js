@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,26 +22,27 @@
  * SOFTWARE.
  */
 
-const {Command} = require('commander');
-const program = new Command();
+const fs = require('fs');
+const assert = require('assert');
+const run = require('./run');
+const path = require('path');
 
-program
-  .name('eoc')
-  .description('EO command-line toolkit')
-  .version(require('./version'));
-
-program
-  .option('-s, --sources <path>', 'directory with .EO sources', 'src')
-  .option('-t, --target <path>', 'directory with all generated files', 'target');
-
-program.command('parse')
-  .description('parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
-  .action((str, options) => {
-    const cmd = require('./parse');
-    cmd(program.opts());
+describe('eoc', function() {
+  it('parses simple .EO program', function(done) {
+    this.timeout(5000);
+    home = path.resolve('temp/parse/simple');
+    fs.rmSync(home, {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    run(
+      ['parse', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target')],
+      function(stdout) {
+        assert(
+          fs.existsSync(path.resolve(home, 'target/01-parse/simple.xmir')),
+          stdout
+        );
+        done();
+      }
+    );
   });
-
-program.parse();
+});

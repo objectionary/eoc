@@ -23,26 +23,24 @@
  * SOFTWARE.
  */
 
-const {Command} = require('commander');
-const program = new Command();
-
-program
-  .name('eoc')
-  .description('EO command-line toolkit')
-  .version(require('./version'));
-
-program
-  .option('-s, --sources <path>', 'directory with .EO sources', 'src')
-  .option('-t, --target <path>', 'directory with all generated files', 'target');
-
-program.command('parse')
-  .description('parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
-  .action((str, options) => {
-    const cmd = require('./parse');
-    cmd(program.opts());
-  });
-
-program.parse();
+/**
+ * Command to parse .EO into .XMIR.
+ * @param {Hash} opts - All options
+ */
+module.exports = function parse(opts) {
+  const path = require('path');
+  const {spawn} = require('child_process');
+  const mvn = spawn(
+    path.resolve('./eo-maven/mvnw'),
+    [
+      'eo:register', 'eo:parse',
+      `-Deo.sourcesDir=${opts.sources}`,
+      `-Deo.targetDir=${opts.target}`,
+      `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
+      `-Deo.foreignFormat=csv`,
+    ],
+    {cwd: 'eo-maven'}
+  );
+  mvn.stdout.pipe(process.stdout);
+  mvn.stderr.pipe(process.stderr);
+};

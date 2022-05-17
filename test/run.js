@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,26 +22,24 @@
  * SOFTWARE.
  */
 
-const {Command} = require('commander');
-const program = new Command();
+const assert = require('assert');
+const path = require('path');
+const exec = require('child_process').exec;
 
-program
-  .name('eoc')
-  .description('EO command-line toolkit')
-  .version(require('./version'));
-
-program
-  .option('-s, --sources <path>', 'directory with .EO sources', 'src')
-  .option('-t, --target <path>', 'directory with all generated files', 'target');
-
-program.command('parse')
-  .description('parse EO source code into XMIR')
-  // .argument('<test>', 'test argument')
-  // .option('--a', 'test text')
-  .option('-b, --bbb <char>', 'test text', ',')
-  .action((str, options) => {
-    const cmd = require('./parse');
-    cmd(program.opts());
-  });
-
-program.parse();
+/**
+ * Helper to run EOC command line tool.
+ *
+ * @param {Array} args - Array of args
+ * @param {Function} fn - Callback
+ * @return {Mixed} The result of exec()
+ */
+module.exports = function run(args, fn) {
+  return exec(
+    `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`,
+    (error, stdout, stderr) => {
+      assert.equal(null, error);
+      assert.equal('', stderr);
+      return fn(stdout);
+    }
+  );
+};

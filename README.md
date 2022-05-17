@@ -2,9 +2,10 @@
 
 [![grunt](https://github.com/objectionary/eoc/actions/workflows/grunt.yml/badge.svg)](https://github.com/objectionary/eoc/actions/workflows/grunt.yml)
 
-First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+and [Java SE](https://www.oracle.com/java/technologies/downloads/).
 
-Then, you install [eolang](...) package:
+Then, you install [eolang](https://www.npmjs.com/package/eolang) package:
 
 ```
 $ npm install eolang
