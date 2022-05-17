@@ -49,4 +49,11 @@ program.command('assemble')
     cmd(program.opts());
   });
 
+program.command('transpile')
+  .description('converts EO files into target language')
+  .action((str, options) => {
+    const cmd = require('./commands/transpile');
+    cmd(program.opts());
+  });
+
 program.parse();

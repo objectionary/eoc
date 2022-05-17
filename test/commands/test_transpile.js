@@ -28,20 +28,23 @@ const path = require('path');
 const runSync = require('../run');
 
 describe('eoc', function() {
-  it('assemble a simple .EO program', function(done) {
+  it('transpiles a simple .EO program', function(done) {
     this.timeout(20000);
-    home = path.resolve('temp/assemble/simple');
+    home = path.resolve('temp/transpile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     runSync([
       'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
-    const stdout = runSync([
+    runSync([
       'assemble', '-t', path.resolve(home, 'target'),
     ]);
+    const stdout = runSync([
+      'transpile', '-t', path.resolve(home, 'target'),
+    ]);
     assert(
-      fs.existsSync(path.resolve(home, 'target/03-optimize/simple.xmir')),
+      fs.existsSync(path.resolve(home, 'target/generated-sources/EOsimple.java')),
       stdout
     );
     done();

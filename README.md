@@ -22,18 +22,22 @@ $ eoc run
 
 That's it.
 
-You can also do many other things with `eoc` commands:
+You can also do many other things with `eoc` commands
+(the flow is explained in [this blog post](https://www.yegor256.com/2021/10/21/objectionary.html)):
 
-  * `parse` converts EO program to XMIR files
-  * `optimize` reorganizes XMIR files and prepares them for transpilation
+  * `register` finds necessary EO files and registers the in a CSV
+  * `assemble` parses EO files into XMIR, optimizes them, pulls foreign EO objects
+  * `transpile` converts XMIR to target programming language
+  * `compile` converts target language to binaries
+  * `run` executes the binaries
+
+There are also commands that help manipulate with XMIR and EO sources:
+
   * `translate` converts Java/C++/Python/etc. program to EO program
   * `demu` removes `cage` and `memory` objects
   * `dejump` removes `goto` objects
   * `infer` suggests object names where it's possible to infer them
   * `flatten` moves inner objects to upper level
-  * `transpile` converts XMIR to target programming language
-  * `compile` converts target language to binaries
-  * `run` executes the binaries
 
 This command line toolkit simply integrates other tools available in
 [@objectionary](https://github.com/objectionary) GitHub organization.

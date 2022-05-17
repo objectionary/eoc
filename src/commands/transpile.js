@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -22,28 +23,19 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
-const assert = require('assert');
 const path = require('path');
-const runSync = require('../run');
+const mvnw = require('../mvnw');
 
-describe('eoc', function() {
-  it('assemble a simple .EO program', function(done) {
-    this.timeout(20000);
-    home = path.resolve('temp/assemble/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    const stdout = runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
-    assert(
-      fs.existsSync(path.resolve(home, 'target/03-optimize/simple.xmir')),
-      stdout
-    );
-    done();
-  });
-});
+/**
+ * Command to transpile XMIR files into target language.
+ * @param {Hash} opts - All options
+ */
+module.exports = function transpile(opts) {
+  mvnw([
+    'eo:transpile',
+    `-Deo.targetDir=${opts.target}`,
+    `-Deo.generatedDir=${opts.target}/generated-sources`,
+    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
+    `-Deo.foreignFormat=csv`,
+  ]);
+};
