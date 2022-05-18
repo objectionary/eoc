@@ -35,6 +35,13 @@ program
   .option('-s, --sources <path>', 'directory with .EO sources', 'src')
   .option('-t, --target <path>', 'directory with all generated files', 'target');
 
+program.command('clean')
+  .description('delete all temporary files')
+  .action((str, options) => {
+    const cmd = require('./commands/clean');
+    cmd(program.opts());
+  });
+
 program.command('register')
   .description('register all visible EO source files')
   .action((str, options) => {
