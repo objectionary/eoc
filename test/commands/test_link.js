@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
@@ -69,6 +70,7 @@ describe('eoc', function() {
         'target/eoc.jar',
       ]
     );
+    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
 });

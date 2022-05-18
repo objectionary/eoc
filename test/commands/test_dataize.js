@@ -63,6 +63,7 @@ describe('eoc', function() {
       'dataize', 'foo.bar.app', '-t', path.resolve(home, 'target'),
     ]);
     assert.equal(stdout, 'Hello, world!');
+    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
 });
