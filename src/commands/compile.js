@@ -24,6 +24,7 @@
  */
 
 const mvnw = require('../mvnw');
+const path = require('path');
 
 /**
  * Command to compile target language into binaries.
@@ -34,7 +35,7 @@ module.exports = function compile(opts) {
     'compiler:compile',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
-    `-Deo.targetDir=${opts.target}`,
-    `-Deo.generatedDir=${opts.target}/generated-sources`,
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
   ]);
 };

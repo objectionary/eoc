@@ -23,17 +23,19 @@
  * SOFTWARE.
  */
 
+const path = require('path');
+const {spawn} = require('child_process');
+
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  */
 module.exports = function mvnw(args) {
-  const path = require('path');
-  const {spawn} = require('child_process');
+  const home = path.resolve(__dirname, '../eo-maven');
   const mvn = spawn(
-    path.resolve('./eo-maven/mvnw'),
+    path.resolve(home, 'mvnw'),
     args,
-    {cwd: 'eo-maven'}
+    {cwd: home}
   );
   mvn.stdout.pipe(process.stdout);
   mvn.stderr.pipe(process.stderr);

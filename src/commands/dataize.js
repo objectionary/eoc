@@ -23,14 +23,15 @@
  * SOFTWARE.
  */
 
+const {spawn} = require('node:child_process');
+const path = require('path');
+
 /**
  * Runs the single executable binary.
  * @param {String} obj - Name of object to dataize
  * @param {Hash} opts - All options
  */
 module.exports = function dataize(obj, opts) {
-  const path = require('path');
-  const {spawn} = require('node:child_process');
   spawn(
     `java`,
     ['-jar', path.resolve(opts.target, 'eoc.jar'), obj],

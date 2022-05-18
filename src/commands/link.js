@@ -24,6 +24,7 @@
  */
 
 const mvnw = require('../mvnw');
+const path = require('path');
 
 /**
  * Command to link binaries into a single executable binary.
@@ -32,6 +33,6 @@ const mvnw = require('../mvnw');
 module.exports = function link(opts) {
   mvnw([
     'jar:jar',
-    `-Deo.targetDir=${opts.target}`,
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);
 };

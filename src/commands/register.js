@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-const path = require('path');
 const mvnw = require('../mvnw');
+const path = require('path');
 
 /**
  * Command to register .EO sources.
@@ -33,8 +33,8 @@ const mvnw = require('../mvnw');
 module.exports = function register(opts) {
   mvnw([
     'eo:register',
-    `-Deo.targetDir=${opts.target}`,
-    `-Deo.sourcesDir=${opts.sources}`,
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
   ]);

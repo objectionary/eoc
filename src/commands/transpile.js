@@ -23,8 +23,8 @@
  * SOFTWARE.
  */
 
-const path = require('path');
 const mvnw = require('../mvnw');
+const path = require('path');
 
 /**
  * Command to transpile XMIR files into target language.
@@ -33,8 +33,8 @@ const mvnw = require('../mvnw');
 module.exports = function transpile(opts) {
   mvnw([
     'eo:transpile',
-    `-Deo.targetDir=${opts.target}`,
-    `-Deo.generatedDir=${opts.target}/generated-sources`,
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
   ]);
