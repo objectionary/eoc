@@ -31,7 +31,7 @@ const {spawn} = require('child_process');
  * @param {Hash} args - All arguments to pass to it
  */
 module.exports = function mvnw(args) {
-  const home = path.resolve(__dirname, '../eo-maven');
+  const home = path.resolve(__dirname, '../mvnw');
   const mvn = spawn(
     path.resolve(home, 'mvnw'),
     args,
