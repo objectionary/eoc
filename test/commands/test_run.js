@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const {runSync} = require('../helpers');
 
 describe('eoc', function() {
   it('runs a simple .EO program', function(done) {

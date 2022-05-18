@@ -32,7 +32,7 @@ const {spawnSync} = require('child_process');
  */
 module.exports = function mvnw(args) {
   const home = path.resolve(__dirname, '../mvnw');
-  const mvn = spawnSync(
+  spawnSync(
     path.resolve(home, 'mvnw'),
     args,
     {cwd: home, stdio: 'inherit'}
