@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,18 +22,35 @@
  * SOFTWARE.
  */
 
+const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
-const {spawnSync} = require('child_process');
+const {runSync, assertFilesExist} = require('../helpers');
 
-/**
- * Run mvnw with provided commands.
- * @param {Hash} args - All arguments to pass to it
- */
-module.exports = function mvnw(args) {
-  const home = path.resolve(__dirname, '../mvnw');
-  const mvn = spawnSync(
-    path.resolve(home, 'mvnw'),
-    args,
-    {cwd: home, stdio: 'inherit'}
-  );
-};
+describe('eoc', function() {
+  it('runs a simple .EO program', function(done) {
+    this.timeout(100000);
+    home = path.resolve('temp/test-assemble/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'src/simple.eo'),
+      [
+        '+package foo.bar',
+        '+alias org.eolang.io.stdout',
+        '',
+        '[args...] > app',
+        '  stdout "Hello, world!" > @',
+        '',
+      ].join('\n')
+    );
+    const stdout = runSync([
+      'run', 'foo.bar.app',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
+    ]);
+    assert(stdout.includes('Hello, world!'));
+    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+    done();
+  });
+});

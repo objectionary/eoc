@@ -11,13 +11,19 @@ Then, you install [eolang](https://www.npmjs.com/package/eolang) package:
 $ npm install eolang
 ```
 
-Then, you write a [EO](https://www.eolang.org) program in a few `.eo` files
-in the current directory.
-
-Then, for example, you compile it to Java and run:
+Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
+in the current directory:
 
 ```
-$ eoc run
+[args...] > hello
+  Q.org.eolang.io.stdout > @
+    "Hello, world!\n"
+```
+
+Then, you run it:
+
+```
+$ eoc run hello
 ```
 
 That's it.

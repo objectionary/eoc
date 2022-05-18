@@ -32,8 +32,8 @@ program
   .version(require('./version'));
 
 program
-  .option('-s, --sources <path>', 'directory with .EO sources', 'src')
-  .option('-t, --target <path>', 'directory with all generated files', 'target');
+  .option('-s, --sources <path>', 'directory with .EO sources', '.')
+  .option('-t, --target <path>', 'directory with all generated files', '.eoc');
 
 program.command('clean')
   .description('delete all temporary files')
@@ -45,43 +45,60 @@ program.command('clean')
 program.command('register')
   .description('register all visible EO source files')
   .action((str, options) => {
-    const cmd = require('./commands/register');
-    cmd(program.opts());
+    const register = require('./commands/register');
+    register(program.opts());
   });
 
 program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, options) => {
-    const cmd = require('./commands/assemble');
-    cmd(program.opts());
+    const assemble = require('./commands/assemble');
+    assemble(program.opts());
   });
 
 program.command('transpile')
   .description('converts EO files into target language')
   .action((str, options) => {
-    const cmd = require('./commands/transpile');
-    cmd(program.opts());
+    const transpile = require('./commands/transpile');
+    transpile(program.opts());
   });
 
 program.command('compile')
   .description('compiles target language sources into binaries')
   .action((str, options) => {
-    const cmd = require('./commands/compile');
-    cmd(program.opts());
+    const compile = require('./commands/compile');
+    compile(program.opts());
   });
 
 program.command('link')
   .description('link together all binaries into a single executable binary')
   .action((str, options) => {
-    const cmd = require('./commands/link');
-    cmd(program.opts());
+    const link = require('./commands/link');
+    link(program.opts());
   });
 
 program.command('dataize')
   .description('run the single executable binary and dataize an object')
   .action((str, options) => {
-    const cmd = require('./commands/dataize');
-    cmd(program.args[1], program.opts());
+    const dataize = require('./commands/dataize');
+    dataize(program.args[1], program.opts());
+  });
+
+program.command('run')
+  .description('register, assemble, transpile, compile, link, and dataize an object')
+  .action((str, options) => {
+    const register = require('./commands/register');
+    register(program.opts());
+    const assemble = require('./commands/assemble');
+    assemble(program.opts());
+    const transpile = require('./commands/transpile');
+    transpile(program.opts());
+    const compile = require('./commands/compile');
+    compile(program.opts());
+    const link = require('./commands/link');
+    link(program.opts());
+    const dataize = require('./commands/dataize');
+    dataize(program.args[1], program.opts());
   });
 
 program.parse();
