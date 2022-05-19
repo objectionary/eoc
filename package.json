@@ -4,6 +4,7 @@
   "author": "Yegor Bugayenko",
   "license": "MIT",
   "repository": "objectionary/eoc",
+  "keywords": ["cli", "command", "compiler", "console", "terminal", "eoc", "objectionary", "oop"],
   "bin": {
     "eoc": "./src/eoc.js"
   },
