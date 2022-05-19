@@ -29,7 +29,6 @@ const {runSync} = require('../helpers');
 
 describe('eoc', function() {
   it('runs a simple .EO program', function(done) {
-    this.timeout(100000);
     home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

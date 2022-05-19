@@ -29,7 +29,6 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('compiles a simple .EO program into an executable .JAR', function(done) {
-    this.timeout(100000);
     home = path.resolve('temp/test-link/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

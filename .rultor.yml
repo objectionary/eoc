@@ -1,6 +1,7 @@
 assets:
   npmrc: objectionary/secrets#npmrc
 install: |
+  node --version
   pip install git+https://chromium.googlesource.com/external/gyp
   npm install --no-color
   sudo npm install --no-color --global grunt-cli

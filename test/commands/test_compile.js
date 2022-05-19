@@ -29,7 +29,6 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('compiles a simple .EO program into Java bytecode .class files', function(done) {
-    this.timeout(100000);
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

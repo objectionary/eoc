@@ -28,7 +28,6 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
   it('transpiles a simple .EO program', function(done) {
-    this.timeout(20000);
     home = path.resolve('temp/test-transpile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

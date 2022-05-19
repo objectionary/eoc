@@ -29,7 +29,6 @@ const {runSync} = require('../helpers');
 
 describe('eoc', function() {
   it('deletes all temporary files', function(done) {
-    this.timeout(20000);
     home = path.resolve('temp/test-clean/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

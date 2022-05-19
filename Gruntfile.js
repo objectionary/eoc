@@ -25,22 +25,13 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    clean: ['coverage', 'temp', 'mochawesome-report', 'coverage.html'],
-    mochaTest: {
+    clean: ['temp'],
+    mochacli: {
       test: {
         options: {
-          reporter: 'spec',
-          require: 'blanket',
+          timeout: '120000',
+          files: ['test/**/*.js'],
         },
-        src: ['test/**/*.js'],
-      },
-      coverage: {
-        options: {
-          reporter: 'mochawesome',
-         // quiet: true,
-          captureFile: 'coverage.html',
-        },
-        src: ['test/**/*.js'],
       },
     },
     eslint: {
@@ -51,7 +42,7 @@ module.exports = function(grunt) {
     },
   });
   grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-mocha-test');
+  grunt.loadNpmTasks('grunt-mocha-cli');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['mochaTest', 'eslint']);
+  grunt.registerTask('default', ['mochacli', 'eslint']);
 };
