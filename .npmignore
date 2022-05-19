@@ -8,3 +8,8 @@
 Gruntfile.js
 test/
 node_modules/
+temp/
+mochawesome-report/
+.idea/
+coverage.html
+*.tgz
