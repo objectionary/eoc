@@ -18,6 +18,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm uninstall grunt
-    - run: npm install -g grunt-cli
+    - run: npm install --force -g grunt-cli
     - run: grunt

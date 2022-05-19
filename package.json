@@ -4,7 +4,11 @@
   "author": "Yegor Bugayenko",
   "license": "MIT",
   "repository": "objectionary/eoc",
+  "description": "A collection of command line tools for EOLANG: compiling, parsing, transpiling to other languages, optimizing, and analyzing",
+  "homepage": "https://github.com/objectionary/eoc",
   "keywords": ["cli", "command", "compiler", "console", "terminal", "eoc", "objectionary", "oop"],
+  "author": "Yegor Bugayenko <yegor256@gmail.com> (https://www.yegor256.com/)",
+  "main": "eoc",
   "bin": {
     "eoc": "./src/eoc.js"
   },
