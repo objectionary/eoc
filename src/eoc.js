@@ -35,11 +35,18 @@ program
   .option('-s, --sources <path>', 'directory with .EO sources', '.')
   .option('-t, --target <path>', 'directory with all generated files', '.eoc');
 
+program.command('audit')
+  .description('inspects all packages and reports their status')
+  .action((str, options) => {
+    const audit = require('./commands/audit');
+    audit(program.opts());
+  });
+
 program.command('clean')
   .description('delete all temporary files')
   .action((str, options) => {
-    const cmd = require('./commands/clean');
-    cmd(program.opts());
+    const clean = require('./commands/clean');
+    clean(program.opts());
   });
 
 program.command('register')
