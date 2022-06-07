@@ -1,5 +1,5 @@
 assets:
-  npmrc: objectionary/secrets#npmrc
+  npmrc: yegor256/objectionary-secrets#npmrc
 install: |
   pip install git+https://chromium.googlesource.com/external/gyp
   npm install --no-color
