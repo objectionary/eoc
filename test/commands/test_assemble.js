@@ -28,7 +28,7 @@ const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('eoc', function() {
-  it('assemble a simple .EO program', function(done) {
+  it('assembles a simple .EO program', function(done) {
     home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -23,19 +22,11 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
-const path = require('path');
+const mvnwSync = require('../src/mvnw');
 
-/**
- * Command to transpile XMIR files into target language.
- * @param {Hash} opts - All options
- */
-module.exports = function transpile(opts) {
-  mvnwSync([
-    'eo:transpile',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
-    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
-    `-Deo.foreignFormat=csv`,
-  ]);
-};
+describe('mvnw', function() {
+  it('prints Maven own version', function(done) {
+    mvnwSync(['--version']);
+    done();
+  });
+});

@@ -13,7 +13,8 @@
     "eoc": "./src/eoc.js"
   },
   "dependencies": {
-    "commander": "9.2.0"
+    "commander": "9.2.0",
+    "xmlhttprequest": "1.8.0"
   },
   "devDependencies": {
     "eslint": "5.15.3",
@@ -23,5 +24,8 @@
     "grunt-eslint": "21.0.0",
     "grunt-mocha-cli": "7.0.0",
     "mocha": "10.0.0"
+  },
+  "scripts": {
+    "test": "mocha --timeout 120000"
   }
 }

@@ -25,16 +25,44 @@
 
 const path = require('path');
 const {spawnSync} = require('child_process');
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
+let version = '';
+
+/**
+ * Load the latest version from GitHub releases.
+ * @return {String} Latest version, for example '0.23.1'
+ */
+function latest() {
+  if (version) {
+    console.log('Current version of eo-maven-plugin is ' + version);
+    return version;
+  }
+  const url = 'https://api.github.com/repos/objectionary/eo/releases/latest';
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+  xhr.send(null);
+  if (xhr.status != 200) {
+    throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
+  }
+  version = JSON.parse(xhr.responseText).tag_name;
+  console.log('The version of eo-maven-plugin downloaded from ' + url + ': ' + version);
+  return version;
+}
 
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  */
-module.exports = function mvnw(args) {
+module.exports = function mvnwSync(args) {
   const home = path.resolve(__dirname, '../mvnw');
-  spawnSync(
-    path.resolve(home, 'mvnw'),
-    args.concat(['-Deo.version=0.23.10']),
-    {cwd: home, stdio: 'inherit'}
-  );
+  const bin = path.resolve(home, 'mvnw');
+  const params = args.concat(['-Deo.version=' + latest()]);
+  const cmd = bin + ' ' + params.join(' ');
+  console.log('+ ' + cmd);
+  const result = spawnSync(bin, params, {cwd: home, stdio: 'inherit'});
+  if (result.status != 0) {
+    throw new Error('Exit code: ' + result.status);
+  }
 };

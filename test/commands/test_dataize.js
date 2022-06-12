@@ -28,7 +28,7 @@ const path = require('path');
 const {runSync} = require('../helpers');
 
 describe('eoc', function() {
-  it('runs a single executable .JAR and dataize an object', function(done) {
+  it('runs a single executable .JAR and dataizes an object', function(done) {
     home = path.resolve('temp/test-run/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});

@@ -49,3 +49,15 @@ There are also commands that help manipulate with XMIR and EO sources:
 
 This command line toolkit simply integrates other tools available in
 [@objectionary](https://github.com/objectionary) GitHub organization.
+
+## How to Contribute
+
+First, run `npm install`. Then, run `grunt`. All tests should pass.
+
+If you want to run a single test:
+
+```
+$ npm test -- test/test_mvnw.js
+```
+
+Then, make a pull request.

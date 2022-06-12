@@ -23,12 +23,12 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const mvnwSync = require('../mvnw');
 
 /**
  * Command to audit all packages.
  * @param {Hash} opts - All options
  */
 module.exports = function audit(opts) {
-  mvnw(['--version']);
+  mvnwSync(['--version']);
 };

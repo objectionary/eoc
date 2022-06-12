@@ -24,14 +24,14 @@
  */
 
 const path = require('path');
-const mvnw = require('../mvnw');
+const mvnwSync = require('../mvnw');
 
 /**
  * Command to assemble .XMIR files.
  * @param {Hash} opts - All options
  */
 module.exports = function assemble(opts) {
-  mvnw([
+  mvnwSync([
     'eo:assemble',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,

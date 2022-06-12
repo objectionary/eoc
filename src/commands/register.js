@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const mvnwSync = require('../mvnw');
 const path = require('path');
 
 /**
@@ -31,7 +31,7 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function register(opts) {
-  mvnw([
+  mvnwSync([
     'eo:register',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,

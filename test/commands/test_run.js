@@ -48,7 +48,7 @@ describe('eoc', function() {
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes('Hello, world!'));
+    assert(stdout.includes('Hello, world!'), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });

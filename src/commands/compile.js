@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const mvnwSync = require('../mvnw');
 const path = require('path');
 
 /**
@@ -31,7 +31,7 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function compile(opts) {
-  mvnw([
+  mvnwSync([
     'compiler:compile',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
