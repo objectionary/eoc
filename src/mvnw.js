@@ -34,7 +34,7 @@ module.exports = function mvnw(args) {
   const home = path.resolve(__dirname, '../mvnw');
   spawnSync(
     path.resolve(home, 'mvnw'),
-    args,
+    args.concat(['-Deo.version=0.23.10']),
     {cwd: home, stdio: 'inherit'}
   );
 };
