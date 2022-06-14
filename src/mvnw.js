@@ -36,7 +36,8 @@ let version = '';
  */
 function latest() {
   if (version === '') {
-    const url = 'https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/maven-metadata.xml';
+    const repo = 'org/eolang/eo-maven-plugin';
+    const url = 'https://repo.maven.apache.org/maven2/' + repo + '/maven-metadata.xml';
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, false);
     xhr.send(null);
@@ -45,9 +46,9 @@ function latest() {
     }
     const xml = new XMLParser().parse(xhr.responseText);
     version = xml.metadata.versioning.release;
-    console.log('The version of eo-maven-plugin downloaded from ' + url + ': ' + version);
+    console.log('The latest version of ' + repo + ' at ' + url + ' is ' + version);
   }
-  console.log('Current version of eo-maven-plugin is ' + version);
+  console.log('Current version of ' + repo + ' is ' + version);
   return version;
 }
 
