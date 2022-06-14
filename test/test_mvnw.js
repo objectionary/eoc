@@ -27,6 +27,7 @@ const mvnwSync = require('../src/mvnw');
 describe('mvnw', function() {
   it('prints Maven own version', function(done) {
     mvnwSync(['--version']);
+    mvnwSync(['--version']);
     done();
   });
 });

@@ -26,6 +26,7 @@
 const path = require('path');
 const {spawnSync} = require('child_process');
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+const {XMLParser} = require('fast-xml-parser');
 
 let version = '';
 
@@ -34,20 +35,19 @@ let version = '';
  * @return {String} Latest version, for example '0.23.1'
  */
 function latest() {
-  if (version) {
-    console.log('Current version of eo-maven-plugin is ' + version);
-    return version;
+  if (version === '') {
+    const url = 'https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/maven-metadata.xml';
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.send(null);
+    if (xhr.status != 200) {
+      throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
+    }
+    const xml = new XMLParser().parse(xhr.responseText);
+    version = xml.metadata.versioning.release;
+    console.log('The version of eo-maven-plugin downloaded from ' + url + ': ' + version);
   }
-  const url = 'https://api.github.com/repos/objectionary/eo/releases/latest';
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', url, false);
-  xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-  xhr.send(null);
-  if (xhr.status != 200) {
-    throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
-  }
-  version = JSON.parse(xhr.responseText).tag_name;
-  console.log('The version of eo-maven-plugin downloaded from ' + url + ': ' + version);
+  console.log('Current version of eo-maven-plugin is ' + version);
   return version;
 }
 
