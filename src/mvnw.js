@@ -35,8 +35,8 @@ let version = '';
  * @return {String} Latest version, for example '0.23.1'
  */
 function latest() {
+  const repo = 'org/eolang/eo-maven-plugin';
   if (version === '') {
-    const repo = 'org/eolang/eo-maven-plugin';
     const url = 'https://repo.maven.apache.org/maven2/' + repo + '/maven-metadata.xml';
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, false);
