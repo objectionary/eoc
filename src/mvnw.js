@@ -59,7 +59,13 @@ function latest() {
 module.exports = function mvnwSync(args) {
   const home = path.resolve(__dirname, '../mvnw');
   const bin = path.resolve(home, 'mvnw');
-  const params = args.concat(['-Deo.version=' + latest()]);
+  const params = args.concat([
+    '-Deo.version=' + latest(),
+    '--errors',
+    '--batch-mode',
+    '--update-snapshots',
+    '--fail-fast',
+  ]);
   const cmd = bin + ' ' + params.join(' ');
   console.log('+ ' + cmd);
   const result = spawnSync(bin, params, {cwd: home, stdio: 'inherit'});
