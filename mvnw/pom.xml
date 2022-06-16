@@ -37,6 +37,9 @@ SOFTWARE.
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
         <version>${eo.version}</version>
+        <configuration>
+          <excludeSources>.eoc/**</excludeSources>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
