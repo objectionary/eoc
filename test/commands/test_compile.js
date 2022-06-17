@@ -68,4 +68,41 @@ describe('eoc', function() {
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
+
+  it('compiles a simple .EO unit test into Java bytecode .class files', function(done) {
+    home = path.resolve('temp/test-compile/junit');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'src/simple-test.eo'),
+      [
+        '+package foo.bar',
+        '+junit',
+        '',
+        '[] > simple-test',
+        '  TRUE > @',
+        '',
+      ].join('\n')
+    );
+    runSync([
+      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+    ]);
+    runSync([
+      'assemble', '-t', path.resolve(home, 'target'),
+    ]);
+    runSync([
+      'transpile', '-t', path.resolve(home, 'target'),
+    ]);
+    const stdout = runSync([
+      'compile', '-t', path.resolve(home, 'target'),
+    ]);
+    assertFilesExist(
+      stdout, home,
+      [
+        'target/generated-sources/EOfoo/EObar/EOsimple_testTest.java',
+        'target/classes/EOfoo/EObar/EOsimple_testTest.class',
+      ]
+    );
+    done();
+  });
 });
