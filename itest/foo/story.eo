@@ -1,4 +1,9 @@
 +package foo
 
 [] > story
-  "Hello, world!\n" > @
+  QQ.txt.sprintf > @
+    "Hello, Mr. #%d!\n"
+    as-int.
+      times.
+        random
+        100.0
