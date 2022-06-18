@@ -1,0 +1,4 @@
++package foo
+
+[] > story
+  "Hello, world!\n" > @

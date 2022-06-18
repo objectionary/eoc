@@ -1,4 +1,4 @@
-name: grunt
+name: itest
 on:
   push:
   pull_request:
@@ -10,17 +10,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        java: [17]
-        node: [16]
+        java: [11, 17, 18]
+        node: [12, 14, 16]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node }}
+        node-version: ${{ matrix.node-version }}
     - uses: actions/setup-java@v3
       with:
         java-version: ${{ matrix.java }}
     - run: npm install
-    - run: npm install --force -g grunt-cli
-    - run: grunt
+    - run: cd itest && node ../src/eoc.js run foo.program

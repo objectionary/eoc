@@ -2,6 +2,7 @@ node_modules/
 .nyc_output
 coverage/
 .idea
+.eoc/
 mochawesome-report/
 coverage.html
 package-lock.json
