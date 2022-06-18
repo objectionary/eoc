@@ -20,6 +20,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - uses: actions/setup-java@v3
       with:
+        distribution: 'zulu'
         java-version: ${{ matrix.java }}
     - run: npm install
     - run: cd itest && node ../src/eoc.js run foo.program
