@@ -16,7 +16,7 @@ in the current directory:
 
 ```
 [args...] > hello
-  Q.org.eolang.io.stdout > @
+  QQ.io.stdout > @
     "Hello, world!\n"
 ```
 
@@ -37,6 +37,7 @@ You can also do many other things with `eoc` commands
   * `compile` converts target language to binaries
   * `link` puts all binaries together into a single executable binary
   * `dataize` executes the binary and dataize a single object
+  * `run` registers, assembles, transpiles, compiles, links, and dataizes a single object
 
 There are also commands that help manipulate with XMIR and EO sources:
 
