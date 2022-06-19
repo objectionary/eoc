@@ -39,14 +39,14 @@ You can also do many other things with `eoc` commands
   * `dataize` executes the binary and dataize a single object
   * `test` executes all visible unit tests
 
-There are also commands that help manipulate with XMIR and EO sources:
+There are also commands that help manipulate with XMIR and EO sources (some of them are not implemented as of yet):
 
   * `audit` inspects all packages and report their status
-  * `translate` converts Java/C++/Python/etc. program to EO program **(not implemented yet)**
-  * `demu` removes `cage` and `memory` objects **(not implemented yet)**
-  * `dejump` removes `goto` objects **(not implemented yet)**
-  * `infer` suggests object names where it's possible to infer them **(not implemented yet)**
-  * `flatten` moves inner objects to upper level **(not implemented yet)**
+  * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
+  * <del>`demu` removes `cage` and `memory` objects</del>
+  * <del>`dejump` removes `goto` objects</del>
+  * <del>`infer` suggests object names where it's possible to infer them</del>
+  * <del>`flatten` moves inner objects to upper level</del>
 
 This command line toolkit simply integrates other tools available in
 [@objectionary](https://github.com/objectionary) GitHub organization.
