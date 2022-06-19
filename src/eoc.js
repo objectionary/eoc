@@ -26,6 +26,15 @@
 const {Command} = require('commander');
 const program = new Command();
 
+const audit = require('./commands/audit');
+  const clean = require('./commands/clean');
+const assemble = require('./commands/assemble');
+  const register = require('./commands/register');
+  const transpile = require('./commands/transpile');
+  const compile = require('./commands/compile');
+  const link = require('./commands/link');
+  const dataize = require('./commands/dataize');
+
 program
   .name('eoc')
   .description('EO command-line toolkit')
@@ -33,79 +42,85 @@ program
 
 program
   .option('-s, --sources <path>', 'directory with .EO sources', '.')
-  .option('-t, --target <path>', 'directory with all generated files', '.eoc');
+  .option('-t, --target <path>', 'directory with all generated files', '.eoc')
+  .option('--alone', 'just run a single command without dependencies');
 
 program.command('audit')
   .description('inspects all packages and reports their status')
-  .action((str, options) => {
-    const audit = require('./commands/audit');
+  .action((str, opts) => {
     audit(program.opts());
   });
 
 program.command('clean')
   .description('delete all temporary files')
-  .action((str, options) => {
-    const clean = require('./commands/clean');
+  .action((str, opts) => {
     clean(program.opts());
   });
 
 program.command('register')
   .description('register all visible EO source files')
-  .action((str, options) => {
-    const register = require('./commands/register');
+  .action((str, opts) => {
     register(program.opts());
   });
 
 program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
-  .action((str, options) => {
-    const assemble = require('./commands/assemble');
+  .action((str, opts) => {
+    if (opts.alone == undefined) {
+      register(program.opts());
+    }
     assemble(program.opts());
   });
 
 program.command('transpile')
   .description('converts EO files into target language')
-  .action((str, options) => {
-    const transpile = require('./commands/transpile');
+  .action((str, opts) => {
+    if (opts.alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+    }
     transpile(program.opts());
   });
 
 program.command('compile')
   .description('compiles target language sources into binaries')
-  .action((str, options) => {
-    const compile = require('./commands/compile');
+  .action((str, opts) => {
+    if (opts.alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+      transpile(program.opts());
+    }
     compile(program.opts());
   });
 
 program.command('link')
   .description('link together all binaries into a single executable binary')
-  .action((str, options) => {
-    const link = require('./commands/link');
+  .action((str, opts) => {
+    if (opts.alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+      transpile(program.opts());
+      compile(program.opts());
+    }
     link(program.opts());
   });
 
 program.command('dataize')
   .description('run the single executable binary and dataize an object')
-  .action((str, options) => {
-    const dataize = require('./commands/dataize');
+  .action((str, opts) => {
+    if (opts.alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+      transpile(program.opts());
+      compile(program.opts());
+      link(program.opts());
+    }
     dataize(program.args[1], program.opts());
   });
 
-program.command('run')
-  .description('register, assemble, transpile, compile, link, and dataize an object')
-  .action((str, options) => {
-    const register = require('./commands/register');
-    register(program.opts());
-    const assemble = require('./commands/assemble');
-    assemble(program.opts());
-    const transpile = require('./commands/transpile');
-    transpile(program.opts());
-    const compile = require('./commands/compile');
-    compile(program.opts());
-    const link = require('./commands/link');
-    link(program.opts());
-    const dataize = require('./commands/dataize');
-    dataize(program.args[1], program.opts());
-  });
-
-program.parse();
+try {
+  program.parse(process.argv);
+} catch (e) {
+  console.log('eoc failed: "' + e.message + '"');
+  process.exit(1);
+}

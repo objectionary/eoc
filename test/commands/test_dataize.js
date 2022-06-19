@@ -43,25 +43,12 @@ describe('eoc', function() {
         '',
       ].join('\n')
     );
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'transpile', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'compile', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'link', '-t', path.resolve(home, 'target'),
-    ]);
     const stdout = runSync([
-      'dataize', 'foo.bar.app', '-t', path.resolve(home, 'target'),
+      'dataize', 'foo.bar.app',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
-    assert.equal(stdout, 'Hello, world!');
+    assert(stdout.includes('Hello, world!'), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });

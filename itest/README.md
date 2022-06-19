@@ -4,7 +4,7 @@ There is a simple integration here. Just run this to make sure
 it works:
 
 ```
-$ ../src/eoc.js run foo.program
+$ ../src/eoc.js dataize foo.program
 ```
 
 If doesn't work, submit an issue.

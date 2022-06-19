@@ -43,17 +43,8 @@ describe('eoc', function() {
         '',
       ].join('\n')
     );
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'transpile', '-t', path.resolve(home, 'target'),
-    ]);
     const stdout = runSync([
-      'compile', '-t', path.resolve(home, 'target'),
+      'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
@@ -84,17 +75,8 @@ describe('eoc', function() {
         '',
       ].join('\n')
     );
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'transpile', '-t', path.resolve(home, 'target'),
-    ]);
     const stdout = runSync([
-      'compile', '-t', path.resolve(home, 'target'),
+      'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,

@@ -43,20 +43,8 @@ describe('eoc', function() {
         '',
       ].join('\n')
     );
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'transpile', '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'compile', '-t', path.resolve(home, 'target'),
-    ]);
     const stdout = runSync([
-      'link', '-t', path.resolve(home, 'target'),
+      'link', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,

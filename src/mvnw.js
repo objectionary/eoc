@@ -70,6 +70,6 @@ module.exports = function mvnwSync(args) {
   console.log('+ ' + cmd);
   const result = spawnSync(bin, params, {cwd: home, stdio: 'inherit'});
   if (result.status != 0) {
-    throw new Error('Exit code: ' + result.status);
+    throw new Error('The command "' + cmd + '" exited with #' + result.status + ' code');
   }
 };

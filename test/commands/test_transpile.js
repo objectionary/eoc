@@ -32,14 +32,8 @@ describe('eoc', function() {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
-    ]);
-    runSync([
-      'assemble', '-t', path.resolve(home, 'target'),
-    ]);
     const stdout = runSync([
-      'transpile', '-t', path.resolve(home, 'target'),
+      'transpile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
