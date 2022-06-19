@@ -27,13 +27,13 @@ const {Command} = require('commander');
 const program = new Command();
 
 const audit = require('./commands/audit');
-  const clean = require('./commands/clean');
+const clean = require('./commands/clean');
 const assemble = require('./commands/assemble');
-  const register = require('./commands/register');
-  const transpile = require('./commands/transpile');
-  const compile = require('./commands/compile');
-  const link = require('./commands/link');
-  const dataize = require('./commands/dataize');
+const register = require('./commands/register');
+const transpile = require('./commands/transpile');
+const compile = require('./commands/compile');
+const link = require('./commands/link');
+const dataize = require('./commands/dataize');
 
 program
   .name('eoc')
@@ -66,7 +66,7 @@ program.command('register')
 program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
-    if (opts.alone == undefined) {
+    if (program.opts().alone == undefined) {
       register(program.opts());
     }
     assemble(program.opts());
@@ -75,7 +75,7 @@ program.command('assemble')
 program.command('transpile')
   .description('converts EO files into target language')
   .action((str, opts) => {
-    if (opts.alone == undefined) {
+    if (program.opts().alone == undefined) {
       register(program.opts());
       assemble(program.opts());
     }
@@ -85,7 +85,7 @@ program.command('transpile')
 program.command('compile')
   .description('compiles target language sources into binaries')
   .action((str, opts) => {
-    if (opts.alone == undefined) {
+    if (program.opts().alone == undefined) {
       register(program.opts());
       assemble(program.opts());
       transpile(program.opts());
@@ -96,7 +96,7 @@ program.command('compile')
 program.command('link')
   .description('link together all binaries into a single executable binary')
   .action((str, opts) => {
-    if (opts.alone == undefined) {
+    if (program.opts().alone == undefined) {
       register(program.opts());
       assemble(program.opts());
       transpile(program.opts());
@@ -108,7 +108,7 @@ program.command('link')
 program.command('dataize')
   .description('run the single executable binary and dataize an object')
   .action((str, opts) => {
-    if (opts.alone == undefined) {
+    if (program.opts().alone == undefined) {
       register(program.opts());
       assemble(program.opts());
       transpile(program.opts());
