@@ -27,7 +27,7 @@ const assert = require('assert');
 const path = require('path');
 const {runSync} = require('../helpers');
 
-describe('eoc', function() {
+describe('dataize', function() {
   it('runs a single executable .JAR and dataizes an object', function(done) {
     home = path.resolve('temp/test-run/simple');
     fs.rmSync(home, {recursive: true, force: true});
@@ -40,7 +40,6 @@ describe('eoc', function() {
         '',
         '[args...] > app',
         '  stdout "Hello, world!" > @',
-        '',
       ].join('\n')
     );
     const stdout = runSync([

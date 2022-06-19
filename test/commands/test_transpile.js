@@ -26,7 +26,7 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('eoc', function() {
+describe('transpile', function() {
   it('transpiles a simple .EO program', function(done) {
     home = path.resolve('temp/test-transpile/simple');
     fs.rmSync(home, {recursive: true, force: true});

@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * The MIT License (MIT)
  *
@@ -22,13 +23,16 @@
  * SOFTWARE.
  */
 
-const assert = require('assert');
-const {runSync} = require('../helpers');
+const mvnwSync = require('../mvnw');
+const path = require('path');
 
-describe('audit', function() {
-  it('audits all packages', function(done) {
-    const stdout = runSync(['audit']);
-    assert(stdout.includes('Apache Maven'));
-    done();
-  });
-});
+/**
+ * Command to run all available unit tests.
+ * @param {Hash} opts - All options
+ */
+module.exports = function test(opts) {
+  mvnwSync([
+    'surefire:test',
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+  ]);
+};

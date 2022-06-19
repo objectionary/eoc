@@ -27,7 +27,7 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('eoc', function() {
+describe('register', function() {
   it('registers a simple .EO program', function(done) {
     home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});

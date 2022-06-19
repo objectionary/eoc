@@ -34,6 +34,7 @@ const transpile = require('./commands/transpile');
 const compile = require('./commands/compile');
 const link = require('./commands/link');
 const dataize = require('./commands/dataize');
+const test = require('./commands/test');
 
 program
   .name('eoc')
@@ -116,6 +117,19 @@ program.command('dataize')
       link(program.opts());
     }
     dataize(program.args[1], program.opts());
+  });
+
+program.command('test')
+  .description('run all visible unit tests')
+  .action((str, opts) => {
+    if (program.opts().alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+      transpile(program.opts());
+      compile(program.opts());
+      link(program.opts());
+    }
+    test(program.opts());
   });
 
 try {

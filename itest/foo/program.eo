@@ -1,6 +1,0 @@
-+package foo
-+alias foo.story
-
-[args...] > program
-  QQ.io.stdout > @
-    story

@@ -22,41 +22,38 @@
  * SOFTWARE.
  */
 
-const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('link', function() {
-  it('compiles a simple .EO program into an executable .JAR', function(done) {
-    home = path.resolve('temp/test-link/simple');
+describe('test', function() {
+  it('executes a single unit test', function(done) {
+    home = path.resolve('temp/test-test/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
+      path.resolve(home, 'src/simple-test.eo'),
       [
-        '+package foo.bar',
-        '+alias org.eolang.io.stdout',
+        '+junit',
+        '+alias org.eolang.hamcrest.assert-that',
         '',
-        '[args...] > app',
-        '  stdout "Hello, world!" > @',
+        '[] > simple-comparison-works',
+        '  assert-that > @',
+        '    10',
+        '    $.greater-than',
+        '      5',
       ].join('\n')
     );
     const stdout = runSync([
-      'link', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'test', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOapp.java',
-        'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOapp.class',
-        'target/classes/org/eolang/Phi.class',
-        'target/classes/EOorg/EOeolang/EOint.class',
-        'target/eoc.jar',
+        'target/generated-sources/EOsimple_comparison_worksTest.java',
+        'target/classes/EOsimple_comparison_worksTest.class',
       ]
     );
-    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
 });

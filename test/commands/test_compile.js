@@ -27,7 +27,7 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('eoc', function() {
+describe('compile', function() {
   it('compiles a simple .EO program into Java bytecode .class files', function(done) {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
@@ -40,7 +40,6 @@ describe('eoc', function() {
         '',
         '[args...] > app',
         '  stdout "Hello, world!" > @',
-        '',
       ].join('\n')
     );
     const stdout = runSync([

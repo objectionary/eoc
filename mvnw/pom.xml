@@ -44,6 +44,7 @@ SOFTWARE.
     <sourceDirectory>${eo.generatedDir}</sourceDirectory>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
+    <testOutputDirectory>${eo.targetDir}/classes</testOutputDirectory>
     <plugins>
       <plugin>
         <groupId>org.eolang</groupId>
@@ -70,6 +71,13 @@ SOFTWARE.
               <mainClass>org.eolang.Main</mainClass>
             </manifest>
           </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M7</version>
+        <configuration>
+          <failIfNoTests>true</failIfNoTests>
         </configuration>
       </plugin>
     </plugins>
