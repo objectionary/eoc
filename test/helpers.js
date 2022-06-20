@@ -36,7 +36,7 @@ module.exports.runSync = function runSync(args) {
       `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`,
       {
         'timeout': 120000,
-        'windowsHide': true
+        'windowsHide': true,
       }
     ).toString();
   } catch (ex) {
