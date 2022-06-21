@@ -38,6 +38,7 @@ const test = require('./commands/test');
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
+  console.info('INFO');
 }
 
 program

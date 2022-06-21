@@ -31,12 +31,14 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function transpile(opts) {
+  const sources = path.resolve(opts.target, 'generated-sources');
   mvnwSync([
     'eo:transpile',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
-    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
+    `-Deo.generatedDir=${sources}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
   ]);
+  console.info('Java sources generated in %s', sources);
 };

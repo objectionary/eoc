@@ -31,12 +31,14 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function compile(opts) {
+  const target = path.resolve(opts.target);
   mvnwSync([
     'compiler:compile',
     opts.verbose ? '' : '--quiet',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
   ]);
+  console.info('Java .class files compiled into %s', target);
 };

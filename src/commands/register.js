@@ -31,13 +31,14 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function register(opts) {
+  const foreign = path.resolve(opts.target, 'eo-foreign.csv');
   mvnwSync([
     'eo:register',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
-    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
+    `-Deo.foreign=${foreign}`,
     `-Deo.foreignFormat=csv`,
   ]);
-  console.info();
+  console.info('EO objects registered in %s', foreign);
 };

@@ -37,15 +37,15 @@ const levels = {
 const colors = {
   'trace': 'gray',
   'debug': 'gray',
-  'info': 'black',
+  'info': 'white',
   'warn': 'orange',
   'error': 'red',
 };
 
 for (const level in levels) {
   if (levels.hasOwnProperty(level)) {
-    const before = console[level];
     const lvl = level;
+    const before = console[lvl];
     console[level] = function(...args) {
       if (!levels[lvl]) {
         return;
