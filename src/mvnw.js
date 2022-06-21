@@ -58,7 +58,7 @@ function latest() {
  */
 module.exports = function mvnwSync(args) {
   const home = path.resolve(__dirname, '../mvnw');
-  const bin = path.resolve(home, 'mvnw');
+  const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
   const params = args.filter(function(t) {
     return t != '';
   }).concat([
@@ -71,7 +71,7 @@ module.exports = function mvnwSync(args) {
   const cmd = bin + ' ' + params.join(' ');
   console.debug('+ %s', cmd);
   const result = spawnSync(
-    bin + (process.platform == 'win32' ? '.cmd' : ''),
+    bin,
     params.map(p => (process.platform == "win32") ? `"${p}"` : p),
     {
       cwd: home,
