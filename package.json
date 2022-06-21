@@ -1,13 +1,21 @@
 {
   "name": "eolang",
-  "version": "0.0.0",
-  "author": "Yegor Bugayenko",
+  "version": "0.4.0",
+  "author": "Yegor Bugayenko <yegor256@gmail.com> (https://www.yegor256.com/)",
   "license": "MIT",
   "repository": "objectionary/eoc",
   "description": "A collection of command line tools for EOLANG: compiling, parsing, transpiling to other languages, optimizing, and analyzing",
   "homepage": "https://github.com/objectionary/eoc",
-  "keywords": ["cli", "command", "compiler", "console", "terminal", "eoc", "objectionary", "oop"],
-  "author": "Yegor Bugayenko <yegor256@gmail.com> (https://www.yegor256.com/)",
+  "keywords": [
+    "cli",
+    "command",
+    "compiler",
+    "console",
+    "terminal",
+    "eoc",
+    "objectionary",
+    "oop"
+  ],
   "main": "eoc",
   "bin": {
     "eoc": "./src/eoc.js"
@@ -25,7 +33,7 @@
     "grunt-contrib-clean": "2.0.0",
     "grunt-eslint": "21.0.0",
     "grunt-mocha-cli": "7.0.0",
-    "mocha": "10.0.0"
+    "mocha": "^10.0.0"
   },
   "scripts": {
     "test": "mocha --timeout 120000"
