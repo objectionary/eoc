@@ -70,7 +70,15 @@ module.exports = function mvnwSync(args) {
   ]);
   const cmd = bin + ' ' + params.join(' ');
   console.debug('+ %s', cmd);
-  const result = spawnSync(bin, params, {cwd: home, stdio: 'inherit'});
+  const result = spawnSync(
+    bin + (process.platform == 'win32' ? '.cmd' : ''),
+    params,
+    {
+      cwd: home,
+      stdio: 'inherit',
+      shell: process.platform == 'win32' ? 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe' : undefined 
+    }
+  );
   if (result.status != 0) {
     throw new Error('The command "' + cmd + '" exited with #' + result.status + ' code');
   }
