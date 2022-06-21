@@ -33,6 +33,7 @@ const mvnwSync = require('../mvnw');
 module.exports = function assemble(opts) {
   mvnwSync([
     'eo:assemble',
+    opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,

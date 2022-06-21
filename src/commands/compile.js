@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function compile(opts) {
   mvnwSync([
     'compiler:compile',
+    opts.verbose ? '' : '--quiet',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
     `-Deo.targetDir=${path.resolve(opts.target)}`,

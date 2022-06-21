@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function link(opts) {
   mvnwSync([
     'jar:jar',
+    opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);
 };

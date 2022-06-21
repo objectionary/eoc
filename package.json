@@ -13,6 +13,7 @@
     "eoc": "./src/eoc.js"
   },
   "dependencies": {
+    "colors": "1.4.0",
     "commander": "9.2.0",
     "fast-xml-parser": "4.0.0",
     "xmlhttprequest": "1.8.0"

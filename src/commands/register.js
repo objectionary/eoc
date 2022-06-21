@@ -33,9 +33,11 @@ const path = require('path');
 module.exports = function register(opts) {
   mvnwSync([
     'eo:register',
+    opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
     `-Deo.foreignFormat=csv`,
   ]);
+  console.info();
 };

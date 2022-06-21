@@ -23,15 +23,52 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
-const path = require('path');
+const safe = require('colors/safe');
+const util = require('node:util');
+
+const levels = {
+  'trace': false,
+  'debug': false,
+  'info': true,
+  'warn': true,
+  'error': true,
+};
+
+const colors = {
+  'trace': 'gray',
+  'debug': 'gray',
+  'info': 'black',
+  'warn': 'orange',
+  'error': 'red',
+};
+
+for (const level in levels) {
+  if (levels.hasOwnProperty(level)) {
+    const before = console[level];
+    const lvl = level;
+    console[level] = function(...args) {
+      if (!levels[lvl]) {
+        return;
+      }
+      before.call(
+        before,
+        safe[colors[lvl]](util.format(...args))
+      );
+    };
+  }
+}
 
 /**
- * Deletes all temporary files.
- * @param {Hash} opts - All options
+ * Enable this particular logging level.
+ * @param {String} level - The level to enable
  */
-module.exports = function clean(opts) {
-  const home = path.resolve(opts.target);
-  fs.rmSync(home, {recursive: true, force: true});
-  console.debug('The directory %s deleted', home);
+module.exports.enable = function enable(level) {
+  for (const key in levels) {
+    if (levels.hasOwnProperty(level)) {
+      levels[key] = true;
+      if (key === level) {
+        break;
+      }
+    }
+  }
 };

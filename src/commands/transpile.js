@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function transpile(opts) {
   mvnwSync([
     'eo:transpile',
+    opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,

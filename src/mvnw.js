@@ -46,9 +46,9 @@ function latest() {
     }
     const xml = new XMLParser().parse(xhr.responseText);
     version = xml.metadata.versioning.release;
-    console.log('The latest version of ' + repo + ' at ' + url + ' is ' + version);
+    console.debug('The latest version of %s at %s is %s', repo, url, version);
   }
-  console.log('Current version of ' + repo + ' is ' + version);
+  console.debug('Current version of %s is %s', repo, version);
   return version;
 }
 
@@ -59,7 +59,9 @@ function latest() {
 module.exports = function mvnwSync(args) {
   const home = path.resolve(__dirname, '../mvnw');
   const bin = path.resolve(home, 'mvnw');
-  const params = args.concat([
+  const params = args.filter(function(t) {
+    return t != '';
+  }).concat([
     '-Deo.version=' + latest(),
     '--errors',
     '--batch-mode',
@@ -67,7 +69,7 @@ module.exports = function mvnwSync(args) {
     '--fail-fast',
   ]);
   const cmd = bin + ' ' + params.join(' ');
-  console.log('+ ' + cmd);
+  console.debug('+ %s', cmd);
   const result = spawnSync(bin, params, {cwd: home, stdio: 'inherit'});
   if (result.status != 0) {
     throw new Error('The command "' + cmd + '" exited with #' + result.status + ' code');

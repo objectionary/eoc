@@ -23,9 +23,8 @@
  * SOFTWARE.
  */
 
-const {Command} = require('commander');
-const program = new Command();
-
+const {program} = require('commander');
+const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
 const assemble = require('./commands/assemble');
@@ -36,6 +35,11 @@ const link = require('./commands/link');
 const dataize = require('./commands/dataize');
 const test = require('./commands/test');
 
+if (process.argv.includes('--verbose')) {
+  tinted.enable('debug');
+  console.debug('Debug output is turned ON');
+}
+
 program
   .name('eoc')
   .description('EO command-line toolkit')
@@ -44,7 +48,8 @@ program
 program
   .option('-s, --sources <path>', 'directory with .EO sources', '.')
   .option('-t, --target <path>', 'directory with all generated files', '.eoc')
-  .option('--alone', 'just run a single command without dependencies');
+  .option('--alone', 'just run a single command without dependencies')
+  .option('--verbose', 'print debug messages and full output of child processes');
 
 program.command('audit')
   .description('inspects all packages and reports their status')
@@ -135,6 +140,7 @@ program.command('test')
 try {
   program.parse(process.argv);
 } catch (e) {
-  console.log('eoc failed: "' + e.message + '"');
+  console.error(e.message);
+  console.debug(e.stack);
   process.exit(1);
 }
