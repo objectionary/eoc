@@ -72,11 +72,17 @@ module.exports = function mvnwSync(args) {
   console.debug('+ %s', cmd);
   const result = spawnSync(
     bin,
-    params.map(p => (process.platform == "win32") ? `"${p}"` : p),
+    params.map((p) => (process.platform == 'win32') ? `"${p}"` : p),
     {
       cwd: home,
       stdio: 'inherit',
-      shell: process.platform == 'win32' ? 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe' : undefined 
+      shell: (
+        process.platform == 'win32'
+        ?
+        'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe'
+        :
+        undefined
+      ),
     }
   );
   if (result.status != 0) {
