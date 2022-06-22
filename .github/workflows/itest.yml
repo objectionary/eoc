@@ -24,4 +24,6 @@ jobs:
         java-version: ${{ matrix.java }}
     - run: npm install
     - run: cd itest && node ../src/eoc.js dataize program
+    - run: cd itest && node ../src/eoc.js --alone dataize program
+    - run: cd itest && node ../src/eoc.js clean
     - run: cd itest && node ../src/eoc.js test
