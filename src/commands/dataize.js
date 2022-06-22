@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function dataize(obj, opts) {
   spawn(
     `java`,
+    '-Dfile.encoding=UTF-8',
     ['-jar', path.resolve(opts.target, 'eoc.jar'), obj],
     {stdio: 'inherit'}
   );
