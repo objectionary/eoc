@@ -28,6 +28,8 @@ $ eoc dataize hello
 
 That's it.
 
+## Commands
+
 You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post](https://www.yegor256.com/2021/10/21/objectionary.html)):
 
