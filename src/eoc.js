@@ -50,6 +50,7 @@ program
   .option('-s, --sources <path>', 'directory with .EO sources', '.')
   .option('-t, --target <path>', 'directory with all generated files', '.eoc')
   .option('--alone', 'just run a single command without dependencies')
+  .option('--no-color', 'disable colorization of console messages')
   .option('--verbose', 'print debug messages and full output of child processes');
 
 program.command('audit')
