@@ -71,7 +71,7 @@ module.exports = function mvnwSync(args) {
   console.debug('+ %s', cmd);
   const result = spawnSync(
     bin,
-    params.map((p) => (process.platform == 'win32') ? `"${p}"` : p),
+    process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
     {
       cwd: home,
       stdio: 'inherit',

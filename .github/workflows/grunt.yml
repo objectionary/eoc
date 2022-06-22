@@ -7,8 +7,6 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    env:
-      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
