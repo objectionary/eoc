@@ -33,10 +33,9 @@ module.exports = function assemble(opts) {
   mvnwSync([
     'eo:assemble',
     opts.verbose ? '' : '--quiet',
+    opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
-    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
-    `-Deo.foreignFormat=csv`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
   ]);

@@ -23,12 +23,40 @@
  */
 
 const assert = require('assert');
-const {runSync} = require('../helpers');
+const fs = require('fs');
+const path = require('path');
+const {runSync, assertFilesExist} = require('../helpers');
 
-describe('audit', function() {
-  it('audits all packages', function(done) {
-    const stdout = runSync(['audit']);
-    assert(stdout.includes('Apache Maven'), stdout);
+describe('foreign', function() {
+  it('inspects foreign objects and prints a report', function(done) {
+    home = path.resolve('temp/test-foreign/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'src/simple.eo'),
+      [
+        '[args...] > app',
+        '  QQ.io.stdout "Hello, world!" > @',
+      ].join('\n')
+    );
+    runSync([
+      'assemble',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
+    ]);
+    const stdout = runSync([
+      'foreign',
+      '--verbose',
+      '-t', path.resolve(home, 'target'),
+    ]);
+    assertFilesExist(
+      stdout, home,
+      [
+        'target/eo-foreign.json',
+      ]
+    );
+    assert(stdout.includes('objects in'), stdout);
     done();
   });
 });

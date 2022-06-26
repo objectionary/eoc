@@ -44,6 +44,7 @@ describe('dataize', function() {
     );
     const stdout = runSync([
       'dataize', 'foo.bar.app',
+      '--verbose',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

@@ -56,6 +56,8 @@ SOFTWARE.
         <version>${eo.version}</version>
         <configuration>
           <excludeSources>.eoc/**</excludeSources>
+          <foreign>${project.build.directory}/eo-foreign.json</foreign>
+          <foreignFormat>json</foreignFormat>
         </configuration>
       </plugin>
       <plugin>

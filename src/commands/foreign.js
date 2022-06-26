@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-const assert = require('assert');
-const {runSync} = require('../helpers');
+const path = require('path');
+const fs = require('fs');
 
-describe('audit', function() {
-  it('audits all packages', function(done) {
-    const stdout = runSync(['audit']);
-    assert(stdout.includes('Apache Maven'), stdout);
-    done();
+/**
+ * Inspects and prints the list of foreign objects.
+ * @param {Hash} opts - All options
+ */
+module.exports = function foreign(opts) {
+  const file = path.resolve(opts.target, 'eo-foreign.json');
+  const all = JSON.parse(fs.readFileSync(file, 'utf8'));
+  console.info('There are %d objects in %s:', all.length, file);
+  all.forEach((obj) => {
+    console.info('  %s', obj['id']);
   });
-});
+};

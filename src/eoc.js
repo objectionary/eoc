@@ -33,6 +33,7 @@ const transpile = require('./commands/transpile');
 const compile = require('./commands/compile');
 const link = require('./commands/link');
 const dataize = require('./commands/dataize');
+const foreign = require('./commands/foreign');
 const test = require('./commands/test');
 
 if (process.argv.includes('--verbose')) {
@@ -51,12 +52,19 @@ program
   .option('-t, --target <path>', 'directory with all generated files', '.eoc')
   .option('--alone', 'just run a single command without dependencies')
   .option('--no-color', 'disable colorization of console messages')
+  .option('--track-optimization-steps', 'save intermediate XMIR files')
   .option('--verbose', 'print debug messages and full output of child processes');
 
 program.command('audit')
   .description('inspects all packages and reports their status')
   .action((str, opts) => {
     audit(program.opts());
+  });
+
+program.command('foreign')
+  .description('inspects and prints the list of foreign objects')
+  .action((str, opts) => {
+    foreign(program.opts());
   });
 
 program.command('clean')

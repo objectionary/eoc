@@ -44,6 +44,7 @@ You can also do many other things with `eoc` commands
 There are also commands that help manipulate with XMIR and EO sources (some of them are not implemented as of yet):
 
   * `audit` inspects all packages and report their status
+  * `foreign` inspects all objects found in the program after `assemble` step
   * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
   * <del>`demu` removes `cage` and `memory` objects</del>
   * <del>`dejump` removes `goto` objects</del>

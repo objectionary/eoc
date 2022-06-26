@@ -56,5 +56,11 @@ module.exports.assertFilesExist = function assertFilesExist(stdout, home, paths)
   const path = require('path');
   const assert = require('assert');
   const fs = require('fs');
-  paths.forEach((p) => assert(fs.existsSync(path.resolve(home, p)), stdout));
+  paths.forEach((p) => {
+    const abs = path.resolve(home, p);
+    assert(
+      fs.existsSync(abs),
+      'File ' + abs +' is absent:\n' + stdout
+    );
+  });
 };

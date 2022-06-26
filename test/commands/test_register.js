@@ -34,12 +34,15 @@ describe('register', function() {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
-      'register', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'register',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/eo-foreign.csv',
+        'target/eo-foreign.json',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

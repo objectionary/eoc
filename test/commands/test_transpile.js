@@ -33,7 +33,10 @@ describe('transpile', function() {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
-      'transpile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'transpile',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,

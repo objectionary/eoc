@@ -36,8 +36,6 @@ module.exports = function transpile(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,
-    `-Deo.foreign=${path.resolve(opts.target, 'eo-foreign.csv')}`,
-    `-Deo.foreignFormat=csv`,
   ]);
   console.info('Java sources generated in %s', sources);
 };

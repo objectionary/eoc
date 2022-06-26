@@ -43,7 +43,10 @@ describe('link', function() {
       ].join('\n')
     );
     const stdout = runSync([
-      'link', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'link',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,

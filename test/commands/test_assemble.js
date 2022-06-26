@@ -34,12 +34,16 @@ describe('assemble', function() {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
-      'assemble', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'assemble',
+      '--verbose',
+      '--track-optimization-steps',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/eo-foreign.csv',
+        'target/eo-foreign.json',
         'target/01-parse/simple.xmir',
         'target/02-steps/simple',
         'target/03-optimize/simple.xmir',
