@@ -8,7 +8,7 @@ and [Java SE](https://www.oracle.com/java/technologies/downloads/).
 Then, you install [eolang](https://www.npmjs.com/package/eolang) package:
 
 ```
-$ npm install eolang
+$ npm install -g eolang
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
