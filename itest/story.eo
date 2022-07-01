@@ -25,5 +25,5 @@
     "Hello, Mr. #%d!\n"
     as-int.
       times.
-        random
+        QQ.math.random
         100.0
