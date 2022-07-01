@@ -24,6 +24,7 @@
   QQ.txt.sprintf > @
     "Hello, Mr. #%d!\n"
     as-int.
-      times.
-        QQ.math.random
-        100.0
+      QQ.math.number
+        times.
+          QQ.math.random
+          100.0
