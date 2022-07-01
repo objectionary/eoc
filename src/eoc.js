@@ -44,7 +44,7 @@ if (process.argv.includes('--verbose')) {
 
 program
   .name('eoc')
-  .description('EO command-line toolkit')
+  .description('EO command-line toolkit (' + require('./version') + ')')
   .version(require('./version'));
 
 program
