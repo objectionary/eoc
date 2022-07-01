@@ -28,6 +28,6 @@ const mvnwSync = require('../mvnw');
  * Command to audit all packages.
  * @param {Hash} opts - All options
  */
-module.exports = function audit(opts) {
+module.exports = function(opts) {
   mvnwSync(['--version']);
 };

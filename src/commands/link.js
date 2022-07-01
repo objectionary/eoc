@@ -29,7 +29,7 @@ const path = require('path');
  * Command to link binaries into a single executable binary.
  * @param {Hash} opts - All options
  */
-module.exports = function link(opts) {
+module.exports = function(opts) {
   mvnwSync([
     'jar:jar',
     opts.verbose ? '' : '--quiet',

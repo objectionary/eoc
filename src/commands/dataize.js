@@ -30,7 +30,7 @@ const path = require('path');
  * @param {String} obj - Name of object to dataize
  * @param {Hash} opts - All options
  */
-module.exports = function dataize(obj, opts) {
+module.exports = function(obj, opts) {
   spawn(
     `java`,
     [

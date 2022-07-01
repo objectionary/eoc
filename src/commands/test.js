@@ -29,7 +29,7 @@ const path = require('path');
  * Command to run all available unit tests.
  * @param {Hash} opts - All options
  */
-module.exports = function test(opts) {
+module.exports = function(opts) {
   mvnwSync([
     'surefire:test',
     `-Deo.targetDir=${path.resolve(opts.target)}`,

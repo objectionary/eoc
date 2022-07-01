@@ -29,7 +29,7 @@ const fs = require('fs');
  * Inspects and prints the list of foreign objects.
  * @param {Hash} opts - All options
  */
-module.exports = function foreign(opts) {
+module.exports = function(opts) {
   const file = path.resolve(opts.target, 'eo-foreign.json');
   const all = JSON.parse(fs.readFileSync(file, 'utf8'));
   console.info('There are %d objects in %s:', all.length, file);

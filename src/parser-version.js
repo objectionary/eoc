@@ -22,22 +22,29 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
-const path = require('path');
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+const {XMLParser} = require('fast-xml-parser');
+
+let version = '';
 
 /**
- * Command to compile target language into binaries.
- * @param {Hash} opts - All options
+ * Load the latest version from GitHub releases.
+ * @return {String} Latest version, for example '0.23.1'
  */
-module.exports = function(opts) {
-  const target = path.resolve(opts.target);
-  mvnwSync([
-    'compiler:compile',
-    opts.verbose ? '' : '--quiet',
-    `-Dmaven.compiler.source=1.8`,
-    `-Dmaven.compiler.target=1.8`,
-    `-Deo.targetDir=${target}`,
-    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
-  ]);
-  console.info('Java .class files compiled into %s', target);
+module.exports = function() {
+  const repo = 'org/eolang/eo-maven-plugin';
+  if (version === '') {
+    const url = 'https://repo.maven.apache.org/maven2/' + repo + '/maven-metadata.xml';
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.send(null);
+    if (xhr.status != 200) {
+      throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
+    }
+    const xml = new XMLParser().parse(xhr.responseText);
+    version = xml.metadata.versioning.release;
+    console.debug('The latest version of %s at %s is %s', repo, url, version);
+  }
+  console.debug('Current version of %s is %s', repo, version);
+  return version;
 };

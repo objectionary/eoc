@@ -24,14 +24,16 @@
 
 const path = require('path');
 const mvnwSync = require('../mvnw');
+const parserVersion = require('../parser-version');
 
 /**
  * Command to assemble .XMIR files.
  * @param {Hash} opts - All options
  */
-module.exports = function assemble(opts) {
+module.exports = function(opts) {
   mvnwSync([
     'eo:assemble',
+    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
     opts.hash ? '-Deo.hash=' + opts.hash : '',

@@ -24,44 +24,17 @@
 
 const path = require('path');
 const {spawnSync} = require('child_process');
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-const {XMLParser} = require('fast-xml-parser');
-
-let version = '';
-
-/**
- * Load the latest version from GitHub releases.
- * @return {String} Latest version, for example '0.23.1'
- */
-function latest() {
-  const repo = 'org/eolang/eo-maven-plugin';
-  if (version === '') {
-    const url = 'https://repo.maven.apache.org/maven2/' + repo + '/maven-metadata.xml';
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url, false);
-    xhr.send(null);
-    if (xhr.status != 200) {
-      throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
-    }
-    const xml = new XMLParser().parse(xhr.responseText);
-    version = xml.metadata.versioning.release;
-    console.debug('The latest version of %s at %s is %s', repo, url, version);
-  }
-  console.debug('Current version of %s is %s', repo, version);
-  return version;
-}
 
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  */
-module.exports = function mvnwSync(args) {
+module.exports = function(args) {
   const home = path.resolve(__dirname, '../mvnw');
   const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
   const params = args.filter(function(t) {
     return t != '';
   }).concat([
-    '-Deo.version=' + latest(),
     '--errors',
     '--batch-mode',
     '--update-snapshots',

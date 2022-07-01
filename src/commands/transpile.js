@@ -24,15 +24,17 @@
 
 const mvnwSync = require('../mvnw');
 const path = require('path');
+const parserVersion = require('../parser-version');
 
 /**
  * Command to transpile XMIR files into target language.
  * @param {Hash} opts - All options
  */
-module.exports = function transpile(opts) {
+module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   mvnwSync([
     'eo:transpile',
+    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,

@@ -51,6 +51,7 @@ program
   .option('-s, --sources <path>', 'directory with .EO sources', '.')
   .option('-t, --target <path>', 'directory with all generated files', '.eoc')
   .option('--hash <hex>', 'hash in objectionary/home to compile against')
+  .option('--parser <version>', 'set the version of parser to use')
   .option('--alone', 'just run a single command without dependencies')
   .option('--no-color', 'disable colorization of console messages')
   .option('--track-optimization-steps', 'save intermediate XMIR files')

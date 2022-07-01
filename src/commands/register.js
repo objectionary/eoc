@@ -24,15 +24,17 @@
 
 const mvnwSync = require('../mvnw');
 const path = require('path');
+const parserVersion = require('../parser-version');
 
 /**
  * Command to register .EO sources.
  * @param {Hash} opts - All options
  */
-module.exports = function register(opts) {
+module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
   mvnwSync([
     'eo:register',
+    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,

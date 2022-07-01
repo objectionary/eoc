@@ -29,7 +29,7 @@ const path = require('path');
  * Deletes all temporary files.
  * @param {Hash} opts - All options
  */
-module.exports = function clean(opts) {
+module.exports = function(opts) {
   const home = path.resolve(opts.target);
   fs.rmSync(home, {recursive: true, force: true});
   console.debug('The directory %s deleted', home);
