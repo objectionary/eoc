@@ -34,6 +34,7 @@ module.exports = function assemble(opts) {
     'eo:assemble',
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
+    opts.hash ? '-Deo.hash=' + opts.hash : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
