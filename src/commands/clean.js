@@ -32,5 +32,5 @@ const path = require('path');
 module.exports = function(opts) {
   const home = path.resolve(opts.target);
   fs.rmSync(home, {recursive: true, force: true});
-  console.debug('The directory %s deleted', home);
+  console.info('The directory %s deleted', home);
 };
