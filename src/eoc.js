@@ -58,13 +58,13 @@ program
   .option('--verbose', 'print debug messages and full output of child processes');
 
 program.command('audit')
-  .description('inspects all packages and reports their status')
+  .description('inspect all packages and report their status')
   .action((str, opts) => {
     audit(program.opts());
   });
 
 program.command('foreign')
-  .description('inspects and prints the list of foreign objects')
+  .description('inspect and print the list of foreign objects')
   .action((str, opts) => {
     foreign(program.opts());
   });
@@ -91,7 +91,7 @@ program.command('assemble')
   });
 
 program.command('transpile')
-  .description('converts EO files into target language')
+  .description('convert EO files into target language')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts());
@@ -101,7 +101,7 @@ program.command('transpile')
   });
 
 program.command('compile')
-  .description('compiles target language sources into binaries')
+  .description('compile target language sources into binaries')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts());
