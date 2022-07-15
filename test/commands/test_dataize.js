@@ -37,18 +37,20 @@ describe('dataize', function() {
       [
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
+        '+alias org.eolang.txt.sprintf',
         '',
         '[args...] > app',
-        '  stdout "Hello, world!" > @',
+        '  stdout > @',
+        '    sprintf "Hello, %s!" (args.at 0)',
       ].join('\n')
     );
     const stdout = runSync([
-      'dataize', 'foo.bar.app',
+      'dataize', 'foo.bar.app', 'Jeff',
       '--verbose',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes('Hello, world!'), stdout);
+    assert(stdout.includes('Hello, Jeff!'), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });

@@ -133,7 +133,7 @@ program.command('dataize')
       compile(program.opts());
       link(program.opts());
     }
-    dataize(program.args[1], program.opts());
+    dataize(program.args[1], program.args.slice(2), program.opts());
   });
 
 program.command('test')

@@ -28,15 +28,17 @@ const path = require('path');
 /**
  * Runs the single executable binary.
  * @param {String} obj - Name of object to dataize
+ * @param {Array} args - Arguments
  * @param {Hash} opts - All options
  */
-module.exports = function(obj, opts) {
+module.exports = function(obj, args, opts) {
   spawn(
     `java`,
     [
       '-Dfile.encoding=UTF-8',
       '-jar', path.resolve(opts.target, 'eoc.jar'),
       obj,
+      ...args
     ],
     {stdio: 'inherit'}
   );
