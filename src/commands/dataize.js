@@ -38,7 +38,7 @@ module.exports = function(obj, args, opts) {
       '-Dfile.encoding=UTF-8',
       '-jar', path.resolve(opts.target, 'eoc.jar'),
       obj,
-      ...args
+      ...args,
     ],
     {stdio: 'inherit'}
   );
