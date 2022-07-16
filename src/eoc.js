@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-const {program} = require('commander');
+const {program, Option} = require('commander');
 const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
@@ -55,8 +55,7 @@ program
   .option('--alone', 'just run a single command without dependencies')
   .option('--no-color', 'disable colorization of console messages')
   .option('--track-optimization-steps', 'save intermediate XMIR files')
-  .option('--verbose', 'print debug messages and full output of child processes')
-  .option('--cached', 'delete ~/.eo directory');
+  .option('--verbose', 'print debug messages and full output of child processes');
 
 program.command('audit')
   .description('inspect all packages and report their status')
@@ -70,16 +69,19 @@ program.command('foreign')
     foreign(program.opts());
   });
 
-program.command('clean')
+program
+  .command('clean')
+  .option('--cached', 'delete ~/.eo directory')
   .description('delete all temporary files')
   .action((str, opts) => {
-    clean(program.opts());
+    clean({...str, ...program.opts()});
   });
 
 program.command('register')
   .description('register all visible EO source files')
   .action((str, opts) => {
-    register(program.opts());
+      console.log(program.opts());
+    // register(program.opts());
   });
 
 program.command('assemble')

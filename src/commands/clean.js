@@ -35,7 +35,10 @@ module.exports = function(opts) {
   fs.rmSync(home, {recursive: true, force: true});
   console.info('The directory %s deleted', home);
   if (opts.cached) {
-    fs.rmSync(path.join(os.homedir(), '.eo'), {recursive: true});
-    console.info('The directory ~/.eo was deleted');
+    const eo = path.join(os.homedir(), '.eo');
+    if (fs.existsSync(eo)) {
+      fs.rmSync(eo, {recursive: true});
+      console.info('The directory ~/.eo was deleted');
+    }
   }
 };
