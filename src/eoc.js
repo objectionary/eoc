@@ -55,7 +55,8 @@ program
   .option('--alone', 'just run a single command without dependencies')
   .option('--no-color', 'disable colorization of console messages')
   .option('--track-optimization-steps', 'save intermediate XMIR files')
-  .option('--verbose', 'print debug messages and full output of child processes');
+  .option('--verbose', 'print debug messages and full output of child processes')
+  .option('--cached', 'delete ~/.eo directory');
 
 program.command('audit')
   .description('inspect all packages and report their status')
@@ -71,7 +72,6 @@ program.command('foreign')
 
 program.command('clean')
   .description('delete all temporary files')
-  .option('--cached', 'delete ~/.eo directory')
   .action((str, opts) => {
     clean(program.opts());
   });
