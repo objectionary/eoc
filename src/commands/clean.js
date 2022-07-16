@@ -24,6 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 /**
  * Deletes all temporary files.
@@ -33,4 +34,8 @@ module.exports = function(opts) {
   const home = path.resolve(opts.target);
   fs.rmSync(home, {recursive: true, force: true});
   console.info('The directory %s deleted', home);
+  if (opts.cached) {
+    fs.rmSync(path.join(os.homedir(), '.eo'), {recursive: true});
+    console.info('The directory ~/.eo was deleted');
+  }
 };

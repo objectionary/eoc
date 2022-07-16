@@ -71,6 +71,7 @@ program.command('foreign')
 
 program.command('clean')
   .description('delete all temporary files')
+  .option('--cached', 'delete ~/.eo directory')
   .action((str, opts) => {
     clean(program.opts());
   });
