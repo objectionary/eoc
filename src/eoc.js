@@ -80,8 +80,7 @@ program
 program.command('register')
   .description('register all visible EO source files')
   .action((str, opts) => {
-      console.log(program.opts());
-    // register(program.opts());
+    register(program.opts());
   });
 
 program.command('assemble')
