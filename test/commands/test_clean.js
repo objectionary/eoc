@@ -40,7 +40,8 @@ describe('clean', function() {
     const stdout = runSync([
       'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'), '--cached',
     ]);
-    assert(!fs.existsSync(path.resolve(home, 'target')) && !fs.existsSync(eo), stdout);
+    assert(!fs.existsSync(path.resolve(home, 'target')), stdout);
+    assert(!fs.existsSync(eo), stdout);
     done();
   });
 });
