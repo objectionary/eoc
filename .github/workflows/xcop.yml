@@ -15,4 +15,4 @@ jobs:
       - uses: g4s8/xcop-action@master
         with:
           license: LICENSE.txt
-          files: '**/*.xml'
+          files: "**/*.xml"
