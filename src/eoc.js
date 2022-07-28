@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-const {program, Option} = require('commander');
+const {program} = require('commander');
 const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
@@ -76,7 +76,7 @@ program
   .action((str, opts) => {
     clean({
         cached: str.cached,
-        ...program.opts()
+        ...program.opts(),
     });
   });
 
