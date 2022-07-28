@@ -8,8 +8,6 @@
     "max-len": [ "error", { "code": 100 } ]
   },
   "parserOptions": {
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+    "ecmaVersion": 2019
   }
 }
