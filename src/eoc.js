@@ -69,10 +69,15 @@ program.command('foreign')
     foreign(program.opts());
   });
 
-program.command('clean')
+program
+  .command('clean')
+  .option('--cached', 'delete ~/.eo directory')
   .description('delete all temporary files')
   .action((str, opts) => {
-    clean(program.opts());
+    clean({
+        cached: str.cached,
+        ...program.opts(),
+    });
   });
 
 program.command('register')

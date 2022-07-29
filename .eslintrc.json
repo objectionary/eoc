@@ -6,5 +6,8 @@
   "rules": {
     "indent": "off",
     "max-len": [ "error", { "code": 100 } ]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019
   }
 }

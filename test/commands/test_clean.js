@@ -25,18 +25,23 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const {runSync} = require('../helpers');
 
 describe('clean', function() {
   it('deletes all temporary files', function(done) {
-    home = path.resolve('temp/test-clean/simple');
+    const home = path.resolve('temp/test-clean/simple');
+    const eo = path.join(os.homedir(), '.eo');
     fs.rmSync(home, {recursive: true, force: true});
+    fs.rmSync(eo, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.mkdirSync(eo, {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
-      'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'), '--cached',
     ]);
     assert(!fs.existsSync(path.resolve(home, 'target')), stdout);
+    assert(!fs.existsSync(eo), stdout);
     done();
   });
 });
