@@ -1,6 +1,13 @@
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="92px" />
 
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
+
 [![grunt](https://github.com/objectionary/eoc/actions/workflows/grunt.yml/badge.svg)](https://github.com/objectionary/eoc/actions/workflows/grunt.yml)
+[![PDD status](http://www.0pdd.com/svg?name=objectionary/eoc)](http://www.0pdd.com/p?name=objectionary/eoc)
+[![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
+![Lines of code](https://img.shields.io/tokei/lines/github/objectionary/eoc)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
 First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 and [Java SE](https://www.oracle.com/java/technologies/downloads/).
