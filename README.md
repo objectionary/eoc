@@ -45,8 +45,8 @@ You can also do many other things with `eoc` commands
   * `transpile` converts XMIR to target programming language (Java by default)
   * `compile` converts target language sources to binaries
   * `link` puts all binaries together into a single executable binary
-  * `dataize` executes the binary and dataizes a single object
-  * `test` executes all visible unit tests
+  * `dataize` dataizes a single object from the executable binary
+  * `test` dataizes all visible unit tests
 
 There are also commands that help manipulate with XMIR and EO sources (some of them are not implemented as of yet):
 
