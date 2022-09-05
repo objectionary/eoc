@@ -34,7 +34,7 @@ module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
   mvnwSync([
     'eo:register',
-    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,

@@ -39,7 +39,7 @@ module.exports = function(opts) {
   }
   mvnwSync([
     'eo:transpile',
-    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,

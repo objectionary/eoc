@@ -33,7 +33,7 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   mvnwSync([
     'eo:gmi',
-    '-Deo.version=' + (opts.parserVersion ? opts.parserVersion : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
     opts.gmi_xml ? '' : '-Deo.generateGmiXmlFiles',
     opts.gmi_xembly ? '' : '-Deo.generateXemblyFiles',
