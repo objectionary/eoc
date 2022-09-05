@@ -28,6 +28,7 @@ const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
 const assemble = require('./commands/assemble');
+const gmi = require('./commands/gmi');
 const register = require('./commands/register');
 const transpile = require('./commands/transpile');
 const compile = require('./commands/compile');
@@ -93,6 +94,20 @@ program.command('assemble')
       register(program.opts());
     }
     assemble(program.opts());
+  });
+
+program.command('gmi')
+  .description('generate GMI files from XMIR')
+  .option('--gmi-xml', 'generate .gmi.xml files')
+  .option('--gmi-xembly', 'generate .gmi.xe files')
+  .option('--gmi-graph', 'generate .gmi.graph files')
+  .option('--gmi-dot', 'generate .gmi.dot files')
+  .action((str, opts) => {
+    if (program.opts().alone == undefined) {
+      register(program.opts());
+      assemble(program.opts());
+    }
+    gmi(program.opts());
   });
 
 program.command('transpile')
