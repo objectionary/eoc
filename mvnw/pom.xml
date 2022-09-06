@@ -30,7 +30,7 @@ SOFTWARE.
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <eo.version>0.0.0</eo.version>
+    <eo.version>0.28.1</eo.version>
   </properties>
   <dependencies>
     <dependency>
