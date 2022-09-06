@@ -26,6 +26,15 @@ const path = require('path');
 const {spawnSync} = require('child_process');
 
 /**
+ * The shell to use (depending on operating system).
+ */
+function shell() {
+  if (process.platform == 'win32') {
+    return 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe';
+  }
+}
+
+/**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  */
@@ -48,13 +57,7 @@ module.exports = function(args) {
     {
       cwd: home,
       stdio: 'inherit',
-      shell: (
-        process.platform == 'win32'
-        ?
-        'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe'
-        :
-        undefined
-      ),
+      shell: shell(),
     }
   );
   if (result.status != 0) {
