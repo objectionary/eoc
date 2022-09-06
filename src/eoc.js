@@ -75,10 +75,7 @@ program
   .option('--cached', 'delete ~/.eo directory')
   .description('delete all temporary files')
   .action((str, opts) => {
-    clean({
-        cached: str.cached,
-        ...program.opts(),
-    });
+    clean({...program.opts(), ...str});
   });
 
 program.command('register')
@@ -107,7 +104,7 @@ program.command('gmi')
       register(program.opts());
       assemble(program.opts());
     }
-    gmi(program.opts());
+    gmi({...program.opts(), ...str});
   });
 
 program.command('transpile')
