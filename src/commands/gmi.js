@@ -35,10 +35,10 @@ module.exports = function(opts) {
     'eo:gmi',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
-    opts.gmi_xml ? '-Deo.generateGmiXmlFiles' : '',
-    opts.gmi_xembly ? '-Deo.generateXemblyFiles' : '',
-    opts.gmi_graph ? '-Deo.generateGraphFiles' : '',
-    opts.gmi_dot ? '-Deo.generateDotFiles' : '',
+    opts.gmiXml ? '-Deo.generateGmiXmlFiles' : '',
+    opts.gmiXembly ? '-Deo.generateXemblyFiles' : '',
+    opts.gmiGraph ? '-Deo.generateGraphFiles' : '',
+    opts.gmiDot ? '-Deo.generateDotFiles' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);
   console.info('GMI files generated in %s', path.resolve(opts.target));
