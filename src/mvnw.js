@@ -27,6 +27,7 @@ const {spawnSync} = require('child_process');
 
 /**
  * The shell to use (depending on operating system).
+ * @return {String} Path to shell or "undefined" if default one should be used
  */
 function shell() {
   if (process.platform == 'win32') {
