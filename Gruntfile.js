@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     },
     eslint: {
       options: {
-        configFile: '.eslintrc.json',
+        overrideConfigFile: '.eslintrc.json',
       },
       target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
     },
