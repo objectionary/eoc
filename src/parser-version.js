@@ -45,6 +45,6 @@ module.exports = function() {
     version = xml.metadata.versioning.release;
     console.debug('The latest version of %s at %s is %s', repo, url, version);
   }
-  console.debug('Current version of %s is %s', repo, version);
+  console.info('EO version is %s', version);
   return version;
 };
