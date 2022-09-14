@@ -37,19 +37,25 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];
-  if (opts.gmiXml) {
+  if (opts.include) {
+    argv.push('-Deo.gmiIncludes=' + opts.include);
+  }
+  if (opts.exclude) {
+    argv.push('-Deo.gmiExcludes=' + opts.exclude);
+  }
+  if (opts.xml) {
     argv.push('-Deo.generateGmiXmlFiles');
   }
-  if (opts.gmiXembly) {
+  if (opts.xembly) {
     argv.push('-Deo.generateGmiXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
   }
-  if (opts.gmiGraph) {
+  if (opts.graph) {
     argv.push('-Deo.generateGmiXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
     argv.push('-Deo.generateGraphFiles');
   }
-  if (opts.gmiDot) {
+  if (opts.dot) {
     argv.push('-Deo.generateGmiXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
     argv.push('-Deo.generateGraphFiles');

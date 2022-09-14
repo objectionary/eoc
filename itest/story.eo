@@ -26,5 +26,5 @@
     as-int.
       QQ.math.number
         times.
-          QQ.math.random
+          QQ.math.random.pseudo
           100.0

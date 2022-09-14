@@ -95,10 +95,12 @@ program.command('assemble')
 
 program.command('gmi')
   .description('generate GMI files from XMIR')
-  .option('--gmi-xml', 'generate .gmi.xml files')
-  .option('--gmi-xembly', 'generate .gmi.xe files')
-  .option('--gmi-graph', 'generate .gmi.graph files')
-  .option('--gmi-dot', 'generate .gmi.dot files')
+  .option('--xml', 'generate .gmi.xml files')
+  .option('--xembly', 'generate .gmi.xe files')
+  .option('--graph', 'generate .gmi.graph files')
+  .option('--dot', 'generate .gmi.dot files')
+  .option('--include <names>', 'generate GMI for these object names (using mask)')
+  .option('--exclude <names>', 'don\'t generate GMI for these objects')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts());

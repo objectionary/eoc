@@ -36,10 +36,8 @@ describe('gmi', function() {
     const stdout = runSync([
       'gmi',
       '--verbose',
-      '--gmi-xml',
-      '--gmi-xembly',
-      '--gmi-dot',
-      '--gmi-graph',
+      '--dot',
+      '--include=simple',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
