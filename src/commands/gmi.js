@@ -31,15 +31,30 @@ const parserVersion = require('../parser-version');
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  mvnwSync([
+  const argv = [
     'eo:gmi',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
-    opts.gmiXml ? '-Deo.generateGmiXmlFiles' : '',
-    opts.gmiXembly ? '-Deo.generateXemblyFiles' : '',
-    opts.gmiGraph ? '-Deo.generateGraphFiles' : '',
-    opts.gmiDot ? '-Deo.generateDotFiles' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
-  ]);
+  ];
+  if (opts.gmiXml) {
+    argv.push('-Deo.generateGmiXmlFiles');
+  }
+  if (opts.gmiXembly) {
+    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateXemblyFiles');
+  }
+  if (opts.gmiGraph) {
+    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateXemblyFiles');
+    argv.push('-Deo.generateGraphFiles');
+  }
+  if (opts.gmiDot) {
+    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateXemblyFiles');
+    argv.push('-Deo.generateGraphFiles');
+    argv.push('-Deo.generateDotFiles');
+  }
+  mvnwSync(argv);
   console.info('GMI files generated in %s', path.resolve(opts.target));
 };

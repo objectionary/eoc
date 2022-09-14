@@ -5,6 +5,7 @@
   "extends": "google",
   "rules": {
     "indent": "off",
+    "comma-dangle": "off",
     "max-len": [ "error", { "code": 100 } ]
   },
   "parserOptions": {
