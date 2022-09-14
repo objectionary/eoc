@@ -52,6 +52,7 @@ There are also commands that help manipulate with XMIR and EO sources (some of t
 
   * `audit` inspects all required packages and reports their status
   * `foreign` inspects all objects found in the program after `assemble` step
+  * `gmi` generates GMI from XMIR, further rederable as XML or [Dot](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29)
   * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
   * <del>`demu` removes `cage` and `memory` objects</del>
   * <del>`dejump` removes `goto` objects</del>
