@@ -24,6 +24,7 @@
 
 const mvnwSync = require('../mvnw');
 const path = require('path');
+const parserVersion = require('../parser-version');
 
 /**
  * Command to compile target language into binaries.
@@ -38,6 +39,7 @@ module.exports = function(opts) {
     `-Dmaven.compiler.target=1.8`,
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
   ]);
   console.info('Java .class files compiled into %s', target);
 };
