@@ -23,11 +23,13 @@
  */
 
 const mvnwSync = require('../mvnw');
+const parserVersion = require('../parser-version');
 
 /**
  * Command to audit all packages.
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
+  parserVersion();
   mvnwSync(['--version']);
 };
