@@ -37,9 +37,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];
-  if (opts.include) {
-    argv.push('-Deo.gmiIncludes=' + opts.include);
-  }
+  argv.push('-Deo.gmiIncludes=' + opts.include);
   if (opts.exclude) {
     argv.push('-Deo.gmiExcludes=' + opts.exclude);
   }
