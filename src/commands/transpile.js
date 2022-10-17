@@ -33,15 +33,6 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  const transpiled = path.resolve(opts.target, '06-transpile');
-  if (fs.existsSync(sources)) {
-    fs.rmSync(sources, {recursive: true, force: true});
-    console.info('Previously existed Java sources deleted in %s', sources);
-  }
-  if (fs.existsSync(transpiled)) {
-    fs.rmSync(transpiled, {recursive: true, force: true});
-    console.info('Transpiled objects cleaned up in %s', transpiled);
-  }
   mvnwSync([
     'eo:transpile',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
