@@ -47,7 +47,7 @@ describe('gmi', function() {
         'target/gmi/simple.gmi',
         'target/gmi/simple.gmi.xml',
         'target/gmi/simple.gmi.xe',
-        'target/gmi/simple.gmi.graph',
+        'target/gmi/simple.gmi.graph.xml',
         'target/gmi/simple.gmi.dot',
       ]
     );
