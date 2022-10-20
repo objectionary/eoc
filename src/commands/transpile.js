@@ -23,7 +23,6 @@
  */
 
 const mvnwSync = require('../mvnw');
-const fs = require('fs');
 const path = require('path');
 const parserVersion = require('../parser-version');
 
