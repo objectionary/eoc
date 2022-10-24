@@ -23,7 +23,6 @@
  */
 
 const mvnwSync = require('../mvnw');
-const fs = require('fs');
 const path = require('path');
 const parserVersion = require('../parser-version');
 
@@ -33,10 +32,6 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  if (fs.existsSync(sources)) {
-    fs.rmSync(sources, {recursive: true, force: true});
-    console.info('Previously existed Java sources deleted in %s', sources);
-  }
   mvnwSync([
     'eo:transpile',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
