@@ -38,15 +38,24 @@ describe('dataize', function() {
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
         '+alias org.eolang.txt.sprintf',
+        '+alias org.eolang.collections.list',
         '',
         '[args...] > app',
-        '  stdout > @',
-        '    sprintf "Hello, %s!" (args.at 0)',
+        '  seq > @',
+        '    reduced.',
+        '      list',
+        '        * 0 1 2 3 4 5 6 7 8 9 10 0 1 2 3 4 5 6 7 8 9 10 0 1 2 3 4 5 6 7 8 9 10',
+        '      TRUE',
+        '      [a x]',
+        '        TRUE > @',
+        '    stdout',
+        '      sprintf "Hello, %s!" (args.at 0)',
       ].join('\n')
     );
     const stdout = runSync([
       'dataize', 'foo.bar.app', 'Jeff',
       '--verbose',
+      '--stack=64M',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
