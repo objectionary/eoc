@@ -36,6 +36,7 @@ module.exports = function(obj, args, opts) {
     `java`,
     [
       '-Dfile.encoding=UTF-8',
+      `-Xss${opts.stack}`,
       '-jar', path.resolve(opts.target, 'eoc.jar'),
       obj,
       ...args,

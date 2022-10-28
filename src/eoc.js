@@ -144,6 +144,7 @@ program.command('link')
 
 program.command('dataize')
   .description('run the single executable binary and dataize an object')
+  .option('--stack <size>', 'change stack size', '1M')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts());
@@ -152,7 +153,7 @@ program.command('dataize')
       compile(program.opts());
       link(program.opts());
     }
-    dataize(program.args[1], program.args.slice(2), program.opts());
+    dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
   });
 
 program.command('test')
