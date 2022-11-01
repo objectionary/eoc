@@ -46,18 +46,37 @@ You can also do many other things with `eoc` commands
   * `compile` converts target language sources to binaries
   * `link` puts all binaries together into a single executable binary
   * `dataize` dataizes a single object from the executable binary
+    * `--stack=<size>` increases size of stack for recursive workflows in current thread(by default size = 1M, value range to set from 144K to 1G)
   * `test` dataizes all visible unit tests
+  * `clean` deletes all temporary files(for example .eoc )
+    * `--cached` deletes ~/.eo directory
 
 There are also commands that help manipulate with XMIR and EO sources (some of them are not implemented as of yet):
 
   * `audit` inspects all required packages and reports their status
   * `foreign` inspects all objects found in the program after `assemble` step
   * `gmi` generates GMI from XMIR, further rederable as XML or [Dot](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29)
+    * `--xml` generates .gmi.xml files
+    * `--xembly` generates .gmi.xe files
+    * `--graph` generates .gmi.graph files
+    * `--dot` generates .gmi.dot files
+    * `--include <names>` generates GMI for these object names, using mask(by default: '**')
+    * `--exclude <names>` doesn't generate GMI for these objects
   * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
   * <del>`demu` removes `cage` and `memory` objects</del>
   * <del>`dejump` removes `goto` objects</del>
   * <del>`infer` suggests object names where it's possible to infer them</del>
   * <del>`flatten` moves inner objects to upper level</del>
+
+There are also some global options(flags) for commands which provide some compilation and execution features.
+  * `--alone` just runs a single command without dependencies
+  * `--verbose` prints debug messages and full output of child processes
+  * `-s, --sources <path>` sets directory with .EO sources(by default: current directory)
+  * `-t, --target <path>` sets directory with all generated files(by default: .eoc)
+  * `--parser <version>` sets the version of parser to use
+  * `--hash <hex>` hash in objectionary/home to compile against
+  * `--no-color` disables colorization of console messages
+  * `--track-optimization-steps` saves intermediate XMIR files
 
 This command line toolkit simply integrates other tools available in
 [@objectionary](https://github.com/objectionary) GitHub organization.
