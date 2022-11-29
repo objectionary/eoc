@@ -24,6 +24,8 @@
 
 const path = require('path');
 const {spawnSync} = require('child_process');
+const {spawn} = require('child_process');
+const status = require('./status');
 
 /**
  * The shell to use (depending on operating system).
@@ -52,16 +54,20 @@ module.exports = function(args) {
   ]);
   const cmd = bin + ' ' + params.join(' ');
   console.debug('+ %s', cmd);
-  const result = spawnSync(
-    bin,
-    process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
-    {
-      cwd: home,
-      stdio: 'inherit',
-      shell: shell(),
+  const result = spawn(
+      bin,
+      process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
+      {
+        cwd: home,
+        stdio: 'inherit',
+        shell: shell(),
+      }
+    );
+  status.start();
+  result.on('close', code => {
+    if (code !== 0) {
+      throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
     }
-  );
-  if (result.status != 0) {
-    throw new Error('The command "' + cmd + '" exited with #' + result.status + ' code');
-  }
+    status.stop();
+  });
 };

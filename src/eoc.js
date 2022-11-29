@@ -78,12 +78,14 @@ program
     clean({...program.opts(), ...str});
   });
 
+//todo: logger
 program.command('register')
   .description('register all visible EO source files')
   .action((str, opts) => {
     register(program.opts());
   });
 
+//todo: logger
 program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
@@ -93,6 +95,7 @@ program.command('assemble')
     assemble(program.opts());
   });
 
+//todo: logger
 program.command('gmi')
   .description('generate GMI files from XMIR')
   .option('--xml', 'generate .gmi.xml files')
@@ -109,6 +112,7 @@ program.command('gmi')
     gmi({...program.opts(), ...str});
   });
 
+//todo: logger
 program.command('transpile')
   .description('convert EO files into target language')
   .action((str, opts) => {
@@ -119,6 +123,7 @@ program.command('transpile')
     transpile(program.opts());
   });
 
+//todo: logger
 program.command('compile')
   .description('compile target language sources into binaries')
   .action((str, opts) => {
@@ -130,6 +135,7 @@ program.command('compile')
     compile(program.opts());
   });
 
+//todo: logger
 program.command('link')
   .description('link together all binaries into a single executable binary')
   .action((str, opts) => {
