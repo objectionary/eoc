@@ -95,7 +95,6 @@ program.command('assemble')
     }
   });
 
-//todo: logger
 program.command('gmi')
   .description('generate GMI files from XMIR')
   .option('--xml', 'generate .gmi.xml files')
@@ -106,10 +105,12 @@ program.command('gmi')
   .option('--exclude <names>', 'don\'t generate GMI for these objects')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => gmi({...program.opts(), ...str}));
+    } else {
+      gmi({...program.opts(), ...str});
     }
-    gmi({...program.opts(), ...str});
   });
 
 //todo: logger
