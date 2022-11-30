@@ -63,7 +63,7 @@ module.exports = function(args) {
             shell: shell(),
           }
         );
-      status.start(args[0]);
+      status.start(args[0], params.find(element => element.includes("targetDir")).split("=")[1]);
       result.on('close', code => {
         if (code !== 0) {
           throw new Error('The command "' + cmd + '" exited with #' + code + ' code');

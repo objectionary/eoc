@@ -33,10 +33,14 @@ module.exports = {
 
 var running = false;
 var phase = "unknown";
+var beginning;
+var target;
 
-function start(stage){
+function start(stage, dir){
   running = true;
   phase = stage;
+  target = dir;
+  beginning = Date.now();
   var check = function(){
     if(running){
        print();
@@ -54,7 +58,7 @@ function stop(){
 function print(){
     readline.clearLine(process.stdout);
     readline.cursorTo(process.stdout, 0);
-    process.stdout.write("["+phase+"] Total number of compiled files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
+    process.stdout.write("[" +phase + "] Total number of compiled files " + count(target, 0) + ". Stage duration " + (Date.now() - beginning) + " ms");
 }
 
 function count(dir, curr){
