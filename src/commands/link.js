@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const path = require('path');
 const parserVersion = require('../parser-version');
 
@@ -32,7 +32,7 @@ const parserVersion = require('../parser-version');
  * @return {Promise} of link task
  */
 module.exports = function(opts) {
-  return mvnwSync([
+  return mvnw([
     'jar:jar',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,

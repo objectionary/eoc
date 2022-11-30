@@ -23,7 +23,7 @@
  */
 
 const path = require('path');
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const parserVersion = require('../parser-version');
 
 /**
@@ -32,7 +32,7 @@ const parserVersion = require('../parser-version');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  return mvnwSync([
+  return mvnw([
     'eo:assemble',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',

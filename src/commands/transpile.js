@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const path = require('path');
 const parserVersion = require('../parser-version');
 
@@ -33,7 +33,7 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  return mvnwSync([
+  return mvnw([
     'eo:transpile',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',

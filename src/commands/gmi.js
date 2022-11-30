@@ -23,7 +23,7 @@
  */
 
 const path = require('path');
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const parserVersion = require('../parser-version');
 
 /**
@@ -60,7 +60,7 @@ module.exports = function(opts) {
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
-  return mvnwSync(argv).then((r) => {
+  return mvnw(argv).then((r) => {
       console.info('GMI files generated in %s', path.resolve(opts.target));
       return r;
   });

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const path = require('path');
 
 /**
@@ -31,7 +31,7 @@ const path = require('path');
  * @return {Promise} of compile task
  */
 module.exports = function(opts) {
-  return mvnwSync([
+  return mvnw([
     'surefire:test',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);

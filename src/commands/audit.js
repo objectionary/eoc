@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const parserVersion = require('../parser-version');
 
 /**
@@ -31,5 +31,5 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   parserVersion();
-  mvnwSync(['--version']);
+  mvnw(['--version']);
 };

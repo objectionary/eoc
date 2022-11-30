@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../mvnw');
+const mvnw = require('../mvnw');
 const path = require('path');
 const parserVersion = require('../parser-version');
 
@@ -33,7 +33,7 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
-  return mvnwSync([
+  return mvnw([
     'compiler:compile',
     opts.verbose ? '' : '--quiet',
     `-Dmaven.compiler.source=1.8`,
