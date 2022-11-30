@@ -31,11 +31,13 @@ const parserVersion = require('../parser-version');
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  mvnwSync([
+  return mvnwSync([
     'jar:jar',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
-  ]);
-  console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
+  ]).then(r => {
+     console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
+     return r;
+  })
 };

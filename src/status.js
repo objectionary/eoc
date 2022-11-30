@@ -36,11 +36,9 @@ var running = false;
 function start(){
   running = !running;
   var check = function(){
-    if(!running){
-    }
-    else {
-      print();
-      setTimeout(check, 100);
+    if(running){
+       print();
+       setTimeout(check, 100);
     }
   }
   check();

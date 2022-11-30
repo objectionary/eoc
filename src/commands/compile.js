@@ -32,7 +32,7 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
-  mvnwSync([
+  return mvnwSync([
     'compiler:compile',
     opts.verbose ? '' : '--quiet',
     `-Dmaven.compiler.source=1.8`,
@@ -40,6 +40,8 @@ module.exports = function(opts) {
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
-  ]);
-  console.info('Java .class files compiled into %s', target);
+  ]).then(r => {
+     console.info('Java .class files compiled into %s', target);
+     return r;
+  });
 };

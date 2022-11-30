@@ -30,7 +30,7 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  mvnwSync([
+  return mvnwSync([
     'surefire:test',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);

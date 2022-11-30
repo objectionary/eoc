@@ -59,6 +59,8 @@ module.exports = function(opts) {
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
-  mvnwSync(argv);
-  console.info('GMI files generated in %s', path.resolve(opts.target));
+  return mvnwSync(argv).then(r => {
+      console.info('GMI files generated in %s', path.resolve(opts.target));
+      return r;
+  });
 };

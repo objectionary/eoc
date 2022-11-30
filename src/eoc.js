@@ -78,7 +78,6 @@ program
     clean({...program.opts(), ...str});
   });
 
-//todo: logger
 program.command('register')
   .description('register all visible EO source files')
   .action((str, opts) => {
@@ -89,7 +88,8 @@ program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts()).then(r => assemble(program.opts()));
+      register(program.opts())
+      .then(r => assemble(program.opts()));
     } else {
       assemble(program.opts());
     }
@@ -113,40 +113,43 @@ program.command('gmi')
     }
   });
 
-//todo: logger
 program.command('transpile')
   .description('convert EO files into target language')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => transpile(program.opts()));
+    } else {
+      transpile(program.opts())
     }
-    transpile(program.opts());
   });
 
-//todo: logger
 program.command('compile')
   .description('compile target language sources into binaries')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
-      transpile(program.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => transpile(program.opts()))
+      .then(r => compile(program.opts()))
+    } else {
+      compile(program.opts());
     }
-    compile(program.opts());
   });
 
-//todo: logger
 program.command('link')
   .description('link together all binaries into a single executable binary')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
-      transpile(program.opts());
-      compile(program.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => transpile(program.opts()))
+      .then(r => compile(program.opts()))
+      .then(r => link(program.opts()))
+    } else {
+       link(program.opts());
     }
-    link(program.opts());
   });
 
 program.command('dataize')
@@ -154,26 +157,30 @@ program.command('dataize')
   .option('--stack <size>', 'change stack size', '1M')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
-      transpile(program.opts());
-      compile(program.opts());
-      link(progrdataizeam.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => transpile(program.opts()))
+      .then(r => compile(program.opts()))
+      .then(r => link(program.opts()))
+      .then(r => dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str}));
+    } else {
+      dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
     }
-    dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
   });
 
 program.command('test')
   .description('run all visible unit tests')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
-      assemble(program.opts());
-      transpile(program.opts());
-      compile(program.opts());
-      link(program.opts());
+      register(program.opts())
+      .then(r => assemble(program.opts()))
+      .then(r => transpile(program.opts()))
+      .then(r => compile(program.opts()))
+      .then(r => link(program.opts()))
+      .then(r => test(program.opts()))
+    } else {
+      test(program.opts());
     }
-    test(program.opts());
   });
 
 try {

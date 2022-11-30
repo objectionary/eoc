@@ -32,12 +32,14 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  mvnwSync([
+  return mvnwSync([
     'eo:transpile',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,
-  ]);
-  console.info('Java sources generated in %s', sources);
+  ]).then(r => {
+    console.info('Java sources generated in %s', sources);
+    return r;
+  });
 };
