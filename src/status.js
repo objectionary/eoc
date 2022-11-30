@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 const path = require('path');
 const fs = require('fs');
 const readline = require('readline');
@@ -58,19 +57,20 @@ function stop(){
 function print(){
     readline.clearLine(process.stdout);
     readline.cursorTo(process.stdout, 0);
-    process.stdout.write("[" +phase + "] Total number of compiled files " + count(target, 0) + ". Stage duration " + (Date.now() - beginning) + " ms");
-}
-
-function count(dir, curr){
-    if(fs.existsSync(dir)) {
-        for (const f of fs.readdirSync(dir)) {
-            next = path.join(dir, f);
-            if(fs.statSync(next).isDirectory()){
-               curr = count(next, curr);
-            } else {
-               curr++;
+    let duration = Date.now() - beginning;
+    function count(dir, curr){
+        if(fs.existsSync(dir)) {
+            for (const f of fs.readdirSync(dir)) {
+                next = path.join(dir, f);
+                if(fs.statSync(next).isDirectory()){
+                   curr = count(next, curr);
+                } else {
+                   curr++;
+                }
             }
         }
+        return curr;
     }
-    return curr;
+    process.stdout.write(`\x1b[33m[${phase}] ${duration} ms. Total number of compiled files ${count(target, 0)}\x1b[0m`);
 }
+
