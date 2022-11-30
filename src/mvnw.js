@@ -23,7 +23,6 @@
  */
 
 const path = require('path');
-const {spawnSync} = require('child_process');
 const {spawn} = require('child_process');
 const status = require('./status');
 
@@ -43,38 +42,34 @@ function shell() {
  */
 module.exports = function(args) {
   return new Promise((resolve, reject) => {
-    res(args, resolve);
+      const home = path.resolve(__dirname, '../mvnw');
+      const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
+      const params = args.filter(function(t) {
+        return t != '';
+      }).concat([
+        '--errors',
+        '--batch-mode',
+        '--update-snapshots',
+        '--fail-fast',
+      ]);
+      const cmd = bin + ' ' + params.join(' ');
+      console.debug('+ %s', cmd);
+      const result = spawn(
+          bin,
+          process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
+          {
+            cwd: home,
+            stdio: 'inherit',
+            shell: shell(),
+          }
+        );
+      status.start(args[0]);
+      result.on('close', code => {
+        if (code !== 0) {
+          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+        }
+        status.stop();
+        resolve(args);
+      });
   });
 };
-
-function res(args, resolve){
-  const home = path.resolve(__dirname, '../mvnw');
-  const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
-  const params = args.filter(function(t) {
-    return t != '';
-  }).concat([
-    '--errors',
-    '--batch-mode',
-    '--update-snapshots',
-    '--fail-fast',
-  ]);
-  const cmd = bin + ' ' + params.join(' ');
-  console.debug('+ %s', cmd);
-  const result = spawn(
-      bin,
-      process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
-      {
-        cwd: home,
-        stdio: 'inherit',
-        shell: shell(),
-      }
-    );
-  status.start();
-  result.on('close', code => {
-    if (code !== 0) {
-      throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
-    }
-    status.stop();
-    resolve(args);
-  });
-}

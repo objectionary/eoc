@@ -32,13 +32,15 @@ module.exports = {
 };
 
 var running = false;
+var phase = "unknown";
 
-function start(){
+function start(stage){
   running = true;
+  phase = stage;
   var check = function(){
     if(running){
        print();
-       setTimeout(check, 60);
+       setTimeout(check, 200);
     }
   }
   check();
@@ -52,21 +54,19 @@ function stop(){
 function print(){
     readline.clearLine(process.stdout);
     readline.cursorTo(process.stdout, 0);
-    process.stdout.write("[REGISTRATION] Number of files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
+    process.stdout.write("["+phase+"] Total number of compiled files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
 }
 
 function count(dir, curr){
-    var res = curr;
-    if(!fs.existsSync(dir)) {
-        return 0;
-    }
-    for (const f of fs.readdirSync(dir)) {
-        next = path.join(dir, f);
-        if(fs.statSync(next).isDirectory()){
-            res = count(next, res);
-        } else {
-           res++;
+    if(fs.existsSync(dir)) {
+        for (const f of fs.readdirSync(dir)) {
+            next = path.join(dir, f);
+            if(fs.statSync(next).isDirectory()){
+               curr = count(next, curr);
+            } else {
+               curr++;
+            }
         }
     }
-    return res;
+    return curr;
 }
