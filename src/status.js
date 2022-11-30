@@ -34,18 +34,18 @@ module.exports = {
 var running = false;
 
 function start(){
-  running = !running;
+  running = true;
   var check = function(){
     if(running){
        print();
-       setTimeout(check, 100);
+       setTimeout(check, 60);
     }
   }
   check();
 }
 
 function stop(){
-  running = !running;
+  running = false;
   process.stdout.write("\n");
 }
 
@@ -55,20 +55,18 @@ function print(){
     process.stdout.write("[REGISTRATION] Number of files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
 }
 
-function print_status(dir){
-    console.log(count(dir, 0))
-}
-
 function count(dir, curr){
     var res = curr;
-    var list = fs.readdirSync(dir);
-    list.forEach(f => {
-      next = path.join(dir, f);
-                if(fs.statSync(next).isDirectory()){
-                  res = res + count(next);
-                } else {
-                  res = res + 1;
-                }
-    });
+    if(!fs.existsSync(dir)) {
+        return 0;
+    }
+    for (const f of fs.readdirSync(dir)) {
+        next = path.join(dir, f);
+        if(fs.statSync(next).isDirectory()){
+            res = count(next, res);
+        } else {
+           res++;
+        }
+    }
     return res;
 }
