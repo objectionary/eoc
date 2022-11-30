@@ -24,6 +24,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const readline = require('readline');
 
 module.exports = {
     start: start,
@@ -50,10 +51,9 @@ function stop(){
   process.stdout.write("\n");
 }
 
-
 function print(){
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
+    readline.clearLine(process.stdout);
+    readline.cursorTo(process.stdout, 0);
     process.stdout.write("[REGISTRATION] Number of files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
 }
 

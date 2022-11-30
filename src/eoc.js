@@ -85,14 +85,14 @@ program.command('register')
     register(program.opts());
   });
 
-//todo: logger
 program.command('assemble')
   .description('parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
-      register(program.opts());
+      register(program.opts()).then(r => assemble(program.opts()));
+    } else {
+      assemble(program.opts());
     }
-    assemble(program.opts());
   });
 
 //todo: logger

@@ -32,7 +32,7 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
-  mvnwSync([
+  return mvnwSync([
     'eo:register',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',

@@ -31,7 +31,7 @@ const parserVersion = require('../parser-version');
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  mvnwSync([
+  return mvnwSync([
     'eo:assemble',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
     opts.verbose ? '' : '--quiet',
@@ -41,6 +41,8 @@ module.exports = function(opts) {
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
-  ]);
-  console.info('EO program assembled in %s', path.resolve(opts.target));
+  ]).then(r => {
+     console.info('EO program assembled in %s', path.resolve(opts.target));
+     return r;
+  });
 };
