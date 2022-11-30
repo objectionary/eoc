@@ -157,7 +157,7 @@ program.command('dataize')
       assemble(program.opts());
       transpile(program.opts());
       compile(program.opts());
-      link(program.opts());
+      link(progrdataizeam.opts());
     }
     dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
   });

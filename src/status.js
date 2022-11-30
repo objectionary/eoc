@@ -47,13 +47,14 @@ function start(){
 
 function stop(){
   running = !running;
+  process.stdout.write("\n");
 }
 
 
 function print(){
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
-    process.stdout.write("Number of files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
+    process.stdout.write("[REGISTRATION] Number of files " + count('/Users/lombrozo/Workspace/EOlang/Projects/sum/.eoc', 0));
 }
 
 function print_status(dir){

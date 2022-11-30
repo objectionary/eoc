@@ -42,6 +42,12 @@ function shell() {
  * @param {Hash} args - All arguments to pass to it
  */
 module.exports = function(args) {
+  return new Promise((resolve, reject) => {
+    res(args, resolve);
+  });
+};
+
+function res(args, resolve){
   const home = path.resolve(__dirname, '../mvnw');
   const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
   const params = args.filter(function(t) {
@@ -69,5 +75,6 @@ module.exports = function(args) {
       throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
     }
     status.stop();
+    resolve(args);
   });
-};
+}
