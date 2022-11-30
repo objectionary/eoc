@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Generate GMI files from XMIR.
  * @param {Hash} opts - All options
+ * @return {Promise} of gmi task
  */
 module.exports = function(opts) {
   const argv = [
@@ -59,7 +60,7 @@ module.exports = function(opts) {
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
-  return mvnwSync(argv).then(r => {
+  return mvnwSync(argv).then((r) => {
       console.info('GMI files generated in %s', path.resolve(opts.target));
       return r;
   });

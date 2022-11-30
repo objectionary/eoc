@@ -31,47 +31,65 @@ module.exports = {
     stop: stop,
 };
 
-var running = false;
-var phase = "unknown";
-var beginning;
-var target;
+let running = false;
+let phase = 'unknown';
+let beginning;
+let target;
 
-function start(stage, dir){
+/**
+ * Starts mvnw execution status detection.
+ * @param {String} stage - A maven stage like assemble, compile, transpile, etc.
+ * @param {String} dir - Directory where to check progress - ./.eoc
+ */
+function start(stage, dir) {
   running = true;
   phase = stage;
   target = dir;
   beginning = Date.now();
-  var check = function(){
-    if(running){
+  const check = function() {
+    if (running) {
        print();
        setTimeout(check, 200);
     }
-  }
+  };
   check();
 }
 
-function stop(){
+/**
+ * Stops mvnw execution status detection.
+ */
+function stop() {
   running = false;
-  process.stdout.write("\n");
+  process.stdout.write('\n');
 }
 
-function print(){
-    readline.clearLine(process.stdout);
-    readline.cursorTo(process.stdout, 0);
-    let duration = Date.now() - beginning;
-    function count(dir, curr){
-        if(fs.existsSync(dir)) {
-            for (const f of fs.readdirSync(dir)) {
-                next = path.join(dir, f);
-                if(fs.statSync(next).isDirectory()){
-                   curr = count(next, curr);
-                } else {
-                   curr++;
-                }
-            }
+/**
+ * Prints mvnw execution status.
+ */
+function print() {
+  readline.clearLine(process.stdout);
+  readline.cursorTo(process.stdout, 0);
+  const duration = Date.now() - beginning;
+  /**
+   * Recursively calculates number of files under a directory.
+   * @param {String} dir - Directory where to count.
+   * @param {Integer} curr - Current counter.
+   * @return {Integer} Total number files.
+   */
+  function count(dir, curr) {
+    if (fs.existsSync(dir)) {
+      for (const f of fs.readdirSync(dir)) {
+        next = path.join(dir, f);
+        if (fs.statSync(next).isDirectory()) {
+          curr = count(next, curr);
+        } else {
+          curr++;
         }
-        return curr;
+      }
     }
-    process.stdout.write(`\x1b[33m[${phase}] ${duration} ms. Total number of compiled files ${count(target, 0)}\x1b[0m`);
+    return curr;
+  }
+  process.stdout.write(
+    `\x1b[33m[${phase}] ${duration} ms. Total number of compiled files ${count(target, 0)}\x1b[0m`
+  );
 }
-

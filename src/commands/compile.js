@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Command to compile target language into binaries.
  * @param {Hash} opts - All options
+ * @return {Promise} of compile task
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
@@ -40,7 +41,7 @@ module.exports = function(opts) {
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
-  ]).then(r => {
+  ]).then((r) => {
      console.info('Java .class files compiled into %s', target);
      return r;
   });

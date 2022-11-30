@@ -28,6 +28,7 @@ const path = require('path');
 /**
  * Command to run all available unit tests.
  * @param {Hash} opts - All options
+ * @return {Promise} of compile task
  */
 module.exports = function(opts) {
   return mvnwSync([

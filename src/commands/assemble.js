@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Command to assemble .XMIR files.
  * @param {Hash} opts - All options
+ * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
   return mvnwSync([
@@ -41,7 +42,7 @@ module.exports = function(opts) {
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
-  ]).then(r => {
+  ]).then((r) => {
      console.info('EO program assembled in %s', path.resolve(opts.target));
      return r;
   });

@@ -39,6 +39,7 @@ function shell() {
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
+ * @return {Promise} of maven execution task
  */
 module.exports = function(args) {
   return new Promise((resolve, reject) => {
@@ -63,11 +64,11 @@ module.exports = function(args) {
             shell: shell(),
           }
         );
-      let target = params.find(element => element.includes("targetDir"));
-      if(target != undefined){
-        status.start(args[0], target.split("=")[1]);
+      const target = params.find((element) => element.includes('targetDir'));
+      if (target != undefined) {
+        status.start(args[0], target.split('=')[1]);
       }
-      result.on('close', code => {
+      result.on('close', (code) => {
         if (code !== 0) {
           throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
         }

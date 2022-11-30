@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Command to transpile XMIR files into target language.
  * @param {Hash} opts - All options
+ * @return {Promise} of transpile task
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
@@ -38,7 +39,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,
-  ]).then(r => {
+  ]).then((r) => {
     console.info('Java sources generated in %s', sources);
     return r;
   });

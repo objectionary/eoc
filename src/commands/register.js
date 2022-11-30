@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Command to register .EO sources.
  * @param {Hash} opts - All options
+ * @return {Promise} of register task
  */
 module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
@@ -38,7 +39,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
-  ]).then(r => {
+  ]).then((r) => {
      console.info('EO objects registered in %s', foreign);
      return r;
   });

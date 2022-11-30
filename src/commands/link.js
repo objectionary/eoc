@@ -29,6 +29,7 @@ const parserVersion = require('../parser-version');
 /**
  * Command to link binaries into a single executable binary.
  * @param {Hash} opts - All options
+ * @return {Promise} of link task
  */
 module.exports = function(opts) {
   return mvnwSync([
@@ -36,8 +37,8 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
-  ]).then(r => {
+  ]).then((r) => {
      console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
      return r;
-  })
+  });
 };
