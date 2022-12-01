@@ -41,7 +41,7 @@ function shell() {
  * @param {Hash} args - All arguments to pass to it
  * @return {Promise} of maven execution task
  */
-module.exports = function(args) {
+module.exports = function(args, tgt) {
   return new Promise((resolve, reject) => {
     const home = path.resolve(__dirname, '../mvnw');
     const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
@@ -64,16 +64,22 @@ module.exports = function(args) {
         shell: shell(),
       }
     );
-    const target = params.find((element) => element.includes('targetDir'));
-    if (target != undefined) {
-      status.start(args[0], target.split('=')[1]);
+    if (tgt != undefined) {
+      status.start(args[0], tgt);
+      result.on('close', (code) => {
+        if (code !== 0) {
+          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+        }
+        status.stop();
+        resolve(args);
+      });
+    } else {
+      result.on('close', (code) => {
+        if (code !== 0) {
+          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+        }
+        resolve(args);
+      });
     }
-    result.on('close', (code) => {
-      if (code !== 0) {
-        throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
-      }
-      status.stop();
-      resolve(args);
-    });
   });
 };

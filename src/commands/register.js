@@ -39,7 +39,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
-  ]).then((r) => {
+  ], opts.target).then((r) => {
      console.info('EO objects registered in %s', foreign);
      return r;
   });

@@ -37,7 +37,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
-  ]).then((r) => {
+  ], opts.target).then((r) => {
      console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
      return r;
   });
