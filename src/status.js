@@ -27,8 +27,8 @@ const fs = require('fs');
 const readline = require('readline');
 
 module.exports = {
-    start: start,
-    stop: stop,
+  start: start,
+  stop: stop,
 };
 
 let running = false;

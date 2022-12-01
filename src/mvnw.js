@@ -43,37 +43,37 @@ function shell() {
  */
 module.exports = function(args) {
   return new Promise((resolve, reject) => {
-      const home = path.resolve(__dirname, '../mvnw');
-      const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
-      const params = args.filter(function(t) {
-        return t != '';
-      }).concat([
-        '--errors',
-        '--batch-mode',
-        '--update-snapshots',
-        '--fail-fast',
-      ]);
-      const cmd = bin + ' ' + params.join(' ');
-      console.debug('+ %s', cmd);
-      const result = spawn(
-          bin,
-          process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
-          {
-            cwd: home,
-            stdio: 'inherit',
-            shell: shell(),
-          }
-        );
-      const target = params.find((element) => element.includes('targetDir'));
-      if (target != undefined) {
-        status.start(args[0], target.split('=')[1]);
+    const home = path.resolve(__dirname, '../mvnw');
+    const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
+    const params = args.filter(function(t) {
+      return t != '';
+    }).concat([
+      '--errors',
+      '--batch-mode',
+      '--update-snapshots',
+      '--fail-fast',
+    ]);
+    const cmd = bin + ' ' + params.join(' ');
+    console.debug('+ %s', cmd);
+    const result = spawn(
+      bin,
+      process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
+      {
+        cwd: home,
+        stdio: 'inherit',
+        shell: shell(),
       }
-      result.on('close', (code) => {
-        if (code !== 0) {
-          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
-        }
-        status.stop();
-        resolve(args);
-      });
+    );
+    const target = params.find((element) => element.includes('targetDir'));
+    if (target != undefined) {
+      status.start(args[0], target.split('=')[1]);
+    }
+    result.on('close', (code) => {
+      if (code !== 0) {
+        throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+      }
+      status.stop();
+      resolve(args);
+    });
   });
 };
