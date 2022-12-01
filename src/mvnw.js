@@ -39,6 +39,7 @@ function shell() {
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
+ * @param {String} tgt - Path to the target directory
  * @return {Promise} of maven execution task
  */
 module.exports = function(args, tgt) {
