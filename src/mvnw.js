@@ -23,8 +23,9 @@
  */
 
 const path = require('path');
+const fs = require('fs');
+const readline = require('readline');
 const {spawn} = require('child_process');
-const status = require('./status');
 
 /**
  * The shell to use (depending on operating system).
@@ -36,6 +37,11 @@ function shell() {
   }
 }
 
+let phase = 'unknown';
+let target;
+let running = false;
+let beginning;
+
 /**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
@@ -44,6 +50,8 @@ function shell() {
  */
 module.exports = function(args, tgt) {
   return new Promise((resolve, reject) => {
+    target = tgt;
+    phase = args[0];
     const home = path.resolve(__dirname, '../mvnw');
     const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
     const params = args.filter(function(t) {
@@ -66,12 +74,12 @@ module.exports = function(args, tgt) {
       }
     );
     if (tgt != undefined) {
-      status.start(args[0], tgt);
+      start();
       result.on('close', (code) => {
         if (code !== 0) {
           throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
         }
-        status.stop();
+        stop();
         resolve(args);
       });
     } else {
@@ -84,3 +92,60 @@ module.exports = function(args, tgt) {
     }
   });
 };
+
+/**
+ * Starts mvnw execution status detection.
+ * @param {String} stage - A maven stage like assemble, compile, transpile, etc.
+ * @param {String} dir - Directory where to check progress - ./.eoc
+ */
+function start() {
+  running = true;
+  beginning = Date.now();
+  const check = function() {
+    if (running) {
+       print();
+       setTimeout(check, 200);
+    }
+  };
+  check();
+}
+
+/**
+ * Stops mvnw execution status detection.
+ */
+function stop() {
+  running = false;
+  process.stdout.write('\n');
+}
+
+/**
+ * Prints mvnw execution status.
+ */
+function print() {
+  readline.clearLine(process.stdout);
+  readline.cursorTo(process.stdout, 0);
+  const duration = Date.now() - beginning;
+  /**
+   * Recursively calculates number of files under a directory.
+   * @param {String} dir - Directory where to count.
+   * @param {Integer} curr - Current counter.
+   * @return {Integer} Total number files.
+   */
+  function count(dir, curr) {
+    if (fs.existsSync(dir)) {
+      for (const f of fs.readdirSync(dir)) {
+        next = path.join(dir, f);
+        if (fs.statSync(next).isDirectory()) {
+          curr = count(next, curr);
+        } else {
+          curr++;
+        }
+      }
+    }
+    return curr;
+  }
+  process.stdout.write(
+    `\x1b[33m[${phase}] ${duration} ms. Total number of compiled files ${count(target, 0)}\x1b[0m`
+  );
+}
+
