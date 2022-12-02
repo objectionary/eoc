@@ -28,8 +28,9 @@ const parserVersion = require('../parser-version');
 /**
  * Command to audit all packages.
  * @param {Hash} opts - All options
+ * @return {Promise} of audit task
  */
 module.exports = function(opts) {
   parserVersion();
-  mvnw(['--version']);
+  return mvnw(['--version']);
 };
