@@ -34,7 +34,7 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   return mvnw([
     'eo:assemble',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
     opts.hash ? '-Deo.hash=' + opts.hash : '',

@@ -35,7 +35,7 @@ module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   return mvnw([
     'eo:transpile',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,

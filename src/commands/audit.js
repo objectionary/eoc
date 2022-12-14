@@ -31,6 +31,6 @@ const parserVersion = require('../parser-version');
  * @return {Promise} of audit task
  */
 module.exports = function(opts) {
-  parserVersion();
+  parserVersion.get();
   return mvnw(['--version']);
 };

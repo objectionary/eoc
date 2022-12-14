@@ -34,7 +34,7 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   const argv = [
     'eo:gmi',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion()),
+    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];

@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-const mvnwSync = require('../src/mvnw');
+const mvnw = require('../src/mvnw');
 
 describe('mvnw', function() {
   it('prints Maven own version', function(done) {
-    mvnwSync(['--version']);
-    mvnwSync(['--version']);
+    mvnw(['--version']);
+    mvnw(['--version']);
     done();
   });
 });
