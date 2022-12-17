@@ -19,7 +19,7 @@
     "xmlhttprequest": "1.8.0"
   },
   "devDependencies": {
-    "eslint": "8.29.0",
+    "eslint": "8.30.0",
     "eslint-config-google": "0.14.0",
     "grunt": "1.5.3",
     "grunt-contrib-clean": "2.0.1",
