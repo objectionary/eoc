@@ -55,8 +55,8 @@ SOFTWARE.
         <version>${eo.version}</version>
         <configuration>
           <excludeSources>.eoc/**</excludeSources>
-          <gmiIncludes>${eo.gmiIncludes}</gmiIncludes>
-          <gmiExcludes>${eo.gmiExcludes}</gmiExcludes>
+          <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
+          <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
         </configuration>

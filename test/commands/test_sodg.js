@@ -27,14 +27,14 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('gmi', function() {
-  it('generates GMI files for a simple .EO program', function(done) {
-    home = path.resolve('temp/test-gmi/simple');
+describe('sodg', function() {
+  it('generates SODG files for a simple .EO program', function(done) {
+    home = path.resolve('temp/test-sodg/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
-      'gmi',
+      'sodg',
       '--verbose',
       '--dot',
       '--include=simple',
@@ -44,11 +44,11 @@ describe('gmi', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/gmi/simple.gmi',
-        'target/gmi/simple.gmi.xml',
-        'target/gmi/simple.gmi.xe',
-        'target/gmi/simple.gmi.graph.xml',
-        'target/gmi/simple.gmi.dot',
+        'target/sodg/simple.sodg',
+        'target/sodg/simple.sodg.xml',
+        'target/sodg/simple.sodg.xe',
+        'target/sodg/simple.sodg.graph.xml',
+        'target/sodg/simple.sodg.dot',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

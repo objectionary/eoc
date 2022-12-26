@@ -28,7 +28,7 @@ const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
 const assemble = require('./commands/assemble');
-const gmi = require('./commands/gmi');
+const sodg = require('./commands/sodg');
 const register = require('./commands/register');
 const transpile = require('./commands/transpile');
 const compile = require('./commands/compile');
@@ -95,21 +95,21 @@ program.command('assemble')
     }
   });
 
-program.command('gmi')
-  .description('generate GMI files from XMIR')
-  .option('--xml', 'generate .gmi.xml files')
-  .option('--xembly', 'generate .gmi.xe files')
-  .option('--graph', 'generate .gmi.graph files')
-  .option('--dot', 'generate .gmi.dot files')
-  .option('--include <names>', 'generate GMI for these object names (using mask)', '**')
-  .option('--exclude <names>', 'don\'t generate GMI for these objects')
+program.command('sodg')
+  .description('generate SODG files from XMIR')
+  .option('--xml', 'generate .sodg.xml files')
+  .option('--xembly', 'generate .sodg.xe files')
+  .option('--graph', 'generate .sodg.graph files')
+  .option('--dot', 'generate .sodg.dot files')
+  .option('--include <names>', 'generate SODG for these object names (using mask)', '**')
+  .option('--exclude <names>', 'don\'t generate SODG for these objects')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
       .then((r) => assemble(program.opts()))
-      .then((r) => gmi({...program.opts(), ...str}));
+      .then((r) => sodg({...program.opts(), ...str}));
     } else {
-      gmi({...program.opts(), ...str});
+      sodg({...program.opts(), ...str});
     }
   });
 

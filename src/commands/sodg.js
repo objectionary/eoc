@@ -27,41 +27,41 @@ const mvnw = require('../mvnw');
 const parserVersion = require('../parser-version');
 
 /**
- * Generate GMI files from XMIR.
+ * Generate SODG files from XMIR.
  * @param {Hash} opts - All options
- * @return {Promise} of gmi task
+ * @return {Promise} of sodg task
  */
 module.exports = function(opts) {
   const argv = [
-    'eo:gmi',
+    'eo:sodg',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];
-  argv.push('-Deo.gmiIncludes=' + opts.include);
+  argv.push('-Deo.sodgIncludes=' + opts.include);
   if (opts.exclude) {
-    argv.push('-Deo.gmiExcludes=' + opts.exclude);
+    argv.push('-Deo.sodgExcludes=' + opts.exclude);
   }
   if (opts.xml) {
-    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateSodgXmlFiles');
   }
   if (opts.xembly) {
-    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateSodgXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
   }
   if (opts.graph) {
-    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateSodgXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
     argv.push('-Deo.generateGraphFiles');
   }
   if (opts.dot) {
-    argv.push('-Deo.generateGmiXmlFiles');
+    argv.push('-Deo.generateSodgXmlFiles');
     argv.push('-Deo.generateXemblyFiles');
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
   return mvnw(argv, opts.target).then((r) => {
-      console.info('GMI files generated in %s', path.resolve(opts.target));
+      console.info('SODG files generated in %s', path.resolve(opts.target));
       return r;
   });
 };
