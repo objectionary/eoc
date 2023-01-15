@@ -4,7 +4,6 @@
   },
   "extends": "google",
   "rules": {
-    "indent": "off",
     "comma-dangle": "off",
     "indent": [ "error", 2 ],
     "max-len": [ "error", { "code": 100 } ]
