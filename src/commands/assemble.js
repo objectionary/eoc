@@ -43,7 +43,7 @@ module.exports = function(opts) {
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
   ], opts.target).then((r) => {
-     console.info('EO program assembled in %s', path.resolve(opts.target));
-     return r;
+    console.info('EO program assembled in %s', path.resolve(opts.target));
+    return r;
   });
 };

@@ -42,7 +42,7 @@ module.exports = function(opts) {
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
   ], opts.target).then((r) => {
-     console.info('Java .class files compiled into %s', target);
-     return r;
+    console.info('Java .class files compiled into %s', target);
+    return r;
   });
 };

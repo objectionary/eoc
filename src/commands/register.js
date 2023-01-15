@@ -40,7 +40,7 @@ module.exports = function(opts) {
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
   ], opts.target).then((r) => {
-     console.info('EO objects registered in %s', foreign);
-     return r;
+    console.info('EO objects registered in %s', foreign);
+    return r;
   });
 };

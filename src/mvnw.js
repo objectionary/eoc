@@ -103,8 +103,8 @@ function start() {
   beginning = Date.now();
   const check = function() {
     if (running) {
-       print();
-       setTimeout(check, 1000);
+      print();
+      setTimeout(check, 1000);
     }
   };
   check();

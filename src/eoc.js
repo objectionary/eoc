@@ -89,7 +89,7 @@ program.command('assemble')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()));
+        .then((r) => assemble(program.opts()));
     } else {
       assemble(program.opts());
     }
@@ -106,8 +106,8 @@ program.command('sodg')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => sodg({...program.opts(), ...str}));
+        .then((r) => assemble(program.opts()))
+        .then((r) => sodg({...program.opts(), ...str}));
     } else {
       sodg({...program.opts(), ...str});
     }
@@ -118,8 +118,8 @@ program.command('transpile')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => transpile(program.opts()));
+        .then((r) => assemble(program.opts()))
+        .then((r) => transpile(program.opts()));
     } else {
       transpile(program.opts());
     }
@@ -130,9 +130,9 @@ program.command('compile')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => transpile(program.opts()))
-      .then((r) => compile(program.opts()));
+        .then((r) => assemble(program.opts()))
+        .then((r) => transpile(program.opts()))
+        .then((r) => compile(program.opts()));
     } else {
       compile(program.opts());
     }
@@ -143,12 +143,12 @@ program.command('link')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => transpile(program.opts()))
-      .then((r) => compile(program.opts()))
-      .then((r) => link(program.opts()));
+        .then((r) => assemble(program.opts()))
+        .then((r) => transpile(program.opts()))
+        .then((r) => compile(program.opts()))
+        .then((r) => link(program.opts()));
     } else {
-       link(program.opts());
+      link(program.opts());
     }
   });
 
@@ -158,11 +158,11 @@ program.command('dataize')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => transpile(program.opts()))
-      .then((r) => compile(program.opts()))
-      .then((r) => link(program.opts()))
-      .then((r) => dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str}));
+        .then((r) => assemble(program.opts()))
+        .then((r) => transpile(program.opts()))
+        .then((r) => compile(program.opts()))
+        .then((r) => link(program.opts()))
+        .then((r) => dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str}));
     } else {
       dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
     }
@@ -173,11 +173,11 @@ program.command('test')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
-      .then((r) => assemble(program.opts()))
-      .then((r) => transpile(program.opts()))
-      .then((r) => compile(program.opts()))
-      .then((r) => link(program.opts()))
-      .then((r) => test(program.opts()));
+        .then((r) => assemble(program.opts()))
+        .then((r) => transpile(program.opts()))
+        .then((r) => compile(program.opts()))
+        .then((r) => link(program.opts()))
+        .then((r) => test(program.opts()));
     } else {
       test(program.opts());
     }
