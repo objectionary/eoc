@@ -12,6 +12,11 @@
   "bin": {
     "eoc": "./src/eoc.js"
   },
+  "engines": {
+    "node": ">6.0",
+    "npm": ">8.0"
+  },
+  "os": ["darwin", "linux", "windows"],
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.0",
