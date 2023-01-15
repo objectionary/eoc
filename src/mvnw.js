@@ -77,7 +77,7 @@ module.exports = function(args, tgt) {
       start();
       result.on('close', (code) => {
         if (code !== 0) {
-          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+          throw new Error(`The command "${cmd}" exited with #${code} code`);
         }
         stop();
         resolve(args);
@@ -85,7 +85,7 @@ module.exports = function(args, tgt) {
     } else {
       result.on('close', (code) => {
         if (code !== 0) {
-          throw new Error('The command "' + cmd + '" exited with #' + code + ' code');
+          throw new Error(`The command "${cmd}" exited with #${code} code`);
         }
         resolve(args);
       });
@@ -104,7 +104,7 @@ function start() {
   const check = function() {
     if (running) {
        print();
-       setTimeout(check, 200);
+       setTimeout(check, 1000);
     }
   };
   check();
@@ -144,8 +144,16 @@ function print() {
     }
     return curr;
   }
+  let elapsed;
+  if (duration < 1000) {
+    elapsed = `${duration}ms`;
+  } else if (duration < 60 * 1000) {
+    elapsed = `${Math.ceil(duration / 1000)}s`;
+  } else {
+    elapsed = `${Math.ceil(duration / 3600000)}min`;
+  }
   process.stdout.write(
-    `\x1b[33m[${phase}] ${duration} ms. Total number of compiled files ${count(target, 0)}\x1b[0m`
+    `\x1b[33m[${phase}] ${elapsed}; ${count(target, 0)} files generated...\x1b[0m`
   );
 }
 
