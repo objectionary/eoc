@@ -22,23 +22,25 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
 const path = require('path');
+const mvnw = require('../mvnw');
 const parserVersion = require('../parser-version');
 
 /**
- * Command to link binaries into a single executable binary.
+ * Command to parse EO into .XMIR files.
  * @param {Hash} opts - All options
- * @return {Promise} of link task
+ * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
   return mvnw([
-    'jar:jar',
-    opts.verbose ? '' : '--quiet',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    'eo:parse',
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    opts.verbose ? '' : '--quiet',
+    opts.hash ? '-Deo.hash=' + opts.hash : '',
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
   ], opts.target, opts.batch).then((r) => {
-    console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
+    console.info('EO sources parsed in %s', path.resolve(opts.target));
     return r;
   });
 };

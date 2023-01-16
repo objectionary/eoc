@@ -41,7 +41,7 @@ module.exports = function(opts) {
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
-  ], opts.target).then((r) => {
+  ], opts.target, opts.batch).then((r) => {
     console.info('Java .class files compiled into %s', target);
     return r;
   });

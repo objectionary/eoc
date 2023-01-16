@@ -22,23 +22,31 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
-const parserVersion = require('../parser-version');
+const {runSync, assertFilesExist} = require('../helpers');
 
-/**
- * Command to link binaries into a single executable binary.
- * @param {Hash} opts - All options
- * @return {Promise} of link task
- */
-module.exports = function(opts) {
-  return mvnw([
-    'jar:jar',
-    opts.verbose ? '' : '--quiet',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
-  ], opts.target, opts.batch).then((r) => {
-    console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
-    return r;
+describe('parse', function() {
+  it('parses a simple .EO program', function(done) {
+    home = path.resolve('temp/test-parse/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    const stdout = runSync([
+      'parse',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
+    ]);
+    assertFilesExist(
+      stdout, home,
+      [
+        'target/eo-foreign.json',
+        'target/01-parse/simple.xmir',
+      ]
+    );
+    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+    done();
   });
-};
+});

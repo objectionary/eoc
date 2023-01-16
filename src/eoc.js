@@ -27,6 +27,7 @@ const {program} = require('commander');
 const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
+const parse = require('./commands/parse');
 const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
 const register = require('./commands/register');
@@ -49,23 +50,24 @@ program
   .version(require('./version'));
 
 program
-  .option('-s, --sources <path>', 'directory with .EO sources', '.')
-  .option('-t, --target <path>', 'directory with all generated files', '.eoc')
-  .option('--hash <hex>', 'hash in objectionary/home to compile against')
-  .option('--parser <version>', 'set the version of parser to use')
-  .option('--alone', 'just run a single command without dependencies')
-  .option('--no-color', 'disable colorization of console messages')
-  .option('--track-optimization-steps', 'save intermediate XMIR files')
-  .option('--verbose', 'print debug messages and full output of child processes');
+  .option('-s, --sources <path>', 'Directory with .EO sources', '.')
+  .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
+  .option('--hash <hex>', 'Hash in objectionary/home to compile against')
+  .option('--parser <version>', 'Set the version of parser to use')
+  .option('--alone', 'Just run a single command without dependencies')
+  .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
+  .option('--no-color', 'Disable colorization of console messages')
+  .option('--track-optimization-steps', 'Save intermediate XMIR files')
+  .option('--verbose', 'Print debug messages and full output of child processes');
 
 program.command('audit')
-  .description('inspect all packages and report their status')
+  .description('Inspect all packages and report their status')
   .action((str, opts) => {
     audit(program.opts());
   });
 
 program.command('foreign')
-  .description('inspect and print the list of foreign objects')
+  .description('Inspect and print the list of foreign objects')
   .action((str, opts) => {
     foreign(program.opts());
   });
@@ -73,19 +75,30 @@ program.command('foreign')
 program
   .command('clean')
   .option('--cached', 'delete ~/.eo directory')
-  .description('delete all temporary files')
+  .description('Delete all temporary files')
   .action((str, opts) => {
     clean({...program.opts(), ...str});
   });
 
 program.command('register')
-  .description('register all visible EO source files')
+  .description('Register all visible EO source files')
   .action((str, opts) => {
     register(program.opts());
   });
 
+program.command('parse')
+  .description('Parse EO files into XMIR')
+  .action((str, opts) => {
+    if (program.opts().alone == undefined) {
+      register(program.opts())
+        .then((r) => parse(program.opts()));
+    } else {
+      parse(program.opts());
+    }
+  });
+
 program.command('assemble')
-  .description('parse EO files into XMIR and join them with required dependencies')
+  .description('Parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -96,13 +109,13 @@ program.command('assemble')
   });
 
 program.command('sodg')
-  .description('generate SODG files from XMIR')
-  .option('--xml', 'generate .sodg.xml files')
-  .option('--xembly', 'generate .sodg.xe files')
-  .option('--graph', 'generate .sodg.graph files')
-  .option('--dot', 'generate .sodg.dot files')
-  .option('--include <names>', 'generate SODG for these object names (using mask)', '**')
-  .option('--exclude <names>', 'don\'t generate SODG for these objects')
+  .description('Generate SODG files from XMIR')
+  .option('--xml', 'Generate .sodg.xml files')
+  .option('--xembly', 'Generate .sodg.xe files')
+  .option('--graph', 'Generate .sodg.graph files')
+  .option('--dot', 'Generate .sodg.dot files')
+  .option('--include <names>', 'Generate SODG for these object names (using mask)', '**')
+  .option('--exclude <names>', 'Don\'t generate SODG for these objects')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -114,7 +127,7 @@ program.command('sodg')
   });
 
 program.command('transpile')
-  .description('convert EO files into target language')
+  .description('Convert EO files into target language')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -126,7 +139,7 @@ program.command('transpile')
   });
 
 program.command('compile')
-  .description('compile target language sources into binaries')
+  .description('Compile target language sources into binaries')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -139,7 +152,7 @@ program.command('compile')
   });
 
 program.command('link')
-  .description('link together all binaries into a single executable binary')
+  .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -153,8 +166,8 @@ program.command('link')
   });
 
 program.command('dataize')
-  .description('run the single executable binary and dataize an object')
-  .option('--stack <size>', 'change stack size', '1M')
+  .description('Run the single executable binary and dataize an object')
+  .option('--stack <size>', 'Change stack size', '1M')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())
@@ -169,7 +182,7 @@ program.command('dataize')
   });
 
 program.command('test')
-  .description('run all visible unit tests')
+  .description('Run all visible unit tests')
   .action((str, opts) => {
     if (program.opts().alone == undefined) {
       register(program.opts())

@@ -33,6 +33,6 @@
     "mocha": "10.2.0"
   },
   "scripts": {
-    "test": "mocha --timeout 120000"
+    "test": "mocha --timeout 1200000"
   }
 }

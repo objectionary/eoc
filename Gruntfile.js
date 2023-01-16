@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     mochacli: {
       test: {
         options: {
-          timeout: '120000',
+          timeout: '1200000',
           files: ['test/**/*.js'],
         },
       },

@@ -42,7 +42,7 @@ module.exports = function(opts) {
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
-  ], opts.target).then((r) => {
+  ], opts.target, opts.batch).then((r) => {
     console.info('EO program assembled in %s', path.resolve(opts.target));
     return r;
   });

@@ -32,5 +32,5 @@ const parserVersion = require('../parser-version');
  */
 module.exports = function(opts) {
   parserVersion.get();
-  return mvnw(['--version']);
+  return mvnw(['--version'], null, opts.batch);
 };

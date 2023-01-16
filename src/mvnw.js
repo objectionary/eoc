@@ -46,9 +46,10 @@ let beginning;
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  * @param {String} tgt - Path to the target directory
+ * @param {Boolean} batch - Is it batch mode (TRUE) or interactive (FALSE)?
  * @return {Promise} of maven execution task
  */
-module.exports = function(args, tgt) {
+module.exports = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     target = tgt;
     phase = args[0];
@@ -57,7 +58,6 @@ module.exports = function(args, tgt) {
     const params = args.filter(function(t) {
       return t != '';
     }).concat([
-      '--errors',
       '--batch-mode',
       '--update-snapshots',
       '--fail-fast',
@@ -74,12 +74,16 @@ module.exports = function(args, tgt) {
       }
     );
     if (tgt != undefined) {
-      start();
+      if (!batch) {
+        start();
+      }
       result.on('close', (code) => {
         if (code !== 0) {
           throw new Error(`The command "${cmd}" exited with #${code} code`);
         }
-        stop();
+        if (!batch) {
+          stop();
+        }
         resolve(args);
       });
     } else {

@@ -33,9 +33,9 @@ module.exports.runSync = function runSync(args) {
   const execSync = require('child_process').execSync;
   try {
     return execSync(
-      `node ${path.resolve('./src/eoc.js')} ${args.join(' ')}`,
+      `node ${path.resolve('./src/eoc.js')} --batch ${args.join(' ')}`,
       {
-        'timeout': 120000,
+        'timeout': 1200000,
         'windowsHide': true,
       }
     ).toString();

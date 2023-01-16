@@ -39,7 +39,7 @@ module.exports = function(opts) {
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,
-  ], opts.target).then((r) => {
+  ], opts.target, opts.batch).then((r) => {
     console.info('Java sources generated in %s', sources);
     return r;
   });

@@ -60,7 +60,7 @@ module.exports = function(opts) {
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
-  return mvnw(argv, opts.target).then((r) => {
+  return mvnw(argv, opts.target, opts.batch).then((r) => {
     console.info('SODG files generated in %s', path.resolve(opts.target));
     return r;
   });
