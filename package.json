@@ -16,7 +16,7 @@
     "node": ">6.0",
     "npm": ">8.0"
   },
-  "os": ["darwin", "linux", "windows"],
+  "os": ["darwin", "linux", "win32"],
   "dependencies": {
     "colors": "1.4.0",
     "commander": "10.0.0",
