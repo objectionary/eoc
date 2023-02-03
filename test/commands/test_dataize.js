@@ -56,10 +56,12 @@ describe('dataize', function() {
       'dataize', 'foo.bar.app', 'Jeff',
       '--verbose',
       '--stack=64M',
+      '--clean',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assert(stdout.includes('Hello, Jeff!'), stdout);
+    assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });

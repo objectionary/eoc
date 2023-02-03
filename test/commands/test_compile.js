@@ -32,16 +32,7 @@ describe('compile', function() {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
-      [
-        '+package foo.bar',
-        '+alias org.eolang.io.stdout',
-        '',
-        '[args...] > app',
-        '  stdout "Hello, world!" > @',
-      ].join('\n')
-    );
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
     const stdout = runSync([
       'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
@@ -89,4 +80,30 @@ describe('compile', function() {
     );
     done();
   });
+
+  it('Cleans and compiles a simple .EO program', function(done) {
+    home = path.resolve('temp/test-compile/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
+    const stdout = runSync([
+      'compile', '--clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+    ]);
+    assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
+    done();
+  });
 });
+
+/**
+ * Creates simple correct eo program.
+ * @return {string} simple eo program
+ */
+function simple() {
+  return [
+    '+package foo.bar',
+    '+alias org.eolang.io.stdout',
+    '',
+    '[args...] > app',
+    '  stdout "Hello, world!" > @',
+  ].join('\n');
+}
