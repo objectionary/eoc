@@ -58,6 +58,7 @@ program
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-optimization-steps', 'Save intermediate XMIR files')
+  .option('-c, --clean', 'Delete ./.eoc directory')
   .option('--verbose', 'Print debug messages and full output of child processes');
 
 program.command('audit')
@@ -89,6 +90,7 @@ program.command('register')
 program.command('parse')
   .description('Parse EO files into XMIR')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => parse(program.opts()));
@@ -100,6 +102,7 @@ program.command('parse')
 program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()));
@@ -117,6 +120,7 @@ program.command('sodg')
   .option('--include <names>', 'Generate SODG for these object names (using mask)', '**')
   .option('--exclude <names>', 'Don\'t generate SODG for these objects')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -129,6 +133,7 @@ program.command('sodg')
 program.command('transpile')
   .description('Convert EO files into target language')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -141,6 +146,7 @@ program.command('transpile')
 program.command('compile')
   .description('Compile target language sources into binaries')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -154,6 +160,7 @@ program.command('compile')
 program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -169,6 +176,7 @@ program.command('dataize')
   .description('Run the single executable binary and dataize an object')
   .option('--stack <size>', 'Change stack size', '1M')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -184,6 +192,7 @@ program.command('dataize')
 program.command('test')
   .description('Run all visible unit tests')
   .action((str, opts) => {
+    clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -203,3 +212,14 @@ try {
   console.debug(e.stack);
   process.exit(1);
 }
+
+/**
+ * Checks --clean option and clears the .eoc directory if true.
+ * @param {*} str Str
+ */
+function clear(str) {
+  if (program.opts().clean) {
+    clean({...program.opts(), ...str});
+  }
+}
+

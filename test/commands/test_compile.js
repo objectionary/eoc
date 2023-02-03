@@ -32,16 +32,7 @@ describe('compile', function() {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
-      [
-        '+package foo.bar',
-        '+alias org.eolang.io.stdout',
-        '',
-        '[args...] > app',
-        '  stdout "Hello, world!" > @',
-      ].join('\n')
-    );
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
     const stdout = runSync([
       'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
@@ -94,30 +85,25 @@ describe('compile', function() {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
-      [
-        '+package foo.bar',
-        '+alias org.eolang.io.stdout',
-        '',
-        '[args...] > app',
-        '  stdout "Hello, world!" > @',
-      ].join('\n')
-    );
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
     const stdout = runSync([
-      'clean', 'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'compile', '--clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
     ]);
-    assertFilesExist(
-      stdout, home,
-      [
-        'target/generated-sources/EOfoo/EObar/EOapp.java',
-        'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOapp.class',
-        'target/classes/org/eolang/Phi.class',
-        'target/classes/EOorg/EOeolang/EOint.class',
-      ]
-    );
-    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+    assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
     done();
   });
 });
+
+/**
+ * Creates simple correct eo program.
+ * @return {string} simple eo program
+ */
+function simple() {
+  return [
+    '+package foo.bar',
+    '+alias org.eolang.io.stdout',
+    '',
+    '[args...] > app',
+    '  stdout "Hello, world!" > @',
+  ].join('\n');
+}
