@@ -41,7 +41,7 @@
     "grunt": "1.6.1",
     "grunt-contrib-clean": "2.0.1",
     "grunt-eslint": "24.1.0",
-    "grunt-mocha-cli": "^4.0.0",
+    "grunt-mocha-cli": "^7.0.0",
     "mocha": "10.2.0"
   },
   "scripts": {
