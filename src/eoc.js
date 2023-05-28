@@ -44,16 +44,17 @@ if (process.argv.includes('--verbose')) {
   console.info('INFO');
 }
 
+const version = require('./version');
 program
   .name('eoc')
-  .description('EO command-line toolkit (' + require('./version') + ')')
-  .version(require('./version'));
+  .description('EO command-line toolkit (' + version.what + ' ' + version.when + ')')
+  .version(version.what);
 
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
   .option('--hash <hex>', 'Hash in objectionary/home to compile against')
-  .option('--parser <version>', 'Set the version of parser to use')
+  .option('--parser <version>', 'Set the version of EO parser to use')
   .option('--alone', 'Just run a single command without dependencies')
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')

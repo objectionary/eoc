@@ -24,17 +24,21 @@
 
 const assert = require('assert');
 const runSync = require('./helpers').runSync;
+const version = require('../src/version');
 
 describe('eoc', function() {
   it('prints its own version', function(done) {
     const stdout = runSync(['--version']);
-    assert.equal(require('../src/version.js') + '\n', stdout);
+    assert.equal(version.what + '\n', stdout);
     done();
   });
 
   it('prints help screen', function(done) {
     const stdout = runSync(['--help']);
+    console.log(stdout);
     assert(stdout.includes('Usage: eoc'));
+    assert(stdout.includes(version.what));
+    assert(stdout.includes(version.when));
     done();
   });
 });
