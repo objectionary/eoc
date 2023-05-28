@@ -62,6 +62,7 @@ module.exports = function(args, tgt, batch) {
       '--color=never',
       '--update-snapshots',
       '--fail-fast',
+      '--strict-checksums',
     ]);
     const cmd = bin + ' ' + params.join(' ');
     console.debug('+ %s', cmd);
