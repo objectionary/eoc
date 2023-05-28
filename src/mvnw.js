@@ -81,7 +81,8 @@ module.exports = function(args, tgt, batch) {
       }
       result.on('close', (code) => {
         if (code !== 0) {
-          throw new Error(`The command "${cmd}" exited with #${code} code`);
+          console.error(`The command "${cmd}" exited with #${code} code`);
+          process.exit(1);
         }
         if (!batch) {
           stop();
@@ -91,7 +92,8 @@ module.exports = function(args, tgt, batch) {
     } else {
       result.on('close', (code) => {
         if (code !== 0) {
-          throw new Error(`The command "${cmd}" exited with #${code} code`);
+          console.error(`The command "${cmd}" exited with #${code} code`);
+          process.exit(1);
         }
         resolve(args);
       });
