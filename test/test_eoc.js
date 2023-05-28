@@ -42,7 +42,7 @@ describe('eoc', function() {
   });
 
   it('loads latest version', function(done) {
-    const stdout = runSync(['--latest', '--version']);
+    runSync(['--latest', '--version']);
     done();
   });
 });
