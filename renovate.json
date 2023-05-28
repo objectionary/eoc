@@ -3,5 +3,9 @@
   "extends": [
     "config:base"
   ],
-  "ignoreDeps": ["maven-compiler-plugin", "org.eolang:eo-maven-plugin", "org.eolang:eo-runtime"]
+  "ignoreDeps": [
+    "org.apache.maven.plugins:maven-compiler-plugin",
+    "org.eolang:eo-maven-plugin",
+    "org.eolang:eo-runtime"
+  ]
 }
