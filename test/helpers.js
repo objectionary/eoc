@@ -60,7 +60,7 @@ module.exports.assertFilesExist = function assertFilesExist(stdout, home, paths)
     const abs = path.resolve(home, p);
     assert(
       fs.existsSync(abs),
-      'File ' + abs +' is absent:\n' + stdout
+      stdout + '\nFile ' + abs + ' is absent'
     );
   });
 };

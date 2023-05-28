@@ -43,7 +43,7 @@ describe('parse', function() {
       stdout, home,
       [
         'target/eo-foreign.json',
-        'target/01-parse/simple.xmir',
+        'target/1-parse/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

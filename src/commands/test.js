@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function(opts) {
   return mvnw([
     'surefire:test',
+    '-Deo.version=' + opts.parser,
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);
 };

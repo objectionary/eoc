@@ -44,9 +44,9 @@ describe('assemble', function() {
       stdout, home,
       [
         'target/eo-foreign.json',
-        'target/01-parse/simple.xmir',
-        'target/02-steps/simple',
-        'target/03-optimize/simple.xmir',
+        'target/1-parse/simple.xmir',
+        'target/2-optimization-steps/simple',
+        'target/2-optimize/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

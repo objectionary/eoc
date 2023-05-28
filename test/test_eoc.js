@@ -35,10 +35,14 @@ describe('eoc', function() {
 
   it('prints help screen', function(done) {
     const stdout = runSync(['--help']);
-    console.log(stdout);
     assert(stdout.includes('Usage: eoc'));
     assert(stdout.includes(version.what));
     assert(stdout.includes(version.when));
+    done();
+  });
+
+  it('loads latest version', function(done) {
+    const stdout = runSync(['--latest', '--version']);
     done();
   });
 });

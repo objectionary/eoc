@@ -24,7 +24,6 @@
 
 const path = require('path');
 const mvnw = require('../mvnw');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to assemble .XMIR files.
@@ -34,10 +33,10 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   return mvnw([
     'eo:assemble',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
-    opts.hash ? '-Deo.hash=' + opts.hash : '',
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,

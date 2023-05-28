@@ -44,17 +44,27 @@ if (process.argv.includes('--verbose')) {
   console.info('INFO');
 }
 
+if (process.argv.includes('--latest')) {
+  const ver = require('./parser-version').get();
+  process.argv.push('--parser');
+  process.argv.push(ver);
+  process.argv.push('--hash');
+  process.argv.push(ver);
+}
+
 const version = require('./version');
 program
   .name('eoc')
   .description('EO command-line toolkit (' + version.what + ' ' + version.when + ')')
   .version(version.what);
 
+const parser = '0.29.4';
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
-  .option('--hash <hex>', 'Hash in objectionary/home to compile against')
-  .option('--parser <version>', 'Set the version of EO parser to use')
+  .option('--hash <hex>', 'Hash in objectionary/home to compile against', parser)
+  .option('--parser <version>', 'Set the version of EO parser to use', parser)
+  .option('--latest', 'Use latest parser and latest objectionary/home objects')
   .option('--alone', 'Just run a single command without dependencies')
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
@@ -223,4 +233,3 @@ function clear(str) {
     clean({...program.opts(), ...str});
   }
 }
-
