@@ -73,7 +73,7 @@ module.exports = function(args, tgt, batch) {
         shell: shell(),
       }
     );
-    if (tgt != undefined) {
+    if (tgt != undefined && args.includes('--quiet')) {
       if (!batch) {
         start();
       }
