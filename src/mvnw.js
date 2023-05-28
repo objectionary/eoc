@@ -59,6 +59,7 @@ module.exports = function(args, tgt, batch) {
       return t != '';
     }).concat([
       '--batch-mode',
+      '--color=never',
       '--update-snapshots',
       '--fail-fast',
     ]);

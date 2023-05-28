@@ -27,8 +27,7 @@ const mvnw = require('../src/mvnw');
 describe('mvnw', function() {
   it('prints Maven own version', function(done) {
     const opts = {batch: true};
-    mvnw(['--version'], null, opts.batch);
-    mvnw(['--version'], null, opts.batch);
+    mvnw(['--version', '--quiet'], null, opts.batch);
     done();
   });
 });
