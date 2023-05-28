@@ -22,7 +22,7 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: ${{ matrix.java }}
-    - run: npm install
+    - run: npm install --no-color
     - run: cd itest && node ../src/eoc.js --batch dataize program
     - run: cd itest && node ../src/eoc.js --alone --batch dataize program
     - run: cd itest && node ../src/eoc.js clean

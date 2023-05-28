@@ -22,9 +22,12 @@
  * SOFTWARE.
  */
 
-// The values here are replaced automatically by the .rultor.yml script,
-// at the "release" pipeline:
 module.exports = {
+  // The following two values are automatically replaced by the .rultor.yml script,
+  // at the "release" pipeline:
   what: '0.0.0',
-  when: '0000-00-00'
+  when: '0000-00-00',
+  // This value may only be replaced manually, when it's time to shift
+  // the version up and this package is ready for it:
+  eo: '0.29.4'
 };
