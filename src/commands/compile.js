@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 const mvnw = require('../mvnw');
 const path = require('path');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to compile target language into binaries.
@@ -40,7 +39,7 @@ module.exports = function(opts) {
     `-Dmaven.compiler.target=1.8`,
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
   ], opts.target, opts.batch).then((r) => {
     console.info('Java .class files compiled into %s', target);
     return r;

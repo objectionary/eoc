@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
  */
 
 const mvnw = require('../mvnw');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to audit all packages.
@@ -31,6 +30,5 @@ const parserVersion = require('../parser-version');
  * @return {Promise} of audit task
  */
 module.exports = function(opts) {
-  parserVersion.get();
   return mvnw(['--version'], null, opts.batch);
 };

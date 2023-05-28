@@ -3,8 +3,8 @@
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
-[![node-current](https://img.shields.io/node/v/eolang)](https://www.npmjs.com/package/eolang)
 [![grunt](https://github.com/objectionary/eoc/actions/workflows/grunt.yml/badge.svg)](https://github.com/objectionary/eoc/actions/workflows/grunt.yml)
+[![node-current](https://img.shields.io/node/v/eolang)](https://www.npmjs.com/package/eolang)
 [![PDD status](http://www.0pdd.com/svg?name=objectionary/eoc)](http://www.0pdd.com/p?name=objectionary/eoc)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 ![Lines of code](https://img.shields.io/tokei/lines/github/objectionary/eoc)

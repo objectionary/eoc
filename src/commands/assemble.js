@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,9 @@ module.exports = function(opts) {
   return mvnw([
     'eo:assemble',
     '-Deo.version=' + opts.parser,
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
-    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,

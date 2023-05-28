@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 const mvnw = require('../mvnw');
 const path = require('path');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to link binaries into a single executable binary.
@@ -36,7 +35,7 @@ module.exports = function(opts) {
     'jar:jar',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
   ], opts.target, opts.batch).then((r) => {
     console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
     return r;

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 const mvnw = require('../mvnw');
 const path = require('path');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to transpile XMIR files into target language.
@@ -35,7 +34,7 @@ module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   return mvnw([
     'eo:transpile',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,

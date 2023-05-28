@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 const path = require('path');
 const mvnw = require('../mvnw');
-const parserVersion = require('../parser-version');
 
 /**
  * Command to parse EO into .XMIR files.
@@ -34,9 +33,9 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   return mvnw([
     'eo:parse',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     opts.verbose ? '' : '--quiet',
-    opts.hash ? '-Deo.hash=' + opts.hash : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
   ], opts.target, opts.batch).then((r) => {

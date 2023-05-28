@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 const path = require('path');
 const mvnw = require('../mvnw');
-const parserVersion = require('../parser-version');
 
 /**
  * Generate SODG files from XMIR.
@@ -34,7 +33,7 @@ const parserVersion = require('../parser-version');
 module.exports = function(opts) {
   const argv = [
     'eo:sodg',
-    '-Deo.version=' + (opts.parser ? opts.parser : parserVersion.get()),
+    '-Deo.version=' + opts.parser,
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];

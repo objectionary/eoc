@@ -2,7 +2,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2022 Yegor Bugayenko
+ * Copyright (c) 2022-2023 Objectionary.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,6 @@ const test = require('./commands/test');
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
-  console.info('INFO');
 }
 
 if (process.argv.includes('--latest')) {
@@ -64,7 +63,7 @@ program
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
   .option('--hash <hex>', 'Hash in objectionary/home to compile against', parser)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
-  .option('--latest', 'Use latest parser and latest objectionary/home objects')
+  .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
