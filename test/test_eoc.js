@@ -42,7 +42,7 @@ describe('eoc', function() {
   });
 
   it('loads latest version', function(done) {
-    runSync(['--latest', '--version']);
+    const stdout = runSync(['--latest', '--version']);
     assert(!stdout.includes('29.0.4'));
     done();
   });
