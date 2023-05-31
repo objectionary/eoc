@@ -43,12 +43,9 @@ if (process.argv.includes('--verbose')) {
   console.debug('Debug output is turned ON');
 }
 
+let parser = '0.29.4';
 if (process.argv.includes('--latest')) {
-  const ver = require('./parser-version').get();
-  process.argv.push('--parser');
-  process.argv.push(ver);
-  process.argv.push('--hash');
-  process.argv.push(ver);
+  parser = require('./parser-version').get();
 }
 
 const version = require('./version');
@@ -57,7 +54,6 @@ program
   .description('EO command-line toolkit (' + version.what + ' ' + version.when + ')')
   .version(version.what);
 
-const parser = '0.29.4';
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')

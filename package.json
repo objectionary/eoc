@@ -34,6 +34,7 @@
     "commander": "10.0.1",
     "fast-xml-parser": "4.2.2",
     "node": "20.2.0",
+    "sync-request": "6.1.0",
     "xmlhttprequest": "1.8.0"
   },
   "devDependencies": {

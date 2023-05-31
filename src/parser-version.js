@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const {XMLParser} = require('fast-xml-parser');
+const request = require('sync-request');
 
 /**
  * Load the latest version from GitHub releases.
@@ -34,17 +34,14 @@ const version = module.exports = {
   get: function() {
     if (version.value === '') {
       const repo = 'org/eolang/eo-maven-plugin';
-      const url = 'https://repo.maven.apache.org/maven2/' + repo + '/maven-metadata.xml';
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', url, false);
-      xhr.send(null);
-      if (xhr.status != 200) {
-        throw new Error('Invalid response status ' + xhr.status + ' from ' + url);
+      const url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`;
+      const res = request('GET', url, {timeout: 100000, socketTimeout: 100000});
+      if (res.statusCode != 200) {
+        throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
       }
-      const xml = new XMLParser().parse(xhr.responseText);
+      const xml = new XMLParser().parse(res.body);
       version.value = xml.metadata.versioning.release;
-      console.debug('The latest version of %s at %s is %s', repo, url, version.value);
-      console.info('EO version is %s', version.value);
+      console.info('The latest version of %s at %s is %s', repo, url, version.value);
     }
     return version.value;
   }
