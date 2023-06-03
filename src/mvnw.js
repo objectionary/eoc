@@ -131,7 +131,6 @@ function stop() {
  * Prints mvnw execution status.
  */
 function print() {
-  readline.clearLine(process.stdout);
   const duration = Date.now() - beginning;
   /**
    * Recursively calculates number of files under a directory.
@@ -161,8 +160,9 @@ function print() {
     elapsed = `${Math.ceil(duration / 3600000)}min`;
   }
   process.stdout.write(
-    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated...`)
+    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated so far...`)
   );
+  readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);
 }
 
