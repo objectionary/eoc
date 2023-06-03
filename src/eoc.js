@@ -53,7 +53,7 @@ program
   .name('eoc')
   .usage('[options] command')
   .summary('EO command line toolkit')
-  .description('EO command-line toolkit (' + version.what + ' ' + version.when + ')')
+  .description('EO command-line toolkit (' + version.what + ' built on ' + version.when + ')')
   .version(version.what, '-v, --version', 'Output the version number')
   .helpOption('-?, --help', 'Print this help information');
 
