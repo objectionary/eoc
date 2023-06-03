@@ -26,6 +26,7 @@ const path = require('path');
 const fs = require('fs');
 const readline = require('readline');
 const {spawn} = require('child_process');
+const colors = require('colors');
 
 /**
  * The shell to use (depending on operating system).
@@ -123,7 +124,7 @@ function start() {
  */
 function stop() {
   running = false;
-  process.stdout.write('\n');
+  readline.clearLine(process.stdout);
 }
 
 /**
@@ -131,7 +132,6 @@ function stop() {
  */
 function print() {
   readline.clearLine(process.stdout);
-  readline.cursorTo(process.stdout, 0);
   const duration = Date.now() - beginning;
   /**
    * Recursively calculates number of files under a directory.
@@ -161,7 +161,8 @@ function print() {
     elapsed = `${Math.ceil(duration / 3600000)}min`;
   }
   process.stdout.write(
-    `\x1b[33m[${phase}] ${elapsed}; ${count(target, 0)} files generated...\x1b[0m`
+    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated...`)
   );
+  readline.cursorTo(process.stdout, 0);
 }
 
