@@ -13,3 +13,5 @@ mochawesome-report/
 .idea/
 coverage.html
 *.tgz
+itest/
+CITATION.cff
