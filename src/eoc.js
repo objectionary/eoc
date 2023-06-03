@@ -51,8 +51,11 @@ if (process.argv.includes('--latest')) {
 const version = require('./version');
 program
   .name('eoc')
+  .usage('[options] command')
+  .summary('EO command line toolkit')
   .description('EO command-line toolkit (' + version.what + ' ' + version.when + ')')
-  .version(version.what);
+  .version(version.what, '-v, --version', 'Output the version number')
+  .helpOption('-?, --help', 'Print this help information');
 
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
