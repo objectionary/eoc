@@ -35,6 +35,7 @@ module.exports = function(opts) {
     'eo:parse',
     '-Deo.version=' + opts.parser,
     '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
+    opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,

@@ -35,6 +35,7 @@ module.exports = function(opts) {
     'eo:sodg',
     '-Deo.version=' + opts.parser,
     opts.verbose ? '' : '--quiet',
+    opts.verbose ? '--errors' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];
   argv.push('-Deo.sodgIncludes=' + opts.include);

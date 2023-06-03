@@ -33,6 +33,7 @@ const path = require('path');
 module.exports = function(opts) {
   return mvnw([
     'jar:jar',
+    opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     '-Deo.version=' + opts.parser,

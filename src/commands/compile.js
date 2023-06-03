@@ -34,6 +34,7 @@ module.exports = function(opts) {
   const target = path.resolve(opts.target);
   return mvnw([
     'compiler:compile',
+    opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,

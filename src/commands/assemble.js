@@ -35,6 +35,7 @@ module.exports = function(opts) {
     'eo:assemble',
     '-Deo.version=' + opts.parser,
     '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
+    opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
