@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "colors": "1.4.0",
-    "commander": "10.0.1",
+    "commander": "11.0.0",
     "fast-xml-parser": "4.2.4",
     "node": "20.2.0",
     "sync-request": "6.1.0",
