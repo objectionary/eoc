@@ -33,7 +33,7 @@
     "colors": "1.4.0",
     "commander": "11.1.0",
     "fast-xml-parser": "4.3.2",
-    "node": "21.0.0",
+    "node": "21.1.0",
     "sync-request": "6.1.0",
     "xmlhttprequest": "1.8.0"
   },
