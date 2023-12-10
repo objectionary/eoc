@@ -1,0 +1,26 @@
+---
+name: up
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+concurrency:
+  group: up-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  up:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - run: apt-get -y install jq
+      - run: curl https://api.github.com/repos/objectionary/eo/releases/latest --silent | jq -r .tag_name > eo-version.txt
+      - uses: peter-evans/create-pull-request@v5
+        with:
+          branch: version-up
+          commit-message: 'new version of eo maven plugin'
+          delete-branch: true
+          title: 'New version of EO Maven Plugin'
+          assignees: yegor256
+          base: master

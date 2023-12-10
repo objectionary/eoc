@@ -43,11 +43,13 @@ if (process.argv.includes('--verbose')) {
   console.debug('Debug output is turned ON');
 }
 
-let parser = '0.29.4';
+const fs = require('fs');
+const path = require('path');
+let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8');
 if (process.argv.includes('--latest')) {
   parser = require('./parser-version').get();
 } else {
-  console.debug('EO parser ' + parse + '; use the --latest flag if you need a freshier one');
+  console.debug('EO parser ' + parser + '; use the --latest flag if you need a freshier one');
 }
 
 const version = require('./version');
