@@ -46,6 +46,8 @@ if (process.argv.includes('--verbose')) {
 let parser = '0.29.4';
 if (process.argv.includes('--latest')) {
   parser = require('./parser-version').get();
+} else {
+  console.debug('EO parser ' + parse + '; use the --latest flag if you need a freshier one');
 }
 
 const version = require('./version');
