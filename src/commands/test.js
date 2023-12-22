@@ -35,6 +35,7 @@ module.exports = function(opts) {
     'surefire:test',
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     '-Deo.version=' + opts.parser,
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ]);

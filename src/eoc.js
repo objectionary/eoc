@@ -31,6 +31,7 @@ const parse = require('./commands/parse');
 const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
 const register = require('./commands/register');
+const verify = require('./commands/verify');
 const transpile = require('./commands/transpile');
 const compile = require('./commands/compile');
 const link = require('./commands/link');
@@ -72,6 +73,7 @@ program
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-optimization-steps', 'Save intermediate XMIR files')
   .option('-c, --clean', 'Delete ./.eoc directory')
+  .option('--debug', 'Print ALL debug messages, heavily overloading the log')
   .option('--verbose', 'Print debug messages and full output of child processes');
 
 program.command('audit')
@@ -140,6 +142,19 @@ program.command('sodg')
         .then((r) => sodg({...program.opts(), ...str}));
     } else {
       sodg({...program.opts(), ...str});
+    }
+  });
+
+program.command('verify')
+  .description('Verify XMIR files and fail if any issues inside')
+  .action((str, opts) => {
+    clear(str);
+    if (program.opts().alone == undefined) {
+      register(program.opts())
+        .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()));
+    } else {
+      verify(program.opts());
     }
   });
 

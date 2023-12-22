@@ -29,24 +29,25 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('verify', function() {
   it('verifies a simple .EO program', function(done) {
-    home = path.resolve('temp/test-assemble/simple');
+    home = path.resolve('temp/test-verify/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
       'verify',
       '--verbose',
+      '--debug',
       '--track-optimization-steps',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/eo-foreign.json',
-        'target/1-parse/simple.xmir',
-        'target/2-optimization-steps/simple',
         'target/2-optimize/simple.xmir',
+        'target/6-verify/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

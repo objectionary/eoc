@@ -37,6 +37,7 @@ module.exports = function(opts) {
     '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
   ], opts.target, opts.batch).then((r) => {

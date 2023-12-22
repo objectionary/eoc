@@ -36,6 +36,7 @@ module.exports = function(opts) {
     '-Deo.version=' + opts.parser,
     opts.verbose ? '' : '--quiet',
     opts.verbose ? '--errors' : '',
+    opts.debug ? '--debug' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
   ];
   argv.push('-Deo.sodgIncludes=' + opts.include);

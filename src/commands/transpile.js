@@ -37,6 +37,7 @@ module.exports = function(opts) {
     '-Deo.version=' + opts.parser,
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     `-Deo.generatedDir=${sources}`,
   ], opts.target, opts.batch).then((r) => {

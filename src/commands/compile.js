@@ -36,6 +36,7 @@ module.exports = function(opts) {
     'compiler:compile',
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
     `-Deo.targetDir=${target}`,

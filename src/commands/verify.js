@@ -37,6 +37,7 @@ module.exports = function(opts) {
     '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
   ], opts.target, opts.batch).then((r) => {
     console.info('EO program verified in %s', path.resolve(opts.target));
     return r;
