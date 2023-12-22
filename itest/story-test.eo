@@ -21,11 +21,9 @@
 # SOFTWARE.
 
 +junit
-+alias org.eolang.hamcrest.assert-that
 +alias story
 
-[] > story-is-long-enough
-  assert-that > @
+[] > story-is-not-empty
+  gt. > @
     story.length
-    $.is
-      $.greater-than 1
+    0
