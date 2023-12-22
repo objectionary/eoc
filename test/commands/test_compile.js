@@ -32,7 +32,7 @@ describe('compile', function() {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
+    fs.writeFileSync(path.resolve(home, 'src/compile.eo'), simple('compile'));
     const stdout = runSync([
       'compile',
       '--parser=0.34.1',
@@ -43,9 +43,9 @@ describe('compile', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOapp.java',
+        'target/generated-sources/EOfoo/EObar/EOcompile.java',
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOapp.class',
+        'target/classes/EOfoo/EObar/EOcompile.class',
         'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOint.class',
       ]
@@ -59,12 +59,12 @@ describe('compile', function() {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple-test.eo'),
+      path.resolve(home, 'src/simple-test-compile.eo'),
       [
         '+package foo.bar',
         '+junit',
         '',
-        '[] > simple-test',
+        '[] > simple-test-compile',
         '  TRUE > @',
         '',
       ].join('\n')
@@ -80,8 +80,8 @@ describe('compile', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOsimple_testTest.java',
-        'target/classes/EOfoo/EObar/EOsimple_testTest.class',
+        'target/generated-sources/EOfoo/EObar/EOsimple_test_compileTest.java',
+        'target/classes/EOfoo/EObar/EOsimple_test_compileTest.class',
       ]
     );
     done();
@@ -91,7 +91,7 @@ describe('compile', function() {
     home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
+    fs.writeFileSync(path.resolve(home, 'src/compile2.eo'), simple('compile2'));
     const stdout = runSync([
       'compile',
       '--clean',
@@ -107,14 +107,15 @@ describe('compile', function() {
 
 /**
  * Creates simple correct eo program.
+ * @param {string} name - Name of object
  * @return {string} simple eo program
  */
-function simple() {
+function simple(name) {
   return [
     '+package foo.bar',
     '+alias org.eolang.io.stdout',
     '',
-    '[args] > app',
+    `[args] > ${name}`,
     '  stdout "Hello, world!" > @',
   ].join('\n');
 }

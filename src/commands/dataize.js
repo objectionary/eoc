@@ -38,7 +38,7 @@ module.exports = function(obj, args, opts) {
     '-jar', path.resolve(opts.target, 'eoc.jar'),
     obj,
     ...args,
-  ]
+  ];
   console.debug('+ java ' + params.join(' '));
   spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
     if (code !== 0) {

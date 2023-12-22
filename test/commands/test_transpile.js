@@ -28,19 +28,21 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('transpile', function() {
   it('transpiles a simple .EO program', function(done) {
-    home = path.resolve('temp/test-transpile/simple');
+    home = path.resolve('temp/test-transpile/transpile');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/transpile.eo'), '[] > transpile\n');
     const stdout = runSync([
       'transpile',
       '--verbose',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
-      ['target/generated-sources/EOsimple.java']
+      ['target/generated-sources/EOtranspile.java']
     );
     done();
   });

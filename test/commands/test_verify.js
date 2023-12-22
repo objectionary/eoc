@@ -36,7 +36,6 @@ describe('verify', function() {
     const stdout = runSync([
       'verify',
       '--verbose',
-      '--debug',
       '--track-optimization-steps',
       '--parser=0.34.1',
       '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',

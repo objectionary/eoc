@@ -33,12 +33,12 @@ describe('link', function() {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/foo/bar/simple.eo'),
+      path.resolve(home, 'src/foo/bar/link.eo'),
       [
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
         '',
-        '[args] > app',
+        '[args] > link',
         '  stdout "Hello, world!" > @',
       ].join('\n')
     );
@@ -53,9 +53,9 @@ describe('link', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOapp.java',
+        'target/generated-sources/EOfoo/EObar/EOlink.java',
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOapp.class',
+        'target/classes/EOfoo/EObar/EOlink.class',
         'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOint.class',
         'target/eoc.jar',

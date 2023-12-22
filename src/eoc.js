@@ -165,6 +165,7 @@ program.command('transpile')
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()))
         .then((r) => transpile(program.opts()));
     } else {
       transpile(program.opts());
