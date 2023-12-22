@@ -36,6 +36,8 @@ describe('parse', function() {
     const stdout = runSync([
       'parse',
       '--verbose',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

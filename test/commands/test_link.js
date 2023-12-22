@@ -31,20 +31,22 @@ describe('link', function() {
   it('compiles a simple .EO program into an executable .JAR', function(done) {
     home = path.resolve('temp/test-link/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
+      path.resolve(home, 'src/foo/bar/simple.eo'),
       [
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
         '',
-        '[args...] > app',
+        '[args] > app',
         '  stdout "Hello, world!" > @',
       ].join('\n')
     );
     const stdout = runSync([
       'link',
       '--verbose',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

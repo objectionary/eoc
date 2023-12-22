@@ -178,6 +178,7 @@ program.command('compile')
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()))
         .then((r) => transpile(program.opts()))
         .then((r) => compile(program.opts()));
     } else {
@@ -192,6 +193,7 @@ program.command('link')
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()))
         .then((r) => transpile(program.opts()))
         .then((r) => compile(program.opts()))
         .then((r) => link(program.opts()));
@@ -208,6 +210,7 @@ program.command('dataize')
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()))
         .then((r) => transpile(program.opts()))
         .then((r) => compile(program.opts()))
         .then((r) => link(program.opts()))
@@ -224,6 +227,7 @@ program.command('test')
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
+        .then((r) => verify(program.opts()))
         .then((r) => transpile(program.opts()))
         .then((r) => compile(program.opts()))
         .then((r) => link(program.opts()))
