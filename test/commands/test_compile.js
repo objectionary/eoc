@@ -34,7 +34,11 @@ describe('compile', function() {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
     const stdout = runSync([
-      'compile', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'compile',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
@@ -68,6 +72,8 @@ describe('compile', function() {
     const stdout = runSync([
       'compile',
       '--verbose',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -87,7 +93,12 @@ describe('compile', function() {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple());
     const stdout = runSync([
-      'compile', '--clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'),
+      'compile',
+      '--clean',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
     ]);
     assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
     done();
@@ -103,7 +114,7 @@ function simple() {
     '+package foo.bar',
     '+alias org.eolang.io.stdout',
     '',
-    '[args...] > app',
+    '[args] > app',
     '  stdout "Hello, world!" > @',
   ].join('\n');
 }
