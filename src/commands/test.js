@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const {mvnw} = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 
 /**
  * Command to run all available unit tests.
