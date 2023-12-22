@@ -23,7 +23,7 @@
  */
 
 const path = require('path');
-const mvnw = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 
 /**
  * Generate SODG files from XMIR.
@@ -31,14 +31,7 @@ const mvnw = require('../mvnw');
  * @return {Promise} of sodg task
  */
 module.exports = function(opts) {
-  const argv = [
-    'eo:sodg',
-    '-Deo.version=' + opts.parser,
-    opts.verbose ? '' : '--quiet',
-    opts.verbose ? '--errors' : '',
-    opts.debug ? '--debug' : '',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-  ];
+  const argv = ['eo:sodg'].concat(flags(opts));
   argv.push('-Deo.sodgIncludes=' + opts.include);
   if (opts.exclude) {
     argv.push('-Deo.sodgExcludes=' + opts.exclude);

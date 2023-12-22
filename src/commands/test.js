@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
-const path = require('path');
+const {mvnw} = require('../mvnw');
 
 /**
  * Command to run all available unit tests.
@@ -31,12 +30,5 @@ const path = require('path');
  * @return {Promise} of compile task
  */
 module.exports = function(opts) {
-  return mvnw([
-    'surefire:test',
-    opts.verbose ? '--errors' : '',
-    opts.verbose ? '' : '--quiet',
-    opts.debug ? '--debug' : '',
-    '-Deo.version=' + opts.parser,
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-  ]);
+  return mvnw(['surefire:test'].concat(flags(opts)));
 };

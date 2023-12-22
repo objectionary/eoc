@@ -23,7 +23,7 @@
  */
 
 const path = require('path');
-const mvnw = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 
 /**
  * Command to parse EO into .XMIR files.
@@ -31,16 +31,7 @@ const mvnw = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  return mvnw([
-    'eo:parse',
-    '-Deo.version=' + opts.parser,
-    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
-    opts.verbose ? '--errors' : '',
-    opts.verbose ? '' : '--quiet',
-    opts.debug ? '--debug' : '',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-    `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
-  ], opts.target, opts.batch).then((r) => {
+  return mvnw(['eo:parse'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
     console.info('EO sources parsed in %s', path.resolve(opts.target));
     return r;
   });

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 const path = require('path');
 
 /**
@@ -32,15 +32,7 @@ const path = require('path');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  return mvnw([
-    'eo:transpile',
-    '-Deo.version=' + opts.parser,
-    opts.verbose ? '--errors' : '',
-    opts.verbose ? '' : '--quiet',
-    opts.debug ? '--debug' : '',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-    `-Deo.generatedDir=${sources}`,
-  ], opts.target, opts.batch).then((r) => {
+  return mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
     console.info('Java sources generated in %s', sources);
     return r;
   });

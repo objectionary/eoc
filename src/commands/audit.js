@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const {mvnw} = require('../mvnw');
 
 /**
  * Command to audit all packages.

@@ -23,7 +23,7 @@
  */
 
 const path = require('path');
-const mvnw = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 
 /**
  * Command to convert .XMIR files into .PHI files.
@@ -31,13 +31,17 @@ const mvnw = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  return mvnw([
-    'eo:phi',
-    '-Deo.version=' + opts.parser,
-    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
-    opts.verbose ? '--errors' : '',
-    opts.verbose ? '' : '--quiet',
-  ], opts.target, opts.batch).then((r) => {
+  return mvnw(
+    ['eo:xmir-to-phi']
+      .concat(flags(opts))
+      .concat(
+        [
+          `-DphiInputDir=${path.resolve(opts.target, '2-optimize')}`,
+          `-DphiOutputDir=${path.resolve(opts.target, 'phi')}`,
+        ]
+      ),
+    opts.target, opts.batch
+  ).then((r) => {
     console.info('XMIR files converted into PHI files at %s', path.resolve(opts.target));
     return r;
   });

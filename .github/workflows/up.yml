@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - run: apt-get -y install jq
+      - run: sudo apt-get -y install jq
       - run: curl https://api.github.com/repos/objectionary/eo/releases/latest --silent | jq -r .tag_name > eo-version.txt
       - uses: peter-evans/create-pull-request@v5
         with:

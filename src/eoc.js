@@ -30,6 +30,7 @@ const clean = require('./commands/clean');
 const parse = require('./commands/parse');
 const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
+const phi = require('./commands/phi');
 const register = require('./commands/register');
 const verify = require('./commands/verify');
 const transpile = require('./commands/transpile');
@@ -142,6 +143,19 @@ program.command('sodg')
         .then((r) => sodg({...program.opts(), ...str}));
     } else {
       sodg({...program.opts(), ...str});
+    }
+  });
+
+program.command('phi')
+  .description('Generate PHI files from XMIR')
+  .action((str, opts) => {
+    clear(str);
+    if (program.opts().alone == undefined) {
+      register(program.opts())
+        .then((r) => assemble(program.opts()))
+        .then((r) => phi(program.opts()));
+    } else {
+      phi(program.opts());
     }
   });
 

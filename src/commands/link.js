@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-const mvnw = require('../mvnw');
+const {mvnw, flags} = require('../mvnw');
 const path = require('path');
 
 /**
@@ -31,14 +31,7 @@ const path = require('path');
  * @return {Promise} of link task
  */
 module.exports = function(opts) {
-  return mvnw([
-    'jar:jar',
-    opts.verbose ? '--errors' : '',
-    opts.verbose ? '' : '--quiet',
-    opts.debug ? '--debug' : '',
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
-    '-Deo.version=' + opts.parser,
-  ], opts.target, opts.batch).then((r) => {
+  return mvnw(['jar:jar'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
     console.info('Executable JAR created at %s', path.resolve(opts.target, 'eoc.jar'));
     return r;
   });

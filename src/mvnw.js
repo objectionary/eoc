@@ -44,13 +44,35 @@ let running = false;
 let beginning;
 
 /**
+ * Prepare options for Maven.
+ * @param {Hash} opts - Opts provided to the "eoc"
+ * @return {Array} of Maven options
+ */
+module.exports.flags = function(opts) {
+  return [
+    '-Deo.version=' + opts.parser,
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
+    opts.verbose ? '--errors' : '',
+    opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
+    `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
+    `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
+    `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
+    `-Deo.placedFormat=csv`,
+    opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
+  ];
+};
+
+/**
  * Run mvnw with provided commands.
  * @param {Hash} args - All arguments to pass to it
  * @param {String} tgt - Path to the target directory
  * @param {Boolean} batch - Is it batch mode (TRUE) or interactive (FALSE)?
  * @return {Promise} of maven execution task
  */
-module.exports = function(args, tgt, batch) {
+module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     target = tgt;
     phase = args[0];

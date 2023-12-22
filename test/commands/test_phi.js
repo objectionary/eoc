@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
@@ -32,19 +31,21 @@ describe('phi', function() {
     home = path.resolve('temp/test-phi/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/phi.eo'), '[] > phi\n');
     const stdout = runSync([
       'phi',
       '--verbose',
       '--track-optimization-steps',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/2-optimize/simple.xmir',
-        'target/phi/simple.phi',
+        'target/2-optimize/phi.xmir',
+        'target/phi/phi.phi',
       ]
     );
     done();
