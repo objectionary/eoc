@@ -38,6 +38,8 @@ module.exports = function(opts) {
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
   ], opts.target, opts.batch).then((r) => {
     console.info('EO program verified in %s', path.resolve(opts.target));
     return r;
