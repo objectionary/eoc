@@ -22,6 +22,6 @@
 
 +alias story
 
-[args...] > program
+[args] > program
   QQ.io.stdout > @
     story

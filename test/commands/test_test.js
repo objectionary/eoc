@@ -35,13 +35,11 @@ describe('test', function() {
       path.resolve(home, 'src/simple-test.eo'),
       [
         '+junit',
-        '+alias org.eolang.hamcrest.assert-that',
         '',
         '[] > simple-comparison-works',
-        '  assert-that > @',
+        '  gt. > @',
         '    10',
-        '    $.greater-than',
-        '      5',
+        '    5',
       ].join('\n')
     );
     const stdout = runSync([

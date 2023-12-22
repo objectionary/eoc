@@ -35,7 +35,7 @@ describe('foreign', function() {
     fs.writeFileSync(
       path.resolve(home, 'src/simple.eo'),
       [
-        '[args...] > app',
+        '[args] > app',
         '  QQ.io.stdout "Hello, world!" > @',
       ].join('\n')
     );
