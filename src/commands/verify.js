@@ -22,33 +22,26 @@
  * SOFTWARE.
  */
 
-const assert = require('assert');
-const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const mvnw = require('../mvnw');
 
-describe('parse', function() {
-  it('parses a simple .EO program', function(done) {
-    home = path.resolve('temp/test-parse/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
-    const stdout = runSync([
-      'parse',
-      '--verbose',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
-      '-s', path.resolve(home, 'src'),
-      '-t', path.resolve(home, 'target'),
-    ]);
-    assertFilesExist(
-      stdout, home,
-      [
-        'target/eo-foreign.json',
-        'target/1-parse/simple.xmir',
-      ]
-    );
-    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
-    done();
+/**
+ * Command to verify .XMIR files.
+ * @param {Hash} opts - All options
+ * @return {Promise} of assemble task
+ */
+module.exports = function(opts) {
+  return mvnw([
+    'eo:verify',
+    '-Deo.version=' + opts.parser,
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
+    opts.verbose ? '--errors' : '',
+    opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
+    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
+  ], opts.target, opts.batch).then((r) => {
+    console.info('EO program verified in %s', path.resolve(opts.target));
+    return r;
   });
-});
+};

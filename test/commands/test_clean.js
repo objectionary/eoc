@@ -36,7 +36,7 @@ describe('clean', function() {
     fs.rmSync(eo, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.mkdirSync(eo, {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/clean.eo'), '[] > clean\n');
     const stdout = runSync([
       'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'), '--cached',
     ]);

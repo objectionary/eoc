@@ -32,15 +32,18 @@ const path = require('path');
  * @param {Hash} opts - All options
  */
 module.exports = function(obj, args, opts) {
-  spawn(
-    `java`,
-    [
-      '-Dfile.encoding=UTF-8',
-      `-Xss${opts.stack}`,
-      '-jar', path.resolve(opts.target, 'eoc.jar'),
-      obj,
-      ...args,
-    ],
-    {stdio: 'inherit'}
-  );
+  const params = [
+    '-Dfile.encoding=UTF-8',
+    `-Xss${opts.stack}`,
+    '-jar', path.resolve(opts.target, 'eoc.jar'),
+    obj,
+    ...args,
+  ];
+  console.debug('+ java ' + params.join(' '));
+  spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
+    if (code !== 0) {
+      console.error(`Java exited with #${code} code`);
+      process.exit(1);
+    }
+  });
 };

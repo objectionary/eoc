@@ -31,36 +31,28 @@ describe('dataize', function() {
   it('runs a single executable .JAR and dataizes an object', function(done) {
     home = path.resolve('temp/test-run/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
+      path.resolve(home, 'src/foo/bar/simple.eo'),
       [
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
-        '+alias org.eolang.txt.sprintf',
-        '+alias org.eolang.collections.list',
         '',
-        '[args...] > app',
-        '  seq > @',
-        '    reduced.',
-        '      list',
-        '        * 0 1 2 3 4 5 6 7 8 9 10 0 1 2 3 4 5 6 7 8 9 10 0 1 2 3 4 5 6 7 8 9 10',
-        '      TRUE',
-        '      [a x]',
-        '        TRUE > @',
-        '    stdout',
-        '      sprintf "Hello, %s!" (args.at 0)',
+        '[args] > simple',
+        '  stdout "Hello, world!\\n" > @',
       ].join('\n')
     );
     const stdout = runSync([
-      'dataize', 'foo.bar.app', 'Jeff',
+      'dataize', 'foo.bar.simple',
       '--verbose',
       '--stack=64M',
       '--clean',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes('Hello, Jeff!'), stdout);
+    assert(stdout.includes('Hello, world!'), stdout);
     assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();

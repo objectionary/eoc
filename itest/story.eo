@@ -21,10 +21,4 @@
 # SOFTWARE.
 
 [] > story
-  QQ.txt.sprintf > @
-    "Hello, Mr. #%d!\n"
-    as-int.
-      QQ.math.number
-        times.
-          QQ.math.random.pseudo
-          100.0
+  "Hello, Jeff" > @

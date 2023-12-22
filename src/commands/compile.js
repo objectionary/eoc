@@ -36,11 +36,13 @@ module.exports = function(opts) {
     'compiler:compile',
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     `-Dmaven.compiler.source=1.8`,
     `-Dmaven.compiler.target=1.8`,
     `-Deo.targetDir=${target}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     '-Deo.version=' + opts.parser,
+    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
   ], opts.target, opts.batch).then((r) => {
     console.info('Java .class files compiled into %s', target);
     return r;

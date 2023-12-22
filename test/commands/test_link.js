@@ -31,29 +31,31 @@ describe('link', function() {
   it('compiles a simple .EO program into an executable .JAR', function(done) {
     home = path.resolve('temp/test-link/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
+      path.resolve(home, 'src/foo/bar/link.eo'),
       [
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
         '',
-        '[args...] > app',
+        '[args] > link',
         '  stdout "Hello, world!" > @',
       ].join('\n')
     );
     const stdout = runSync([
       'link',
       '--verbose',
+      '--parser=0.34.1',
+      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOapp.java',
+        'target/generated-sources/EOfoo/EObar/EOlink.java',
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOapp.class',
+        'target/classes/EOfoo/EObar/EOlink.class',
         'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOint.class',
         'target/eoc.jar',

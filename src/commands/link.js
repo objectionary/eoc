@@ -35,6 +35,7 @@ module.exports = function(opts) {
     'jar:jar',
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
+    opts.debug ? '--debug' : '',
     `-Deo.targetDir=${path.resolve(opts.target)}`,
     '-Deo.version=' + opts.parser,
   ], opts.target, opts.batch).then((r) => {
