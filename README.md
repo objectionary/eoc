@@ -57,6 +57,7 @@ There are also commands that help manipulate with XMIR and EO sources
   * `sodg` generates SODG from XMIR, further rederable as XML or [Dot](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29)
   * `phi` generates PHI files from XMIR
   * `unphi` generates XMIR files from PHI files
+  * `print` generates EO files from PHI files
   * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
   * <del>`demu` removes `cage` and `memory` objects</del>
   * <del>`dejump` removes `goto` objects</del>
