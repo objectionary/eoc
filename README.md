@@ -49,11 +49,14 @@ You can also do many other things with `eoc` commands
   * `dataize` dataizes a single object from the executable binary
   * `test` dataizes all visible unit tests
 
-There are also commands that help manipulate with XMIR and EO sources (some of them are not implemented as of yet):
+There are also commands that help manipulate with XMIR and EO sources 
+(the list is not completed, while some of them are not implemented as of yet):
 
   * `audit` inspects all required packages and reports their status
   * `foreign` inspects all objects found in the program after `assemble` step
   * `sodg` generates SODG from XMIR, further rederable as XML or [Dot](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29)
+  * `phi` generates PHI files from XMIR
+  * `unphi` generates XMIR files from PHI files
   * <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
   * <del>`demu` removes `cage` and `memory` objects</del>
   * <del>`dejump` removes `goto` objects</del>

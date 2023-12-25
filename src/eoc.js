@@ -31,6 +31,7 @@ const parse = require('./commands/parse');
 const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
 const phi = require('./commands/phi');
+const unphi = require('./commands/unphi');
 const register = require('./commands/register');
 const verify = require('./commands/verify');
 const transpile = require('./commands/transpile');
@@ -157,6 +158,13 @@ program.command('phi')
     } else {
       phi(program.opts());
     }
+  });
+
+program.command('unphi')
+  .description('Generate XMIR files from PHI files')
+  .action((str, opts) => {
+    clear(str);
+    unphi(program.opts());
   });
 
 program.command('verify')
