@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const {mvnw, flags} = require('../mvnw');
 const path = require('path');
 
@@ -33,7 +34,7 @@ const path = require('path');
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
   return mvnw(['compiler:compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java .class files compiled into %s', target);
+    console.info('Java .class files compiled into %s', rel(target));
     return r;
   });
 };

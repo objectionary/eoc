@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 
@@ -55,7 +56,7 @@ module.exports = function(opts) {
     argv.push('-Deo.generateDotFiles');
   }
   return mvnw(argv, opts.target, opts.batch).then((r) => {
-    console.info('SODG files generated in %s', path.resolve(opts.target));
+    console.info('SODG files generated in %s', rel(path.resolve(opts.target)));
     return r;
   });
 };

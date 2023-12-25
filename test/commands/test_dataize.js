@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
@@ -53,7 +54,7 @@ describe('dataize', function() {
       '-t', path.resolve(home, 'target'),
     ]);
     assert(stdout.includes('Hello, world!'), stdout);
-    assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
+    assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });

@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 
@@ -31,8 +32,10 @@ const {mvnw, flags} = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
+  const target = path.resolve(opts.target);
+  console.info('Assembling into %s', rel(target));
   return mvnw(['eo:assemble'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO program assembled in %s', path.resolve(opts.target));
+    console.info('EO program assembled in %s', rel(target));
     return r;
   });
 };

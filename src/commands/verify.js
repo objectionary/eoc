@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 
@@ -32,7 +33,7 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   return mvnw(['eo:verify'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO program verified in %s', path.resolve(opts.target));
+    console.info('EO program verified in %s', rel(path.resolve(opts.target)));
     return r;
   });
 };

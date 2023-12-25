@@ -24,6 +24,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const rel = require('relative');
 const readline = require('readline');
 const {spawn} = require('child_process');
 const colors = require('colors');
@@ -49,14 +50,18 @@ let beginning;
  * @return {Array} of Maven options
  */
 module.exports.flags = function(opts) {
+  const sources = path.resolve(opts.sources);
+  console.debug('Sources in %s', rel(sources));
+  const target = path.resolve(opts.target);
+  console.debug('Target in %s', rel(target));
   return [
     '-Deo.version=' + opts.parser,
     '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
-    `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
-    `-Deo.targetDir=${path.resolve(opts.target)}`,
+    `-Deo.sourcesDir=${sources}`,
+    `-Deo.targetDir=${target}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,

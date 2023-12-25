@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -33,12 +34,12 @@ const os = require('os');
 module.exports = function(opts) {
   const home = path.resolve(opts.target);
   fs.rmSync(home, {recursive: true, force: true});
-  console.info('The directory %s deleted', home);
+  console.info('The directory %s deleted', rel(home));
   if (opts.cached) {
     const eo = path.join(os.homedir(), '.eo');
     if (fs.existsSync(eo)) {
       fs.rmSync(eo, {recursive: true});
-      console.info('The directory ~/.eo was deleted');
+      console.info('The directory %s was deleted', eo);
     }
   }
 };

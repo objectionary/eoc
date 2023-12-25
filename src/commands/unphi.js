@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 
@@ -32,9 +33,9 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   const input = path.resolve(opts.target, 'phi');
-  console.debug('Reading from %s', input);
+  console.debug('Reading .PHI files from %s', rel(input));
   const output = path.resolve(opts.target, 'unphi');
-  console.debug('Writing into %s', output);
+  console.debug('Writing .XMIR files to %s', rel(output));
   return mvnw(
     ['eo:phi-to-xmir']
       .concat(flags(opts))
@@ -46,7 +47,7 @@ module.exports = function(opts) {
       ),
     opts.target, opts.batch
   ).then((r) => {
-    console.info('PHI files converted into XMIR files at %s', output);
+    console.info('PHI files converted into XMIR files at %s', rel(output));
     return r;
   });
 };

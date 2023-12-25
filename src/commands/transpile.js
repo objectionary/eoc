@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const {mvnw, flags} = require('../mvnw');
 const path = require('path');
 
@@ -33,7 +34,7 @@ const path = require('path');
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   return mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java sources generated in %s', sources);
+    console.info('Java sources generated in %s', rel(sources));
     return r;
   });
 };

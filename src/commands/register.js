@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const {mvnw, flags} = require('../mvnw');
 const path = require('path');
 
@@ -33,7 +34,7 @@ const path = require('path');
 module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
   return mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO objects registered in %s', foreign);
+    console.info('EO objects registered in %s', rel(foreign));
     return r;
   });
 };

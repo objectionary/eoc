@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -100,7 +101,7 @@ describe('compile', function() {
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes(`The directory ${path.resolve(home, 'target')} deleted`), stdout);
+    assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
     done();
   });
 });

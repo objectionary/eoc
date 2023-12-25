@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 
@@ -32,9 +33,9 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   const input = path.resolve(opts.target, '2-optimize');
-  console.debug('Reading from %s', input);
+  console.debug('Reading from %s', rel(input));
   const output = path.resolve(opts.target, 'print');
-  console.debug('Writing into %s', output);
+  console.debug('Writing into %s', rel(output));
   return mvnw(
     ['eo:print']
       .concat(flags(opts))
@@ -46,7 +47,7 @@ module.exports = function(opts) {
       ),
     opts.target, opts.batch
   ).then((r) => {
-    console.info('XMIR files converted into EO files at %s', output);
+    console.info('XMIR files converted into EO files at %s', rel(output));
     return r;
   });
 };
