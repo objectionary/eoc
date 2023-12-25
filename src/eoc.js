@@ -32,6 +32,7 @@ const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
 const phi = require('./commands/phi');
 const unphi = require('./commands/unphi');
+const print = require('./commands/print');
 const register = require('./commands/register');
 const verify = require('./commands/verify');
 const transpile = require('./commands/transpile');
@@ -165,6 +166,13 @@ program.command('unphi')
   .action((str, opts) => {
     clear(str);
     unphi(program.opts());
+  });
+
+program.command('print')
+  .description('Generate EO files from XMIR files')
+  .action((str, opts) => {
+    clear(str);
+    print(program.opts());
   });
 
 program.command('verify')
