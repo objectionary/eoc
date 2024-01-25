@@ -5,7 +5,6 @@ coverage/
 .eoc/
 mochawesome-report/
 coverage.html
-package-lock.json
 target/
 .mvn/
 temp/
