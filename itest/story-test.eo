@@ -23,6 +23,7 @@
 +junit
 +alias story
 
+# Simple test
 [] > story-is-not-empty
   gt. > @
     story.length
