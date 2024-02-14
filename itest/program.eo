@@ -22,6 +22,7 @@
 
 +alias story
 
+# Sample object
 [args] > program
   QQ.io.stdout > @
     story
