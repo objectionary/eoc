@@ -26,36 +26,43 @@ const rel = require('relative');
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const {runSync} = require('../helpers');
+const {runSync, parserVersion, homeHash} = require('../helpers');
 
-describe('dataize', function() {
-  it('runs a single executable .JAR and dataizes an object', function(done) {
-    home = path.resolve('temp/test-run/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
-    fs.writeFileSync(
-      path.resolve(home, 'src/foo/bar/simple.eo'),
-      [
-        '+package foo.bar',
-        '+alias org.eolang.io.stdout',
-        '',
-        '[args] > simple',
-        '  stdout "Hello, world!\\n" > @',
-      ].join('\n')
-    );
-    const stdout = runSync([
-      'dataize', 'foo.bar.simple',
-      '--verbose',
-      '--stack=64M',
-      '--clean',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
-      '-s', path.resolve(home, 'src'),
-      '-t', path.resolve(home, 'target'),
-    ]);
-    assert(stdout.includes('Hello, world!'), stdout);
-    assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
-    assert(!fs.existsSync(path.resolve('../../mvnw/target')));
-    done();
+const versions = new Map([
+  [parserVersion, homeHash],
+  ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
+]);
+versions.forEach(function(hash, version) {
+  describe('dataize', function() {
+    it('dataizes with ' + version, function(done) {
+      home = path.resolve('temp/test-dataize/' + version + '/simple');
+      fs.rmSync(home, {recursive: true, force: true});
+      fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
+      fs.writeFileSync(
+        path.resolve(home, 'src/foo/bar/simple.eo'),
+        [
+          '+package foo.bar',
+          '+alias org.eolang.io.stdout',
+          '',
+          '[args] > simple',
+          '  stdout "Hello, world!\\n" > @',
+        ].join('\n')
+      );
+      const stdout = runSync([
+        'dataize', 'foo.bar.simple',
+        '--verbose',
+        '--stack=64M',
+        '--clean',
+        '--parser=' + version,
+        '--hash=' + hash,
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]);
+      assert(stdout.includes('Hello, world!'), stdout);
+      assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
+      assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+      done();
+    });
   });
 });
+
