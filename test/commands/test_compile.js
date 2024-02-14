@@ -26,7 +26,7 @@ const rel = require('relative');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
 
 describe('compile', function() {
   it('compiles a simple .EO program into Java bytecode .class files', function(done) {
@@ -36,8 +36,8 @@ describe('compile', function() {
     fs.writeFileSync(path.resolve(home, 'src/compile.eo'), simple('compile'));
     const stdout = runSync([
       'compile',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -73,8 +73,8 @@ describe('compile', function() {
     const stdout = runSync([
       'compile',
       '--verbose',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -96,8 +96,8 @@ describe('compile', function() {
     const stdout = runSync([
       'compile',
       '--clean',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

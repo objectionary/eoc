@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
 
 describe('transpile', function() {
   it('transpiles a simple .EO program', function(done) {
@@ -35,8 +35,8 @@ describe('transpile', function() {
     const stdout = runSync([
       'transpile',
       '--verbose',
-      '--parser=0.34.1',
-      '--hash=1d605bd872f27494551e9dd2341b9413d0d96d89',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
