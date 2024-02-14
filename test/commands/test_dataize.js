@@ -32,7 +32,7 @@ const versions = new Map([
   [parserVersion, homeHash],
   ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
 ]);
-versions.forEach(function (hash, version) {
+versions.forEach(function(hash, version) {
   describe('dataize', function() {
     it('dataizes with ' + version, function(done) {
       home = path.resolve('temp/test-dataize/' + version + '/simple');
