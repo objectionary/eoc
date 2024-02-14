@@ -25,7 +25,7 @@
 const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
-const {gte} = require('../demand')
+const {gte} = require('../demand');
 
 /**
  * Command to convert .PHI files into .XMIR files.

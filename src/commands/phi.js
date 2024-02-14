@@ -24,7 +24,7 @@
 
 const rel = require('relative');
 const path = require('path');
-const {gte} = require('../demand')
+const {gte} = require('../demand');
 const {mvnw, flags} = require('../mvnw');
 
 /**

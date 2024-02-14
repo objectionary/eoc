@@ -26,10 +26,17 @@ const semver = require('semver');
 
 /**
  * Only if provided version is the required one or younger.
+ *
+ * @param {String} subject - What is being checked
+ * @param {String} current - Current version
+ * @param {String} min - Minimal expected version
  */
 module.exports.gte = function(subject, current, min) {
   if (semver.lt(current, min)) {
-    console.error('%s is required to have version %s or higher, while you use %s', subject, min, current);
+    console.error(
+      '%s is required to have version %s or higher, while you use %s',
+      subject, min, current
+    );
     process.exit(1);
   }
-}
+};

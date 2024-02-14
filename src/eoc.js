@@ -56,6 +56,8 @@ if (process.argv.includes('--latest')) {
   console.debug('EO parser ' + parser + '; use the --latest flag if you need a freshier one');
 }
 
+const hash = fs.readFileSync(path.join(__dirname, '../home-hash.txt'), 'utf8');
+
 const version = require('./version');
 program
   .name('eoc')
@@ -68,7 +70,7 @@ program
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
-  .option('--hash <hex>', 'Hash in objectionary/home to compile against', parser)
+  .option('--hash <hex>', 'Hash in objectionary/home to compile against', hash)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
