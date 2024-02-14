@@ -38,7 +38,7 @@ describe('clean', function() {
     fs.mkdirSync(eo, {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/clean.eo'), '[] > clean\n');
     const stdout = runSync([
-      'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'), '--cached',
+      'clean', '-s', path.resolve(home, 'src'), '-t', path.resolve(home, 'target'), '--global',
     ]);
     assert(!fs.existsSync(path.resolve(home, 'target')), stdout);
     assert(!fs.existsSync(eo), stdout);

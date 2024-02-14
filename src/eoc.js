@@ -93,7 +93,7 @@ program.command('foreign')
 
 program
   .command('clean')
-  .option('--cached', 'delete ~/.eo directory')
+  .option('--global', 'delete ~/.eo directory')
   .description('Delete all temporary files')
   .action((str, opts) => {
     clean({...program.opts(), ...str});
