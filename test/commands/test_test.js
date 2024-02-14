@@ -36,6 +36,7 @@ describe('test', function() {
       [
         '+junit',
         '',
+        '# sample',
         '[] > simple-comparison-works',
         '  gt. > @',
         '    10',

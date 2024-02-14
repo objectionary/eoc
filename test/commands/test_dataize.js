@@ -44,6 +44,7 @@ versions.forEach(function(hash, version) {
           '+package foo.bar',
           '+alias org.eolang.io.stdout',
           '',
+          '# sample',
           '[args] > simple',
           '  stdout "Hello, world!\\n" > @',
         ].join('\n')

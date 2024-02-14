@@ -32,7 +32,7 @@ describe('assemble', function() {
     home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/assemble.eo'), '[] > assemble\n');
+    fs.writeFileSync(path.resolve(home, 'src/assemble.eo'), '# sample\n[] > assemble\n');
     const stdout = runSync([
       'assemble',
       '--verbose',

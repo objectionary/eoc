@@ -31,7 +31,7 @@ describe('phi', function() {
     home = path.resolve('temp/test-phi/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/phi.eo'), '[] > phi\n');
+    fs.writeFileSync(path.resolve(home, 'src/phi.eo'), '# sample\n[] > phi\n');
     const stdout = runSync([
       'phi',
       '--verbose',

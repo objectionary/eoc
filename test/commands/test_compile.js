@@ -65,9 +65,9 @@ describe('compile', function() {
         '+package foo.bar',
         '+junit',
         '',
+        '# This is a sample object',
         '[] > simple-test-compile',
         '  TRUE > @',
-        '',
       ].join('\n')
     );
     const stdout = runSync([
@@ -116,6 +116,7 @@ function simple(name) {
     '+package foo.bar',
     '+alias org.eolang.io.stdout',
     '',
+    '# This is a simple object',
     `[args] > ${name}`,
     '  stdout "Hello, world!" > @',
   ].join('\n');

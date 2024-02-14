@@ -32,7 +32,7 @@ describe('sodg', function() {
     home = path.resolve('temp/test-sodg/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
     const stdout = runSync([
       'sodg',
       '--verbose',

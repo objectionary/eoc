@@ -22,34 +22,14 @@
  * SOFTWARE.
  */
 
-const rel = require('relative');
-const path = require('path');
-const {mvnw, flags} = require('../mvnw');
-const {gte} = require('../demand')
+const semver = require('semver');
 
 /**
- * Command to convert .PHI files into .XMIR files.
- * @param {Hash} opts - All options
- * @return {Promise} of assemble task
+ * Only if provided version is the required one or younger.
  */
-module.exports = function(opts) {
-  gte('EO parser', opts.parser, '0.35.2');
-  const input = path.resolve(opts.target, 'phi');
-  console.debug('Reading .PHI files from %s', rel(input));
-  const output = path.resolve(opts.target, 'unphi');
-  console.debug('Writing .XMIR files to %s', rel(output));
-  return mvnw(
-    ['eo:phi-to-xmir']
-      .concat(flags(opts))
-      .concat(
-        [
-          `-Deo.unphiInputDir=${input}`,
-          `-Deo.unphiOutputDir=${output}`,
-        ]
-      ),
-    opts.target, opts.batch
-  ).then((r) => {
-    console.info('PHI files converted into XMIR files at %s', rel(output));
-    return r;
-  });
-};
+module.exports.gte = function(subject, current, min) {
+  if (semver.lt(current, min)) {
+    console.error('%s is required to have version %s or higher, while you use %s', subject, min, current);
+    process.exit(1);
+  }
+}

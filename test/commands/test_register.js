@@ -32,7 +32,7 @@ describe('register', function() {
     home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
     const stdout = runSync([
       'register',
       '--verbose',

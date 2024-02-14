@@ -31,7 +31,7 @@ describe('transpile', function() {
     home = path.resolve('temp/test-transpile/transpile');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/transpile.eo'), '[] > transpile\n');
+    fs.writeFileSync(path.resolve(home, 'src/transpile.eo'), '# sample\n[] > transpile\n');
     const stdout = runSync([
       'transpile',
       '--verbose',

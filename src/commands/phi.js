@@ -24,6 +24,7 @@
 
 const rel = require('relative');
 const path = require('path');
+const {gte} = require('../demand')
 const {mvnw, flags} = require('../mvnw');
 
 /**
@@ -32,6 +33,7 @@ const {mvnw, flags} = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
+  gte('EO parser', opts.parser, '0.35.2');
   const target = path.resolve(opts.target);
   const input = path.resolve(opts.target, '2-optimize');
   console.debug('Reading .XMIR files from %s', rel(input));
@@ -42,8 +44,8 @@ module.exports = function(opts) {
       .concat(flags(opts))
       .concat(
         [
-          `-DphiInputDir=${input}`,
-          `-DphiOutputDir=${output}`,
+          `-Deo.phiInputDir=${input}`,
+          `-Deo.phiOutputDir=${output}`,
         ]
       ),
     opts.target, opts.batch

@@ -38,6 +38,7 @@ describe('link', function() {
         '+package foo.bar',
         '+alias org.eolang.io.stdout',
         '',
+        '# sample object'
         '[args] > link',
         '  stdout "Hello, world!" > @',
       ].join('\n')
