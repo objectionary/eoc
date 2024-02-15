@@ -80,7 +80,7 @@ program
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-optimization-steps', 'Save intermediate XMIR files')
-  .option('-c, --clean', 'Delete ./.eoc directory')
+  .option('-c, --clean', 'Delete .eoc directory before running a command')
   .option('--debug', 'Print ALL debug messages, heavily overloading the log')
   .option('--verbose', 'Print debug messages and full output of child processes');
 
