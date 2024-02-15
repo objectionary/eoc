@@ -33,7 +33,7 @@
     "colors": "1.4.0",
     "commander": "12.0.0",
     "fast-xml-parser": "4.3.4",
-    "node": "21.6.1",
+    "node": "21.6.2",
     "relative": "3.0.2",
     "semver": "7.6.0",
     "sync-request": "6.1.0",
