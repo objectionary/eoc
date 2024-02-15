@@ -67,7 +67,8 @@ program
   .summary('EO command line toolkit')
   .description('EO command-line toolkit (' + version.what + ' built on ' + version.when + ')')
   .version(version.what, '-v, --version', 'Output the version number')
-  .helpOption('-?, --help', 'Print this help information');
+  .helpOption('-?, --help', 'Print this help information')
+  .configureHelp({sortOptions: true, sortSubcommands: true});
 
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
