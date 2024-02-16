@@ -49,8 +49,8 @@ if (process.argv.includes('--verbose')) {
 
 const fs = require('fs');
 const path = require('path');
-const hash = fs.readFileSync(path.join(__dirname, '../home-hash.txt'), 'utf8');
-let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8');
+const hash = fs.readFileSync(path.join(__dirname, '../home-hash.txt'), 'utf8').trim();
+let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
 if (process.argv.includes('--latest')) {
   parser = require('./parser-version').get();
   // Maybe here we should also go to GITHUB, find out what is the
