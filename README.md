@@ -7,7 +7,6 @@
 [![node-current](https://img.shields.io/node/v/eolang)](https://www.npmjs.com/package/eolang)
 [![PDD status](http://www.0pdd.com/svg?name=objectionary/eoc)](http://www.0pdd.com/p?name=objectionary/eoc)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
-![Lines of code](https://img.shields.io/tokei/lines/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
 First, you install [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
