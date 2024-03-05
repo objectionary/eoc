@@ -167,10 +167,11 @@ program.command('phi')
   });
 
 program.command('unphi')
+  .option('--tests', 'Add "+tests" meta to result XMIR files')
   .description('Generate XMIR files from PHI files')
   .action((str, opts) => {
     clear(str);
-    unphi(program.opts());
+    unphi({...program.opts(), ...str});
   });
 
 program.command('print')

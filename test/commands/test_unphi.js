@@ -25,6 +25,7 @@
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const assert = require('assert');
 
 describe('unphi', function() {
   it('converts PHI files to XMIR files', function(done) {
@@ -36,15 +37,20 @@ describe('unphi', function() {
       'unphi',
       '--verbose',
       '--track-optimization-steps',
+      '--tests',
       '--parser=' + parserVersion,
       '--hash=' + homeHash,
       '-t', path.resolve(home, 'target'),
     ]);
+    const unphied = 'target/unphi/app.xmir';
     assertFilesExist(
       stdout, home,
-      [
-        'target/unphi/app.xmir',
-      ]
+      [unphied]
+    );
+    assert.ok(
+      fs.readFileSync(path.resolve(home, unphied)).toString().includes(
+        '<head>tests</head>'
+      )
     );
     done();
   });

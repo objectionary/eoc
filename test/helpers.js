@@ -25,7 +25,7 @@
 // When you upgrade them, don't forget to place old values to the
 // "test_dataize.js" table of versions, in order to make sure we
 // do test dataization with all possible old versions.
-module.exports.parserVersion = '0.35.2';
+module.exports.parserVersion = '0.35.6';
 module.exports.homeHash = '130afdd1456a0cbafd52aee8d7bc612e1faac547';
 
 /**

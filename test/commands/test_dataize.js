@@ -30,6 +30,7 @@ const {runSync, parserVersion, homeHash} = require('../helpers');
 
 const versions = new Map([
   [parserVersion, homeHash],
+  ['0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
   ['0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
   ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
 ]);

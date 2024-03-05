@@ -45,6 +45,7 @@ module.exports = function(opts) {
         [
           `-Deo.unphiInputDir=${input}`,
           `-Deo.unphiOutputDir=${output}`,
+          opts.tests ? '-Deo.unphiMetas=+tests' : ''
         ]
       ),
     opts.target, opts.batch
