@@ -32,7 +32,7 @@
   "dependencies": {
     "colors": "1.4.0",
     "commander": "12.0.0",
-    "fast-xml-parser": "4.3.5",
+    "fast-xml-parser": "4.3.6",
     "node": "21.7.1",
     "relative": "3.0.2",
     "semver": "7.6.0",
