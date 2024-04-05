@@ -9,3 +9,4 @@ target/
 .mvn/
 temp/
 *.tgz
+mvnw/bin

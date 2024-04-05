@@ -44,6 +44,8 @@ let target;
 let running = false;
 let beginning;
 
+module.exports.shell = shell;
+
 /**
  * Prepare options for Maven.
  * @param {Hash} opts - Opts provided to the "eoc"
