@@ -168,7 +168,7 @@ function print() {
   function count(dir, curr) {
     if (fs.existsSync(dir)) {
       for (const f of fs.readdirSync(dir)) {
-        next = path.join(dir, f);
+        const next = path.join(dir, f);
         if (fs.statSync(next).isDirectory()) {
           curr = count(next, curr);
         } else {
