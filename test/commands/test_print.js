@@ -28,7 +28,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('print', function() {
   it('converts XMIR files to EO files', function(done) {
-    home = path.resolve('temp/test-print/simple');
+    const home = path.resolve('temp/test-print/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'target/2-optimize'), {recursive: true});
     fs.writeFileSync(

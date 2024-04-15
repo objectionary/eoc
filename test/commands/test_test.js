@@ -28,7 +28,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('test', function() {
   it('executes a single unit test', function(done) {
-    home = path.resolve('temp/test-test/simple');
+    const home = path.resolve('temp/test-test/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(

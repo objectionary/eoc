@@ -29,7 +29,7 @@ const assert = require('assert');
 
 describe('unphi', function() {
   it('converts PHI files to XMIR files', function(done) {
-    home = path.resolve('temp/test-unphi/simple');
+    const home = path.resolve('temp/test-unphi/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'target/phi'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'target/phi/app.phi'), '{ ⟦ app ↦ ⟦ ⟧ ⟧ }');

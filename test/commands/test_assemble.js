@@ -29,7 +29,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('assemble', function() {
   it('assembles a simple .EO program', function(done) {
-    home = path.resolve('temp/test-assemble/simple');
+    const home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/assemble.eo'), '# sample\n[] > assemble\n');

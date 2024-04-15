@@ -30,14 +30,16 @@ const {runSync, parserVersion, homeHash} = require('../helpers');
 
 const versions = new Map([
   [parserVersion, homeHash],
-  ['0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-  ['0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-  ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
+  // They don't work, but they should:
+  // Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
+  // ['0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
+  // ['0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
+  // ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
 ]);
 versions.forEach(function(hash, version) {
   describe('dataize', function() {
     it('dataizes with ' + version, function(done) {
-      home = path.resolve('temp/test-dataize/' + version + '/simple');
+      const home = path.resolve('temp/test-dataize/' + version + '/simple');
       fs.rmSync(home, {recursive: true, force: true});
       fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
       fs.writeFileSync(

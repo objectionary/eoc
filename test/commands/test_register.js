@@ -29,7 +29,7 @@ const {runSync, assertFilesExist} = require('../helpers');
 
 describe('register', function() {
   it('registers a simple .EO program', function(done) {
-    home = path.resolve('temp/test-register/simple');
+    const home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');

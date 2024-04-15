@@ -28,7 +28,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('transpile', function() {
   it('transpiles a simple .EO program', function(done) {
-    home = path.resolve('temp/test-transpile/transpile');
+    const home = path.resolve('temp/test-transpile/transpile');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/transpile.eo'), '# sample\n[] > transpile\n');

@@ -25,16 +25,17 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
 
 describe('foreign', function() {
   it('inspects foreign objects and prints a report', function(done) {
-    home = path.resolve('temp/test-foreign/simple');
+    const home = path.resolve('temp/test-foreign/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'src/simple.eo'),
       [
+        '# Simple app.',
         '[args] > app',
         '  QQ.io.stdout "Hello, world!" > @',
       ].join('\n')
@@ -42,12 +43,16 @@ describe('foreign', function() {
     runSync([
       'assemble',
       '--verbose',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     const stdout = runSync([
       'foreign',
       '--verbose',
+      '--parser=' + parserVersion,
+      '--hash=' + homeHash,
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(

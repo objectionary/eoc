@@ -29,7 +29,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('link', function() {
   it('compiles a simple .EO program into an executable .JAR', function(done) {
-    home = path.resolve('temp/test-link/simple');
+    const home = path.resolve('temp/test-link/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(

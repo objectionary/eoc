@@ -30,7 +30,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('compile', function() {
   it('compiles a simple .EO program into Java bytecode .class files', function(done) {
-    home = path.resolve('temp/test-compile/simple');
+    const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/compile.eo'), simple('compile'));
@@ -56,7 +56,7 @@ describe('compile', function() {
   });
 
   it('compiles a simple .EO unit test into Java bytecode .class files', function(done) {
-    home = path.resolve('temp/test-compile/junit');
+    const home = path.resolve('temp/test-compile/junit');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
@@ -89,7 +89,7 @@ describe('compile', function() {
   });
 
   it('Cleans and compiles a simple .EO program', function(done) {
-    home = path.resolve('temp/test-compile/simple');
+    const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/compile2.eo'), simple('compile2'));

@@ -29,7 +29,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('parse', function() {
   it('parses a simple .EO program', function(done) {
-    home = path.resolve('temp/test-parse/simple');
+    const home = path.resolve('temp/test-parse/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');

@@ -28,7 +28,7 @@ const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers
 
 describe('phi', function() {
   it('converts XMIR files to PHI files', function(done) {
-    home = path.resolve('temp/test-phi/simple');
+    const home = path.resolve('temp/test-phi/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/phi.eo'), '# sample\n[] > phi\n');
