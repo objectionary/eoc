@@ -7,7 +7,7 @@
     "comma-dangle": "off",
     "indent": [ "error", 2 ],
     "max-len": [ "error", { "code": 100 } ],
-    "no-implicit-globals": "warn"
+    "no-implicit-globals": "off"
   },
   "parserOptions": {
     "ecmaVersion": 2019
