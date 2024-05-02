@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-const {mvnw} = require('../src/mvnw');
+const { mvnw } = require("../src/mvnw");
 
-describe('mvnw', function() {
-  it('prints Maven own version', function(done) {
-    const opts = {batch: true};
-    mvnw(['--version', '--quiet'], null, opts.batch);
+describe("mvnw", function() {
+  it("prints Maven own version", function(done) {
+    const opts = { batch: true };
+    mvnw(["--version", "--quiet"], null, opts.batch);
     done();
   });
 });
