@@ -32,7 +32,7 @@ while IFS= read -r -d $'\0' file; do
     if [[ -n "$year_line" ]]; then
         # Extract year assuming the year is after 'Copyright (c)'
         year=$(echo "$year_line" | grep -E -oh "[0-9]{4}-[0-9]{4}")
-        year=$(echo $year | awk -F'-' '{print $2}')
+        year=$(echo "$year" | awk -F'-' '{print $2}')
 
         # Check if the extracted year is not equal to the current year
         if [[ "$year" -ne "$current_year" ]]; then
