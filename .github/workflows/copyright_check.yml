@@ -1,0 +1,17 @@
+---
+
+name: copyright
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  copyright:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: /bin/bash check_copyright.sh
