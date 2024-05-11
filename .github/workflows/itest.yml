@@ -36,23 +36,23 @@ jobs:
         node: [12, 16]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: ${{ matrix.java }}
-    - run: npm install
-    - run: |
-        cd itest
-        p=0.36.0
-        t=0.36.0
-        node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-          dataize program
-        node ../src/eoc.js "--parser=$p" "--home-tag=$t" --alone \
-          --batch dataize program
-        node ../src/eoc.js clean
-        node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-          test
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java }}
+      - run: npm install
+      - run: |
+          cd itest
+          p=0.36.0
+          t=0.36.0
+          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
+            dataize program
+          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --alone \
+            --batch dataize program
+          node ../src/eoc.js clean
+          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
+            test
