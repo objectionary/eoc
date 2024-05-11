@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('link', function() {
   it('compiles a simple .EO program into an executable .JAR', function(done) {
@@ -47,7 +47,7 @@ describe('link', function() {
       'link',
       '--verbose',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

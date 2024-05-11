@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('sodg', function() {
   it('generates SODG files for a simple .EO program', function(done) {
@@ -36,7 +36,7 @@ describe('sodg', function() {
     const stdout = runSync([
       'sodg',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '--verbose',
       '--dot',
       '--include=simple',

@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('test', function() {
   it('executes a single unit test', function(done) {
@@ -47,7 +47,7 @@ describe('test', function() {
       'test',
       '--verbose',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

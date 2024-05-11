@@ -26,17 +26,17 @@ const rel = require('relative');
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const {runSync, parserVersion, homeHash} = require('../helpers');
+const {runSync, parserVersion, homeTag} = require('../helpers');
 
 const versions = new Map([
-  [parserVersion, homeHash],
+  [parserVersion, homeTag],
   // They don't work, but they should:
   // Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
   // ['0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
   // ['0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
   // ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
 ]);
-versions.forEach(function(hash, version) {
+versions.forEach(function(tag, version) {
   describe('dataize', function() {
     it('dataizes with ' + version, function(done) {
       const home = path.resolve('temp/test-dataize/' + version + '/simple');
@@ -59,7 +59,7 @@ versions.forEach(function(hash, version) {
         '--stack=64M',
         '--clean',
         '--parser=' + version,
-        '--hash=' + hash,
+        '--home-tag=' + tag,
         '-s', path.resolve(home, 'src'),
         '-t', path.resolve(home, 'target'),
       ]);

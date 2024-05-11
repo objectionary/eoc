@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('foreign', function() {
   it('inspects foreign objects and prints a report', function(done) {
@@ -44,7 +44,7 @@ describe('foreign', function() {
       'assemble',
       '--verbose',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -52,7 +52,7 @@ describe('foreign', function() {
       'foreign',
       '--verbose',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(

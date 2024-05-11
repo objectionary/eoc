@@ -73,7 +73,7 @@ program
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
-  .option('--hash <hex>', 'Hash in objectionary/home to compile against', hash)
+  .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', hash)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')

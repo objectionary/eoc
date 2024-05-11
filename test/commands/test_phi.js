@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('phi', function() {
   it('converts XMIR files to PHI files', function(done) {
@@ -37,7 +37,7 @@ describe('phi', function() {
       '--verbose',
       '--track-optimization-steps',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

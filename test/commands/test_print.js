@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('print', function() {
   it('converts XMIR files to EO files', function(done) {
@@ -46,7 +46,7 @@ describe('print', function() {
       '--verbose',
       '--track-optimization-steps',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(

@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('assemble', function() {
   it('assembles a simple .EO program', function(done) {
@@ -38,7 +38,7 @@ describe('assemble', function() {
       '--verbose',
       '--track-optimization-steps',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

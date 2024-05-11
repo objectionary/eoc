@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeHash} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 const assert = require('assert');
 
 describe('unphi', function() {
@@ -39,7 +39,7 @@ describe('unphi', function() {
       '--track-optimization-steps',
       '--tests',
       '--parser=' + parserVersion,
-      '--hash=' + homeHash,
+      '--home-tag=' + homeTag,
       '-t', path.resolve(home, 'target'),
     ]);
     const unphied = 'target/unphi/app.xmir';

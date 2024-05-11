@@ -26,7 +26,7 @@
 // "test_dataize.js" table of versions, in order to make sure we
 // do test dataization with all possible old versions.
 module.exports.parserVersion = '0.36.0';
-module.exports.homeHash = 'afc6c10c54e28efe01f2352d699c137c3cb0a68d';
+module.exports.homeTag = '0.36.0';
 
 /**
  * Helper to run EOC command line tool.

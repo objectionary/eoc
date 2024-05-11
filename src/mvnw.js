@@ -56,7 +56,7 @@ module.exports.flags = function(opts) {
   console.debug('Target in %s', rel(target));
   return [
     '-Deo.version=' + opts.parser,
-    '-Deo.hash=' + (opts.hash ? opts.hash : opts.parser),
+    '-Deo.tag=' + (opts.tag ? opts.tag : opts.parser),
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
