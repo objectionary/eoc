@@ -64,11 +64,11 @@ There are also commands that help manipulate with XMIR and EO sources
 * `phi` generates PHI files from XMIR
 * `unphi` generates XMIR files from PHI files
 * `print` generates EO files from PHI files
-* <del>`translate` converts Java/C++/Python/etc. program to EO program</del>
-* <del>`demu` removes `cage` and `memory` objects</del>
-* <del>`dejump` removes `goto` objects</del>
-* <del>`infer` suggests object names where it's possible to infer them</del>
-* <del>`flatten` moves inner objects to upper level</del>
+* ~~`translate` converts Java/C++/Python/etc. program to EO program~~
+* ~~`demu` removes `cage` and `memory` objects~~
+* ~~`dejump` removes `goto` objects~~
+* ~~`infer` suggests object names where it's possible to infer them~~
+* ~~`flatten` moves inner objects to upper level~~
 
 This command line toolkit simply integrates other tools available in
 [@objectionary](https://github.com/objectionary) GitHub organization.
