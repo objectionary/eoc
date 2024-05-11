@@ -23,7 +23,7 @@ jobs:
         distribution: 'zulu'
         java-version: ${{ matrix.java }}
     - run: npm install
-    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=afc6c10c54e28efe01f2352d699c137c3cb0a68d --batch dataize program
-    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=afc6c10c54e28efe01f2352d699c137c3cb0a68d --alone --batch dataize program
+    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=0.36.0 --batch dataize program
+    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=0.36.0 --alone --batch dataize program
     - run: cd itest && node ../src/eoc.js clean
-    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=afc6c10c54e28efe01f2352d699c137c3cb0a68d --batch test
+    - run: cd itest && node ../src/eoc.js --parser=0.36.0 --home-tag=0.36.0 --batch test
