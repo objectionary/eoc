@@ -1,4 +1,4 @@
-# EOLANG Command Line
+# EOLANG Command Line Took-Kit
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
@@ -9,11 +9,9 @@
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
-First, you install
-[npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-and [Java SE](https://www.oracle.com/java/technologies/downloads/).
+First, you install [npm](npm-install) and [Java SE][java-se].
 
-Then, you install [eolang](https://www.npmjs.com/package/eolang) package:
+Then, you install [eolang][npm] package:
 
 ```bash
 npm install -g eolang
@@ -39,8 +37,7 @@ That's it.
 ## Commands
 
 You can also do many other things with `eoc` commands
-(the flow is explained in
-[this blog post](https://www.yegor256.com/2021/10/21/objectionary.html)):
+(the flow is explained in [this blog post][blog]):
 
 * `register` finds necessary EO files and registers them in a JSON catalog
 * `assemble` parses EO files into XMIR, optimizes them,
@@ -56,9 +53,7 @@ There are also commands that help manipulate with XMIR and EO sources
 
 * `audit` inspects all required packages and reports their status
 * `foreign` inspects all objects found in the program after `assemble` step
-* `sodg` generates SODG from XMIR, further rederable
-  as XML or
-  [Dot](https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29)
+* `sodg` generates SODG from XMIR, further rederable as XML or [Dot][dot]
 * `phi` generates PHI files from XMIR
 * `unphi` generates XMIR files from PHI files
 * `print` generates EO files from PHI files
@@ -69,7 +64,7 @@ There are also commands that help manipulate with XMIR and EO sources
 * ~~`flatten` moves inner objects to upper level~~
 
 This command line toolkit simply integrates other tools available in
-[@objectionary](https://github.com/objectionary) GitHub organization.
+the [@objectionary](https://github.com/objectionary) GitHub organization.
 
 ## How to Contribute
 
@@ -84,3 +79,9 @@ npm test -- test/test_mvnw.js
 Make your changes and then
 [make](https://www.yegor256.com/2014/04/15/github-guidelines.html)
 a pull request.
+
+[npm]: https://www.npmjs.com/package/eolang
+[java-se]: https://www.oracle.com/java/technologies/downloads/
+[npm-install]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+[dot]: https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29
+[blog]: https://www.yegor256.com/2021/10/21/objectionary.html
