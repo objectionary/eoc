@@ -51,7 +51,7 @@ You can also do many other things with `eoc` commands
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
 
-There are also commands that help manipulate with XMIR and EO sources 
+There are also commands that help manipulate with XMIR and EO sources
 (the list is not completed, while some of them are not implemented as of yet):
 
 * `audit` inspects all required packages and reports their status
@@ -82,5 +82,5 @@ npm test -- test/test_mvnw.js
 ```
 
 Make your changes and then
-\[make](https://www.yegor256.com/2014/04/15/github-guidelines.html)
+[make](https://www.yegor256.com/2014/04/15/github-guidelines.html)
 a pull request.
