@@ -24,7 +24,7 @@ jobs:
           # Ignore files and directories
           ignore_files="(.git|node_modules|build|dist|temp|check_copyright.sh)"
 
-          # Directory to search; default is current directory, customize as needed
+          # Directory to search
           search_dir="."
 
           # Pattern to look for: 'Copyright (c)'
@@ -36,7 +36,7 @@ jobs:
           echo "Checking files in $search_dir for outdated copyright years..."
           echo "Current year is $current_year."
 
-          # Use find to iterate over files, redirecting into while loop to avoid subshell
+          # Iterate over files, redirecting into while loop to avoid subshell
           find $search_dir -type f -print0 > tmp.$$ || exit 1
           while IFS= read -r -d $'\0' file; do
               # Skip files in the ignore list
