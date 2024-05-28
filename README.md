@@ -9,7 +9,7 @@
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
-First, you install [npm](npm-install) and [Java SE][java-se].
+First, you install [npm][npm-install] and [Java SE][java-se].
 
 Then, you install [eolang][npm] package:
 
