@@ -33,10 +33,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java: [11, 18]
-        node: [12, 16]
-        exclude:
-          - os: macos-latest
-            node: 12
+        node: [14, 16]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
