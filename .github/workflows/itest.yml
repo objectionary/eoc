@@ -69,4 +69,5 @@ jobs:
           node ../src/eoc.js clean
           node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
             test
+        shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
