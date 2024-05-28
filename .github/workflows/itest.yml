@@ -59,3 +59,14 @@ jobs:
           node ../src/eoc.js clean
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
             test
+        if: ${{ matrix.os != 'windows-latest' }}
+      - run: |
+          cd itest
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
+            dataize program
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --alone `
+            --batch dataize program
+          node ../src/eoc.js clean
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
+            test
+        if: ${{ matrix.os == 'windows-latest' }}
