@@ -28,6 +28,7 @@ const tinted = require('./tinted-console');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
 const parse = require('./commands/parse');
+const preflight = require('./commands/preflight');
 const assemble = require('./commands/assemble');
 const sodg = require('./commands/sodg');
 const phi = require('./commands/phi');
@@ -107,6 +108,7 @@ program
 program.command('register')
   .description('Register all visible EO source files')
   .action((str, opts) => {
+    preflight(program.opts());
     register(program.opts());
   });
 
@@ -114,6 +116,7 @@ program.command('parse')
   .description('Parse EO files into XMIR')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => parse(program.opts()));
@@ -126,6 +129,7 @@ program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()));
@@ -144,6 +148,7 @@ program.command('sodg')
   .option('--exclude <names>', 'Don\'t generate SODG for these objects')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -157,6 +162,7 @@ program.command('phi')
   .description('Generate PHI files from XMIR')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -171,6 +177,7 @@ program.command('unphi')
   .description('Generate XMIR files from PHI files')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     unphi({...program.opts(), ...str});
   });
 
@@ -185,6 +192,7 @@ program.command('verify')
   .description('Verify XMIR files and fail if any issues inside')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -198,6 +206,7 @@ program.command('transpile')
   .description('Convert EO files into target language')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -212,6 +221,7 @@ program.command('compile')
   .description('Compile target language sources into binaries')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -227,6 +237,7 @@ program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -244,6 +255,7 @@ program.command('dataize')
   .option('--stack <size>', 'Change stack size', '1M')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
@@ -261,6 +273,7 @@ program.command('test')
   .description('Run all visible unit tests')
   .action((str, opts) => {
     clear(str);
+    preflight(program.opts());
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
