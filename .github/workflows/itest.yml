@@ -51,8 +51,8 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          p=0.36.0
-          t=0.36.0
+          p=0.38.0
+          t=0.38.0
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
             "--language=${{ matrix.lang }}" dataize program
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --alone \
