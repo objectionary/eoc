@@ -33,7 +33,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java: [11, 18]
-        node: [12, 16]
+        node: [14, 16]
         lang: [Java, JavaScript]
         exclude:
           - os: macos-latest
