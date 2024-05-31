@@ -35,12 +35,35 @@ const unphi = require('./commands/unphi');
 const print = require('./commands/print');
 const register = require('./commands/register');
 const verify = require('./commands/verify');
-const transpile = require('./commands/transpile');
-const compile = require('./commands/compile');
-const link = require('./commands/link');
-const dataize = require('./commands/dataize');
 const foreign = require('./commands/foreign');
-const test = require('./commands/test');
+
+/**
+ * Target language option.
+ */
+const language = {
+  java: 'Java',
+  js: 'JavaScript',
+};
+
+/**
+ * Platform dependent commands.
+ */
+const commands = {
+  [language.java]: {
+    transpile: require('./commands/java/transpile'),
+    link: require('./commands/java/link'),
+    compile: require('./commands/java/compile'),
+    dataize: require('./commands/java/dataize'),
+    test: require('./commands/java/test')
+  },
+  [language.js]: {
+    transpile: require('./commands/js/transpile'),
+    link: require('./commands/js/link'),
+    compile: require('./commands/js/compile'),
+    dataize: require('./commands/js/dataize'),
+    test: require('./commands/js/test')
+  }
+};
 
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
@@ -77,6 +100,7 @@ program
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
+  .option('-l, --language <name>', 'Language of target execution platform', language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-optimization-steps', 'Save intermediate XMIR files')
@@ -198,28 +222,30 @@ program.command('transpile')
   .description('Convert EO files into target language')
   .action((str, opts) => {
     clear(str);
+    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
         .then((r) => verify(program.opts()))
-        .then((r) => transpile(program.opts()));
+        .then((r) => commands[lang].transpile(program.opts()));
     } else {
-      transpile(program.opts());
+      commands[lang].transpile(program.opts());
     }
   });
 
 program.command('compile')
   .description('Compile target language sources into binaries')
   .action((str, opts) => {
+    const lang = program.opts().language;
     clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
         .then((r) => verify(program.opts()))
-        .then((r) => transpile(program.opts()))
-        .then((r) => compile(program.opts()));
+        .then((r) => commands[lang].transpile(program.opts()))
+        .then((r) => commands[lang].compile(program.opts()));
     } else {
-      compile(program.opts());
+      commands[lang].compile(program.opts());
     }
   });
 
@@ -227,15 +253,16 @@ program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
     clear(str);
+    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
         .then((r) => verify(program.opts()))
-        .then((r) => transpile(program.opts()))
-        .then((r) => compile(program.opts()))
-        .then((r) => link(program.opts()));
+        .then((r) => commands[lang].transpile(program.opts()))
+        .then((r) => commands[lang].compile(program.opts()))
+        .then((r) => commands[lang].link(program.opts()));
     } else {
-      link(program.opts());
+      commands[lang].link(program.opts());
     }
   });
 
@@ -244,16 +271,21 @@ program.command('dataize')
   .option('--stack <size>', 'Change stack size', '1M')
   .action((str, opts) => {
     clear(str);
+    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
         .then((r) => verify(program.opts()))
-        .then((r) => transpile(program.opts()))
-        .then((r) => compile(program.opts()))
-        .then((r) => link(program.opts()))
-        .then((r) => dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str}));
+        .then((r) => commands[lang].transpile(program.opts()))
+        .then((r) => commands[lang].compile(program.opts()))
+        .then((r) => commands[lang].link(program.opts()))
+        .then((r) => commands[lang].dataize(
+          program.args[1], program.args.slice(2), {...program.opts(), ...str}
+        ));
     } else {
-      dataize(program.args[1], program.args.slice(2), {...program.opts(), ...str});
+      commands[lang].dataize(
+        program.args[1], program.args.slice(2), {...program.opts(), ...str}
+      );
     }
   });
 
@@ -261,16 +293,17 @@ program.command('test')
   .description('Run all visible unit tests')
   .action((str, opts) => {
     clear(str);
+    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
         .then((r) => verify(program.opts()))
-        .then((r) => transpile(program.opts()))
-        .then((r) => compile(program.opts()))
-        .then((r) => link(program.opts()))
-        .then((r) => test(program.opts()));
+        .then((r) => commands[lang].transpile(program.opts()))
+        .then((r) => commands[lang].compile(program.opts()))
+        .then((r) => commands[lang].link(program.opts()))
+        .then((r) => commands[lang].test(program.opts()));
     } else {
-      test(program.opts());
+      commands[lang].test(program.opts());
     }
   });
 

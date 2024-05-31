@@ -67,7 +67,7 @@ describe('compile', function() {
         '',
         '# This is a sample object',
         '[] > simple-test-compile',
-        '  TRUE > @',
+        '  true > @',
       ].join('\n')
     );
     const stdout = runSync([
@@ -103,6 +103,15 @@ describe('compile', function() {
     ]);
     assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
     done();
+  });
+
+  it('Skips compilation for JavaScript', function() {
+    const stdout = runSync([
+      'compile',
+      '--alone',
+      '--language=JavaScript'
+    ]);
+    assert.ok(stdout.includes('skipped for JavaScript'));
   });
 });
 

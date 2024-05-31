@@ -25,8 +25,8 @@
 // When you upgrade them, don't forget to place old values to the
 // "test_dataize.js" table of versions, in order to make sure we
 // do test dataization with all possible old versions.
-module.exports.parserVersion = '0.36.0';
-module.exports.homeTag = '0.36.0';
+module.exports.parserVersion = '0.38.0';
+module.exports.homeTag = '0.38.0';
 
 /**
  * Helper to run EOC command line tool.

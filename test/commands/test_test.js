@@ -25,16 +25,23 @@
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const assert = require('assert');
 
 describe('test', function() {
-  it('executes a single unit test', function(done) {
-    const home = path.resolve('temp/test-test/simple');
+  /**
+   * Run test command.
+   * @param {String} home - Home directory
+   * @param {String} lang - Target language
+   * @return {String} - Stdout
+   */
+  const test = function(home, lang = 'Java') {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'src/simple-test.eo'),
       [
-        '+junit',
+        '+tests',
+        '+any',
         '',
         '# sample',
         '[] > simple-comparison-works',
@@ -43,20 +50,34 @@ describe('test', function() {
         '    5',
       ].join('\n')
     );
-    const stdout = runSync([
+    return runSync([
       'test',
       '--verbose',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
+      '--language=' + lang
     ]);
+  };
+  it('executes a single Java unit test', function(done) {
+    const home = path.resolve('temp/test-test/java');
+    const stdout = test(home, 'Java');
     assertFilesExist(
       stdout, home,
       [
         'target/generated-sources/EOsimple_comparison_worksTest.java',
         'target/classes/EOsimple_comparison_worksTest.class',
       ]
+    );
+    done();
+  });
+  it('executes a single JavaScript unit test', function(done) {
+    const home = path.resolve('temp/test-test/javascript');
+    const stdout = test(home, 'JavaScript');
+    assert.ok(stdout.includes('1 passing'));
+    assertFilesExist(
+      stdout, home, ['target/project/simple-test.test.js',]
     );
     done();
   });

@@ -28,18 +28,34 @@ const assert = require('assert');
 const path = require('path');
 const {runSync, parserVersion, homeTag} = require('../helpers');
 
-const versions = new Map([
-  [parserVersion, homeTag],
-  // They don't work, but they should:
-  // Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
-  // ['0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-  // ['0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-  // ['0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
-]);
-versions.forEach(function(tag, version) {
-  describe('dataize', function() {
-    it('dataizes with ' + version, function(done) {
-      const home = path.resolve('temp/test-dataize/' + version + '/simple');
+// They don't work, but they should:
+// Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
+// ['Java', '0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
+// ['Java', '0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
+// ['Java', '0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
+const options = [
+  {
+    lang: 'Java',
+    version: parserVersion,
+    tag: homeTag
+  },
+  {
+    lang: 'Java',
+    version: '0.36.0',
+    tag: '0.36.0'
+  },
+  {
+    lang: 'JavaScript',
+    version: parserVersion,
+    tag: homeTag
+  },
+];
+
+describe('dataize', function() {
+  options.forEach(({lang, version, tag}) => {
+    it(`dataizes: lang ${lang}, version ${version}, tag ${tag}`, function(done) {
+      this.timeout(0);
+      const home = path.resolve(`temp/test-dataize/${version}/${lang}`);
       fs.rmSync(home, {recursive: true, force: true});
       fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
       fs.writeFileSync(
@@ -62,12 +78,14 @@ versions.forEach(function(tag, version) {
         '--home-tag=' + tag,
         '-s', path.resolve(home, 'src'),
         '-t', path.resolve(home, 'target'),
+        '--language=' + lang
       ]);
       assert(stdout.includes('Hello, world!'), stdout);
       assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
-      assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+      if (lang === 'Java') {
+        assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+      }
       done();
     });
   });
 });
-

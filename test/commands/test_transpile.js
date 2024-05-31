@@ -27,22 +27,47 @@ const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('transpile', function() {
-  it('transpiles a simple .EO program', function(done) {
-    const home = path.resolve('temp/test-transpile/transpile');
+  const transpile = function(home, lang) {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/transpile.eo'), '# sample\n[] > transpile\n');
-    const stdout = runSync([
+    fs.writeFileSync(
+      path.resolve(home, 'src/transpile.eo'),
+      [
+        '# Sample.',
+        '[] > transpile'
+      ].join('\n')
+    );
+    const transpiled = path.resolve(home, 'target/8-transpile');
+    if (fs.existsSync(transpiled)) {
+      fs.rmSync(transpiled, {recursive: true, force: true});
+    }
+    return runSync([
       'transpile',
       '--verbose',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
+      '--language=' + lang,
     ]);
+  };
+  it('transpiles a simple .EO program to Java', function(done) {
+    this.timeout(0);
+    const home = path.resolve(`temp/test-transpile/java`);
+    const stdout = transpile(home, 'Java');
     assertFilesExist(
       stdout, home,
       ['target/generated-sources/EOtranspile.java']
+    );
+    done();
+  });
+  it('transpiles a simple .EO program to JavaScript', function(done) {
+    this.timeout(0);
+    const home = path.resolve(`temp/test-transpile/js`);
+    const stdout = transpile(home, 'JavaScript');
+    assertFilesExist(
+      stdout, home,
+      ['target/project/transpile.js']
     );
     done();
   });

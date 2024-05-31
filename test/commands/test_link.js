@@ -28,8 +28,13 @@ const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
 
 describe('link', function() {
-  it('compiles a simple .EO program into an executable .JAR', function(done) {
-    const home = path.resolve('temp/test-link/simple');
+  /**
+   * Run 'link' command
+   * @param {String} home - Home directory
+   * @param {String} lang - Platform language
+   * @return {String} - Stdout
+   */
+  const link = function(home, lang = 'Java') {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src/foo/bar'), {recursive: true});
     fs.writeFileSync(
@@ -43,14 +48,20 @@ describe('link', function() {
         '  stdout "Hello, world!" > @',
       ].join('\n')
     );
-    const stdout = runSync([
+    return runSync([
       'link',
       '--verbose',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
+      '--language=' + lang,
     ]);
+  };
+  it('compiles a simple .EO program into an executable .JAR', function(done) {
+    this.timeout(0);
+    const home = path.resolve('temp/test-link/java');
+    const stdout = link(home, 'Java');
     assertFilesExist(
       stdout, home,
       [
@@ -63,6 +74,22 @@ describe('link', function() {
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
+    done();
+  });
+
+  it('creates and builds NPM project', function(done) {
+    this.timeout(0);
+    const home = path.resolve('temp/test-link/js');
+    const stdout = link(home, 'JavaScript');
+    assertFilesExist(
+      stdout, home,
+      [
+        'target/project/foo/bar/link.js',
+        'target/project/org/eolang/bytes.js',
+        'target/project/node_modules/eo2js-runtime/src/objects/org/eolang/error.js',
+        'target/project/node_modules/eo2js-runtime/src/runtime/phi.js',
+      ]
+    );
     done();
   });
 });

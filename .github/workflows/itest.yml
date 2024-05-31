@@ -34,6 +34,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java: [11, 18]
         node: [12, 16]
+        lang: [Java, JavaScript]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -50,9 +51,9 @@ jobs:
           p=0.36.0
           t=0.36.0
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-            dataize program
+            "-l=${{ matrix.lang }}" dataize program
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --alone \
-            --batch dataize program
+            "-l=${{ matrix.lang }}" --batch dataize program
           node ../src/eoc.js clean
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-            test
+            "-l=${{ matrix.lang }}" test

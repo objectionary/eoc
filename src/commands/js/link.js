@@ -23,18 +23,19 @@
  */
 
 const rel = require('relative');
-const {mvnw, flags} = require('../mvnw');
 const path = require('path');
+const eo2jsw = require('../../eo2jsw');
+const {program} = require('commander');
 
 /**
- * Command to transpile XMIR files into target language.
- * @param {Hash} opts - All options
- * @return {Promise} of transpile task
+ * Command to create and build NPM project.
+ * @param {Object} opts - All options
+ * @return {Promise} of link task
  */
 module.exports = function(opts) {
-  const sources = path.resolve(opts.target, 'generated-sources');
-  return mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java sources generated in %s', rel(sources));
+  const tests = program.args[0] === 'test' || !!opts.tests;
+  return eo2jsw('link', {...opts, alone: true, project: 'project', tests}).then((r) => {
+    console.info(`NPM project generated in ${rel(path.resolve(opts.target, 'project'))}`);
     return r;
   });
 };
