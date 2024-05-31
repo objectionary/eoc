@@ -35,6 +35,9 @@ jobs:
         java: [11, 18]
         node: [12, 16]
         lang: [Java, JavaScript]
+        exclude:
+          - os: macos-latest
+            node: 14
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -57,3 +60,15 @@ jobs:
           node ../src/eoc.js clean
           node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
             "-l=${{ matrix.lang }}" test
+        if: ${{ matrix.os != 'windows-latest' }}
+      - run: |
+          cd itest
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
+            "-l=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --alone `
+            "-l=${{ matrix.lang }}" --batch dataize program
+          node ../src/eoc.js clean
+          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
+            "-l=${{ matrix.lang }}" test
+        shell: pwsh
+        if: ${{ matrix.os == 'windows-latest' }}
