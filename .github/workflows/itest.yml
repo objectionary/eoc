@@ -54,22 +54,22 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --batch \
-            "--language=${{ matrix.lang }}" dataize program
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --alone \
-            "--language=${{ matrix.lang }}" --batch dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --batch "--language=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --alone "--language=${{ matrix.lang }}" --batch dataize program
           node ../src/eoc.js clean
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --batch \
-            "--language=${{ matrix.lang }}" test
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --batch "--language=${{ matrix.lang }}" test
         if: ${{ matrix.os != 'windows-latest' }}
       - run: |
           cd itest
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --batch `
-            "--language=${{ matrix.lang }}" dataize program
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --alone `
-            "--language=${{ matrix.lang }}" --batch dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" `
+            --batch "--language=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" `
+            --alone "--language=${{ matrix.lang }}" --batch dataize program
           node ../src/eoc.js clean
-          node ../src/eoc.js "--PARSER=$PARSER" "--home-TAG=${{ env.TAG }}" --batch `
-            "--language=${{ matrix.lang }}" test
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" `
+            --batch "--language=${{ matrix.lang }}" test
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}
