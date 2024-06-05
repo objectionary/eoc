@@ -29,15 +29,15 @@ const {mvnw, flags} = require('../mvnw');
 
 /**
  * Command to convert .XMIR files into .PHI files.
- * @param {Hash} opts - All options
+ * @param {Object} opts - All options
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
   gte('EO parser', opts.parser, '0.35.2');
   const target = path.resolve(opts.target);
-  const input = path.resolve(opts.target, '2-optimize');
+  const input = path.resolve(opts.target, opts.phiInput);
   console.debug('Reading .XMIR files from %s', rel(input));
-  const output = path.resolve(opts.target, 'phi');
+  const output = path.resolve(opts.target, opts.phiOutput);
   console.debug('Writing .PHI files to %s', rel(output));
   return mvnw(
     ['eo:xmir-to-phi']
