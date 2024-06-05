@@ -30,9 +30,9 @@ describe('print', function() {
   it('converts XMIR files to EO files', function(done) {
     const home = path.resolve('temp/test-print/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'target/2-optimize'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'target/2-optimize/app.xmir'),
+      path.resolve(home, 'target/input/app.xmir'),
       [
         '<program ms="0" name="xx" time="2024-01-01T01:01:01"',
         'version="0.0.0" dob="2024-01-01T01:01:01" revision="0">',
@@ -47,12 +47,14 @@ describe('print', function() {
       '--track-optimization-steps',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
+      '--print-input=input',
+      '--print-output=output',
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/print/app.eo',
+        'target/output/app.eo',
       ]
     );
     done();

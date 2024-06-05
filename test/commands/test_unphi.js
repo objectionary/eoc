@@ -31,8 +31,8 @@ describe('unphi', function() {
   it('converts PHI files to XMIR files', function(done) {
     const home = path.resolve('temp/test-unphi/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'target/phi'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'target/phi/app.phi'), '{ ⟦ app ↦ ⟦ ⟧ ⟧ }');
+    fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'target/input/app.phi'), '{ ⟦ app ↦ ⟦ ⟧ ⟧ }');
     const stdout = runSync([
       'unphi',
       '--verbose',
@@ -40,9 +40,11 @@ describe('unphi', function() {
       '--tests',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
+      '--unphi-input=input',
+      '--unphi-output=output',
       '-t', path.resolve(home, 'target'),
     ]);
-    const unphied = 'target/unphi/app.xmir';
+    const unphied = 'target/output/app.xmir';
     assertFilesExist(
       stdout, home,
       [unphied]

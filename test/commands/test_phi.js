@@ -38,6 +38,8 @@ describe('phi', function() {
       '--track-optimization-steps',
       '--parser=' + parserVersion,
       '--home-tag=' + homeTag,
+      '--phi-input=2-optimize',
+      '--phi-output=output',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -45,7 +47,7 @@ describe('phi', function() {
       stdout, home,
       [
         'target/2-optimize/phi.xmir',
-        'target/phi/phi.phi',
+        'target/output/phi.phi',
       ]
     );
     done();

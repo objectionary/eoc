@@ -179,12 +179,22 @@ program.command('sodg')
 
 program.command('phi')
   .description('Generate PHI files from XMIR')
+  .option(
+    '--phi-input <dir>',
+    'Directory where XMIR files for translation to PHI are taken (relative to --target)',
+    '2-optimize'
+  )
+  .option(
+    '--phi-output <dir>',
+    'Directory where translated PHI files are stored (relative to --target)',
+    'phi'
+  )
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
         .then((r) => assemble(program.opts()))
-        .then((r) => phi(program.opts()));
+        .then((r) => phi({...program.opts(), ...str}));
     } else {
       phi(program.opts());
     }
@@ -192,6 +202,16 @@ program.command('phi')
 
 program.command('unphi')
   .option('--tests', 'Add "+tests" meta to result XMIR files')
+  .option(
+    '--unphi-input <dir>',
+    'Directory where PHI files for translation to XMIR are taken (relative to --target)',
+    'phi'
+  )
+  .option(
+    '--unphi-output <dir>',
+    'Directory where translated XMIR files are stored (relative to --target)',
+    'unphi'
+  )
   .description('Generate XMIR files from PHI files')
   .action((str, opts) => {
     clear(str);
@@ -200,9 +220,19 @@ program.command('unphi')
 
 program.command('print')
   .description('Generate EO files from XMIR files')
+  .option(
+    '--print-input <dir>',
+    'Directory where XMIR files for translation to EO are taken (relative to --target)',
+    '2-optimize'
+  )
+  .option(
+    '--print-output <dir>',
+    'Directory where translated EO files are stored (relative to --target)',
+    'print'
+  )
   .action((str, opts) => {
     clear(str);
-    print(program.opts());
+    print({...program.opts(), ...str});
   });
 
 program.command('verify')
