@@ -220,9 +220,19 @@ program.command('unphi')
 
 program.command('print')
   .description('Generate EO files from XMIR files')
+  .option(
+    '--print-input',
+    'Directory where XMIR files for translation to EO are taken (relative to --target)',
+    '2-optimize'
+  )
+  .option(
+    '--print-output',
+    'Directory where translated EO files are stored (relative to --target)',
+    'print'
+  )
   .action((str, opts) => {
     clear(str);
-    print(program.opts());
+    print({...program.opts(), ...str});
   });
 
 program.command('verify')
