@@ -37,11 +37,11 @@ describe('mvnw', function() {
       target: 'target',
       parser: 'parser',
       homeTag: 'homeTag'
-    }
+    };
     mvnw(['--version', '--quiet', ...flags(opts)]).then((args) => {
-      assert.ok(args.includes('-Deo.tag=homeTag'))
-      assert.ok(args.includes('-Deo.version=parser'))
+      assert.ok(args.includes('-Deo.tag=homeTag'));
+      assert.ok(args.includes('-Deo.version=parser'));
       done();
-    })
+    });
   });
 });
