@@ -22,12 +22,26 @@
  * SOFTWARE.
  */
 
-const {mvnw} = require('../src/mvnw');
+const {mvnw, flags} = require('../src/mvnw');
+const assert = require('assert');
 
 describe('mvnw', function() {
   it('prints Maven own version', function(done) {
     const opts = {batch: true};
     mvnw(['--version', '--quiet'], null, opts.batch);
     done();
+  });
+  it('sets right flags from options', function(done) {
+    const opts = {
+      sources: 'sources',
+      target: 'target',
+      parser: 'parser',
+      homeTag: 'homeTag'
+    }
+    mvnw(['--version', '--quiet', ...flags(opts)]).then((args) => {
+      assert.ok(args.includes('-Deo.tag=homeTag'))
+      assert.ok(args.includes('-Deo.version=parser'))
+      done();
+    })
   });
 });
