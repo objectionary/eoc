@@ -1,6 +1,6 @@
 {
   "name": "eolang",
-  "version": "0.0.0",
+  "version": "0.21.1",
   "author": "Yegor Bugayenko <yegor256@gmail.com> (https://www.yegor256.com/)",
   "license": "MIT",
   "repository": "objectionary/eoc",
@@ -31,8 +31,8 @@
   ],
   "dependencies": {
     "colors": "1.4.0",
-    "eo2js": "0.0.7",
     "commander": "12.1.0",
+    "eo2js": "0.0.7",
     "fast-xml-parser": "4.4.0",
     "node": "22.1.0",
     "relative": "3.0.2",
@@ -47,7 +47,7 @@
     "grunt-contrib-clean": "2.0.1",
     "grunt-eslint": "24.3.0",
     "grunt-mocha-cli": "^7.0.0",
-    "mocha": "10.4.0"
+    "mocha": "^10.4.0"
   },
   "scripts": {
     "test": "mocha --timeout 1200000"
