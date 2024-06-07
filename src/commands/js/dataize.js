@@ -22,38 +22,18 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
-const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
-const assert = require('assert');
+const eo2jsw = require('../../eo2jsw');
 
-describe('unphi', function() {
-  it('converts PHI files to XMIR files', function(done) {
-    const home = path.resolve('temp/test-unphi/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'target/input/app.phi'), '{ ⟦ app ↦ ⟦ ⟧ ⟧ }');
-    const stdout = runSync([
-      'unphi',
-      '--verbose',
-      '--track-optimization-steps',
-      '--tests',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
-      '--unphi-input=input',
-      '--unphi-output=output',
-      '-t', path.resolve(home, 'target'),
-    ]);
-    const unphied = 'target/output/app.xmir';
-    assertFilesExist(
-      stdout, home,
-      [unphied]
-    );
-    assert.ok(
-      fs.readFileSync(path.resolve(home, unphied)).toString().includes(
-        '<head>tests</head>'
-      )
-    );
-    done();
-  });
-});
+/**
+ * Runs the single executable binary.
+ * @param {String} obj - Name of object to dataize
+ * @param {Array} args - Arguments
+ * @param {Object} opts - All options
+ * @return {Promise} of executed command
+ */
+module.exports = function(obj, args, opts) {
+  return eo2jsw(
+    ['dataize', obj, ...args.filter((arg) => !arg.startsWith('-'))].join(' '),
+    {...opts, alone: true, project: 'project'}
+  );
+};

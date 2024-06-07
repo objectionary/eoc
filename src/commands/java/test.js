@@ -22,19 +22,13 @@
  * SOFTWARE.
  */
 
-const rel = require('relative');
-const {mvnw, flags} = require('../mvnw');
-const path = require('path');
+const {mvnw, flags} = require('../../mvnw');
 
 /**
- * Command to compile target language into binaries.
- * @param {Hash} opts - All options
+ * Command to run all available unit tests.
+ * @param {Object} opts - All options
  * @return {Promise} of compile task
  */
 module.exports = function(opts) {
-  const target = path.resolve(opts.target);
-  return mvnw(['compiler:compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java .class files compiled into %s', rel(target));
-    return r;
-  });
+  return mvnw(['surefire:test'].concat(flags(opts)));
 };

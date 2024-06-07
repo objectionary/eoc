@@ -22,38 +22,19 @@
  * SOFTWARE.
  */
 
-const fs = require('fs');
+const rel = require('relative');
+const {mvnw, flags} = require('../../mvnw');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
-const assert = require('assert');
 
-describe('unphi', function() {
-  it('converts PHI files to XMIR files', function(done) {
-    const home = path.resolve('temp/test-unphi/simple');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'target/input/app.phi'), '{ ⟦ app ↦ ⟦ ⟧ ⟧ }');
-    const stdout = runSync([
-      'unphi',
-      '--verbose',
-      '--track-optimization-steps',
-      '--tests',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
-      '--unphi-input=input',
-      '--unphi-output=output',
-      '-t', path.resolve(home, 'target'),
-    ]);
-    const unphied = 'target/output/app.xmir';
-    assertFilesExist(
-      stdout, home,
-      [unphied]
-    );
-    assert.ok(
-      fs.readFileSync(path.resolve(home, unphied)).toString().includes(
-        '<head>tests</head>'
-      )
-    );
-    done();
+/**
+ * Command to compile target language into binaries.
+ * @param {Object} opts - All options
+ * @return {Promise} of compile task
+ */
+module.exports = function(opts) {
+  const target = path.resolve(opts.target);
+  return mvnw(['compiler:compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+    console.info('Java .class files compiled into %s', rel(target));
+    return r;
   });
-});
+};

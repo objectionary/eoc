@@ -22,28 +22,19 @@
  * SOFTWARE.
  */
 
-const {spawn} = require('node:child_process');
+const rel = require('relative');
+const {mvnw, flags} = require('../../mvnw');
 const path = require('path');
 
 /**
- * Runs the single executable binary.
- * @param {String} obj - Name of object to dataize
- * @param {Array} args - Arguments
- * @param {Hash} opts - All options
+ * Command to link binaries into a single executable binary.
+ * @param {Object} opts - All options
+ * @return {Promise} of link task
  */
-module.exports = function(obj, args, opts) {
-  const params = [
-    '-Dfile.encoding=UTF-8',
-    `-Xss${opts.stack}`,
-    '-jar', path.resolve(opts.target, 'eoc.jar'),
-    obj,
-    ...args,
-  ];
-  console.debug('+ java ' + params.join(' '));
-  spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
-    if (code !== 0) {
-      console.error(`Java exited with #${code} code`);
-      process.exit(1);
-    }
+module.exports = function(opts) {
+  const jar = path.resolve(opts.target, 'eoc.jar');
+  return mvnw(['jar:jar'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+    console.info('Executable JAR created at %s', rel(jar));
+    return r;
   });
 };

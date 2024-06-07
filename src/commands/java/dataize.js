@@ -22,13 +22,28 @@
  * SOFTWARE.
  */
 
-const {mvnw, flags} = require('../mvnw');
+const {spawn} = require('node:child_process');
+const path = require('path');
 
 /**
- * Command to run all available unit tests.
- * @param {Hash} opts - All options
- * @return {Promise} of compile task
+ * Runs the single executable binary.
+ * @param {String} obj - Name of object to dataize
+ * @param {Array} args - Arguments
+ * @param {Object} opts - All options
  */
-module.exports = function(opts) {
-  return mvnw(['surefire:test'].concat(flags(opts)));
+module.exports = function(obj, args, opts) {
+  const params = [
+    '-Dfile.encoding=UTF-8',
+    `-Xss${opts.stack}`,
+    '-jar', path.resolve(opts.target, 'eoc.jar'),
+    obj,
+    ...args,
+  ];
+  console.debug('+ java ' + params.join(' '));
+  spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
+    if (code !== 0) {
+      console.error(`Java exited with #${code} code`);
+      process.exit(1);
+    }
+  });
 };

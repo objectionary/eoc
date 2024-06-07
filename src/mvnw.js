@@ -46,7 +46,7 @@ let beginning;
 
 /**
  * Prepare options for Maven.
- * @param {Hash} opts - Opts provided to the "eoc"
+ * @param {Object} opts - Opts provided to the "eoc"
  * @return {Array} of Maven options
  */
 module.exports.flags = function(opts) {
@@ -56,7 +56,7 @@ module.exports.flags = function(opts) {
   console.debug('Target in %s', rel(target));
   return [
     '-Deo.version=' + opts.parser,
-    '-Deo.tag=' + (opts.tag ? opts.tag : opts.parser),
+    '-Deo.tag=' + (opts.homeTag ? opts.homeTag : opts.parser),
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
@@ -72,9 +72,9 @@ module.exports.flags = function(opts) {
 
 /**
  * Run mvnw with provided commands.
- * @param {Hash} args - All arguments to pass to it
- * @param {String} tgt - Path to the target directory
- * @param {Boolean} batch - Is it batch mode (TRUE) or interactive (FALSE)?
+ * @param {Array.<String>} args - All arguments to pass to it
+ * @param {String} [tgt] - Path to the target directory
+ * @param {Boolean} [batch] - Is it batch mode (TRUE) or interactive (FALSE)?
  * @return {Promise} of maven execution task
  */
 module.exports.mvnw = function(args, tgt, batch) {
@@ -131,8 +131,6 @@ module.exports.mvnw = function(args, tgt, batch) {
 
 /**
  * Starts mvnw execution status detection.
- * @param {String} stage - A maven stage like assemble, compile, transpile, etc.
- * @param {String} dir - Directory where to check progress - ./.eoc
  */
 function start() {
   running = true;

@@ -27,6 +27,9 @@ name: itest
 concurrency:
   group: itest-${{ github.ref }}
   cancel-in-progress: true
+env:
+  PARSER: 0.38.0
+  TAG: 0.38.0
 jobs:
   build:
     strategy:
@@ -34,6 +37,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java: [11, 18]
         node: [14, 16]
+        lang: [Java, JavaScript]
         exclude:
           - os: macos-latest
             node: 14
@@ -50,24 +54,24 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          p=0.36.0
-          t=0.36.0
-          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-            dataize program
-          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --alone \
-            --batch dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --batch "--language=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --alone "--language=${{ matrix.lang }}" --batch dataize program
           node ../src/eoc.js clean
-          node ../src/eoc.js "--parser=$p" "--home-tag=$t" --batch \
-            test
+          node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
+            --batch "--language=${{ matrix.lang }}" test
         if: ${{ matrix.os != 'windows-latest' }}
       - run: |
           cd itest
-          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
-            dataize program
-          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --alone `
-            --batch dataize program
+          $Parser = "${{ env.PARSER }}"
+          $Tag = "${{ env.TAG }}"
+          node ../src/eoc.js "--parser=$Parser" "--home-tag=$Tag" `
+            --batch "--language=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=$Parser" "--home-tag=$Tag" `
+            --alone "--language=${{ matrix.lang }}" --batch dataize program
           node ../src/eoc.js clean
-          node ../src/eoc.js "--parser=0.36.0" "--home-tag=0.36.0" --batch `
-            test
+          node ../src/eoc.js "--parser=$Parser" "--home-tag=$Tag" `
+            --batch "--language=${{ matrix.lang }}" test
         shell: pwsh
         if: ${{ matrix.os == 'windows-latest' }}

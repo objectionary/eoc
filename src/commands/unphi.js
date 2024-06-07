@@ -29,14 +29,14 @@ const {gte} = require('../demand');
 
 /**
  * Command to convert .PHI files into .XMIR files.
- * @param {Hash} opts - All options
+ * @param {Object} opts - All options
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
   gte('EO parser', opts.parser, '0.35.2');
-  const input = path.resolve(opts.target, 'phi');
+  const input = path.resolve(opts.target, opts.unphiInput);
   console.debug('Reading .PHI files from %s', rel(input));
-  const output = path.resolve(opts.target, 'unphi');
+  const output = path.resolve(opts.target, opts.unphiOutput);
   console.debug('Writing .XMIR files to %s', rel(output));
   return mvnw(
     ['eo:phi-to-xmir']
