@@ -45,11 +45,6 @@ const options = [
     tag: '0.38.0'
   },
   {
-    lang: 'JavaScript',
-    version: '0.38.0',
-    tag: '0.36.0'
-  },
-  {
     lang: 'Java',
     version: '0.36.0',
     tag: '0.36.0'
