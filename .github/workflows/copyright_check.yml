@@ -63,8 +63,7 @@ jobs:
               # Skip files in the ignore list
               skip_file=false
               for ignore_pattern in "${ignore_files[@]}"; do
-                  # shellcheck disable=SC2254
-                  if [[ "$file" == $ignore_pattern ]]; then
+                  if echo "$file" | grep -qE "$ignore_pattern"; then
                       skip_file=true
                       break
                   fi
