@@ -58,11 +58,12 @@ jobs:
           echo "Current year is $current_year."
 
           # Iterate over files, redirecting into while loop to avoid subshell
-          find $search_dir -type f -print0 | while IFS= read -r -d $'\0' file;
-          do
+          find $search_dir -type f -print0 > tmp.$$ || exit 1
+          while IFS= read -r -d $'\0' file; do
               # Skip files in the ignore list
               skip_file=false
               for ignore_pattern in "${ignore_files[@]}"; do
+                  # shellcheck disable=SC2254
                   if [[ "$file" == $ignore_pattern ]]; then
                       skip_file=true
                       break
@@ -87,7 +88,8 @@ jobs:
                     fi
                 fi
               fi
-          done
+          done < tmp.$$
+          rm tmp.$$  # Clean up temporary file
 
           echo "Check complete."
           exit $exit_code
