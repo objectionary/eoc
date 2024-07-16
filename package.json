@@ -36,7 +36,7 @@
     "fast-xml-parser": "4.4.0",
     "node": "22.1.0",
     "relative": "3.0.2",
-    "semver": "7.6.2",
+    "semver": "7.6.3",
     "sync-request": "6.1.0",
     "xmlhttprequest": "1.8.0"
   },
