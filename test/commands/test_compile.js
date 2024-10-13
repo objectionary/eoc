@@ -26,9 +26,11 @@ const rel = require('relative');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('compile', function() {
+  before(weAreOnline);
+
   it('compiles a simple .EO program into Java bytecode .class files', function(done) {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
@@ -91,6 +93,7 @@ describe('compile', function() {
   it('Cleans and compiles a simple .EO program', function(done) {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, '.eo'), {recursive: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/compile2.eo'), simple('compile2'));
     const stdout = runSync([

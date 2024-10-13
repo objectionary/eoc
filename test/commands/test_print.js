@@ -24,9 +24,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('print', function() {
+  before(weAreOnline);
+
   it('converts XMIR files to EO files', function(done) {
     const home = path.resolve('temp/test-print/simple');
     fs.rmSync(home, {recursive: true, force: true});

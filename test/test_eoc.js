@@ -23,7 +23,7 @@
  */
 
 const assert = require('assert');
-const runSync = require('./helpers').runSync;
+const {runSync, weAreOnline} = require('./helpers');
 const version = require('../src/version');
 
 describe('eoc', function() {
@@ -40,6 +40,10 @@ describe('eoc', function() {
     assert(stdout.includes(version.when));
     done();
   });
+});
+
+describe('eoc', function() {
+  before(weAreOnline);
 
   it('loads latest version', function(done) {
     const stdout = runSync(['--latest', '--version']);

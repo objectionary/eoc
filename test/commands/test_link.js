@@ -25,9 +25,11 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('link', function() {
+  before(weAreOnline);
+
   /**
    * Run 'link' command
    * @param {String} home - Home directory

@@ -24,10 +24,12 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 const assert = require('assert');
 
 describe('unphi', function() {
+  before(weAreOnline);
+
   it('converts PHI files to XMIR files', function(done) {
     const home = path.resolve('temp/test-unphi/simple');
     fs.rmSync(home, {recursive: true, force: true});

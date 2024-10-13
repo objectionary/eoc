@@ -25,9 +25,11 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist} = require('../helpers');
+const {runSync, assertFilesExist, weAreOnline} = require('../helpers');
 
 describe('register', function() {
+  before(weAreOnline);
+
   it('registers a simple .EO program', function(done) {
     const home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});

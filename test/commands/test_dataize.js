@@ -26,7 +26,7 @@ const rel = require('relative');
 const fs = require('fs');
 const assert = require('assert');
 const path = require('path');
-const {runSync, parserVersion, homeTag} = require('../helpers');
+const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 // They don't work, but they should:
 // Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
@@ -57,6 +57,8 @@ const options = [
 ];
 
 describe('dataize', function() {
+  before(weAreOnline);
+
   options.forEach(({lang, version, tag}) => {
     it(`dataizes: lang ${lang}, version ${version}, tag ${tag}`, function(done) {
       this.timeout(0);

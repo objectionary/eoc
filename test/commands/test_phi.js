@@ -24,9 +24,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag} = require('../helpers');
+const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('phi', function() {
+  before(weAreOnline);
+
   it('converts XMIR files to PHI files', function(done) {
     const home = path.resolve('temp/test-phi/simple');
     fs.rmSync(home, {recursive: true, force: true});
