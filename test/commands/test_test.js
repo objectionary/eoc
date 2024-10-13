@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
-const assert = require('assert');
 
 describe('test', function() {
   before(weAreOnline);

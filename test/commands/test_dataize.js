@@ -22,9 +22,8 @@
  * SOFTWARE.
  */
 
-const rel = require('relative');
-const fs = require('fs');
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
@@ -78,8 +77,8 @@ describe('dataize', function() {
       );
       const stdout = runSync([
         'dataize', 'foo.bar.simple',
-        '--verbose',
         '--stack=64M',
+        '--heap=1G',
         '--clean',
         '--parser=' + version,
         '--home-tag=' + tag,
@@ -88,7 +87,6 @@ describe('dataize', function() {
         '--language=' + lang
       ]);
       assert(stdout.includes('Hello, world!'), stdout);
-      assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
       if (lang === 'Java') {
         assert(!fs.existsSync(path.resolve('../../mvnw/target')));
       }

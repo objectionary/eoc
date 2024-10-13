@@ -23,19 +23,19 @@
  * SOFTWARE.
  */
 
-const {program} = require('commander');
-const tinted = require('./tinted-console');
+const assemble = require('./commands/assemble');
 const audit = require('./commands/audit');
 const clean = require('./commands/clean');
+const foreign = require('./commands/foreign');
 const parse = require('./commands/parse');
-const assemble = require('./commands/assemble');
-const sodg = require('./commands/sodg');
 const phi = require('./commands/phi');
-const unphi = require('./commands/unphi');
 const print = require('./commands/print');
 const register = require('./commands/register');
+const sodg = require('./commands/sodg');
+const tinted = require('./tinted-console');
+const unphi = require('./commands/unphi');
 const verify = require('./commands/verify');
-const foreign = require('./commands/foreign');
+const {program} = require('commander');
 
 /**
  * Target language option.
@@ -302,7 +302,8 @@ program.command('link')
 
 program.command('dataize')
   .description('Run the single executable binary and dataize an object')
-  .option('--stack <size>', 'Change stack size', '1M')
+  .option('--stack <size>', 'Set stack size for the virtual machine', '1M')
+  .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
     const lang = program.opts().language;

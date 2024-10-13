@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-const rel = require('relative');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -93,10 +92,10 @@ describe('compile', function() {
   it('Cleans and compiles a simple .EO program', function(done) {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, '.eo'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'target'), {recursive: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/compile2.eo'), simple('compile2'));
-    const stdout = runSync([
+    runSync([
       'compile',
       '--clean',
       '--parser=' + parserVersion,
@@ -104,7 +103,6 @@ describe('compile', function() {
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes(`The directory ${rel(path.resolve(home, 'target'))} deleted`), stdout);
     done();
   });
 

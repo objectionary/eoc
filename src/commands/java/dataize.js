@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-const {spawn} = require('node:child_process');
 const path = require('path');
+const {spawn} = require('node:child_process');
 
 /**
  * Runs the single executable binary.
@@ -35,10 +35,12 @@ module.exports = function(obj, args, opts) {
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,
+    `-Xms${opts.heap}`,
     '-jar', path.resolve(opts.target, 'eoc.jar'),
+    opts.verbose ? '--verbose' : '',
     obj,
     ...args,
-  ];
+  ].filter((i) => i);
   console.debug('+ java ' + params.join(' '));
   spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
     if (code !== 0) {

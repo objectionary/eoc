@@ -23,8 +23,8 @@
  */
 
 const assert = require('assert');
-const {runSync, weAreOnline} = require('./helpers');
 const version = require('../src/version');
+const {runSync, weAreOnline} = require('./helpers');
 
 describe('eoc', function() {
   it('prints its own version', function(done) {
