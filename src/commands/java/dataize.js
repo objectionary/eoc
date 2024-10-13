@@ -42,7 +42,7 @@ module.exports = function(obj, args, opts) {
   console.debug('+ java ' + params.join(' '));
   spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
     if (code !== 0) {
-      console.error(`Java exited with #${code} code`);
+      console.error(`JVM failed with exit code #${code}`);
       process.exit(1);
     }
   });
