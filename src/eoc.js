@@ -362,7 +362,7 @@ try {
  */
 function clear(str) {
   if (program.opts().clean) {
-    clean({...program.opts(), ...str});
+    coms().clean({...program.opts(), ...str});
   }
 }
 
