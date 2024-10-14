@@ -207,7 +207,7 @@ program.command('phi')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
+      coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().phi({...program.opts(), ...str}));
     } else {
@@ -255,7 +255,7 @@ program.command('verify')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
+      coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().verify(program.opts()));
     } else {
