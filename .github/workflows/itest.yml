@@ -40,7 +40,7 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-12, windows-2022]
         java: [11, 21]
-        node: [14, 18]
+        node: [14, 16]
         lang: [Java, JavaScript]
         exclude:
           - os: macos-12
