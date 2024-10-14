@@ -43,7 +43,7 @@ jobs:
         node: [14, 18]
         lang: [Java, JavaScript]
         exclude:
-          - os: macos-latest
+          - os: macos-12
             node: 14
     runs-on: ${{ matrix.os }}
     steps:
@@ -65,7 +65,7 @@ jobs:
           node ../src/eoc.js clean
           node ../src/eoc.js "--parser=$PARSER" "--home-tag=${{ env.TAG }}" \
             --batch "--language=${{ matrix.lang }}" test
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os != 'windows-2022' }}
       - run: |
           cd itest
           $Parser = "${{ env.PARSER }}"
@@ -78,4 +78,4 @@ jobs:
           node ../src/eoc.js "--parser=$Parser" "--home-tag=$Tag" `
             --batch "--language=${{ matrix.lang }}" test
         shell: pwsh
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-2022' }}
