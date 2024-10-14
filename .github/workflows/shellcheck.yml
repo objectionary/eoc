@@ -23,7 +23,11 @@
 name: shellcheck
 'on':
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
 concurrency:
   group: shellcheck-${{ github.ref }}
   cancel-in-progress: true

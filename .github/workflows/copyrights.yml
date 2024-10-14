@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: grunt
+name: copyrights
 'on':
   push:
     branches:
@@ -28,26 +28,26 @@ name: grunt
   pull_request:
     branches:
       - master
-concurrency:
-  group: grunt-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [windows-2022, ubuntu-24.04, macos-12]
-        java: [17]
-        node: [16]
-    runs-on: ${{ matrix.os }}
+  copyrights:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: yegor256/copyrights-action@0.0.5
         with:
-          node-version: ${{ matrix.node }}
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: ${{ matrix.java }}
-      - run: npm install
-      - run: npm install --force -g grunt-cli
-      - run: grunt
+          globs: >-
+            **/LICENSE.txt
+            **/*.sh
+            **/*.yml
+            **/*.yaml
+            **/*.eo
+            **/*.xmir
+            **/*.xml
+            **/*.xsl
+            **/*.xsd
+            **/*.ini
+            **/*.java
+            **/*.g4
+            **/*.properties
+            **/*.toml
+            **/*.groovy

@@ -23,18 +23,7 @@
  * SOFTWARE.
  */
 
-const assemble = require('./commands/assemble');
-const audit = require('./commands/audit');
-const clean = require('./commands/clean');
-const foreign = require('./commands/foreign');
-const parse = require('./commands/parse');
-const phi = require('./commands/phi');
-const print = require('./commands/print');
-const register = require('./commands/register');
-const sodg = require('./commands/sodg');
 const tinted = require('./tinted-console');
-const unphi = require('./commands/unphi');
-const verify = require('./commands/verify');
 const {program} = require('commander');
 
 /**
@@ -50,6 +39,17 @@ const language = {
  */
 const commands = {
   [language.java]: {
+    assemble: require('./commands/assemble'),
+    audit: require('./commands/audit'),
+    clean: require('./commands/clean'),
+    foreign: require('./commands/foreign'),
+    parse: require('./commands/parse'),
+    phi: require('./commands/phi'),
+    print: require('./commands/print'),
+    register: require('./commands/register'),
+    sodg: require('./commands/sodg'),
+    unphi: require('./commands/unphi'),
+    verify: require('./commands/verify'),
     transpile: require('./commands/java/transpile'),
     link: require('./commands/java/link'),
     compile: require('./commands/java/compile'),
@@ -57,6 +57,17 @@ const commands = {
     test: require('./commands/java/test')
   },
   [language.js]: {
+    assemble: require('./commands/assemble'),
+    audit: require('./commands/audit'),
+    clean: require('./commands/clean'),
+    foreign: require('./commands/foreign'),
+    parse: require('./commands/parse'),
+    phi: require('./commands/phi'),
+    print: require('./commands/print'),
+    register: require('./commands/register'),
+    sodg: require('./commands/sodg'),
+    unphi: require('./commands/unphi'),
+    verify: require('./commands/verify'),
     transpile: require('./commands/js/transpile'),
     link: require('./commands/js/link'),
     compile: require('./commands/js/compile'),
@@ -115,13 +126,13 @@ program
 program.command('audit')
   .description('Inspect all packages and report their status')
   .action((str, opts) => {
-    audit(program.opts());
+    coms().audit(program.opts());
   });
 
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')
   .action((str, opts) => {
-    foreign(program.opts());
+    coms().foreign(program.opts());
   });
 
 program
@@ -129,13 +140,13 @@ program
   .option('--global', 'delete ~/.eo directory')
   .description('Delete all temporary files')
   .action((str, opts) => {
-    clean({...program.opts(), ...str});
+    coms().clean({...program.opts(), ...str});
   });
 
 program.command('register')
   .description('Register all visible EO source files')
   .action((str, opts) => {
-    register(program.opts());
+    coms().register(program.opts());
   });
 
 program.command('parse')
@@ -143,10 +154,10 @@ program.command('parse')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => parse(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().parse(program.opts()));
     } else {
-      parse(program.opts());
+      coms().parse(program.opts());
     }
   });
 
@@ -155,10 +166,10 @@ program.command('assemble')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()));
     } else {
-      assemble(program.opts());
+      coms().assemble(program.opts());
     }
   });
 
@@ -173,11 +184,11 @@ program.command('sodg')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => sodg({...program.opts(), ...str}));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().sodg({...program.opts(), ...str}));
     } else {
-      sodg({...program.opts(), ...str});
+      coms().sodg({...program.opts(), ...str});
     }
   });
 
@@ -197,10 +208,10 @@ program.command('phi')
     clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => phi({...program.opts(), ...str}));
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().phi({...program.opts(), ...str}));
     } else {
-      phi(program.opts());
+      coms().phi(program.opts());
     }
   });
 
@@ -219,7 +230,7 @@ program.command('unphi')
   .description('Generate XMIR files from PHI files')
   .action((str, opts) => {
     clear(str);
-    unphi({...program.opts(), ...str});
+    coms().unphi({...program.opts(), ...str});
   });
 
 program.command('print')
@@ -236,7 +247,7 @@ program.command('print')
   )
   .action((str, opts) => {
     clear(str);
-    print({...program.opts(), ...str});
+    coms().print({...program.opts(), ...str});
   });
 
 program.command('verify')
@@ -245,10 +256,10 @@ program.command('verify')
     clear(str);
     if (program.opts().alone == undefined) {
       register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()));
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()));
     } else {
-      verify(program.opts());
+      coms().verify(program.opts());
     }
   });
 
@@ -256,30 +267,28 @@ program.command('transpile')
   .description('Convert EO files into target language')
   .action((str, opts) => {
     clear(str);
-    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()))
-        .then((r) => commands[lang].transpile(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().transpile(program.opts()));
     } else {
-      commands[lang].transpile(program.opts());
+      coms().transpile(program.opts());
     }
   });
 
 program.command('compile')
   .description('Compile target language sources into binaries')
   .action((str, opts) => {
-    const lang = program.opts().language;
     clear(str);
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()))
-        .then((r) => commands[lang].transpile(program.opts()))
-        .then((r) => commands[lang].compile(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().transpile(program.opts()))
+        .then((r) => coms().compile(program.opts()));
     } else {
-      commands[lang].compile(program.opts());
+      coms().compile(program.opts());
     }
   });
 
@@ -287,16 +296,15 @@ program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
     clear(str);
-    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()))
-        .then((r) => commands[lang].transpile(program.opts()))
-        .then((r) => commands[lang].compile(program.opts()))
-        .then((r) => commands[lang].link(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().transpile(program.opts()))
+        .then((r) => coms().compile(program.opts()))
+        .then((r) => coms().link(program.opts()));
     } else {
-      commands[lang].link(program.opts());
+      coms().link(program.opts());
     }
   });
 
@@ -306,19 +314,18 @@ program.command('dataize')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
-    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()))
-        .then((r) => commands[lang].transpile(program.opts()))
-        .then((r) => commands[lang].compile(program.opts()))
-        .then((r) => commands[lang].link(program.opts()))
-        .then((r) => commands[lang].dataize(
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().transpile(program.opts()))
+        .then((r) => coms().compile(program.opts()))
+        .then((r) => coms().link(program.opts()))
+        .then((r) => coms().dataize(
           program.args[1], program.args.slice(2), {...program.opts(), ...str}
         ));
     } else {
-      commands[lang].dataize(
+      coms().dataize(
         program.args[1], program.args.slice(2), {...program.opts(), ...str}
       );
     }
@@ -328,17 +335,16 @@ program.command('test')
   .description('Run all visible unit tests')
   .action((str, opts) => {
     clear(str);
-    const lang = program.opts().language;
     if (program.opts().alone == undefined) {
-      register(program.opts())
-        .then((r) => assemble(program.opts()))
-        .then((r) => verify(program.opts()))
-        .then((r) => commands[lang].transpile(program.opts()))
-        .then((r) => commands[lang].compile(program.opts()))
-        .then((r) => commands[lang].link(program.opts()))
-        .then((r) => commands[lang].test(program.opts()));
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().transpile(program.opts()))
+        .then((r) => coms().compile(program.opts()))
+        .then((r) => coms().link(program.opts()))
+        .then((r) => coms().test(program.opts()));
     } else {
-      commands[lang].test(program.opts());
+      coms().test(program.opts());
     }
   });
 
@@ -358,4 +364,17 @@ function clear(str) {
   if (program.opts().clean) {
     clean({...program.opts(), ...str});
   }
+}
+
+/**
+ * Get commands for the target language.
+ * @return {Hash} Commands for the specified language
+ */
+function coms() {
+  const lang = program.opts().language;
+  const hash = commands[lang];
+  if (hash == undefined) {
+    throw new Error(`Unknown platform ${lang}`);
+  }
+  return hash;
 }

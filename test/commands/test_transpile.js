@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
@@ -53,6 +54,7 @@ describe('transpile', function() {
       '--language=' + lang,
     ]);
   };
+
   it('transpiles a simple .EO program to Java', function(done) {
     this.timeout(0);
     const home = path.resolve(`temp/test-transpile/java`);
@@ -63,6 +65,7 @@ describe('transpile', function() {
     );
     done();
   });
+
   it('transpiles a simple .EO program to JavaScript', function(done) {
     this.timeout(0);
     const home = path.resolve(`temp/test-transpile/js`);
@@ -71,6 +74,16 @@ describe('transpile', function() {
       stdout, home,
       ['target/project/transpile.js']
     );
+    done();
+  });
+
+  it('attempts to transpile a simple .EO program to wrong platform', function(done) {
+    const spawnSync = require('child_process').spawnSync;
+    const s = spawnSync(
+      'node', [path.resolve('./src/eoc.js'), 'transpile', '--language=Eiffel']
+    );
+    assert(s.status != 0);
+    assert(s.stderr.includes('Unknown platform Eiffel'), s.stderr);
     done();
   });
 });
