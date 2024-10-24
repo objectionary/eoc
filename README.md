@@ -21,6 +21,7 @@ Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
 in the current directory:
 
 ```eo
+# My first object in EO!
 [args] > hello
   QQ.io.stdout > @
     "Hello, world!\n"
