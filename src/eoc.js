@@ -37,42 +37,41 @@ const language = {
 /**
  * Platform dependent commands.
  */
+const common = {
+  assemble: require('./commands/assemble'),
+  audit: require('./commands/audit'),
+  clean: require('./commands/clean'),
+  foreign: require('./commands/foreign'),
+  parse: require('./commands/parse'),
+  phi: require('./commands/phi'),
+  print: require('./commands/print'),
+  register: require('./commands/register'),
+  sodg: require('./commands/sodg'),
+  unphi: require('./commands/unphi'),
+  verify: require('./commands/verify'),
+  jeo_disassemble: require('./commands/jeo/disassemble'),
+  jeo_assemble: require('./commands/jeo/disassemble')
+};
 const commands = {
   [language.java]: {
-    assemble: require('./commands/assemble'),
-    audit: require('./commands/audit'),
-    clean: require('./commands/clean'),
-    foreign: require('./commands/foreign'),
-    parse: require('./commands/parse'),
-    phi: require('./commands/phi'),
-    print: require('./commands/print'),
-    register: require('./commands/register'),
-    sodg: require('./commands/sodg'),
-    unphi: require('./commands/unphi'),
-    verify: require('./commands/verify'),
-    transpile: require('./commands/java/transpile'),
-    link: require('./commands/java/link'),
-    compile: require('./commands/java/compile'),
-    dataize: require('./commands/java/dataize'),
-    test: require('./commands/java/test')
+    ...common,
+    ...{
+      transpile: require('./commands/java/transpile'),
+      link: require('./commands/java/link'),
+      compile: require('./commands/java/compile'),
+      dataize: require('./commands/java/dataize'),
+      test: require('./commands/java/test')
+    }
   },
   [language.js]: {
-    assemble: require('./commands/assemble'),
-    audit: require('./commands/audit'),
-    clean: require('./commands/clean'),
-    foreign: require('./commands/foreign'),
-    parse: require('./commands/parse'),
-    phi: require('./commands/phi'),
-    print: require('./commands/print'),
-    register: require('./commands/register'),
-    sodg: require('./commands/sodg'),
-    unphi: require('./commands/unphi'),
-    verify: require('./commands/verify'),
-    transpile: require('./commands/js/transpile'),
-    link: require('./commands/js/link'),
-    compile: require('./commands/js/compile'),
-    dataize: require('./commands/js/dataize'),
-    test: require('./commands/js/test')
+    ...common,
+    ...{
+      transpile: require('./commands/js/transpile'),
+      link: require('./commands/js/link'),
+      compile: require('./commands/js/compile'),
+      dataize: require('./commands/js/dataize'),
+      test: require('./commands/js/test')
+    }
   }
 };
 
@@ -346,6 +345,24 @@ program.command('test')
     } else {
       coms().test(program.opts());
     }
+  });
+
+program.command('jeo:disassemble')
+  .description('Disassemble .class files to .xmir files')
+  .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
+  .option('--classes <dir>', 'Directory with .class files (reading from it)', 'target/classes')
+  .option('--xmir <dir>', 'Directory with .xmir files (writing into it)', 'target/xmir')
+  .action((str, opts) => {
+    coms().jeo_disassemble({...program.opts(), ...str});
+  });
+
+program.command('jeo:assemble')
+  .description('Assemble .xmir files to .class files')
+  .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
+  .option('--xmir <dir>', 'Directory with .xmir files (reading from it)', 'target/xmir')
+  .option('--classes <dir>', 'Directory with .class files (writing into it)', 'target/classes')
+  .action((str, opts) => {
+    coms().jeo_assemble({...program.opts(), ...str});
   });
 
 try {

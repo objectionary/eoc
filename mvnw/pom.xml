@@ -29,6 +29,7 @@ SOFTWARE.
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <eo.version>undefined</eo.version>
+    <jeo.version>undefined</jeo.version>
   </properties>
   <dependencies>
     <dependency>
@@ -64,6 +65,14 @@ SOFTWARE.
           <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eolang</groupId>
+        <artifactId>jeo-maven-plugin</artifactId>
+        <version>${jeo.version}</version>
+        <configuration>
+          <skipVerification>true</skipVerification>
         </configuration>
       </plugin>
       <plugin>
