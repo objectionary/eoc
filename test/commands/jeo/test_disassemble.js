@@ -41,7 +41,7 @@ describe('jeo:disassemble', function() {
       '--verbose',
       '--jeo-version=0.6.11',
       '--classes', home,
-      '--xmir', home,
+      '--xmirs', home,
     ]);
     assertFilesExist(
       stdout, home,

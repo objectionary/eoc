@@ -39,12 +39,12 @@ module.exports = function(opts) {
         [
           `-Djeo.version=${opts.jeoVersion}`,
           `-Djeo.disassemble.sourcesDir=${path.resolve(opts.classes)}`,
-          `-Djeo.disassemble.outputDir=${path.resolve(opts.xmir)}`,
+          `-Djeo.disassemble.outputDir=${path.resolve(opts.xmirs)}`,
         ]
       ),
     opts.target, opts.batch
   ).then((r) => {
-    console.info('Bytecode .class files from %s disassembled to .xmir to %s', rel(opts.classes), rel(opts.xmir));
+    console.info('Bytecode .class files from %s disassembled to .xmir to %s', rel(opts.classes), rel(opts.xmirs));
     return r;
   });
 };

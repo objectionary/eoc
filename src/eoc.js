@@ -50,7 +50,7 @@ const common = {
   unphi: require('./commands/unphi'),
   verify: require('./commands/verify'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
-  jeo_assemble: require('./commands/jeo/disassemble')
+  jeo_assemble: require('./commands/jeo/assemble')
 };
 const commands = {
   [language.java]: {
@@ -351,7 +351,7 @@ program.command('jeo:disassemble')
   .description('Disassemble .class files to .xmir files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
   .option('--classes <dir>', 'Directory with .class files (reading from it)', 'target/classes')
-  .option('--xmir <dir>', 'Directory with .xmir files (writing into it)', 'target/xmir')
+  .option('--xmirs <dir>', 'Directory with .xmir files (writing into it)', 'target/xmir')
   .action((str, opts) => {
     coms().jeo_disassemble({...program.opts(), ...str});
   });
@@ -359,7 +359,8 @@ program.command('jeo:disassemble')
 program.command('jeo:assemble')
   .description('Assemble .xmir files to .class files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
-  .option('--xmir <dir>', 'Directory with .xmir files (reading from it)', 'target/xmir')
+  .option('--xmirs <dir>', 'Directory with .xmir files (reading from it)', 'target/xmir')
+  .option('--unrolled <dir>', 'Directory with unrolled .xmir files (writing into it)', 'target/unrolled')
   .option('--classes <dir>', 'Directory with .class files (writing into it)', 'target/classes')
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
