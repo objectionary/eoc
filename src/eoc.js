@@ -360,7 +360,7 @@ program.command('jeo:assemble')
   .description('Assemble .xmir files to .class files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
   .option('--xmirs <dir>', 'Directory with .xmir files (reading from it)', 'target/xmir')
-  .option('--unrolled <dir>', 'Directory with unrolled .xmir files (writing into it)', 'target/unrolled')
+  .option('--unrolled <dir>', 'Directory with unrolled .xmir files', 'target/unrolled')
   .option('--classes <dir>', 'Directory with .class files (writing into it)', 'target/classes')
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});

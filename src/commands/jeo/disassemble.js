@@ -44,7 +44,10 @@ module.exports = function(opts) {
       ),
     opts.target, opts.batch
   ).then((r) => {
-    console.info('Bytecode .class files from %s disassembled to .xmir to %s', rel(opts.classes), rel(opts.xmirs));
+    console.info(
+      'Bytecode .class files from %s disassembled to .xmir to %s',
+      rel(opts.classes), rel(opts.xmirs)
+    );
     return r;
   });
 };

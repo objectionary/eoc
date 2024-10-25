@@ -25,7 +25,7 @@
 const fs = require('fs');
 const path = require('path');
 const execSync = require('child_process').execSync;
-const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../../helpers');
+const {runSync, assertFilesExist, weAreOnline} = require('../../helpers');
 
 describe('jeo:assemble', function() {
   before(weAreOnline);
