@@ -40,6 +40,7 @@ describe('jeo:disassemble', function() {
       'jeo:disassemble',
       '--verbose',
       '--jeo-version=0.6.11',
+      '--target', home,
       '--classes', '.',
       '--xmirs', '.',
     ]);

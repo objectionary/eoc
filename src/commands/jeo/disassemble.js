@@ -38,8 +38,8 @@ module.exports = function(opts) {
       .concat(
         [
           `-Djeo.version=${opts.jeoVersion}`,
-          `-Djeo.disassemble.sourcesDir=${path.resolve(opts.classes)}`,
-          `-Djeo.disassemble.outputDir=${path.resolve(opts.xmirs)}`,
+          `-Djeo.disassemble.sourcesDir=${path.resolve(opts.target, opts.classes)}`,
+          `-Djeo.disassemble.outputDir=${path.resolve(opts.target, opts.xmirs)}`,
         ]
       ),
     opts.target, opts.batch

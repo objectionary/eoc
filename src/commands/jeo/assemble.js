@@ -38,10 +38,10 @@ module.exports = function(opts) {
       .concat(
         [
           `-Djeo.version=${opts.jeoVersion}`,
-          `-Djeo.unroll-phi.sourcesDir=${path.resolve(opts.xmirs)}`,
-          `-Djeo.unroll-phi.outputDir=${path.resolve(opts.unrolled)}`,
-          `-Djeo.assemble.sourcesDir=${path.resolve(opts.unrolled)}`,
-          `-Djeo.assemble.outputDir=${path.resolve(opts.classes)}`,
+          `-Djeo.unroll-phi.sourcesDir=${path.resolve(opts.target, opts.xmirs)}`,
+          `-Djeo.unroll-phi.outputDir=${path.resolve(opts.target, opts.unrolled)}`,
+          `-Djeo.assemble.sourcesDir=${path.resolve(opts.target, opts.unrolled)}`,
+          `-Djeo.assemble.outputDir=${path.resolve(opts.target, opts.classes)}`,
         ]
       ),
     opts.target, opts.batch
