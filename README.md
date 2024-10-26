@@ -48,9 +48,9 @@ You can also do many other things with `eoc` commands
 * `link` puts all binaries together into a single executable binary
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
-* `jeo:disassemble` convert Java `.class` files to `.xmir`
+* `jeo:disassemble` converts Java `.class` files to `.xmir`
 (via [jeo](https://github.com/objectionary/jeo-maven-plugin))
-* `jeo:assemble` convert `.xmir` files to Java `.class` files
+* `jeo:assemble` converts `.xmir` files to Java `.class` files
 (via [jeo](https://github.com/objectionary/jeo-maven-plugin))
 
 There are also commands that help manipulate with XMIR and EO sources
