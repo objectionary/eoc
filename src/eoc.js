@@ -350,8 +350,16 @@ program.command('test')
 program.command('jeo:disassemble')
   .description('Disassemble .class files to .xmir files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
-  .option('--classes <dir>', 'Directory with .class files (reading from it)', 'target/classes')
-  .option('--xmirs <dir>', 'Directory with .xmir files (writing into it)', 'target/xmir')
+  .option(
+    '--classes <dir>',
+    'Directory with .class files (relative to --target)',
+    'classes'
+  )
+  .option(
+    '--xmirs <dir>',
+    'Directory with .xmir files (relative to --target)',
+    'xmir'
+  )
   .action((str, opts) => {
     coms().jeo_disassemble({...program.opts(), ...str});
   });
@@ -359,9 +367,21 @@ program.command('jeo:disassemble')
 program.command('jeo:assemble')
   .description('Assemble .xmir files to .class files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
-  .option('--xmirs <dir>', 'Directory with .xmir files (reading from it)', 'target/xmir')
-  .option('--unrolled <dir>', 'Directory with unrolled .xmir files', 'target/unrolled')
-  .option('--classes <dir>', 'Directory with .class files (writing into it)', 'target/classes')
+  .option(
+    '--xmirs <dir>',
+    'Directory with .xmir files (relative to --target)',
+    'xmir'
+  )
+  .option(
+    '--unrolled <dir>',
+    'Directory with unrolled .xmir files (relative to --target)',
+    'unrolled'
+  )
+  .option(
+    '--classes <dir>',
+    'Directory with .class files (relative to --target)',
+    'classes'
+  )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
   });
