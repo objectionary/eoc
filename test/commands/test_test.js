@@ -34,6 +34,8 @@ describe('test', function() {
    * Run test command.
    * @param {String} home - Home directory
    * @param {String} lang - Target language
+   * @param {String} parser - Version of EO parser
+   * @param {String} hash - Git SHA in objectionary/home
    * @return {String} - Stdout
    */
   const test = function(home, lang = 'Java', parser, hash) {

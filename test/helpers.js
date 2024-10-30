@@ -25,8 +25,14 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports.parserVersion = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
-module.exports.homeTag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim();
+module.exports.parserVersion = fs.readFileSync(
+  path.join(__dirname, '../eo-version.txt'),
+  'utf8'
+).trim();
+module.exports.homeTag = fs.readFileSync(
+  path.join(__dirname, '../home-tag.txt'),
+  'utf8'
+).trim();
 
 /**
  * Helper to run EOC command line tool.

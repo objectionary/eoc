@@ -28,11 +28,11 @@ const path = require('path');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const options = [
-  { lang: 'Java', version: parserVersion, tag: homeTag },
-  { lang: 'Java', version: '0.39.1', tag: 'f7a408498f099c4149626d18f8fe4462d3b35a67' },
-  { lang: 'Java', version: '0.38.0', tag: '3b5f3a5726a5d93ba6acb021a2be8a40e408a93f' },
-  { lang: 'Java', version: '0.36.0', tag: '8ce52371742c7ef249121b2a3cb39b3510aa5068' },
-  { lang: 'JavaScript', version: parserVersion, tag: homeTag },
+  {lang: 'Java', version: parserVersion, tag: homeTag},
+  {lang: 'Java', version: '0.39.1', tag: 'f7a408498f099c4149626d18f8fe4462d3b35a67'},
+  {lang: 'Java', version: '0.38.0', tag: '3b5f3a5726a5d93ba6acb021a2be8a40e408a93f'},
+  {lang: 'Java', version: '0.36.0', tag: '8ce52371742c7ef249121b2a3cb39b3510aa5068'},
+  {lang: 'JavaScript', version: parserVersion, tag: homeTag},
 ];
 
 describe('dataize', function() {

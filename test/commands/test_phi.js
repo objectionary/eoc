@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {runSync, assertFilesExist, weAreOnline} = require('../helpers');
 
 describe('phi', function() {
   before(weAreOnline);
