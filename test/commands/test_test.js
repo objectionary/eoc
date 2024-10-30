@@ -62,6 +62,7 @@ describe('test', function() {
       '--language=' + lang
     ]);
   };
+
   it('executes a single Java unit test', function(done) {
     const home = path.resolve('temp/test-test/java');
     const stdout = test(home, 'Java');
@@ -74,6 +75,7 @@ describe('test', function() {
     );
     done();
   });
+
   it('executes a single JavaScript unit test', function(done) {
     const home = path.resolve('temp/test-test/javascript');
     const stdout = test(home, 'JavaScript');
