@@ -40,11 +40,13 @@ That's it.
 You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
-* `register` finds necessary EO files and registers them in a JSON catalog
-* `assemble` parses EO files into XMIR, optimizes them,
+* `register` finds necessary `.eo` files and registers them in a JSON catalog
+* `assemble` parses `.eo` files into `.xmir`, optimizes them,
   and pulls foreign EO objects
-* `transpile` converts XMIR to target programming language (Java by default)
-* `compile` converts target language sources to binaries
+* `transpile` converts `.xmir` files to the target programming
+language (Java by default)
+* `compile` converts target language sources (e.g., `.java`)
+to binaries (e.g., `.class`)
 * `link` puts all binaries together into a single executable binary
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
@@ -57,11 +59,11 @@ There are also commands that help manipulate with XMIR and EO sources
 (the list is not completed, while some of them are not implemented as of yet):
 
 * `audit` inspects all required packages and reports their status
-* `foreign` inspects all objects found in the program after `assemble` step
-* `sodg` generates SODG from XMIR, further rederable as XML or [Dot][dot]
-* `phi` generates PHI files from XMIR
-* `unphi` generates XMIR files from PHI files
-* `print` generates EO files from PHI files
+* `foreign` inspects all objects found in the program after the `assemble` step
+* `sodg` generates `.sodg` from `.xmir`, further rederable as XML or [Dot][dot]
+* `phi` generates `.phi` files from `.xmir` files
+* `unphi` generates `.xmir` files from `.phi` files
+* `print` generates `.eo` files from `.phi` files
 * ~~`translate` converts Java/C++/Python/etc. program to EO program~~
 * ~~`demu` removes `cage` and `memory` objects~~
 * ~~`dejump` removes `goto` objects~~
