@@ -62,7 +62,7 @@ describe('phi', function() {
       path.resolve(home, 'base/xmir/foo.xmir'),
       '<program ms="1" name="foo" time="2024-01-01T01:01:01"' +
       ' version="1" revision="1" dob="2024-01-01T01:01:01">' +
-      ' <listing/>' +
+      '<listing/>' +
       '<errors/>' +
       '<sheets/>' +
       '<license/>' +
