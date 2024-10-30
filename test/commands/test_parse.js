@@ -38,8 +38,8 @@ describe('parse', function() {
     const stdout = runSync([
       'parse',
       '--verbose',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

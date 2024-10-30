@@ -37,8 +37,8 @@ describe('sodg', function() {
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
     const stdout = runSync([
       'sodg',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '--verbose',
       '--dot',
       '--include=simple',
