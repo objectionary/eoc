@@ -22,6 +22,8 @@
 ---
 docker:
   image: yegor256/rultor-image:1.23.1
+ec2:
+  type: t2.2xlarge
 assets:
   npmrc: yegor256/objectionary-secrets#npmrc
 install: |
