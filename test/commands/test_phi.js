@@ -24,7 +24,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {runSync, assertFilesExist, weAreOnline} = require('../helpers');
 
 describe('phi', function() {
   before(weAreOnline);
@@ -38,8 +38,8 @@ describe('phi', function() {
       'phi',
       '--verbose',
       '--track-optimization-steps',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      '--parser=0.38.3',
+      '--home-tag=4fab83ddc50b6aa86091f553cfb578df7d63a6be',
       '--phi-input=2-optimize',
       '--phi-output=output',
       '-s', path.resolve(home, 'src'),

@@ -27,32 +27,12 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-// They don't work, but they should:
-// Let's continue after this bug is fixed: https://github.com/objectionary/eo/issues/3093
-// ['Java', '0.35.2', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-// ['Java', '0.35.1', '130afdd1456a0cbafd52aee8d7bc612e1faac547'],
-// ['Java', '0.34.1', '1d605bd872f27494551e9dd2341b9413d0d96d89'],
 const options = [
-  {
-    lang: 'Java',
-    version: parserVersion,
-    tag: homeTag
-  },
-  {
-    lang: 'Java',
-    version: '0.38.0',
-    tag: '0.38.0'
-  },
-  {
-    lang: 'Java',
-    version: '0.36.0',
-    tag: '0.36.0'
-  },
-  {
-    lang: 'JavaScript',
-    version: parserVersion,
-    tag: homeTag
-  },
+  {lang: 'Java', version: parserVersion, tag: homeTag},
+  {lang: 'Java', version: '0.39.1', tag: 'f7a408498f099c4149626d18f8fe4462d3b35a67'},
+  {lang: 'Java', version: '0.38.0', tag: '3b5f3a5726a5d93ba6acb021a2be8a40e408a93f'},
+  {lang: 'Java', version: '0.36.0', tag: '8ce52371742c7ef249121b2a3cb39b3510aa5068'},
+  {lang: 'JavaScript', version: parserVersion, tag: homeTag},
 ];
 
 describe('dataize', function() {
@@ -80,11 +60,11 @@ describe('dataize', function() {
         '--stack=64M',
         '--heap=1G',
         '--clean',
-        '--parser=' + version,
-        '--home-tag=' + tag,
+        `--parser=${version}`,
+        `--home-tag=${tag}`,
         '-s', path.resolve(home, 'src'),
         '-t', path.resolve(home, 'target'),
-        '--language=' + lang
+        `--language=${lang}`
       ]);
       assert(stdout.includes('Hello, world!'), stdout);
       if (lang === 'Java') {

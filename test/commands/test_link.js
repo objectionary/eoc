@@ -53,8 +53,8 @@ describe('link', function() {
     return runSync([
       'link',
       '--verbose',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
       '--language=' + lang,
@@ -71,7 +71,7 @@ describe('link', function() {
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
         'target/classes/EOfoo/EObar/EOlink.class',
         'target/classes/org/eolang/Phi.class',
-        'target/classes/EOorg/EOeolang/EOint.class',
+        'target/classes/EOorg/EOeolang/EOnumber.class',
         'target/eoc.jar',
       ]
     );

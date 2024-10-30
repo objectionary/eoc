@@ -37,8 +37,8 @@ describe('compile', function() {
     fs.writeFileSync(path.resolve(home, 'src/compile.eo'), simple('compile'));
     const stdout = runSync([
       'compile',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -49,7 +49,7 @@ describe('compile', function() {
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
         'target/classes/EOfoo/EObar/EOcompile.class',
         'target/classes/org/eolang/Phi.class',
-        'target/classes/EOorg/EOeolang/EOint.class',
+        'target/classes/EOorg/EOeolang/EOnumber.class',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
@@ -74,16 +74,16 @@ describe('compile', function() {
     const stdout = runSync([
       'compile',
       '--verbose',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOsimple_test_compileTest.java',
-        'target/classes/EOfoo/EObar/EOsimple_test_compileTest.class',
+        'target/generated-sources/EOfoo/EObar/EOsimple_test_compile.java',
+        'target/classes/EOfoo/EObar/EOsimple_test_compile.class',
       ]
     );
     done();
@@ -98,8 +98,8 @@ describe('compile', function() {
     runSync([
       'compile',
       '--clean',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);

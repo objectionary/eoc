@@ -39,8 +39,8 @@ describe('verify', function() {
       'verify',
       '--verbose',
       '--track-optimization-steps',
-      '--parser=' + parserVersion,
-      '--home-tag=' + homeTag,
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
