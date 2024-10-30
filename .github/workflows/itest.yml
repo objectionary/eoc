@@ -57,10 +57,7 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" \
-            --batch "--language=${{ matrix.lang }}" dataize program
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" \
-            --alone "--language=${{ matrix.lang }}" --batch dataize program
+          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" dataize program
+          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch --alone "--language=${{ matrix.lang }}" dataize program
           node ../src/eoc.js clean
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" \
-            --batch "--language=${{ matrix.lang }}" test
+          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" test
