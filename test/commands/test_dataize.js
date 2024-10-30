@@ -29,9 +29,10 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const options = [
   {lang: 'Java', version: parserVersion, tag: homeTag},
-  {lang: 'Java', version: '0.39.1', tag: 'f7a408498f099c4149626d18f8fe4462d3b35a67'},
-  {lang: 'Java', version: '0.38.0', tag: '3b5f3a5726a5d93ba6acb021a2be8a40e408a93f'},
-  {lang: 'Java', version: '0.36.0', tag: '8ce52371742c7ef249121b2a3cb39b3510aa5068'},
+  {lang: 'Java', version: '0.40.3', tag: '56b2f37d32d71f06e2d298325164485972197a06'},
+  {lang: 'Java', version: '0.39.1', tag: '0.39.1'},
+  {lang: 'Java', version: '0.38.0', tag: '0.38.0'},
+  {lang: 'Java', version: '0.36.0', tag: '0.36.0'},
   {lang: 'JavaScript', version: parserVersion, tag: homeTag},
 ];
 

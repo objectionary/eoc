@@ -80,7 +80,7 @@ describe('test', function() {
 
   it('executes a single JavaScript unit test', function(done) {
     const home = path.resolve('temp/test-test/javascript');
-    const stdout = test(home, 'JavaScript', '0.38.3', '4fab83ddc50b6aa86091f553cfb578df7d63a6be');
+    const stdout = test(home, 'JavaScript', '0.38.0', '0.38.0');
     assert.ok(stdout.includes('1 passing'));
     assertFilesExist(
       stdout, home, ['target/project/simple-test.test.js',]

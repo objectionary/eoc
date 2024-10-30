@@ -210,7 +210,7 @@ program.command('phi')
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().phi({...program.opts(), ...str}));
     } else {
-      coms().phi(program.opts());
+      coms().phi({...program.opts(), ...str});
     }
   });
 
