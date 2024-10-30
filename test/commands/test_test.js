@@ -36,7 +36,7 @@ describe('test', function() {
    * @param {String} lang - Target language
    * @return {String} - Stdout
    */
-  const test = function(home, lang = 'Java') {
+  const test = function(home, lang = 'Java', parser, hash) {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
@@ -55,8 +55,8 @@ describe('test', function() {
     return runSync([
       'test',
       '--verbose',
-      `--parser=${parserVersion}`,
-      `--home-tag=${homeTag}`,
+      `--parser=${parser}`,
+      `--home-tag=${hash}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
       '--language=' + lang
@@ -65,7 +65,7 @@ describe('test', function() {
 
   it('executes a single Java unit test', function(done) {
     const home = path.resolve('temp/test-test/java');
-    const stdout = test(home, 'Java');
+    const stdout = test(home, 'Java', parserVersion, homeTag);
     assertFilesExist(
       stdout, home,
       [
@@ -78,7 +78,7 @@ describe('test', function() {
 
   it('executes a single JavaScript unit test', function(done) {
     const home = path.resolve('temp/test-test/javascript');
-    const stdout = test(home, 'JavaScript');
+    const stdout = test(home, 'JavaScript', '0.38.3', '4fab83ddc50b6aa86091f553cfb578df7d63a6be');
     assert.ok(stdout.includes('1 passing'));
     assertFilesExist(
       stdout, home, ['target/project/simple-test.test.js',]
