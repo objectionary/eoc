@@ -35,9 +35,9 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-2022, ubuntu-24.04, macos-12]
-        java: [17]
-        node: [16]
+        os: [ windows-2022, ubuntu-24.04, macos-13 ]
+        java: [ 17 ]
+        node: [ 16 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
