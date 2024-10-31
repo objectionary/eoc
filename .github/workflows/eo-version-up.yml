@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2024 Objectionary.com
+# Copyright (c) 2022-2024 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: up
+name: eo-version-up
 'on':
   push:
     branches:
@@ -31,18 +31,19 @@ concurrency:
   group: up-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  up:
+  eo-version-up:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: |-
-          git fetch --tags --force && \
-          latest=$(git tag --sort=creatordate | tail -1) && \
-          sed -E -i "s/@[0-9.]+/@${latest}/g" README.md
+      - run: sudo apt-get -y install jq
+      - run: |
+          curl https://api.github.com/repos/objectionary/eo/releases/latest \
+            --silent | jq -r .tag_name > eo-version.txt
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: version-up
-          commit-message: 'new version in README'
+          commit-message: 'new version of eo maven plugin'
           delete-branch: true
-          title: 'New version in README'
+          title: 'New version of EO Maven Plugin'
+          assignees: yegor256
           base: master

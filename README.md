@@ -14,7 +14,7 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package:
 
 ```bash
-npm install -g eolang
+npm install -g eolang@0.0.0
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
