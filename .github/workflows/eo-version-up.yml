@@ -28,7 +28,7 @@ name: eo-version-up
     tags:
       - '*'
 concurrency:
-  group: up-${{ github.ref }}
+  group: eo-version-up-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   eo-version-up:
