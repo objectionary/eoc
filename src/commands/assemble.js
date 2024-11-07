@@ -33,8 +33,10 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
+  const startTime = Date.now();
   return mvnw(['eo:assemble'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO program assembled in %s', rel(target));
+    const duration = Date.now() - startTime;
+    console.info('EO program assembled in %s in %dms', rel(target), duration);
     return r;
   });
 };

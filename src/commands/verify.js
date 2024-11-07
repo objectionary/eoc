@@ -32,8 +32,10 @@ const {mvnw, flags} = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
+  const startTime = Date.now();
   return mvnw(['eo:verify'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO program verified in %s', rel(path.resolve(opts.target)));
+    const duration = Date.now() - startTime;
+    console.info('EO program verified in %s in %dms', rel(path.resolve(opts.target)), duration);
     return r;
   });
 };

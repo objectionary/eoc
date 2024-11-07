@@ -33,8 +33,10 @@ const path = require('path');
  */
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
+  const startTime = Date.now();
   return mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java sources generated in %s', rel(sources));
+    const duration = Date.now() - startTime;
+    console.info('Java sources generated in %s in %dms', rel(sources), duration);
     return r;
   });
 };

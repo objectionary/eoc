@@ -33,8 +33,10 @@ const path = require('path');
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
+  const startTime = Date.now();
   return mvnw(['compiler:compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java .class files compiled into %s', rel(target));
+    const duration = Date.now() - startTime;
+    console.info('Java .class files compiled into %s in %dms', rel(target), duration);
     return r;
   });
 };
