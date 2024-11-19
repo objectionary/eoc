@@ -33,8 +33,9 @@ const os = require('os');
  */
 module.exports = function(opts) {
   const home = path.resolve(opts.target);
-  fs.rmSync(home, {recursive: true, force: true});
+  
   if (fs.existsSync(home)) {
+    fs.rmSync(home, {recursive: true, force: true});
     console.info('The directory %s deleted', rel(home));
   } else {
     console.info('The directory %s doesn\'t exist, no need to delete', rel(home));
