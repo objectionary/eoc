@@ -40,8 +40,8 @@ jobs:
         node: [ 16 ]
         # lang: [Java, JavaScript]
         lang: [ Java ]
-        parser: [ 0.40.3 ]
-        tag: [ 0.40.3 ]
+        parser: [ 0.42.0 ]
+        tag: [ 0.42.0 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
