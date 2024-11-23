@@ -23,13 +23,12 @@
  */
 
 /**
- * @todo #368
- * Consider if this method belong is in the right place.
+ * @todo #368:30min Decide the proper location for the `elapsed` utility function.
+ * - Consider if this method belong is in the right place.
  * It might belong in a utility module.
  * For now, it remains here.
  *
- * Also, review whether the test file for this method is located appropriately.
- * It’s unclear if its current location is the best fit.
+ * - Review if the test file for this method is appropriately located, as its current location might not be ideal.
  */
 
 /**
@@ -49,7 +48,7 @@
  */
 module.exports.elapsed = function elapsed(task) {
     const startTime = Date.now();
-    const tracked = {
+    return task({
         print: (message) => {
             const duration = Date.now() - startTime;
             let extended;
@@ -60,10 +59,9 @@ module.exports.elapsed = function elapsed(task) {
             } else {
                 extended = `${Math.ceil(duration / 3600000)}min`;
             }
-            let msg = `${message} in ${extended}`;
+            const msg = `${message} in ${extended}`;
             console.info(msg);
             return msg;
         }
-    }
-    return task(tracked);
+    });
 }
