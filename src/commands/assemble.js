@@ -25,6 +25,7 @@
 const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
+const {elapsed} = require('../elapsed');
 
 /**
  * Command to assemble .XMIR files.
@@ -33,8 +34,10 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
-  return mvnw(['eo:assemble'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO program assembled in %s', rel(target));
-    return r;
+  return elapsed((tracked) => {
+    return mvnw(['eo:assemble'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+      tracked.print('EO program assembled in %s', rel(target));
+      return r;
+    });
   });
 };
