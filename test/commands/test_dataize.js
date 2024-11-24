@@ -73,4 +73,30 @@ describe('dataize', function() {
       done();
     });
   });
+
+  it(`dataizes with command-line argument`, function(done) {
+    this.timeout(0);
+    const home = path.resolve('temp/test-dataize-with-arg');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(home, {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'simple.eo'),
+      [
+        '# sample',
+        '[args] > simple',
+        '  QQ.io.stdout (args.at 0) > @',
+      ].join('\n')
+    );
+    const stdout = runSync([
+      'dataize', 'simple',
+      '--clean',
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
+      '-s', home,
+      '-t', path.resolve(home, 'target'),
+      'Hooray'
+    ]);
+    assert(stdout.includes('Hooray'), stdout);
+    done();
+  });
 });
