@@ -63,10 +63,12 @@ describe('elapsed', function() {
   it('handles errors in task correctly', async () => {
     await assert.rejects(
       elapsed(async () => {
-        throw new Error("task error");
+        throw new Error('task error');
       }),
       (error) => {
-        assert.throws(() => { throw error }, /task error/);
+        assert.throws(() => {
+          throw error;
+        }, /task error/);
         return true;
       }
     );
