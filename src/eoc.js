@@ -50,7 +50,8 @@ const common = {
   unphi: require('./commands/unphi'),
   verify: require('./commands/verify'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
-  jeo_assemble: require('./commands/jeo/assemble')
+  jeo_assemble: require('./commands/jeo/assemble'),
+  docs: require('./commands/docs')
 };
 const commands = {
   [language.java]: {
@@ -384,6 +385,16 @@ program.command('jeo:assemble')
   )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
+  });
+
+program.command('docs')
+  .description('Generate documentation from XMIR files')
+  .option(
+    '--skip-uncommented', 
+    'Do not include lines without comments in the documentation'
+  )
+  .action((str, opts) => {
+    coms().docs({ ...program.opts(), ...str });
   });
 
 try {
