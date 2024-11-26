@@ -29,7 +29,7 @@ const globalProcessedAbstracts = new Set();
  * Reads all XMIR files from the specified directory.
  *
  * @param {string} dir - Path to the directory containing XMIR files.
- * @returns {Promise<Array<{ filename: string, content: string }>>} File contents.
+ * @return {Promise<Array<{ filename: string, content: string }>>} File contents.
  */
 async function readxmirFiles(dir) {
   const files = await fs.promises.readdir(dir);
@@ -46,7 +46,7 @@ async function readxmirFiles(dir) {
  * Parses XML content.
  *
  * @param {string} content - XML content.
- * @returns {Promise<Object>} Parsed object.
+ * @return {Promise<Object>} Parsed object.
  */
 async function parseXML(content) {
   return parser.parseStringPromise(content);
@@ -56,11 +56,11 @@ async function parseXML(content) {
  * Extracts comments from XML.
  *
  * @param {Array} commentsXml - XML comments.
- * @returns {Array<{ line: number, text: string }>} Extracted comments.
+ * @return {Array<{ line: number, text: string }>} Extracted comments.
  */
 function extractComments(commentsXml) {
   if (commentsXml && Array.isArray(commentsXml)) {
-    return commentsXml.map(comment => ({
+    return commentsXml.map((comment) => ({
       line: parseInt(comment.$.line, 10),
       text: comment._
     }));
@@ -72,11 +72,11 @@ function extractComments(commentsXml) {
  * Builds a map from lines to comments.
  *
  * @param {Array<{ line: number, text: string }>} comments - Comments.
- * @returns {Object} Line-to-comment map.
+ * @return {Object} Line-to-comment map.
  */
 function buildLineToCommentMap(comments) {
   const map = {};
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     map[comment.line] = comment.text.trim();
   });
   return map;
@@ -86,7 +86,7 @@ function buildLineToCommentMap(comments) {
  * Preprocesses Markdown text.
  *
  * @param {string} markdownText - Markdown text.
- * @returns {string} Processed Markdown text.
+ * @return {string} Processed Markdown text.
  */
 function preprocessMarkdown(markdownText) {
   if (!markdownText) return '';
@@ -101,10 +101,10 @@ function preprocessMarkdown(markdownText) {
  * @param {Object|null} parentAbstract - Parent abstract.
  * @param {Array} abstracts - List of abstracts.
  * @param {boolean} skipUncommented - Skip objects without comments.
- * @returns {Array} List of abstracts.
+ * @return {Array} List of abstracts.
  */
 function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstracts = [], skipUncommented = false) {
-  objects.forEach(o => {
+  objects.forEach((o) => {
     const isAbstract = o.$ && o.$.abstract !== undefined;
     if (isAbstract) {
       const abstractName = o.$.name || 'Unnamed';
@@ -133,7 +133,7 @@ function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstra
       abstracts.push(abstract);
 
       if (o.o) {
-        o.o.forEach(child => {
+        o.o.forEach((child) => {
           const childIsAbstract = child.$ && child.$.abstract !== undefined;
           if (childIsAbstract) {
             const childAbstract = buildAbstracts([child], lineToCommentMap, abstract, abstracts)[0];
@@ -183,7 +183,7 @@ function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstra
       }
 
       if (o.o) {
-        o.o.forEach(child => {
+        o.o.forEach((child) => {
           const childIsAbstract = child.$ && child.$.abstract !== undefined;
           if (childIsAbstract) {
             buildAbstracts([child], lineToCommentMap, parentAbstract, abstracts);
@@ -217,7 +217,7 @@ function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstra
  * Generates an HTML page for an abstract.
  *
  * @param {Object} abstract - Abstract.
- * @returns {string} HTML content.
+ * @return {string} HTML content.
  */
 function generateAbstractPage(abstract) {
   const commentsHtml = abstract.comments ? marked.parse(preprocessMarkdown(abstract.comments)) : '';
@@ -233,7 +233,7 @@ function generateAbstractPage(abstract) {
           </tr>
         </thead>
         <tbody>
-          ${abstract.childObjects.map(obj => `
+          ${abstract.childObjects.map((obj) => `
             <tr>
               <td>${obj.name}</td>
               <td>${obj.comments ? marked.parse(preprocessMarkdown(obj.comments)) : ''}</td>
@@ -254,7 +254,7 @@ function generateAbstractPage(abstract) {
   if (abstract.childrenAbstracts.length > 0) {
     const uniqueChildren = [];
     const seen = new Set();
-    abstract.childrenAbstracts.forEach(child => {
+    abstract.childrenAbstracts.forEach((child) => {
       if (!seen.has(child.name)) {
         seen.add(child.name);
         uniqueChildren.push(child);
@@ -269,7 +269,7 @@ function generateAbstractPage(abstract) {
           </tr>
         </thead>
         <tbody>
-          ${uniqueChildren.map(child => `
+          ${uniqueChildren.map((child) => `
             <tr>
               <td><a href="${sanitizeFileName(child.name)}.html" class="full-link">${child.name}</a></td>
             </tr>
@@ -318,7 +318,7 @@ function generateAbstractPage(abstract) {
  * Sanitizes a file name.
  *
  * @param {string} name - Name.
- * @returns {string} Sanitized name.
+ * @return {string} Sanitized name.
  */
 function sanitizeFileName(name) {
   return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -328,10 +328,10 @@ function sanitizeFileName(name) {
  * Generates the index HTML page.
  *
  * @param {Array} allAbstracts - All abstracts.
- * @returns {string} HTML content.
+ * @return {string} HTML content.
  */
 function generateIndexPage(allAbstracts) {
-  const topAbstracts = allAbstracts.filter(a => !a.parent);
+  const topAbstracts = allAbstracts.filter((a) => !a.parent);
   const html = `<html>
 <head>
   <title>Documentation Index</title>
@@ -351,7 +351,7 @@ function generateIndexPage(allAbstracts) {
         </tr>
       </thead>
       <tbody>
-        ${topAbstracts.map(abs => `
+        ${topAbstracts.map((abs) => `
           <tr>
             <td><a href="${sanitizeFileName(abs.name)}.html" class="full-link">${abs.name}</a></td>
             <td>${abs.comments ? marked.parse(preprocessMarkdown(abs.comments)) : ''}</td>
@@ -368,7 +368,7 @@ function generateIndexPage(allAbstracts) {
 /**
  * Generates the CSS file.
  *
- * @returns {Promise<void>}
+ * @return {Promise<void>}
  */
 async function generateCSS() {
   const cssContent = `
@@ -465,7 +465,7 @@ footer {
  *
  * @param {Object} opts - Generation options.
  * @param {boolean} opts.skipUncommented - Skip objects without comments.
- * @returns {Promise<void>}
+ * @return {Promise<void>}
  */
 async function generateDocumentation(opts) {
   const skipUncommented = opts.skipUncommented || false;
