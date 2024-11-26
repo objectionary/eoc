@@ -23,7 +23,8 @@
  */
 
 /**
- * @todo #368:30min Check if `elapsed` and its tests are in the right place
+ * @todo #368:30min Decide if the `elapsed` utility function is in the right place,
+ * consider relocating it and its test file if needed
  */
 
 /**
