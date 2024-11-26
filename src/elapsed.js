@@ -23,15 +23,12 @@
  */
 
 /**
- * @todo #368:30min Decide the proper location for the `elapsed` utility function.
- * - Consider if this method belong is in the right place.
- * It might belong in a utility module. For now, it remains here.
- * Review if the test file for this method is appropriately located,
- * as its current location might not be ideal.
+ * @todo #368:30min Decide if the `elapsed` utility function is in the right place
+ *  Consider relocating `elapsed` utility function and its test file if needed
  */
 
 /**
- * A utility function to measure the elapsed time of a task and provideÏ
+ * A utility function to measure the elapsed time of a task and provide
  * detailed timing information.
  *
  * This function wraps a given task (callback function) and provides it with

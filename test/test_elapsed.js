@@ -31,8 +31,8 @@ describe('elapsed', function() {
     return elapsed(async (tracked) => {
       await snooze(300);
       return tracked.print('task');
-    }) .then(
-      (actual)=> assert(
+    }).then(
+      (actual) => assert(
         /task in 30\d+ms/.test(actual),
         `Expected "${actual}" to match /task in 30\\d+ms/`
       )
@@ -42,7 +42,7 @@ describe('elapsed', function() {
     return elapsed(async (tracked) => {
       await snooze(10);
       return tracked.print('short task');
-    }) .then(
+    }).then(
       (actual) => assert(
         /short task in 1\d+ms/.test(actual),
         `Expected "${actual}" to match /short task in 1\\d+ms/`
@@ -53,7 +53,7 @@ describe('elapsed', function() {
     return elapsed(async (tracked) => {
       await snooze(1200);
       return tracked.print('long task');
-    }) .then(
+    }).then(
       (actual) => assert(
         /long task in 2s/.test(actual),
         `Expected "${actual}" to match /long task in 2s/`
