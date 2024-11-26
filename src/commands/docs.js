@@ -35,10 +35,13 @@ async function parseXML(content) {
 }
 
 function extractComments(commentsXml) {
-    return commentsXml?.map(comment => ({
-        line: parseInt(comment.$.line, 10),
-        text: comment._
-    })) || [];
+    if (commentsXml && Array.isArray(commentsXml)) {
+        return commentsXml.map(comment => ({
+            line: parseInt(comment.$.line, 10),
+            text: comment._
+        }));
+    }
+    return [];
 }
 
 function buildLineToCommentMap(comments) {
