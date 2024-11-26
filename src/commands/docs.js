@@ -6,8 +6,6 @@ const marked = require('marked');
 const inputDir = './xmir_files'; 
 const outputDir = './docs';
 
-const options = program.opts();
-
 const markedOptions = {
     breaks: true,
     gfm: true,
