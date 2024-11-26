@@ -390,11 +390,11 @@ program.command('jeo:assemble')
 program.command('docs')
   .description('Generate documentation from XMIR files')
   .option(
-    '--skip-uncommented', 
+    '--skip-uncommented',
     'Do not include lines without comments in the documentation'
   )
   .action((str, opts) => {
-    coms().docs({ ...program.opts(), ...str });
+    coms().docs({...program.opts(), ...str});
   });
 
 try {
