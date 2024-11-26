@@ -311,14 +311,13 @@ function generateAbstractPage(abstract) {
 <body>
   <header>
     <h1>Abstract: ${abstract.name}</h1>
-    ${abstract.parent
-        ? `<p>
-            Parent: <a href="${sanitizeFileName(abstract.parent.name)}.html">
-              ${abstract.parent.name}
-            </a>
-          </p>`
-    
-      : ''}
+    ${abstract.parent ?
+      `<p>
+        Parent: <a href="${sanitizeFileName(abstract.parent.name)}.html">
+          ${abstract.parent.name}
+        </a>
+      </p>` :
+    ''}
   </header>
   ${abstract.comments ? `<section class="comments">${commentsHtml}</section>` : ''}
   
@@ -375,9 +374,9 @@ function generateIndexPage(allAbstracts) {
           <tr>
             <td><a href="${sanitizeFileName(abs.name)}.html" class="full-link">${abs.name}</a></td>
             <td>
-              ${abs.comments
-                ? marked.parse(preprocessMarkdown(abs.comments))
-                : ''}
+              ${abs.comments ?
+                marked.parse(preprocessMarkdown(abs.comments)) :
+              ''}
             </td>
           </tr>
         `).join('\n')}
@@ -494,7 +493,7 @@ footer {
 async function generateDocumentation(opts) {
   const skipUncommented = opts.skipUncommented || false;
   try {
-    await fs.promises.mkdir(outputDir, { recursive: true });
+    await fs.promises.mkdir(outputDir, {recursive: true});
     await generateCSS();
     const xmirFiles = await readxmirFiles(inputDir);
     const allAbstracts = [];
