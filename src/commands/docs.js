@@ -33,11 +33,11 @@ const globalProcessedAbstracts = new Set();
  */
 async function readxmirFiles(dir) {
   const files = await fs.promises.readdir(dir);
-  const xmirFiles = files.filter(file => file.endsWith('.xmir'));
+  const xmirFiles = files.filter((file) => file.endsWith('.xmir'));
   const fileContents = [];
   for (const file of xmirFiles) {
     const content = await fs.promises.readFile(path.join(dir, file), 'utf-8');
-    fileContents.push({ filename: file, content });
+    fileContents.push({filename: file, content});
   }
   return fileContents;
 }
@@ -103,7 +103,13 @@ function preprocessMarkdown(markdownText) {
  * @param {boolean} skipUncommented - Skip objects without comments.
  * @return {Array} List of abstracts.
  */
-function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstracts = [], skipUncommented = false) {
+function buildAbstracts(
+  objects,
+  lineToCommentMap,
+  parentAbstract = null,
+  abstracts = [],
+  skipUncommented = false
+) {
   objects.forEach((o) => {
     const isAbstract = o.$ && o.$.abstract !== undefined;
     if (isAbstract) {
@@ -137,7 +143,7 @@ function buildAbstracts(objects, lineToCommentMap, parentAbstract = null, abstra
           const childIsAbstract = child.$ && child.$.abstract !== undefined;
           if (childIsAbstract) {
             const childAbstract = buildAbstracts([child], lineToCommentMap, abstract, abstracts)[0];
-            if (childAbstract && childAbstract.name !== abstract.name) { // Avoid self-references
+            if (childAbstract && childAbstract.name !== abstract.name) {
               abstract.childrenAbstracts.push(childAbstract);
             }
           } else {
@@ -271,7 +277,14 @@ function generateAbstractPage(abstract) {
         <tbody>
           ${uniqueChildren.map((child) => `
             <tr>
-              <td><a href="${sanitizeFileName(child.name)}.html" class="full-link">${child.name}</a></td>
+              <td>
+                <a
+                  href="${sanitizeFileName(child.name)}.html"
+                  class="full-link"
+                >
+                  ${child.name}
+                </a>
+              </td>
             </tr>
           `).join('\n')}
         </tbody>
@@ -298,7 +311,14 @@ function generateAbstractPage(abstract) {
 <body>
   <header>
     <h1>Abstract: ${abstract.name}</h1>
-    ${abstract.parent ? `<p>Parent: <a href="${sanitizeFileName(abstract.parent.name)}.html">${abstract.parent.name}</a></p>` : ''}
+    ${abstract.parent
+        ? `<p>
+            Parent: <a href="${sanitizeFileName(abstract.parent.name)}.html">
+              ${abstract.parent.name}
+            </a>
+          </p>`
+    
+      : ''}
   </header>
   ${abstract.comments ? `<section class="comments">${commentsHtml}</section>` : ''}
   
@@ -354,7 +374,11 @@ function generateIndexPage(allAbstracts) {
         ${topAbstracts.map((abs) => `
           <tr>
             <td><a href="${sanitizeFileName(abs.name)}.html" class="full-link">${abs.name}</a></td>
-            <td>${abs.comments ? marked.parse(preprocessMarkdown(abs.comments)) : ''}</td>
+            <td>
+              ${abs.comments
+                ? marked.parse(preprocessMarkdown(abs.comments))
+                : ''}
+            </td>
           </tr>
         `).join('\n')}
       </tbody>
@@ -481,7 +505,11 @@ async function generateDocumentation(opts) {
 
       const programXML = parsed.program;
 
-      const commentsXml = programXML.comments && programXML.comments[0] && programXML.comments[0].comment;
+      const commentsXml =
+        programXML.comments &&
+        programXML.comments[0] &&
+        programXML.comments[0].comment;
+
       // console.log('Comments:', commentsXml);
 
       const comments = extractComments(commentsXml);
