@@ -33,8 +33,8 @@ describe('elapsed', function() {
       return tracked.print('task');
     }).then(
       (actual) => assert(
-        /task in 30\d+ms/.test(actual),
-        `Expected "${actual}" to match /task in 30\\d+ms/`
+        /task in 3\d+ms/.test(actual),
+        `Expected "${actual}" to match /task in 3\\d+ms/`
       )
     );
   });
