@@ -23,11 +23,6 @@
  */
 
 /**
- * @todo #368:30min Decide if the `elapsed` utility function is in the right place,
- *  consider relocating it and its test file if needed
- */
-
-/**
  * A utility function to measure the elapsed time of a task and provide
  * detailed timing information.
  *
@@ -61,3 +56,7 @@ module.exports.elapsed = function elapsed(task) {
     }
   });
 };
+/**
+ * @todo #368:30min Decide if the `elapsed` utility function is in the right place,
+ *  consider relocating it and its test file if needed
+ */
