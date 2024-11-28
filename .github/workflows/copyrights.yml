@@ -37,6 +37,7 @@ jobs:
         with:
           globs: >-
             **/LICENSE.txt
+            **/*.js
             **/*.sh
             **/*.yml
             **/*.yaml
