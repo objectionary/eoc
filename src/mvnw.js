@@ -153,17 +153,13 @@ function stop() {
 }
 
 /**
- * Prints mvnw execution status.
+ * Recursively calculates number of files under a directory.
+ * @param {String} dir - Directory where to count.
+ * @param {Integer} curr - Current counter.
+ * @return {Integer} Total number files.
  */
-function print() {
-  const duration = Date.now() - beginning;
-  /**
-   * Recursively calculates number of files under a directory.
-   * @param {String} dir - Directory where to count.
-   * @param {Integer} curr - Current counter.
-   * @return {Integer} Total number files.
-   */
-  function count(dir, curr) {
+module.exports.count = function count(dir, curr) {
+  try {
     if (fs.existsSync(dir)) {
       for (const f of fs.readdirSync(dir)) {
         const next = path.join(dir, f);
@@ -174,8 +170,21 @@ function print() {
         }
       }
     }
-    return curr;
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.info(`Directory or file is not found: ${dir}`);
+    } else {
+      throw err;
+    }
   }
+  return curr;
+};
+
+/**
+ * Prints mvnw execution status.
+ */
+function print() {
+  const duration = Date.now() - beginning;
   let elapsed;
   if (duration < 1000) {
     elapsed = `${duration}ms`;
@@ -190,4 +199,3 @@ function print() {
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);
 }
-
