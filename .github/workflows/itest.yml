@@ -38,7 +38,7 @@ jobs:
         os: [ ubuntu-24.04, macos-13, windows-2022 ]
         java: [ 21 ]
         node: [ 16 ]
-        lang: [Java, JavaScript]
+        lang: [ Java, JavaScript ]
         parser: [ 0.44.0 ]
         tag: [ 0.44.0 ]
     runs-on: ${{ matrix.os }}
