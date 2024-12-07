@@ -35,13 +35,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ ubuntu-24.04, macos-13, windows-2022 ]
+        os: [ ubuntu-24.04, macos-15, windows-2022 ]
         java: [ 21 ]
         node: [ 16 ]
         # lang: [Java, JavaScript]
         lang: [ Java ]
-        parser: [ 0.42.0 ]
-        tag: [ 0.42.0 ]
+        parser: [ 0.46.0 ]
+        tag: [ 0.46.0 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

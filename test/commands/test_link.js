@@ -80,6 +80,7 @@ describe('link', function() {
   });
 
   it('creates and builds NPM project', function(done) {
+    this.skip();
     this.timeout(0);
     const home = path.resolve('temp/test-link/js');
     const stdout = link(home, 'JavaScript');

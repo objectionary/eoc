@@ -27,16 +27,16 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-describe('verify', function() {
+describe('lint', function() {
   before(weAreOnline);
 
-  it('verifies a simple .EO program', function(done) {
-    const home = path.resolve('temp/test-verify/simple');
+  it('lints a simple .EO program', function(done) {
+    const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
     const stdout = runSync([
-      'verify',
+      'lint',
       '--verbose',
       '--track-optimization-steps',
       `--parser=${parserVersion}`,
@@ -48,7 +48,7 @@ describe('verify', function() {
       stdout, home,
       [
         'target/2-optimize/simple.xmir',
-        'target/6-verify/simple.xmir',
+        'target/6-lint/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

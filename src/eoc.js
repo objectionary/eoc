@@ -48,7 +48,7 @@ const common = {
   register: require('./commands/register'),
   sodg: require('./commands/sodg'),
   unphi: require('./commands/unphi'),
-  verify: require('./commands/verify'),
+  lint: require('./commands/lint'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
   jeo_assemble: require('./commands/jeo/assemble')
 };
@@ -249,16 +249,16 @@ program.command('print')
     coms().print({...program.opts(), ...str});
   });
 
-program.command('verify')
-  .description('Verify XMIR files and fail if any issues inside')
+program.command('lint')
+  .description('Lint XMIR files and fail if any issues inside')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()));
+        .then((r) => coms().lint(program.opts()));
     } else {
-      coms().verify(program.opts());
+      coms().lint(program.opts());
     }
   });
 
@@ -269,7 +269,7 @@ program.command('transpile')
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().lint(program.opts()))
         .then((r) => coms().transpile(program.opts()));
     } else {
       coms().transpile(program.opts());
@@ -283,7 +283,7 @@ program.command('compile')
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().lint(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()));
     } else {
@@ -298,7 +298,7 @@ program.command('link')
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().lint(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()));
@@ -316,7 +316,7 @@ program.command('dataize')
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().lint(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
@@ -337,7 +337,7 @@ program.command('test')
     if (program.opts().alone == undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().verify(program.opts()))
+        .then((r) => coms().lint(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
