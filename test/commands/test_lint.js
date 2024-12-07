@@ -30,7 +30,7 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 describe('lint', function() {
   before(weAreOnline);
 
-  it('verifies a simple .EO program', function(done) {
+  it('lints a simple .EO program', function(done) {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
