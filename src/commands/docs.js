@@ -3,5 +3,5 @@
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-    console.info('Hello World!');
+  console.info('Hello World!');
 };
