@@ -49,6 +49,7 @@ const common = {
   sodg: require('./commands/sodg'),
   unphi: require('./commands/unphi'),
   lint: require('./commands/lint'),
+  docs: require('./commands/docs'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
   jeo_assemble: require('./commands/jeo/assemble')
 };
@@ -345,6 +346,12 @@ program.command('test')
     } else {
       coms().test(program.opts());
     }
+  });
+
+program.command('docs')
+  .description('Generate documentation from XMIR files')
+  .action((str, opts) => {
+    coms().docs(program.opts());
   });
 
 program.command('jeo:disassemble')
