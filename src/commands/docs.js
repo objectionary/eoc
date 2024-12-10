@@ -27,5 +27,5 @@
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  console.info('Hello World!');
+  console.info('This command is not yet implemented, sorry');
 };
