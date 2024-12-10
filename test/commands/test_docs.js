@@ -30,7 +30,6 @@ const {runSync} = require('../helpers');
  * @param {Function} done - Mocha's callback to signal completion
  */
 describe('docs', function() {
-
   it('generate documentation from XMIR files', function(done) {
     const stdout = runSync(['docs']);
     assert(
@@ -39,5 +38,4 @@ describe('docs', function() {
     );
     done();
   });
-
 });
