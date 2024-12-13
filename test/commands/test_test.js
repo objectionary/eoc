@@ -57,11 +57,12 @@ describe('test', function() {
     return runSync([
       'test',
       '--verbose',
+      '--easy',
       `--parser=${parser}`,
       `--home-tag=${hash}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
-      '--language=' + lang
+      `--language=${lang}`
     ]);
   };
 

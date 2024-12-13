@@ -91,7 +91,7 @@ if (process.argv.includes('--latest')) {
   // latest hash of the objectionary/home repository, and then
   // set it to the "hash" variable?
 } else {
-  console.debug('EO parser ' + parser + '; use the --latest flag if you need a freshier one');
+  console.debug(`EO parser ${parser}; use the --latest flag if you need a freshier one`);
 }
 
 const version = require('./version');
@@ -100,17 +100,17 @@ program
   .usage('[options] command')
   .summary('EO command line toolkit')
   .description(
-    'EO command-line toolkit (' +
-    version.what + ' built on ' + version.when +
-    '): https://github.com/objectionary/eoc'
+    `EO command-line toolkit (${version.what}) ` +
+    `built on ${version.when}): https://github.com/objectionary/eoc`
   )
-  .version(version.what, '-v, --version', 'Output the version number')
+  .version(version.what, '-v, --version', `Just print the number of the version (${version.what})`)
   .helpOption('-?, --help', 'Print this help information')
   .configureHelp({sortOptions: true, sortSubcommands: true});
 
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
+  .option('--easy', 'Ignore "warnings" and only fail if there are "errorst" or "criticals"')
   .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', tag)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')

@@ -99,6 +99,8 @@ SOFTWARE.
         <version>3.5.2</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
+          <useFile>false</useFile>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
     </plugins>

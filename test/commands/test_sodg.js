@@ -39,6 +39,7 @@ describe('sodg', function() {
       'sodg',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
+      '--easy',
       '--verbose',
       '--dot',
       '--include=simple',

@@ -53,11 +53,12 @@ describe('link', function() {
     return runSync([
       'link',
       '--verbose',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
-      '--language=' + lang,
+      `--language=${lang}`,
     ]);
   };
   it('compiles a simple .EO program into an executable .JAR', function(done) {

@@ -29,6 +29,7 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const options = [
   {lang: 'Java', version: parserVersion, tag: homeTag},
+  {lang: 'Java', version: '0.48.1', tag: '0.48.1'},
   {lang: 'Java', version: '0.46.0', tag: '0.46.0'},
   {lang: 'Java', version: '0.45.0', tag: '0.45.0'},
   {lang: 'Java', version: '0.44.0', tag: '0.44.0'},
@@ -63,6 +64,7 @@ describe('dataize', function() {
         '--stack=64M',
         '--heap=1G',
         '--clean',
+        '--easy',
         `--parser=${version}`,
         `--home-tag=${tag}`,
         '-s', path.resolve(home, 'src'),
@@ -93,6 +95,7 @@ describe('dataize', function() {
     const stdout = runSync([
       'dataize', 'simple',
       '--clean',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', home,
