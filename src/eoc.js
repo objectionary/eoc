@@ -91,7 +91,7 @@ if (process.argv.includes('--latest')) {
   // latest hash of the objectionary/home repository, and then
   // set it to the "hash" variable?
 } else {
-  console.debug('EO parser ' + parser + '; use the --latest flag if you need a freshier one');
+  console.debug(`EO parser ${parser}; use the --latest flag if you need a freshier one`);
 }
 
 const version = require('./version');
@@ -100,11 +100,9 @@ program
   .usage('[options] command')
   .summary('EO command line toolkit')
   .description(
-    'EO command-line toolkit (' +
-    version.what + ' built on ' + version.when +
-    '): https://github.com/objectionary/eoc'
+    `EO command-line toolkit (${version.what}) built on ${version.when}): https://github.com/objectionary/eoc`
   )
-  .version(version.what, '-v, --version', 'Output the version number')
+  .version(version.what, '-v, --version', `Just print the number of the version (${version.what})`)
   .helpOption('-?, --help', 'Print this help information')
   .configureHelp({sortOptions: true, sortSubcommands: true});
 

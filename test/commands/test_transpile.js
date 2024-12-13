@@ -51,7 +51,7 @@ describe('transpile', function() {
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
-      '--language=' + lang,
+      `--language=${lang}`,
     ]);
   };
 

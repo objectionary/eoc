@@ -62,7 +62,7 @@ describe('test', function() {
       `--home-tag=${hash}`,
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
-      '--language=' + lang
+      `--language=${lang}`
     ]);
   };
 
