@@ -33,13 +33,22 @@ const semver = require('semver');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
+  var extra = [
+    `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
+  ];
   if (semver.gte(opts.parser, '0.45.0')) {
-    return mvnw(['eo:lint'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+    return mvnw(
+      ['eo:lint'].concat(flags(opts)).concat(extra),
+      opts.target, opts.batch
+    ).then((r) => {
       console.info('EO program linted in %s', rel(path.resolve(opts.target)));
       return r;
     });
   } else {
-    return mvnw(['eo:verify'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+    return mvnw(
+      ['eo:verify'].concat(flags(opts)).concat(extra),
+      opts.target, opts.batch
+    ).then((r) => {
       console.info('EO program verified in %s', rel(path.resolve(opts.target)));
       return r;
     });
