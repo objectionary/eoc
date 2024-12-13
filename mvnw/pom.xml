@@ -99,6 +99,7 @@ SOFTWARE.
         <version>3.5.2</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
+          <useFile>false</useFile>
         </configuration>
       </plugin>
     </plugins>
