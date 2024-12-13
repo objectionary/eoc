@@ -57,6 +57,7 @@ describe('test', function() {
     return runSync([
       'test',
       '--verbose',
+      '--test',
       `--parser=${parser}`,
       `--home-tag=${hash}`,
       '-s', path.resolve(home, 'src'),

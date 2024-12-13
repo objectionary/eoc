@@ -53,6 +53,7 @@ describe('link', function() {
     return runSync([
       'link',
       '--verbose',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),

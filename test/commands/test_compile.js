@@ -39,6 +39,7 @@ describe('compile', function() {
       'compile',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
+      '--easy',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -74,6 +75,7 @@ describe('compile', function() {
     const stdout = runSync([
       'compile',
       '--verbose',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
@@ -98,6 +100,7 @@ describe('compile', function() {
     runSync([
       'compile',
       '--clean',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
