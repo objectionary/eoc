@@ -47,6 +47,7 @@ describe('transpile', function() {
     return runSync([
       'transpile',
       '--verbose',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),

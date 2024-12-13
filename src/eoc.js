@@ -100,7 +100,8 @@ program
   .usage('[options] command')
   .summary('EO command line toolkit')
   .description(
-    `EO command-line toolkit (${version.what}) built on ${version.when}): https://github.com/objectionary/eoc`
+    `EO command-line toolkit (${version.what}) ` +
+    `built on ${version.when}): https://github.com/objectionary/eoc`
   )
   .version(version.what, '-v, --version', `Just print the number of the version (${version.what})`)
   .helpOption('-?, --help', 'Print this help information')

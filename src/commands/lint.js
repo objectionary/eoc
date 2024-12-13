@@ -33,7 +33,7 @@ const semver = require('semver');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  var extra = [
+  const extra = [
     `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
   ];
   if (semver.gte(opts.parser, '0.45.0')) {
