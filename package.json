@@ -33,7 +33,7 @@
     "colors": "1.4.0",
     "eo2js": "0.0.7",
     "commander": "12.1.0",
-    "fast-xml-parser": "4.5.0",
+    "fast-xml-parser": "4.5.1",
     "node": "23.4.0",
     "relative": "3.0.2",
     "semver": "7.6.3",
