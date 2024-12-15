@@ -9,6 +9,10 @@
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
+This is a command-line tool-kit for [EO](https://www.eolang.org)
+programming languages, allowing you to compile EO programs, test, dataize,
+and check for errors.
+
 First, you install [npm][npm-install] and [Java SE][java-se].
 
 Then, you install [eolang][npm] package:
