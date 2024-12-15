@@ -36,7 +36,7 @@ module.exports = function(opts) {
   const extra = [
     `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
   ];
-  if (semver.gte(opts.parser, '0.45.0')) {
+  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
     return mvnw(
       ['eo:lint'].concat(flags(opts)).concat(extra),
       opts.target, opts.batch
