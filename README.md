@@ -50,6 +50,7 @@ to binaries (e.g., `.class`)
 * `link` puts all binaries together into a single executable binary
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
+* `lint` finds style-related errors in EO and XMIR files
 * `jeo:disassemble` converts Java `.class` files to `.xmir`
 (via [jeo](https://github.com/objectionary/jeo-maven-plugin))
 * `jeo:assemble` converts `.xmir` files to Java `.class` files
