@@ -40,8 +40,6 @@ jobs:
         node: [ 16 ]
         # lang: [Java, JavaScript]
         lang: [ Java ]
-        parser: [ 0.48.2 ]
-        tag: [ 0.48.2 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +53,13 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" --easy dataize program
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch --alone "--language=${{ matrix.lang }}" --easy dataize program
-          node ../src/eoc.js clean
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" --easy test
+          opts=(
+            "../src/eoc.js"
+            "--batch"
+            "--language=${{ matrix.lang }}"
+            "--easy"
+          )
+          node "${opts[@]}" link
+          node "${opts[@]}" --alone dataize program
+          node "${opts[@]}" clean
+          node "${opts[@]}" test
