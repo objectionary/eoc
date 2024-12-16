@@ -310,7 +310,7 @@ program.command('link')
 
 program.command('dataize')
   .description('Run the single executable binary and dataize an object')
-  .option('--stack <size>', 'Set stack size for the virtual machine', '1M')
+  .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
@@ -333,6 +333,8 @@ program.command('dataize')
 
 program.command('test')
   .description('Run all visible unit tests')
+  .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
+  .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
     if (program.opts().alone == undefined) {
@@ -342,9 +344,9 @@ program.command('test')
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
-        .then((r) => coms().test(program.opts()));
+        .then((r) => coms().test({...program.opts(), ...str}));
     } else {
-      coms().test(program.opts());
+      coms().test({...program.opts(), ...str});
     }
   });
 

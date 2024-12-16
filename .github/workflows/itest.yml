@@ -32,16 +32,14 @@ concurrency:
   group: itest-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  itest:
     strategy:
       matrix:
         os: [ ubuntu-24.04, macos-15, windows-2022 ]
-        java: [ 21 ]
+        java: [ 22 ]
         node: [ 16 ]
         # lang: [Java, JavaScript]
         lang: [ Java ]
-        parser: [ 0.48.2 ]
-        tag: [ 0.48.2 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -53,9 +51,16 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
       - run: npm install
-      - run: |
+      - shell: bash
+        run: |
           cd itest
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" --easy dataize program
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch --alone "--language=${{ matrix.lang }}" --easy dataize program
-          node ../src/eoc.js clean
-          node ../src/eoc.js "--parser=${{ matrix.parser }}" "--home-tag=${{ matrix.tag }}" --batch "--language=${{ matrix.lang }}" --easy test
+          declare -a opts=(
+            "../src/eoc.js"
+            "--batch"
+            "--language=${{ matrix.lang }}"
+            "--easy"
+          )
+          node "${opts[@]}" link
+          node "${opts[@]}" --alone dataize program
+          node "${opts[@]}" clean
+          node "${opts[@]}" test
