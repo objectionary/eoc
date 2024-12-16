@@ -344,7 +344,7 @@ program.command('test')
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
-        .then((r) => coms().test(program.opts()));
+        .then((r) => coms().test({...program.opts(), ...str}));
     } else {
       coms().test({...program.opts(), ...str});
     }

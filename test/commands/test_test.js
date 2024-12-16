@@ -60,8 +60,8 @@ describe('test', function() {
       '--easy',
       `--parser=${parser}`,
       `--home-tag=${hash}`,
-      '--stack=64M',
-      '--heap=1G',
+      '--stack=16M',
+      '--heap=128M',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
       `--language=${lang}`
