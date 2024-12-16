@@ -105,14 +105,6 @@ SOFTWARE.
           <trimStackTrace>false</trimStackTrace>
           <runOrder>random</runOrder>
           <argLine>-Xmx${heap-size} -Xss${stack-size}</argLine>
-          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
-          <properties>
-            <configurationParameters>
-              junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = concurrent
-              junit.jupiter.execution.parallel.mode.classes.default = concurrent
-            </configurationParameters>
-          </properties>
         </configuration>
       </plugin>
     </plugins>
