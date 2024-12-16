@@ -53,11 +53,11 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          declare -a opts=(
-            "../src/eoc.js"
-            "--batch"
-            "--language=${{ matrix.lang }}"
-            "--easy"
+          declare -a opts=( \
+            "../src/eoc.js" \
+            "--batch" \
+            "--language=${{ matrix.lang }}" \
+            "--easy" \
           )
           node "${opts[@]}" link
           node "${opts[@]}" --alone dataize program
