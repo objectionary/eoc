@@ -32,7 +32,7 @@ const {mvnw, flags} = require('../../mvnw');
 module.exports = function(opts) {
   return mvnw(
     [
-      'surefire:test'
+      'surefire:test',
       `-Xss${opts.stack}`,
       `-Xms${opts.heap}`,
     ].concat(flags(opts))
