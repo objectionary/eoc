@@ -33,8 +33,8 @@ module.exports = function(opts) {
   return mvnw(
     [
       'surefire:test',
-      `-Xss${opts.stack}`,
-      `-Xms${opts.heap}`,
+      `-Dstack-size=${opts.stack}`,
+      `-Dheap-size=${opts.heap}`,
     ].concat(flags(opts))
   );
 };
