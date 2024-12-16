@@ -30,5 +30,11 @@ const {mvnw, flags} = require('../../mvnw');
  * @return {Promise} of compile task
  */
 module.exports = function(opts) {
-  return mvnw(['surefire:test'].concat(flags(opts)));
+  return mvnw(
+    [
+      'surefire:test'
+      `-Xss${opts.stack}`,
+      `-Xms${opts.heap}`,
+    ].concat(flags(opts))
+  );
 };

@@ -30,6 +30,8 @@ SOFTWARE.
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <eo.version>undefined</eo.version>
     <jeo.version>0.6.22</jeo.version>
+    <heap-size>256M</heap-size>
+    <stack-size>64M</stack-size>
   </properties>
   <dependencies>
     <dependency>
@@ -101,6 +103,16 @@ SOFTWARE.
           <failIfNoTests>true</failIfNoTests>
           <useFile>false</useFile>
           <trimStackTrace>false</trimStackTrace>
+          <runOrder>random</runOrder>
+          <argLine>-Xmx${heap-size} -Xss${stack-size}</argLine>
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+          <properties>
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.classes.default = concurrent
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
     </plugins>
