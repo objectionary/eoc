@@ -53,7 +53,7 @@ jobs:
       - run: npm install
       - run: |
           cd itest
-          opts=(
+          declare -a opts=(
             "../src/eoc.js"
             "--batch"
             "--language=${{ matrix.lang }}"
