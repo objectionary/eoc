@@ -34,7 +34,7 @@ in the current directory:
 Then, you run it:
 
 ```bash
-eoc dataize hello
+eoc --easy dataize hello
 ```
 
 That's it.
