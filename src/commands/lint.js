@@ -43,6 +43,8 @@ module.exports = function(opts) {
     ).then((r) => {
       console.info('EO program linted in %s', rel(path.resolve(opts.target)));
       return r;
+    }).catch((error) => {
+      throw new Error("There are error and/or warnings; you may disable warnings via the --easy option");
     });
   } else {
     return mvnw(
@@ -51,6 +53,8 @@ module.exports = function(opts) {
     ).then((r) => {
       console.info('EO program verified in %s', rel(path.resolve(opts.target)));
       return r;
+    }).catch((error) => {
+      throw new Error("You may disable warnings via the --easy option");
     });
   }
 };
