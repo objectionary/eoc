@@ -22,10 +22,14 @@
  * SOFTWARE.
  */
 
+const fs = require('fs');
+const path = require('path');
+
 /**
  * Command to create docs from .EO sources.
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  console.info('This command is not yet implemented, sorry');
+  const filePath = path.resolve('eodocs.html');
+  fs.writeFileSync(filePath, '');
 };
