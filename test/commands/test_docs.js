@@ -38,7 +38,11 @@ describe('docs', function() {
     runSync(['docs']);
     assert(fs.existsSync(filePath), `Expected eodocs.html to be created, but it's missing`);
     const content = fs.readFileSync(filePath, 'utf8');
-    assert.strictEqual(content, '', `Expected eodocs.html to be empty, but it has content: ${content}`);
+    assert.strictEqual(
+      content,
+      '',
+      `Expected eodocs.html to be empty, but it has content: ${content}`
+    );
     done();
   });
 });
