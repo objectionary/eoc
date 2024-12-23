@@ -25,6 +25,7 @@ SOFTWARE.
   <groupId>org.eolang</groupId>
   <artifactId>eoc</artifactId>
   <version>0.0.0</version>
+  <packaging>jar</packaging>
   <properties>
     <jeo.version>0.6.26</jeo.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,11 +44,13 @@ SOFTWARE.
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>5.11.4</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.11.4</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -80,6 +83,7 @@ SOFTWARE.
         <artifactId>eo-maven-plugin</artifactId>
         <version>${eo.version}</version>
         <configuration>
+          <withRuntimeDependency>false</withRuntimeDependency>
           <excludeSources>**/.eoc/**</excludeSources>
           <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
           <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
@@ -110,10 +114,15 @@ SOFTWARE.
         <configuration>
           <archive>
             <manifest>
+              <addClasspath>true</addClasspath>
               <mainClass>org.eolang.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>

@@ -33,7 +33,7 @@ const path = require('path');
  */
 module.exports = function(opts) {
   const jar = path.resolve(opts.target, 'eoc.jar');
-  return mvnw(['jar:jar'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+  return mvnw(['jar:jar', 'shade:shade'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
     console.info('Executable JAR created at %s', rel(jar));
     return r;
   });

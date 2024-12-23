@@ -35,9 +35,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           (
-            printf "We've just published a new release "
+            printf "We've just "
+            printf "[published](https://www.npmjs.com/package/eolang) a new release "
             printf 'of [eoc](https://github.com/objectionary/eoc), '
-            printf 'a command-line tool for compiling and running EO programs: '
+            printf 'a command-line tool for compiling and running EO programs, '
+            printf 'written entirely in JavaScript: '
             printf '[%s](https://github.com/objectionary/eoc/releases/tag/%s). ' \
               "${{github.ref_name}}" "${{github.ref_name}}"
             printf 'It is advised to use this tool for all interactions with '
