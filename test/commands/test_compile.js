@@ -49,7 +49,6 @@ describe('compile', function() {
         'target/generated-sources/EOfoo/EObar/EOcompile.java',
         'target/generated-sources/EOorg/EOeolang/EObytes.java',
         'target/classes/EOfoo/EObar/EOcompile.class',
-        'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOnumber.class',
       ]
     );
