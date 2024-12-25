@@ -25,7 +25,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { runSync, assertFilesExist } = require('../helpers');
+const {runSync} = require('../helpers');
 
 describe('docs', function() {
   const testDir = path.resolve('temp/test-docs-command');
@@ -43,7 +43,7 @@ describe('docs', function() {
    * Tests that the 'docs' command generates empty HTML files in the docs directory.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
-  it('generates empty HTML files for .xmir files', function(done) {
+  it('generates empty HTML files for packages', function(done) {
     const samplePackageDir = path.join(eocDir, 'foo', 'bar');
     fs.mkdirSync(samplePackageDir, { recursive: true });
     const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
@@ -51,11 +51,12 @@ describe('docs', function() {
 
     const oldCwd = process.cwd();
     process.chdir(testDir);
-    try {
-      runSync(['docs']);
-    } finally {
-      process.chdir(oldCwd);
-    }
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve('./src'),
+      '-t', path.resolve('./target'),
+    ]);
 
     assert(fs.existsSync(docsDir), 'Expected the docs directory to be created but it is missing');
 

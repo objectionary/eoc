@@ -84,33 +84,28 @@ module.exports = function(opts) {
   }
 
   try {
-    const argv = ['eo:docs'].concat(flags(opts));
-    mvnw(argv, opts.target || '.', opts.batch).then(() => {
-      const allFiles = readXmirFilesRecursively(inputDir);
-
-      const packages = new Set();
-      allFiles.forEach((filePath) => {
-        const packageName = getPackageNameFromFilePath(filePath);
-        packages.add(packageName);
-      });
-
-      for (const packageName of packages) {
-        const fileName = sanitizeFileName(packageName || 'default');
-        const outputPath = path.join(outputDir, fileName);
-
-        fs.writeFileSync(outputPath, '');
-      }
-
-      const packagesPath = path.join(outputDir, 'packages.html');
-      fs.writeFileSync(packagesPath, '');
-
-      const cssPath = path.join(outputDir, 'styles.css');
-      fs.writeFileSync(cssPath, '');
-
-      console.info('Documentation generation completed in %s directory', outputDir);
-    }).catch((error) => {
-      console.error('Error executing Maven command:', error);
+    const allFiles = readXmirFilesRecursively(inputDir);
+    
+    const packages = new Set();
+    allFiles.forEach(filePath => {
+      const packageName = getPackageNameFromFilePath(filePath);
+      packages.add(packageName);
     });
+
+    for (const packageName of packages) {
+      const fileName = sanitizeFileName(packageName || 'default');
+      const outputPath = path.join(outputDir, fileName);
+      
+      fs.writeFileSync(outputPath, '');
+    }
+
+    const packagesPath = path.join(outputDir, 'packages.html');
+    fs.writeFileSync(packagesPath, '');
+
+    const cssPath = path.join(outputDir, 'styles.css');
+    fs.writeFileSync(cssPath, '');
+
+    console.info('Documentation generation completed in %s directory', outputDir);
   } catch (error) {
     console.error('Error generating documentation:', error);
   }
