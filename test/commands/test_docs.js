@@ -66,7 +66,9 @@ describe('docs', function() {
 
     const packagesFile = path.join(docsDir, 'packages.html');
     assert(fs.existsSync(packagesFile), `Expected file ${packagesFile} but it was not created`);
-    assert.strictEqual(fs.readFileSync(packagesFile, 'utf8'), '', 'Expected packages.html to be empty');
+    assert.strictEqual(
+      fs.readFileSync(packagesFile, 'utf8'), '', 'Expected packages.html to be empty'
+    );
 
     const cssFile = path.join(docsDir, 'styles.css');
     assert(fs.existsSync(cssFile), `Expected file ${cssFile} but it was not created`);
