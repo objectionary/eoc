@@ -33,15 +33,30 @@ const semver = require('semver');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  if (semver.gte(opts.parser, '0.45.0')) {
-    return mvnw(['eo:lint'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+  const extra = [
+    `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
+  ];
+  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+    return mvnw(
+      ['eo:lint'].concat(flags(opts)).concat(extra),
+      opts.target, opts.batch
+    ).then((r) => {
       console.info('EO program linted in %s', rel(path.resolve(opts.target)));
       return r;
+    }).catch((error) => {
+      throw new Error(
+        'There are error and/or warnings; you may disable warnings via the --easy option'
+      );
     });
   } else {
-    return mvnw(['eo:verify'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+    return mvnw(
+      ['eo:verify'].concat(flags(opts)).concat(extra),
+      opts.target, opts.batch
+    ).then((r) => {
       console.info('EO program verified in %s', rel(path.resolve(opts.target)));
       return r;
+    }).catch((error) => {
+      throw new Error('You may disable warnings via the --easy option');
     });
   }
 };

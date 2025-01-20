@@ -38,6 +38,7 @@ describe('lint', function() {
     const stdout = runSync([
       'lint',
       '--verbose',
+      '--easy',
       '--track-optimization-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,

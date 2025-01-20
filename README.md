@@ -1,4 +1,4 @@
-# EOLANG Command Line Took-Kit
+# EOLANG Command Line Tool-Kit
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
@@ -9,12 +9,16 @@
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
+This is a command-line tool-kit for [EO](https://www.eolang.org)
+programming languages, allowing you to compile EO programs, test, dataize,
+and check for errors.
+
 First, you install [npm][npm-install] and [Java SE][java-se].
 
 Then, you install [eolang][npm] package:
 
 ```bash
-npm install -g eolang@0.24.0
+npm install -g eolang@0.28.0
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
@@ -30,7 +34,7 @@ in the current directory:
 Then, you run it:
 
 ```bash
-eoc dataize hello
+eoc --easy dataize hello
 ```
 
 That's it.
@@ -50,6 +54,7 @@ to binaries (e.g., `.class`)
 * `link` puts all binaries together into a single executable binary
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
+* `lint` finds style-related errors in EO and XMIR files
 * `jeo:disassemble` converts Java `.class` files to `.xmir`
 (via [jeo](https://github.com/objectionary/jeo-maven-plugin))
 * `jeo:assemble` converts `.xmir` files to Java `.class` files

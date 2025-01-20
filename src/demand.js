@@ -32,6 +32,9 @@ const semver = require('semver');
  * @param {String} min - Minimal expected version
  */
 module.exports.gte = function(subject, current, min) {
+  if (current.endsWith('-SNAPSHOT')) {
+    return;
+  }
   if (semver.lt(current, min)) {
     console.error(
       '%s is required to have version %s or higher, while you use %s',

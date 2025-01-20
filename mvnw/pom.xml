@@ -25,11 +25,14 @@ SOFTWARE.
   <groupId>org.eolang</groupId>
   <artifactId>eoc</artifactId>
   <version>0.0.0</version>
+  <packaging>jar</packaging>
   <properties>
+    <jeo.version>0.6.26</jeo.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <eo.version>undefined</eo.version>
-    <jeo.version>0.6.22</jeo.version>
+    <heap-size>undefined</heap-size>
+    <stack-size>undefined</stack-size>
   </properties>
   <dependencies>
     <dependency>
@@ -40,12 +43,14 @@ SOFTWARE.
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>5.11.3</version>
+      <version>5.11.4</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.11.3</version>
+      <version>5.11.4</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -56,11 +61,30 @@ SOFTWARE.
     <testOutputDirectory>${eo.targetDir}/classes</testOutputDirectory>
     <plugins>
       <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>[11,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
         <version>${eo.version}</version>
         <configuration>
-          <excludeSources>.eoc/**</excludeSources>
+          <withRuntimeDependency>false</withRuntimeDependency>
+          <excludeSources>**/.eoc/**</excludeSources>
           <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
           <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
@@ -79,8 +103,9 @@ SOFTWARE.
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <release>11</release>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
       <plugin>
@@ -89,16 +114,33 @@ SOFTWARE.
         <configuration>
           <archive>
             <manifest>
+              <addClasspath>true</addClasspath>
               <mainClass>org.eolang.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.2</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
+          <useFile>false</useFile>
+          <trimStackTrace>false</trimStackTrace>
+          <runOrder>random</runOrder>
+          <argLine>-Xmx${heap-size} -Xss${stack-size}</argLine>
+          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+          <properties>
+            <configurationParameters>
+              junit.jupiter.execution.parallel.enabled = true
+              junit.jupiter.execution.parallel.mode.default = concurrent
+              junit.jupiter.execution.parallel.mode.classes.default = concurrent
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
     </plugins>
