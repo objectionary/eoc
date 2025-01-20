@@ -51,7 +51,7 @@ describe('docs', function() {
       'docs',
       '--verbose',
       '-s', path.resolve(testDir, 'src'),
-      '-t', path.resolve(testDir, 'target'),
+      '-t', testDir,
     ]);
 
     assert(fs.existsSync(docsDir), 'Expected the docs directory to be created but it is missing');
