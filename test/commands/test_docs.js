@@ -29,9 +29,7 @@ const {runSync} = require('../helpers');
 
 describe('docs', function() {
   const testDir = path.resolve('temp/test-docs-command');
-
   const eocDir = path.join(testDir, '.eoc', '1-parse');
-
   const docsDir = path.join(testDir, 'docs');
 
   beforeEach(function() {
@@ -49,13 +47,11 @@ describe('docs', function() {
     const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
     fs.writeFileSync(xmirFilePath, '<program name="test" />');
 
-    const oldCwd = process.cwd();
-    process.chdir(testDir);
     runSync([
       'docs',
       '--verbose',
-      '-s', path.resolve('./src'),
-      '-t', path.resolve('./target'),
+      '-s', path.resolve(testDir, 'src'),
+      '-t', path.resolve(testDir, 'target'),
     ]);
 
     assert(fs.existsSync(docsDir), 'Expected the docs directory to be created but it is missing');
