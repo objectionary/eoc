@@ -51,7 +51,7 @@ function readXmirFilesRecursively(dir) {
  * @param {Hash} opts - All options
  */
 module.exports = function(opts) {
-  try {
+  /*try {
     const inputDir = path.resolve(opts.target, '.eoc', '1-parse');
     const outputDir = path.resolve(opts.target, 'docs');
 
@@ -78,5 +78,7 @@ module.exports = function(opts) {
   } catch (error) {
     console.error('Error generating documentation:', error);
     throw error;
-  }
+  }*/
+  const filePath = path.resolve('eodocs.html');
+  fs.writeFileSync(filePath, '');
 };
