@@ -51,7 +51,8 @@ const common = {
   lint: require('./commands/lint'),
   docs: require('./commands/docs'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
-  jeo_assemble: require('./commands/jeo/assemble')
+  jeo_assemble: require('./commands/jeo/assemble'),
+  inspect: require('./commands/inspect')
 };
 const commands = {
   [language.java]: {
@@ -393,6 +394,12 @@ program.command('jeo:assemble')
   )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
+  });
+
+program.command('inspect')
+  .description('Open the inspect mode. Use this mode to interactively debug EO programs.')
+  .action((str, opts) => {
+    coms().inspect(program.opts());
   });
 
 try {
