@@ -42,7 +42,7 @@ describe('docs', function() {
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
   it('generates empty HTML files for packages', function(done) {
-    /*const samplePackageDir = path.join(eocDir, 'foo', 'bar');
+    const samplePackageDir = path.join(eocDir, 'foo', 'bar');
     fs.mkdirSync(samplePackageDir, { recursive: true });
     const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
     fs.writeFileSync(xmirFilePath, '<program name="test" />');
@@ -69,7 +69,7 @@ describe('docs', function() {
 
     const cssFile = path.join(docsDir, 'styles.css');
     assert(fs.existsSync(cssFile), `Expected file ${cssFile} but it was not created`);
-    assert.strictEqual(fs.readFileSync(cssFile, 'utf8'), '', 'Expected styles.css to be empty');*/
+    assert.strictEqual(fs.readFileSync(cssFile, 'utf8'), '', 'Expected styles.css to be empty');
 
     done();
   });
