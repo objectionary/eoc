@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2022-2024 Objectionary.com
+# Copyright (c) 2022-2025 Objectionary.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-2022, ubuntu-24.04, macos-13 ]
+        os: [ windows-2022, ubuntu-24.04, macos-15 ]
         java: [ 17 ]
         node: [ 16 ]
     runs-on: ${{ matrix.os }}
