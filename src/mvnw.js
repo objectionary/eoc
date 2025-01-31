@@ -190,4 +190,3 @@ function print() {
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);
 }
-
