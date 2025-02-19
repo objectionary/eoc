@@ -50,6 +50,7 @@ const common = {
   unphi: require('./commands/unphi'),
   lint: require('./commands/lint'),
   docs: require('./commands/docs'),
+  generate_comments: require('./commands/generate_comments'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
   jeo_assemble: require('./commands/jeo/assemble')
 };
@@ -354,6 +355,17 @@ program.command('docs')
   .description('Generate documentation from XMIR files')
   .action((str, opts) => {
     coms().docs(program.opts());
+  });
+
+program.command('generate_comments')
+  .description('Complete comments with LLM')
+  .requiredOption('--provider <provider>', 'Which LLM provider to use. Currently supported providers are: \`placeholder\`.')
+  .requiredOption('--source <path>', 'File to process')
+  .option('--comment_placeholder <placholder>', 'A string placeholder, each instance of which will be replaced with a generated comment', '<COMMENT-TO-BE-ADDED>')
+  .option('--output <path>', 'Output file path - the file will contain the replacment mapping', 'out.json')
+  .requiredOption('--prompt_template <path>', 'Path to prompt template file, where `{code}` placholder will be replaced with the code given by the user')
+  .action((str, opts) => {
+    coms().generate_comments({...program.opts(), ...str});
   });
 
 program.command('jeo:disassemble')
