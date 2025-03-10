@@ -23,6 +23,7 @@ path = [
     "**/.pdd",
     "**/CITATION.cff",
     "**/CNAME",
+    ".npmignore",
     ".DS_Store",
     ".gitattributes",
     ".gitignore",

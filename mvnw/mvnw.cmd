@@ -1,4 +1,8 @@
 <# : batch portion
+
+@REM SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+@REM SPDX-License-Identifier: MIT
+
 @REM ----------------------------------------------------------------------------
 @REM Licensed to the Apache Software Foundation (ASF) under one
 @REM or more contributor license agreements.  See the NOTICE file
