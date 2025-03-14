@@ -19,7 +19,7 @@ jobs:
       matrix:
         os: [ windows-2022, ubuntu-24.04, macos-15 ]
         java: [ 17 ]
-        node: [ 16 ]
+        node: [ 18 ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

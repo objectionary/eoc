@@ -1,0 +1,27 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+#
+diff --git a/node_modules/grunt-mocha-cli/lib/index.js b/node_modules/grunt-mocha-cli/lib/index.js
+index 59f7a07..4cc7182 100644
+--- a/node_modules/grunt-mocha-cli/lib/index.js
++++ b/node_modules/grunt-mocha-cli/lib/index.js
+@@ -2,6 +2,7 @@
+ const fs = require('fs')
+ const path = require('path')
+ const grunt = require('grunt')
++const os = require('os')
+ 
+ const BOOL_OPTIONS = [
+   'allow-uncaught',
+@@ -55,6 +56,10 @@ module.exports = function(options) {
+     spawnOptions.cmd = path.dirname(spawnOptions.cmd)
+     spawnOptions.cmd += '/../.bin/mocha'
+ 
++    if (os.platform() === 'win32') {
++      spawnOptions.opts.shell = true
++    }
++
+     if (process.platform === 'win32') {
+       spawnOptions.cmd += '.cmd'
+     }
