@@ -19,7 +19,7 @@ describe('unphi', function() {
     const stdout = runSync([
       'unphi',
       '--verbose',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       '--tests',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,

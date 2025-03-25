@@ -19,7 +19,7 @@ describe('assemble', function() {
     const stdout = runSync([
       'assemble',
       '--verbose',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
@@ -30,8 +30,8 @@ describe('assemble', function() {
       [
         'target/eo-foreign.json',
         'target/1-parse/assemble.xmir',
-        'target/2-optimization-steps/assemble',
-        'target/2-optimize/assemble.xmir',
+        'target/2-shake-steps/assemble',
+        'target/2-shake/assemble.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

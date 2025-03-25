@@ -66,7 +66,6 @@
         <artifactId>eo-maven-plugin</artifactId>
         <version>${eo.version}</version>
         <configuration>
-          <withRuntimeDependency>false</withRuntimeDependency>
           <excludeSources>**/.eoc/**</excludeSources>
           <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
           <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
@@ -89,6 +88,9 @@
           <release>11</release>
           <source>11</source>
           <target>11</target>
+          <compilerArgs>
+            <arg>-Xpkginfo:always</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>

@@ -15,7 +15,7 @@ const colors = require('colors');
  * @return {String} Path to shell or "undefined" if default one should be used
  */
 function shell() {
-  if (process.platform == 'win32') {
+  if (process.platform === 'win32') {
     return 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe';
   }
 }
@@ -47,7 +47,7 @@ module.exports.flags = function(opts) {
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
-    opts.trackOptimizationSteps ? '-Deo.trackOptimizationSteps' : '',
+    opts.trackTransformationSteps ? '-Deo.trackTransformationSteps' : '',
   ];
 };
 
@@ -63,9 +63,9 @@ module.exports.mvnw = function(args, tgt, batch) {
     target = tgt;
     phase = args[0];
     const home = path.resolve(__dirname, '../mvnw');
-    const bin = path.resolve(home, 'mvnw') + (process.platform == 'win32' ? '.cmd' : '');
+    const bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     const params = args.filter(function(t) {
-      return t != '';
+      return t !== '';
     }).concat([
       '--batch-mode',
       '--color=never',
@@ -77,14 +77,14 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
-      process.platform == 'win32' ? params.map((p) => `"${p}"`) : params,
+      process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
       {
         cwd: home,
         stdio: 'inherit',
         shell: shell(),
       }
     );
-    if (tgt != undefined && args.includes('--quiet')) {
+    if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();
       }

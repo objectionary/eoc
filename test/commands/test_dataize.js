@@ -74,7 +74,8 @@ describe('dataize', function() {
       ].join('\n')
     );
     const stdout = runSync([
-      'dataize', 'simple',
+      'dataize',
+      'simple',
       '--clean',
       '--easy',
       `--parser=${parserVersion}`,
