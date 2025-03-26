@@ -17,7 +17,7 @@ const version = module.exports = {
       const repo = 'org/eolang/eo-maven-plugin';
       const url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`;
       const res = request('GET', url, {timeout: 100000, socketTimeout: 100000});
-      if (res.statusCode != 200) {
+      if (res.statusCode !== 200) {
         throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
       }
       const xml = new XMLParser().parse(res.body);

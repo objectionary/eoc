@@ -27,7 +27,7 @@ describe('print', function() {
     const stdout = runSync([
       'print',
       '--verbose',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '--print-input=input',

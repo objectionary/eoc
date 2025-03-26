@@ -19,7 +19,7 @@ describe('phi', function() {
     const stdout = runSync([
       'phi',
       '--verbose',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
@@ -54,7 +54,7 @@ describe('phi', function() {
     const stdout = runSync([
       'phi',
       '--verbose',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '--phi-input=xmir',

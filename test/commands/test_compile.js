@@ -45,7 +45,7 @@ describe('compile', function() {
       path.resolve(home, 'src/simple-test-compile.eo'),
       [
         '+package foo.bar',
-        '+junit',
+        '+tests',
         '',
         '# This is a sample object',
         '[] > simple-test-compile',
@@ -64,8 +64,8 @@ describe('compile', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOsimple_test_compile.java',
-        'target/classes/EOfoo/EObar/EOsimple_test_compile.class',
+        'target/generated-sources/EOfoo/EObar/EOsimple_test_compileTest.java',
+        'target/classes/EOfoo/EObar/EOsimple_test_compileTest.class',
       ]
     );
     done();

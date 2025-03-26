@@ -20,7 +20,7 @@ describe('lint', function() {
       'lint',
       '--verbose',
       '--easy',
-      '--track-optimization-steps',
+      '--track-transformation-steps',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
@@ -29,8 +29,8 @@ describe('lint', function() {
     assertFilesExist(
       stdout, home,
       [
-        'target/2-optimize/simple.xmir',
-        'target/6-lint/simple.xmir',
+        'target/2-shake/simple.xmir',
+        'target/5-lint/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

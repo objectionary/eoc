@@ -61,7 +61,7 @@ module.exports.assertFilesExist = function assertFilesExist(stdout, home, paths)
 /**
  * Skips the test if we are not online.
  *
- * @param {Object} done - Should be passed by Mocha test
+ * @param {function} done - Should be passed by Mocha test
  */
 module.exports.weAreOnline = function weAreOnline(done) {
   const dns = require('dns');

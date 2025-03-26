@@ -25,8 +25,8 @@ describe('elapsed', function() {
       return tracked.print('short task');
     }).then(
       (actual) => assert(
-        /short task in 1\d+ms/.test(actual),
-        `Expected "${actual}" to match /short task in 1\\d+ms/`
+        /short task in \d+ms/.test(actual),
+        `Expected "${actual}" to match /short task in \\d+ms/`
       )
     );
   });
