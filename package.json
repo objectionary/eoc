@@ -22,7 +22,8 @@
     "grunt-contrib-clean": "2.0.1",
     "grunt-eslint": "24.3.0",
     "grunt-mocha-cli": "^4.0.0",
-    "mocha": "10.8.2"
+    "mocha": "10.8.2",
+    "patch-package": "^8.0.0"
   },
   "engines": {
     "node": ">6.0",
@@ -49,7 +50,8 @@
   ],
   "repository": "objectionary/eoc",
   "scripts": {
-    "test": "mocha --timeout 1200000"
+    "test": "mocha --timeout 1200000",
+    "postinstall": "patch-package"
   },
   "version": "0.0.0"
 }
