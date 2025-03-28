@@ -22,7 +22,7 @@
     "grunt-contrib-clean": "2.0.1",
     "grunt-eslint": "24.3.0",
     "grunt-mocha-cli": "^4.0.0",
-    "mocha": "10.8.2"
+    "mocha": "^10.8.2"
   },
   "engines": {
     "node": ">6.0",
@@ -51,5 +51,5 @@
   "scripts": {
     "test": "mocha --timeout 1200000"
   },
-  "version": "0.0.0"
+  "version": "0.29.0"
 }
