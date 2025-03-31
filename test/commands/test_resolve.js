@@ -27,37 +27,47 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-describe('print', function() {
+describe('resolve', function() {
   before(weAreOnline);
 
-  it('converts XMIR files to EO files', function(done) {
-    const home = path.resolve('temp/test-print/simple');
+  const resolve = function(home) {
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'target/input/app.xmir'),
+      path.resolve(home, 'src/resolve.eo'),
       [
-        '<program ms="0" name="xx" time="2024-01-01T01:01:01"',
-        'version="0.0.0" dob="2024-01-01T01:01:01" revision="0">',
-        '<listing/><errors/><sheets/><license/><metas/>',
-        '<objects><o abstract="" name="foo"/></objects>',
-        '</program>'
-      ].join(' ')
+        '# Sample.',
+        '[] > resolve',
+        '  "Hello, world" > @'
+      ].join('\n')
     );
-    const stdout = runSync([
-      'print',
+    const resolved = path.resolve(home, 'target/6-resolve');
+    if (fs.existsSync(resolved)) {
+      fs.rmSync(resolved, {recursive: true, force: true});
+    }
+    return runSync([
+      'resolve',
       '--verbose',
-      '--track-transformation-steps',
+      '--easy',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
-      '--print-input=input',
-      '--print-output=output',
+      '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
+  };
+
+  it('resolves eo-runtime', function(done) {
+    this.timeout(0);
+    const home = path.resolve(`temp/test-resolve`);
+    const stdout = resolve(home);
     assertFilesExist(
       stdout, home,
       [
-        'target/output/app.eo',
+        'target/6-resolve/org.eolang/eo-runtime',
+        'target/6-resolve/net.java.dev.jna/jna',
+        'target/classes/org/eolang/Phi.class',
+        'target/classes/EOorg/EOeolang/EOerror.class',
+        'target/classes/com/sun/jna',
       ]
     );
     done();
