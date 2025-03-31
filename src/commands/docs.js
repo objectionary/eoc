@@ -34,7 +34,7 @@ const path = require('path');
 function readXmirFilesRecursively(dir) {
   const files = [];
   const entries = fs.readdirSync(dir, {withFileTypes: true});
-  
+
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
@@ -43,7 +43,7 @@ function readXmirFilesRecursively(dir) {
       files.push(fullPath);
     }
   }
-  
+
   return files;
 }
 
@@ -64,7 +64,7 @@ module.exports = function(opts) {
       const relativePath = path.relative(inputDir, xmirFile);
       const packagePath = path.dirname(relativePath).split(path.sep).join('.');
       const outputPath = path.join(outputDir, `package_${packagePath}.html`);
-      
+
       fs.mkdirSync(path.dirname(outputPath), {recursive: true});
       fs.writeFileSync(outputPath, '');
     }
