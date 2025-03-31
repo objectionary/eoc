@@ -32,7 +32,7 @@ const path = require('path');
  */
 function readXmirFilesRecursively(dir) {
   const files = [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const entries = fs.readdirSync(dir, {withFileTypes: true});
   
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
@@ -55,7 +55,7 @@ module.exports = function(opts) {
     const inputDir = path.resolve(opts.target, '.eoc', '1-parse');
     const outputDir = path.resolve(opts.target, 'docs');
 
-    fs.mkdirSync(outputDir, { recursive: true });
+    fs.mkdirSync(outputDir, {recursive: true});
 
     const xmirFiles = readXmirFilesRecursively(inputDir);
 
@@ -64,7 +64,7 @@ module.exports = function(opts) {
       const packagePath = path.dirname(relativePath).split(path.sep).join('.');
       const outputPath = path.join(outputDir, `package_${packagePath}.html`);
       
-      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+      fs.mkdirSync(path.dirname(outputPath), {recursive: true});
       fs.writeFileSync(outputPath, '');
     }
 

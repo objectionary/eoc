@@ -33,8 +33,8 @@ describe('docs', function() {
   const docsDir = path.join(testDir, 'docs');
 
   beforeEach(function() {
-    fs.rmSync(testDir, { recursive: true, force: true });
-    fs.mkdirSync(eocDir, { recursive: true });
+    fs.rmSync(testDir, {recursive: true, force: true});
+    fs.mkdirSync(eocDir, {recursive: true});
   });
 
   /**
@@ -43,7 +43,7 @@ describe('docs', function() {
    */
   it('generates empty HTML files for packages', function(done) {
     const samplePackageDir = path.join(eocDir, 'foo', 'bar');
-    fs.mkdirSync(samplePackageDir, { recursive: true });
+    fs.mkdirSync(samplePackageDir, {recursive: true});
     const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
     fs.writeFileSync(xmirFilePath, '<program name="test" />');
 
