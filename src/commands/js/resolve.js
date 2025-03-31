@@ -23,13 +23,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-const eo2jsw = require('../../eo2jsw');
-
 /**
- * Command to run all available unit tests.
+ * Command to resolve all the dependencies required for compilation.
  * @param {Object} opts - All options
- * @return {Promise} of compile task
+ * @return {Promise} of resolve task
  */
 module.exports = function(opts) {
-  return eo2jsw('test', {...opts, alone: true, project: 'project'});
+  return new Promise((resolve, reject) => {
+    console.info('Resolve step is skipped for JavaScript');
+    resolve(opts);
+  });
 };

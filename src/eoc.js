@@ -1,26 +1,7 @@
 #! /usr/bin/env node
 /*
- * The MIT License (MIT)
- *
- * Copyright (c) 2022-2025 Objectionary.com
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
  */
 
 const tinted = require('./tinted-console');
@@ -57,6 +38,7 @@ const commands = {
   [language.java]: {
     ...common,
     ...{
+      resolve: require('./commands/java/resolve'),
       transpile: require('./commands/java/transpile'),
       link: require('./commands/java/link'),
       compile: require('./commands/java/compile'),
@@ -67,6 +49,7 @@ const commands = {
   [language.js]: {
     ...common,
     ...{
+      resolve: require('./commands/js/resolve'),
       transpile: require('./commands/js/transpile'),
       link: require('./commands/js/link'),
       compile: require('./commands/js/compile'),
@@ -110,7 +93,7 @@ program
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
-  .option('--easy', 'Ignore "warnings" and only fail if there are "errorst" or "criticals"')
+  .option('--easy', 'Ignore "warnings" and only fail if there are "errors" or "criticals"')
   .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', tag)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
@@ -118,7 +101,7 @@ program
   .option('-l, --language <name>', 'Language of target execution platform', language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
-  .option('--track-optimization-steps', 'Save intermediate XMIR files')
+  .option('--track-transformation-steps', 'Save intermediate XMIR files')
   .option('-c, --clean', 'Delete .eoc directory before running a command')
   .option('--debug', 'Print ALL debug messages, heavily overloading the log')
   .option('--verbose', 'Print debug messages and full output of child processes');
@@ -153,7 +136,7 @@ program.command('parse')
   .description('Parse EO files into XMIR')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().parse(program.opts()));
     } else {
@@ -165,7 +148,7 @@ program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()));
     } else {
@@ -183,7 +166,7 @@ program.command('sodg')
   .option('--exclude <names>', 'Don\'t generate SODG for these objects')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().sodg({...program.opts(), ...str}));
@@ -206,7 +189,7 @@ program.command('phi')
   )
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().phi({...program.opts(), ...str}));
@@ -254,7 +237,7 @@ program.command('lint')
   .description('Lint XMIR files and fail if any issues inside')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()));
@@ -263,14 +246,29 @@ program.command('lint')
     }
   });
 
+program.command('resolve')
+  .description('Resolve all the dependencies required for compilation')
+  .action((str, opts) => {
+    clear(str);
+    if (program.opts().alone === undefined) {
+      coms().register(program.opts())
+        .then((r) => coms().assemble(program.opts()))
+        .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()));
+    } else {
+      coms().resolve(program.opts());
+    }
+  });
+
 program.command('transpile')
   .description('Convert EO files into target language')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()))
         .then((r) => coms().transpile(program.opts()));
     } else {
       coms().transpile(program.opts());
@@ -285,6 +283,7 @@ program.command('compile')
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()));
     } else {
@@ -296,10 +295,11 @@ program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()));
@@ -314,10 +314,11 @@ program.command('dataize')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
@@ -337,10 +338,11 @@ program.command('test')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
+        .then((r) => coms().resolve(program.opts()))
         .then((r) => coms().transpile(program.opts()))
         .then((r) => coms().compile(program.opts()))
         .then((r) => coms().link(program.opts()))
@@ -415,12 +417,12 @@ function clear(str) {
 
 /**
  * Get commands for the target language.
- * @return {Hash} Commands for the specified language
+ * @return {Object} - commands
  */
 function coms() {
   const lang = program.opts().language;
   const hash = commands[lang];
-  if (hash == undefined) {
+  if (hash === undefined) {
     throw new Error(`Unknown platform ${lang}`);
   }
   return hash;

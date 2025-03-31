@@ -23,13 +23,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-const eo2jsw = require('../../eo2jsw');
+const rel = require('relative');
+const {mvnw, flags} = require('../../mvnw');
+const path = require('path');
 
 /**
- * Command to run all available unit tests.
+ * Command to resolve all the dependencies for compilation.
  * @param {Object} opts - All options
- * @return {Promise} of compile task
+ * @return {Promise} of resolve task
  */
 module.exports = function(opts) {
-  return eo2jsw('test', {...opts, alone: true, project: 'project'});
+  return mvnw(['eo:resolve'].concat(flags(opts)), opts.target, opts.batch)
+    .then((r) => {
+      const sources = path.resolve(opts.target, 'eo/6-resolve');
+      console.info('Dependencies resolved in %s', rel(sources));
+      return mvnw(['eo:place'].concat(flags(opts)), opts.target, opts.batch);
+    }).then((r) => {
+      const classes = path.resolve(opts.target, 'classes');
+      console.info('Dependencies placed in %s', rel(classes));
+      return r;
+    });
 };
