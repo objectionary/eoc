@@ -7,7 +7,7 @@
     "colors": "1.4.0",
     "commander": "12.1.0",
     "eo2js": "0.0.8",
-    "fast-xml-parser": "4.5.1",
+    "fast-xml-parser": "4.5.3",
     "node": "23.5.0",
     "relative": "3.0.2",
     "semver": "7.6.3",
