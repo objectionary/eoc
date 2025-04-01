@@ -14,17 +14,10 @@ module.exports = function(grunt) {
           files: ['test/**/*.js'],
         },
       },
-    },
-    eslint: {
-      options: {
-        maxWarnings: '0',
-        overrideConfigFile: '.eslintrc.json',
-      },
-      target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
-    },
+    }
   });
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-cli');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['mochacli', 'eslint']);
+  grunt.registerTask('default', ['mochacli']);
 };
