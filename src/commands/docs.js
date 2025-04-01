@@ -31,19 +31,17 @@ const path = require('path');
  * @param {string} dir - Directory path
  * @return {string[]} Array of file paths
  */
-function readXmirFilesRecursively(dir) {
+function readxmirsRecursively(dir) {
   const files = [];
   const entries = fs.readdirSync(dir, {withFileTypes: true});
-
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
+    const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      files.push(...readXmirFilesRecursively(fullPath));
+      files.push(...readxmirsRecursively(full));
     } else if (entry.name.endsWith('.xmir')) {
-      files.push(fullPath);
+      files.push(full);
     }
   }
-
   return files;
 }
 
@@ -55,26 +53,19 @@ module.exports = function(opts) {
   try {
     const inputDir = path.resolve(opts.target, '.eoc', '1-parse');
     const outputDir = path.resolve(opts.target, 'docs');
-
     fs.mkdirSync(outputDir, {recursive: true});
-
-    const xmirFiles = readXmirFilesRecursively(inputDir);
-
-    for (const xmirFile of xmirFiles) {
-      const relativePath = path.relative(inputDir, xmirFile);
-      const packagePath = path.dirname(relativePath).split(path.sep).join('.');
-      const outputPath = path.join(outputDir, `package_${packagePath}.html`);
-
-      fs.mkdirSync(path.dirname(outputPath), {recursive: true});
-      fs.writeFileSync(outputPath, '');
+    const xmirs = readxmirsRecursively(inputDir);
+    for (const xmir of xmirs) {
+      const relative = path.relative(inputDir, xmir);
+      const package = path.dirname(relative).split(path.sep).join('.');
+      const output = path.join(outputDir, `package_${package}.html`);
+      fs.mkdirSync(path.dirname(output), {recursive: true});
+      fs.writeFileSync(output, '');
     }
-
-    const packagesPath = path.join(outputDir, 'packages.html');
-    fs.writeFileSync(packagesPath, '');
-
-    const cssPath = path.join(outputDir, 'styles.css');
-    fs.writeFileSync(cssPath, '');
-
+    const packages = path.join(outputDir, 'packages.html');
+    fs.writeFileSync(packages, '');
+    const css = path.join(outputDir, 'styles.css');
+    fs.writeFileSync(css, '');
     console.info('Documentation generation completed in %s directory', outputDir);
   } catch (error) {
     console.error('Error generating documentation:', error);
