@@ -37,8 +37,8 @@ module.exports = function(opts) {
     const xmirs = readxmirsRecursively(inputDir);
     for (const xmir of xmirs) {
       const relative = path.relative(inputDir, xmir);
-      const package = path.dirname(relative).split(path.sep).join('.');
-      const output = path.join(outputDir, `package_${package}.html`);
+      const packages = path.dirname(relative).split(path.sep).join('.');
+      const output = path.join(outputDir, `package_${packages}.html`);
       fs.mkdirSync(path.dirname(output), {recursive: true});
       fs.writeFileSync(output, '');
     }
