@@ -9,13 +9,13 @@ const path = require('path');
 const {runSync} = require('../helpers');
 
 describe('docs', () => {
-  const testDir = path.resolve('temp/test-docs-command');
-  const eocDir = path.join(testDir, '.eoc', '1-parse');
-  const docsDir = path.join(testDir, 'docs');
+  const test = path.resolve('temp/test-docs-command');
+  const eoc = path.join(test, '.eoc', '1-parse');
+  const docs = path.join(test, 'docs');
 
   beforeEach(() => {
-    fs.rmSync(testDir, {recursive: true, force: true});
-    fs.mkdirSync(eocDir, {recursive: true});
+    fs.rmSync(test, {recursive: true, force: true});
+    fs.mkdirSync(eoc, {recursive: true});
   });
 
   /**
@@ -23,34 +23,34 @@ describe('docs', () => {
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
   it('generates empty HTML files for packages', (done) => {
-    const samplePackageDir = path.join(eocDir, 'foo', 'bar');
-    fs.mkdirSync(samplePackageDir, {recursive: true});
-    const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
-    fs.writeFileSync(xmirFilePath, '<program name="test" />');
+    const sample = path.join(eoc, 'foo', 'bar');
+    fs.mkdirSync(sample, {recursive: true});
+    const xmir = path.join(sample, 'test.xmir');
+    fs.writeFileSync(xmir, '<program name="test" />');
 
     runSync([
       'docs',
       '--verbose',
-      '-s', path.resolve(testDir, 'src'),
-      '-t', testDir,
+      '-s', path.resolve(test, 'src'),
+      '-t', test,
     ]);
 
-    assert(fs.existsSync(docsDir), 'Expected the docs directory to be created but it is missing');
+    assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
 
-    const generatedFile = path.join(docsDir, 'package_foo.bar.html');
-    assert(fs.existsSync(generatedFile), `Expected file ${generatedFile} but it was not created`);
-    const content = fs.readFileSync(generatedFile, 'utf8');
+    const generated = path.join(docs, 'package_foo.bar.html');
+    assert(fs.existsSync(generated), `Expected file ${generated} but it was not created`);
+    const content = fs.readFileSync(generated, 'utf8');
     assert.strictEqual(content, '', 'Expected the generated file to be empty');
 
-    const packagesFile = path.join(docsDir, 'packages.html');
-    assert(fs.existsSync(packagesFile), `Expected file ${packagesFile} but it was not created`);
+    const packages = path.join(docs, 'packages.html');
+    assert(fs.existsSync(packages), `Expected file ${packages} but it was not created`);
     assert.strictEqual(
-      fs.readFileSync(packagesFile, 'utf8'), '', 'Expected packages.html to be empty'
+      fs.readFileSync(packages, 'utf8'), '', 'Expected packages.html to be empty'
     );
 
-    const cssFile = path.join(docsDir, 'styles.css');
-    assert(fs.existsSync(cssFile), `Expected file ${cssFile} but it was not created`);
-    assert.strictEqual(fs.readFileSync(cssFile, 'utf8'), '', 'Expected styles.css to be empty');
+    const css = path.join(docs, 'styles.css');
+    assert(fs.existsSync(css), `Expected file ${css} but it was not created`);
+    assert.strictEqual(fs.readFileSync(css, 'utf8'), '', 'Expected styles.css to be empty');
 
     done();
   });
