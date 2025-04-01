@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "colors": "1.4.0",
-    "commander": "12.1.0",
+    "commander": "13.1.0",
     "eo2js": "0.0.8",
     "fast-xml-parser": "5.0.9",
     "node": "23.5.0",
