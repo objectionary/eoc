@@ -5,59 +5,59 @@
  */
 
 const tinted = require('./tinted-console');
-const {program} = require('commander');
+const {program} = require('commander'),
 
-/**
+  /**
  * Target language option.
  */
-const language = {
-  java: 'Java',
-  js: 'JavaScript',
-};
+  language = {
+    java: 'Java',
+    js: 'JavaScript',
+  },
 
-/**
+  /**
  * Platform dependent commands.
  */
-const common = {
-  assemble: require('./commands/assemble'),
-  audit: require('./commands/audit'),
-  clean: require('./commands/clean'),
-  foreign: require('./commands/foreign'),
-  parse: require('./commands/parse'),
-  phi: require('./commands/phi'),
-  print: require('./commands/print'),
-  register: require('./commands/register'),
-  sodg: require('./commands/sodg'),
-  unphi: require('./commands/unphi'),
-  lint: require('./commands/lint'),
-  docs: require('./commands/docs'),
-  jeo_disassemble: require('./commands/jeo/disassemble'),
-  jeo_assemble: require('./commands/jeo/assemble')
-};
-const commands = {
-  [language.java]: {
-    ...common,
-    ...{
-      resolve: require('./commands/java/resolve'),
-      transpile: require('./commands/java/transpile'),
-      link: require('./commands/java/link'),
-      compile: require('./commands/java/compile'),
-      dataize: require('./commands/java/dataize'),
-      test: require('./commands/java/test')
-    }
+  common = {
+    assemble: require('./commands/assemble'),
+    audit: require('./commands/audit'),
+    clean: require('./commands/clean'),
+    foreign: require('./commands/foreign'),
+    parse: require('./commands/parse'),
+    phi: require('./commands/phi'),
+    print: require('./commands/print'),
+    register: require('./commands/register'),
+    sodg: require('./commands/sodg'),
+    unphi: require('./commands/unphi'),
+    lint: require('./commands/lint'),
+    docs: require('./commands/docs'),
+    jeo_disassemble: require('./commands/jeo/disassemble'),
+    jeo_assemble: require('./commands/jeo/assemble')
   },
-  [language.js]: {
-    ...common,
-    ...{
-      resolve: require('./commands/js/resolve'),
-      transpile: require('./commands/js/transpile'),
-      link: require('./commands/js/link'),
-      compile: require('./commands/js/compile'),
-      dataize: require('./commands/js/dataize'),
-      test: require('./commands/js/test')
+  commands = {
+    [language.java]: {
+      ...common,
+      ...{
+        resolve: require('./commands/java/resolve'),
+        transpile: require('./commands/java/transpile'),
+        link: require('./commands/java/link'),
+        compile: require('./commands/java/compile'),
+        dataize: require('./commands/java/dataize'),
+        test: require('./commands/java/test')
+      }
+    },
+    [language.js]: {
+      ...common,
+      ...{
+        resolve: require('./commands/js/resolve'),
+        transpile: require('./commands/js/transpile'),
+        link: require('./commands/js/link'),
+        compile: require('./commands/js/compile'),
+        dataize: require('./commands/js/dataize'),
+        test: require('./commands/js/test')
+      }
     }
-  }
-};
+  };
 
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
@@ -65,8 +65,8 @@ if (process.argv.includes('--verbose')) {
 }
 
 const fs = require('fs');
-const path = require('path');
-const tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim();
+const path = require('path'),
+  tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim();
 let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
 if (process.argv.includes('--latest')) {
   parser = require('./parser-version').get();
@@ -420,8 +420,8 @@ function clear(str) {
  * @return {Object} - commands
  */
 function coms() {
-  const lang = program.opts().language;
-  const hash = commands[lang];
+  const lang = program.opts().language,
+    hash = commands[lang];
   if (hash === undefined) {
     throw new Error(`Unknown platform ${lang}`);
   }

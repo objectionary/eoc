@@ -50,8 +50,8 @@
   ],
   "repository": "objectionary/eoc",
   "scripts": {
-    "test": "mocha --timeout 1200000",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "test": "mocha --timeout 1200000"
   },
   "version": "0.0.0"
 }
