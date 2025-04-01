@@ -31,22 +31,22 @@ function readxmirsRecursively(dir) {
  */
 module.exports = function(opts) {
   try {
-    const input = path.resolve(opts.target, '.eoc', '1-parse');
-    const output = path.resolve(opts.target, 'docs');
-    fs.mkdirSync(output, {recursive: true});
-    const xmirs = readxmirsRecursively(input);
+    const inputDir = path.resolve(opts.target, '.eoc', '1-parse');
+    const outputDir = path.resolve(opts.target, 'docs');
+    fs.mkdirSync(outputDir, {recursive: true});
+    const xmirs = readxmirsRecursively(inputDir);
     for (const xmir of xmirs) {
-      const relative = path.relative(input, xmir);
+      const relative = path.relative(inputDir, xmir);
       const packages = path.dirname(relative).split(path.sep).join('.');
-      const output = path.join(output, `package_${packages}.html`);
+      const output = path.join(outputDir, `package_${packages}.html`);
       fs.mkdirSync(path.dirname(output), {recursive: true});
       fs.writeFileSync(output, '');
     }
-    const packages = path.join(output, 'packages.html');
+    const packages = path.join(outputDir, 'packages.html');
     fs.writeFileSync(packages, '');
-    const css = path.join(output, 'styles.css');
+    const css = path.join(outputDir, 'styles.css');
     fs.writeFileSync(css, '');
-    console.info('Documentation generation completed in %s directory', output);
+    console.info('Documentation generation completed in %s directory', outputDir);
   } catch (error) {
     console.error('Error generating documentation:', error);
     throw error;
