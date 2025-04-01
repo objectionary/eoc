@@ -8,12 +8,12 @@ const fs = require('fs');
 const path = require('path');
 const {runSync} = require('../helpers');
 
-describe('docs', function() {
+describe('docs', () => {
   const testDir = path.resolve('temp/test-docs-command');
   const eocDir = path.join(testDir, '.eoc', '1-parse');
   const docsDir = path.join(testDir, 'docs');
 
-  beforeEach(function() {
+  beforeEach(() => {
     fs.rmSync(testDir, {recursive: true, force: true});
     fs.mkdirSync(eocDir, {recursive: true});
   });
@@ -22,7 +22,7 @@ describe('docs', function() {
    * Tests that the 'docs' command generates empty HTML files in the docs directory.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
-  it('generates empty HTML files for packages', function(done) {
+  it('generates empty HTML files for packages', (done) => {
     const samplePackageDir = path.join(eocDir, 'foo', 'bar');
     fs.mkdirSync(samplePackageDir, {recursive: true});
     const xmirFilePath = path.join(samplePackageDir, 'test.xmir');
