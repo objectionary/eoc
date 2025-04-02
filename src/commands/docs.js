@@ -11,13 +11,13 @@ const path = require('path');
  * @param {string} dir - Directory path
  * @return {string[]} Array of file paths
  */
-function readxmirsRecursively(dir) {
+function readXmirsRecursively(dir) {
   const files = [];
   const entries = fs.readdirSync(dir, {withFileTypes: true});
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      files.push(...readxmirsRecursively(full));
+      files.push(...readXmirsRecursively(full));
     } else if (entry.name.endsWith('.xmir')) {
       files.push(full);
     }
@@ -31,22 +31,22 @@ function readxmirsRecursively(dir) {
  */
 module.exports = function(opts) {
   try {
-    const inputDir = path.resolve(opts.target, '.eoc', '1-parse');
-    const outputDir = path.resolve(opts.target, 'docs');
-    fs.mkdirSync(outputDir, {recursive: true});
-    const xmirs = readxmirsRecursively(inputDir);
+    const input = path.resolve(opts.target, '.eoc', '1-parse');
+    const output = path.resolve(opts.target, 'docs');
+    fs.mkdirSync(output, {recursive: true});
+    const xmirs = readXmirsRecursively(input);
     for (const xmir of xmirs) {
-      const relative = path.relative(inputDir, xmir);
+      const relative = path.relative(input, xmir);
       const packages = path.dirname(relative).split(path.sep).join('.');
-      const output = path.join(outputDir, `package_${packages}.html`);
-      fs.mkdirSync(path.dirname(output), {recursive: true});
-      fs.writeFileSync(output, '');
+      const html = path.join(output, `package_${packages}.html`);
+      fs.mkdirSync(path.dirname(html), {recursive: true});
+      fs.writeFileSync(html, '');
     }
-    const packages = path.join(outputDir, 'packages.html');
+    const packages = path.join(output, 'packages.html');
     fs.writeFileSync(packages, '');
-    const css = path.join(outputDir, 'styles.css');
+    const css = path.join(output, 'styles.css');
     fs.writeFileSync(css, '');
-    console.info('Documentation generation completed in %s directory', outputDir);
+    console.info('Documentation generation completed in %s directory', output);
   } catch (error) {
     console.error('Error generating documentation:', error);
     throw error;
