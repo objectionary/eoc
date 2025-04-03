@@ -8,8 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
-describe('generate_comments', function() {
-  it('throws error on unknown provider', function(done) {
+describe('generate_comments', () => {
+  it('throws error on unknown provider', (done) => {
     const home = makeHome();
     const exampleInput = `<COMMENT-TO-BE-ADDED>`;
 
@@ -22,7 +22,7 @@ describe('generate_comments', function() {
     (error) => error.message.includes('`nonexisting` provider is not supported.'));
     done();
   });
-  it('fills output depending on the number of placeholders in the input code', function(done) {
+  it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
 
     for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {

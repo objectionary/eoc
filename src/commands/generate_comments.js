@@ -8,7 +8,6 @@ const {PromptTemplate} = require('@langchain/core/prompts');
 const {RunnableSequence} = require('@langchain/core/runnables');
 const {StringOutputParser} = require('@langchain/core/output_parsers');
 const {readFileSync, writeFileSync} = require('fs');
-// eslint-disable-next-line no-unused-vars
 const {BaseChatModel} = require('@langchain/core/language_models/chat_models');
 
 /**
@@ -20,15 +19,35 @@ const {BaseChatModel} = require('@langchain/core/language_models/chat_models');
 function makeModel(opts) {
   switch (opts.provider) {
   case 'placeholder':
-    const model = new FakeListChatModel({
+    return new FakeListChatModel({
       responses: ['<PLACEHOLDER_RESPONSE>'],
     });
-    return model;
+    ;
   default:
     throw new Error(
       `\`${opts.provider}\` provider is not supported. ` +
-        `Currently supported providers are: \`placeholder\``);
+          `Currently supported providers are: \`placeholder\``);
   }
+}
+
+/**
+ * Construct Langchain LLM pipeline based on given cli options
+ *
+ * @param {Object} opts - All options
+ * @return {RunnableSequence}
+ */
+function constructChain(opts) {
+  const model = makeModel(opts);
+  const prompt = new PromptTemplate({
+    template: readFileSync(opts.prompt_template, 'utf-8'),
+    inputVariables: ['code'],
+  });
+  const chain = RunnableSequence.from([
+    prompt,
+    model,
+    new StringOutputParser(),
+  ]);
+  return chain;
 }
 
 /**
@@ -44,51 +63,61 @@ function escapeRegExp(string) {
 }
 
 /**
+ * Focus on specific comment placeholder in the text
+ * by removing all other placeholders from it
+ *
+ * @param {String} inputCode - Code to replace placeholders in
+ * @param {Number} location of beggining of the placeholder that is being focused on
+ * @param {String} commentPlaceholder
+ * @param {RegExp} commentPlaceholderRegex - regexp matching placeholders
+ * @return {String}
+ */
+function getTextFocusedOnSpecificPlaceholder(
+  inputCode, 
+  location, 
+  commentPlaceholder, 
+  commentPlaceholderRegex) {
+  const codeBefore = inputCode.slice(0, location.index);
+  const replacedCodeBefore = codeBefore.replace(commentPlaceholderRegex, '');
+  const codeAfter = inputCode.slice(location.index + commentPlaceholder.length);
+  const replacedCodeAfter = codeAfter.replace(commentPlaceholderRegex, '');
+  return replacedCodeBefore + commentPlaceholder + replacedCodeAfter;
+}
+
+/**
+ * Replace all placeholders in the text with LLM-generated documentation
+ *
+ * @param {String} inputCode - Code to replace placeholders in
+ * @param {String} commentPlaceholder - Placeholder to replace
+ * @param {RunnableSequence} chain - Langchain LLM pipeline
+ * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
+ */
+function replacePlaceholdersWithGeneratedDocumentation(
+  inputCode, 
+  commentPlaceholder, 
+  chain) {
+  const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
+  const allLocationsOfPlaceholderInInputCode = Array.from(inputCode.matchAll(commentPlaceholderRegex));
+  return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) =>
+  {
+    const focusedInputCode = getTextFocusedOnSpecificPlaceholder(inputCode, location, commentPlaceholder, commentPlaceholderRegex);
+    return chain.invoke({ code: focusedInputCode });
+  }));
+}
+
+/**
  * Command to auto-complete EO documentation from .EO sources.
  *
  * @param {Object} opts - All options
  * @return {Promise} of documentation generation task
  */
 module.exports = async function(opts) {
-  const model = makeModel(opts);
-  const prompt = new PromptTemplate({
-    template: readFileSync(opts.prompt_template, 'utf-8'),
-    inputVariables: ['code'],
-  });
-
-  const chain = RunnableSequence.from([
-    prompt,
-    model,
-    new StringOutputParser(),
-  ]);
-
+  const chain = constructChain(opts);
   const inputCode = readFileSync(opts.source, 'utf-8');
   const commentPlaceholder = opts.comment_placeholder;
-
-  const results = [];
-  const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
-  const allLocationsOfPlaceholderInInputCode =
-    Array.from(inputCode.matchAll(commentPlaceholderRegex));
-
-  let index = 0;
-
-  for (const location of allLocationsOfPlaceholderInInputCode) {
-    const codeBefore = inputCode.slice(0, location.index);
-    const replacedCodeBefore = codeBefore.replace(commentPlaceholderRegex, '');
-
-    const codeAfter = inputCode.slice(location.index + commentPlaceholder.length);
-    const replacedCodeAfter = codeAfter.replace(commentPlaceholderRegex, '');
-
-    const focusedInputCode = replacedCodeBefore + commentPlaceholder + replacedCodeAfter;
-
-    console.debug(
-      `Generating documentation... ${index}/${allLocationsOfPlaceholderInInputCode.length}`);
-
-    const result = await chain.invoke({code: focusedInputCode});
-
-    results.push(result);
-    index++;
-  }
-
+  const results = await replacePlaceholdersWithGeneratedDocumentation(
+    inputCode,
+    commentPlaceholder,
+    chain);
   writeFileSync(opts.output, JSON.stringify(results));
 };
