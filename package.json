@@ -16,6 +16,7 @@
   },
   "description": "A collection of command line tools for EOLANG: compiling, parsing, transpiling to other languages, optimizing, and analyzing",
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
     "eslint": "9.23.0",
     "eslint-config-google": "0.14.0",
     "grunt": "1.6.1",
