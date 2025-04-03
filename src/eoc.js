@@ -362,7 +362,7 @@ program.command('docs')
 program.command('generate_comments')
   .description('Generate documentation with LLM')
   .requiredOption('--provider <provider>',
-    'Which LLM provider to use. Currently supported providers are: \`placeholder\`.')
+    'Which LLM provider to use. Currently supported providers are: `placeholder`.')
   .requiredOption('--source <path>', 'File to process')
   .option('--comment_placeholder <placholder>',
     'A string placeholder, each instance of which will be replaced with a generated comment',
