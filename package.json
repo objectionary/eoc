@@ -4,6 +4,7 @@
     "eoc": "./src/eoc.js"
   },
   "dependencies": {
+    "@langchain/core": "^0.3.43",
     "colors": "1.4.0",
     "commander": "12.1.0",
     "eo2js": "0.0.8",
