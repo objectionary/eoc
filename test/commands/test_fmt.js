@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: MIT
  */
 
-const assert = require('assert')
-const fs = require('fs')
-const path = require('path')
-const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers')
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers');
 
 /**
  * Prepare test directory and return the home path
  * @return {string} Home directory path
  */
 function prepareTestDirectory() {
-  const home = path.resolve('temp/test-fmt/simple')
-  fs.rmSync(home, { recursive: true, force: true })
-  fs.mkdirSync(home, { recursive: true })
-  return home
+  const home = path.resolve('temp/test-fmt/simple');
+  fs.rmSync(home, { recursive: true, force: true });
+  fs.mkdirSync(home, { recursive: true });
+  return home;
 }
 
 /**
@@ -25,7 +25,7 @@ function prepareTestDirectory() {
  * @return {Object} Source path and original content
  */
 function createPoorlyFormattedFile(home) {
-  const source = path.resolve(home, 'app.eo')
+  const source = path.resolve(home, 'app.eo');
   const originalContent = [
     '+package f ',
     '+alias stdout org.eolang.io.stdout',
@@ -33,10 +33,10 @@ function createPoorlyFormattedFile(home) {
     '[args] >   app',
     '  stdout > @',
     '    "Hello, world!"'
-  ].join('\n')
+  ].join('\n');
 
-  fs.writeFileSync(source, originalContent)
-  return { source, originalContent }
+  fs.writeFileSync(source, originalContent);
+  return { source, originalContent };
 }
 
 /**
@@ -52,8 +52,8 @@ function fmt(home) {
     '-s',
     home,
     '-t',
-    path.resolve(home, '.eoc')
-  ])
+    path.resolve(home, '.eoc'),
+  ]);
 }
 
 /**
@@ -66,31 +66,31 @@ function verifyFormatting(source, originalContent) {
   assert(
     formatted.includes('+package f'),
     'Package declaration should be preserved'
-  )
+  );
   assert(
     formatted.includes('+alias stdout Q.org.eolang.io.stdout'),
     'Alias should be updated with Q prefix'
-  )
-  assert(formatted.includes('app'), 'Object declaration should be simplified')
-  assert(formatted.includes('io.stdout > @'), 'Should format stdout properly')
+  );
+  assert(formatted.includes('app'), 'Object declaration should be simplified');
+  assert(formatted.includes('io.stdout > @'), 'Should format stdout properly');
   assert(
     formatted.includes('"Hello, world!"'),
     'String content should be preserved'
-  )
+  );
   assert(
     formatted !== originalContent,
     'File should be different after formatting'
-  )
+  );
 }
 
 describe('fmt', () => {
-  before(weAreOnline)
+  before(weAreOnline);
 
   it('formats EO files in the source directory', done => {
-    const home = prepareTestDirectory()
-    const { source, originalContent } = createPoorlyFormattedFile(home)
-    fmt(home)
-    verifyFormatting(source, originalContent)
-    done()
-  })
-})
+    const home = prepareTestDirectory();
+    const { source, originalContent } = createPoorlyFormattedFile(home);
+    fmt(home);
+    verifyFormatting(source, originalContent);
+    done();
+  });
+});

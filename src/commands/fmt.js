@@ -36,9 +36,6 @@ module.exports = function (opts) {
           .concat([
             `-Deo.printSourcesDir=${path.resolve(opts.target, '1-parse')}`,
             `-Deo.printOutputDir=${sources}`,
-            `-Deo.print.apply=true`,
-            `-Deo.print.indent=2`,
-            `-Deo.print.linebreak=\n`
           ]),
         opts.target,
         opts.batch
