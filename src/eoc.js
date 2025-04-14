@@ -31,6 +31,7 @@ const {program} = require('commander'),
     unphi: require('./commands/unphi'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
+    fmt: require('./commands/fmt'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble')
   },
@@ -395,6 +396,13 @@ program.command('jeo:assemble')
   )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
+  });
+
+program.command('fmt')
+  .description('Format EO files in the source directory')
+  .action((str, opts) => {
+    clear(str);
+    coms().fmt(program.opts());
   });
 
 try {
