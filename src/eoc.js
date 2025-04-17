@@ -362,7 +362,14 @@ program.command('docs')
 program.command('generate_comments')
   .description('Generate documentation with LLM')
   .requiredOption('--provider <provider>',
-    'Which LLM provider to use. Currently supported providers are: `placeholder`.')
+    'Which LLM provider to use. Currently supported providers are: `openai`, `placeholder`.')
+  .option('--openai_model <model>',
+    '(only usable with `openai` provider) name of model to use')
+  .option('--openai_token <token>',
+    '(only usable with `openai` provider) openai api token')
+  .option('--openai_url <url>',
+    '(only usable with `openai` provider) url to openai-like api',
+    'https://api.openai.com/')
   .requiredOption('--source <path>', 'File to process')
   .option('--comment_placeholder <placholder>',
     'A string placeholder, each instance of which will be replaced with a generated comment',
