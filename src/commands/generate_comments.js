@@ -9,7 +9,7 @@ const {RunnableSequence} = require('@langchain/core/runnables');
 const {StringOutputParser} = require('@langchain/core/output_parsers');
 const {readFileSync, writeFileSync} = require('fs');
 const {BaseChatModel} = require('@langchain/core/language_models/chat_models');
-const { ChatOpenAI } = require('@langchain/openai');
+const {ChatOpenAI} = require('@langchain/openai');
 
 /**
  * Construct LLM chat model based on provider specified in cli options
@@ -19,22 +19,22 @@ const { ChatOpenAI } = require('@langchain/openai');
  */
 function makeModel(opts) {
   switch (opts.provider) {
-  case 'placeholder':
-    return new FakeListChatModel({
-      responses: ['<PLACEHOLDER_RESPONSE>'],
-    });
-  case 'openai':
-    return new ChatOpenAI({
-      model: opts.openai_model,
-      configuration: {
-        baseURL: opts.openai_url,
-        apiKey: opts.openai_token,
-      },
-    });
-  default:
-    throw new Error(
-      `\`${opts.provider}\` provider is not supported. ` +
-          `Currently supported providers are: \`openai\`, \`placeholder\``);
+    case 'placeholder':
+      return new FakeListChatModel({
+        responses: ['<PLACEHOLDER_RESPONSE>'],
+      });
+    case 'openai':
+      return new ChatOpenAI({
+        model: opts.openai_model,
+        configuration: {
+          baseURL: opts.openai_url,
+          apiKey: opts.openai_token,
+        },
+      });
+    default:
+      throw new Error(
+        `\`${opts.provider}\` provider is not supported. ` +
+        `Currently supported providers are: \`openai\`, \`placeholder\``);
   }
 }
 
