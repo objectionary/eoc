@@ -12,7 +12,6 @@ describe('generate_comments', () => {
   it('throws error on unknown provider', (done) => {
     const home = makeHome();
     const exampleInput = `<COMMENT-TO-BE-ADDED>`;
-
     assert.throws(() =>
       runSync([
         'generate_comments',
@@ -22,9 +21,9 @@ describe('generate_comments', () => {
     (error) => error.message.includes('`nonexisting` provider is not supported.'));
     done();
   });
+
   it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
-
     for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
       const exampleInput =
         '# <COMMENT-TO-BE-ADDED>\n'.repeat(numberOfPlaceholders);
@@ -35,21 +34,59 @@ describe('generate_comments', () => {
         `--prompt_template=${makePromptFile(home, '')}`,
         `--source=${makeInputFile(home, exampleInput)}`,
         `--output=${outputFilePath}`]);
-      assertFilesExist(stdout, home, [outputFilePath]);
-
-      const fileContents = JSON.parse(fs.readFileSync(outputFilePath));
       const expectedContents = Array(numberOfPlaceholders).fill('<PLACEHOLDER_RESPONSE>');
-      assert.deepStrictEqual(
-        fileContents,
-        expectedContents,
-        `Expected ${outputFilePath} to be ${JSON.stringify(expectedContents)}, ` +
-        `but found ${JSON.stringify(fileContents)}`
-      );
+      verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
     }
+    done();
+  });
 
+  it('fills output as expected when encountering valid EO code', (done) => {
+    const home = makeHome();
+    for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
+      const exampleInput = [
+        '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
+        '[args] > simple',
+        '  QQ.io.stdout (args.at 0) > @',
+        '  # <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
+        '  [] > current-time',
+        '    output. > @',
+        '      QQ.sys.posix',
+        '        "gettimeofday"',
+        '        * QQ.sys.posix.timeval'
+      ].join('\n');
+      const outputFilePath = path.resolve(home, 'out.json');
+      const stdout = runSync([
+        'generate_comments',
+        '--provider=placeholder',
+        '--comment_placeholder="<STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>"',
+        `--prompt_template=${makePromptFile(home, '')}`,
+        `--source=${makeInputFile(home, exampleInput)}`,
+        `--output=${outputFilePath}`]);
+      const expectedContents = ['<PLACEHOLDER_RESPONSE>', '<PLACEHOLDER_RESPONSE>'];
+      verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
+    }
     done();
   });
 });
+
+/**
+ * Assert that the output file exists and contains expected content
+ *
+ * @param {String} stdout - The stdout printed
+ * @param {String} home - Home directory
+ * @param {String} outputFilePath - Path to expected output file
+ * @param {Object} expectedContents - Expected contents of the output file
+ */
+function verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents) {
+  assertFilesExist(stdout, home, [outputFilePath]);
+  const fileContents = JSON.parse(fs.readFileSync(outputFilePath));
+  assert.deepStrictEqual(
+    fileContents,
+    expectedContents,
+    `${stdout}\nExpected ${outputFilePath} to be ${JSON.stringify(expectedContents)}, ` +
+      `but found ${JSON.stringify(fileContents)}`
+  );
+}
 
 /**
  * @param {String} home - Home directory

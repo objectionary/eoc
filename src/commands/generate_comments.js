@@ -93,21 +93,20 @@ function getTextFocusedOnSpecificPlaceholder(
 }
 
 /**
- * Replace all placeholders in the text with LLM-generated documentation
+ * Generates documentation with LLMs to replace placeholders in the text
  *
  * @param {String} inputCode - Code to replace placeholders in
  * @param {String} commentPlaceholder - Placeholder to replace
  * @param {RunnableSequence} chain - Langchain LLM pipeline
  * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
  */
-function replacePlaceholdersWithGeneratedDocumentation(
+function generateDocumentationForPlaceholders(
   inputCode, 
   commentPlaceholder, 
   chain) {
   const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
   const allLocationsOfPlaceholderInInputCode = Array.from(inputCode.matchAll(commentPlaceholderRegex));
-  return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) =>
-  {
+  return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) => {
     const focusedInputCode = getTextFocusedOnSpecificPlaceholder(inputCode, location, commentPlaceholder, commentPlaceholderRegex);
     return chain.invoke({ code: focusedInputCode });
   }));
@@ -123,7 +122,7 @@ module.exports = async function(opts) {
   const chain = constructChain(opts);
   const inputCode = readFileSync(opts.source, 'utf-8');
   const commentPlaceholder = opts.comment_placeholder;
-  const results = await replacePlaceholdersWithGeneratedDocumentation(
+  const results = await generateDocumentationForPlaceholders(
     inputCode,
     commentPlaceholder,
     chain);
