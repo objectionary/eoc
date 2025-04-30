@@ -100,10 +100,7 @@ function getTextFocusedOnSpecificPlaceholder(
  * @param {RunnableSequence} chain - Langchain LLM pipeline
  * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
  */
-function generateDocumentation(
-  inputCode, 
-  commentPlaceholder, 
-  chain) {
+function generateDocumentation(inputCode, commentPlaceholder, chain) {
   const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
   const allLocationsOfPlaceholderInInputCode = Array.from(inputCode.matchAll(commentPlaceholderRegex));
   return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) => {
@@ -125,6 +122,7 @@ module.exports = async function(opts) {
   const results = await generateDocumentation(
     inputCode,
     commentPlaceholder,
-    chain);
+    chain
+  );
   writeFileSync(opts.output, JSON.stringify(results));
 };
