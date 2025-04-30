@@ -19,21 +19,21 @@ const {ChatOpenAI} = require('@langchain/openai');
  */
 function makeModel(opts) {
   switch (opts.provider) {
-  case 'placeholder':
-    return new FakeListChatModel({
-      responses: ['<PLACEHOLDER_RESPONSE>'],
-    });
-  case 'openai':
-    return new ChatOpenAI({
-      model: opts.openai_model,
-      configuration: {
-        baseURL: opts.openai_url,
-        apiKey: opts.openai_token,
-      },
-    });
-  default:
-    throw new Error(
-      `\`${opts.provider}\` provider is not supported. ` +
+    case 'placeholder':
+      return new FakeListChatModel({
+        responses: ['<PLACEHOLDER_RESPONSE>'],
+      });
+    case 'openai':
+      return new ChatOpenAI({
+        model: opts.openai_model,
+        configuration: {
+          baseURL: opts.openai_url,
+          apiKey: opts.openai_token,
+        },
+      });
+    default:
+      throw new Error(
+        `\`${opts.provider}\` provider is not supported. ` +
         `Currently supported providers are: \`openai\`, \`placeholder\``);
   }
 }
@@ -100,7 +100,7 @@ function getTextFocusedOnSpecificPlaceholder(
  * @param {RunnableSequence} chain - Langchain LLM pipeline
  * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
  */
-function generateDocumentationForPlaceholders(
+function generateDocumentation(
   inputCode, 
   commentPlaceholder, 
   chain) {
@@ -122,7 +122,7 @@ module.exports = async function(opts) {
   const chain = constructChain(opts);
   const inputCode = readFileSync(opts.source, 'utf-8');
   const commentPlaceholder = opts.comment_placeholder;
-  const results = await generateDocumentationForPlaceholders(
+  const results = await generateDocumentation(
     inputCode,
     commentPlaceholder,
     chain);
