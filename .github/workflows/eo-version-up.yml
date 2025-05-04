@@ -24,6 +24,7 @@ jobs:
             --silent | jq -r .tag_name > eo-version.txt
       - uses: peter-evans/create-pull-request@v7
         with:
+          sign-commits: true
           branch: version-up
           commit-message: 'new version of eo maven plugin'
           delete-branch: true
