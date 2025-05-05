@@ -402,7 +402,9 @@ program.command('fmt')
   .description('Format EO files in the source directory')
   .action((str, opts) => {
     clear(str);
-    coms().fmt(program.opts());
+    coms().register(program.opts())
+      .then((r) => coms().parse(program.opts()))
+      .then((r) => coms().fmt(program.opts()));
   });
 
 try {

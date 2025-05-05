@@ -18,31 +18,16 @@ module.exports = function (opts) {
   console.debug('Formatting EO files in %s', rel(sources))
 
   return mvnw(
-    ['eo:register'].concat(flags(opts)).concat([`-Deo.sourcesDir=${sources}`]),
+    ['eo:print']
+      .concat(flags(opts))
+      .concat([
+        `-Deo.printSourcesDir=${path.resolve(opts.target, '1-parse')}`,
+        `-Deo.printOutputDir=${sources}`
+      ]),
     opts.target,
     opts.batch
-  )
-    .then(() =>
-      mvnw(
-        ['eo:parse'].concat(flags(opts)).concat([`-Deo.sourcesDir=${sources}`]),
-        opts.target,
-        opts.batch
-      )
-    )
-    .then(() =>
-      mvnw(
-        ['eo:print']
-          .concat(flags(opts))
-          .concat([
-            `-Deo.printSourcesDir=${path.resolve(opts.target, '1-parse')}`,
-            `-Deo.printOutputDir=${sources}`,
-          ]),
-        opts.target,
-        opts.batch
-      )
-    )
-    .then(r => {
-      console.info('EO files formatted in %s', rel(sources))
-      return r
-    })
+  ).then(r => {
+    console.info('EO files formatted in %s', rel(sources))
+    return r
+  })
 }

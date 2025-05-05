@@ -3,47 +3,40 @@
  * SPDX-License-Identifier: MIT
  */
 
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers');
+const assert = require('assert')
+const fs = require('fs')
+const path = require('path')
+const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers')
 
 /**
  * Prepare test directory and return the home path
  * @return {string} Home directory path
  */
-function prepareTestDirectory() {
-  const home = path.resolve('temp/test-fmt/simple');
-  fs.rmSync(home, { recursive: true, force: true });
-  fs.mkdirSync(home, { recursive: true });
-  return home;
+function prepareTestDirectory () {
+  const home = path.resolve('temp/test-fmt/simple')
+  fs.rmSync(home, { recursive: true, force: true })
+  fs.mkdirSync(home, { recursive: true })
+  return home
 }
 
 /**
- * Create a poorly formatted EO file
+ * Create a file with the given content
  * @param {string} home - Home directory path
- * @return {Object} Source path and original content
+ * @param {string} content - File content
+ * @param {string} filename - File name
+ * @return {string} Full path to the created file
  */
-function createPoorlyFormattedFile(home) {
-  const source = path.resolve(home, 'app.eo');
-  const originalContent = [
-    '+package f ',
-    '+alias stdout org.eolang.io.stdout',
-    '',
-    '[args] >   app',
-    '  stdout > @',
-    '    "Hello, world!"'
-  ].join('\n');
-
-  fs.writeFileSync(source, originalContent);
-  return { source, originalContent };
+function createFile (home, content, filename = 'app.eo') {
+  const source = path.resolve(home, filename)
+  fs.writeFileSync(source, content)
+  return source
 }
 
 /**
  * Run the formatter on the source directory
  * @param {string} home - Home directory path
  */
-function fmt(home) {
+function fmt (home) {
   runSync([
     'fmt',
     '--verbose',
@@ -52,45 +45,125 @@ function fmt(home) {
     '-s',
     home,
     '-t',
-    path.resolve(home, '.eoc'),
-  ]);
+    path.resolve(home, '.eoc')
+  ])
 }
 
 /**
- * Verify the formatting results
- * @param {string} source - Source file path
- * @param {string} originalContent - Original file content
+ * Test cases for formatting
+ * Each case has 'before' (input) and 'after' (expected output) fields
  */
-function verifyFormatting(source, originalContent) {
-  const formatted = fs.readFileSync(source, 'utf8');
-  assert(
-    formatted.includes('+package f'),
-    'Package declaration should be preserved'
-  );
-  assert(
-    formatted.includes('+alias stdout Q.org.eolang.io.stdout'),
-    'Alias should be updated with Q prefix'
-  );
-  assert(formatted.includes('app'), 'Object declaration should be simplified');
-  assert(formatted.includes('io.stdout > @'), 'Should format stdout properly');
-  assert(
-    formatted.includes('"Hello, world!"'),
-    'String content should be preserved'
-  );
-  assert(
-    formatted !== originalContent,
-    'File should be different after formatting'
-  );
-}
+const formatTestCases = [
+  {
+    before: [
+      '+package f ',
+      '+alias stdout org.eolang.io.stdout',
+      '',
+      '[args] >   app',
+      '  stdout > @',
+      '    "Hello, world!"'
+    ].join('\n'),
+    after: [
+      '+package f',
+      '+alias stdout Q.org.eolang.io.stdout',
+      '',
+      'app',
+      '  Q.f.@',
+      '',
+      'io.stdout > @',
+      '  "Hello, world!"',
+      ''
+    ].join('\n')
+  },
+  {
+    before: [
+      '+package test',
+      '',
+      '-badly-formatted',
+      '-  Q.test.@',
+      '-',
+      '-42 > @'
+    ].join('\n'),
+    after: [
+      '+package test',
+      '',
+      'badly-formatted',
+      ''
+    ].join('\n')
+  },
+  {
+    before: [
+      '+package p',
+      '+alias math org.eolang.math',
+      '',
+      '[] >   calc',
+      '  math.plus > @',
+      '    5',
+      '    10'
+    ].join('\n'),
+    after: [
+      '+package p',
+      '+alias math Q.org.eolang.math',
+      '',
+      'calc',
+      '  Q.p.@',
+      '',
+      'math.plus > @',
+      '  5',
+      '  10',
+      ''
+    ].join('\n')
+  },
+  {
+    before: [
+      '+package f',
+      '+alias stdout Q.org.eolang.io.stdout',
+      '',
+      'app',
+      '  Q.f.@',
+      '',
+      'io.stdout > @',
+      '  "Hello, world!"'
+    ].join('\n'),
+    after: [
+      '+package f',
+      '+alias stdout Q.org.eolang.io.stdout',
+      '',
+      'app',
+      '  Q.f.@',
+      '',
+      'io.stdout > @',
+      '  "Hello, world!"',
+      ''
+    ].join('\n')
+  }
+]
 
 describe('fmt', () => {
-  before(weAreOnline);
+  before(weAreOnline)
 
-  it('formats EO files in the source directory', done => {
-    const home = prepareTestDirectory();
-    const { source, originalContent } = createPoorlyFormattedFile(home);
-    fmt(home);
-    verifyFormatting(source, originalContent);
-    done();
-  });
-});
+  it('formats EO files according to expected patterns', done => {
+    const home = prepareTestDirectory()
+
+    formatTestCases.forEach((testCase, index) => {
+      const filename = `test${index}.eo`
+      const source = createFile(home, testCase.before, filename)
+
+      fmt(home)
+
+      const formatted = fs.readFileSync(source, 'utf8')
+      assert.strictEqual(
+        formatted,
+        testCase.after,
+        `Test case ${index} failed: formatting result doesn't match expected output`
+      )
+
+      assert(
+        formatted !== testCase.before,
+        `Test case ${index} failed: file should be different after formatting`
+      )
+    })
+
+    done()
+  })
+})
