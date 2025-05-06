@@ -2,7 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-
 const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
@@ -141,29 +140,23 @@ const formatTestCases = [
 
 describe('fmt', () => {
   before(weAreOnline)
-
   it('formats EO files according to expected patterns', done => {
     const home = prepareTestDirectory()
-
     formatTestCases.forEach((testCase, index) => {
       const filename = `test${index}.eo`
       const source = createFile(home, testCase.before, filename)
-
       fmt(home)
-
       const formatted = fs.readFileSync(source, 'utf8')
       assert.strictEqual(
         formatted,
         testCase.after,
         `Test case ${index} failed: formatting result doesn't match expected output`
       )
-
       assert(
         formatted !== testCase.before,
         `Test case ${index} failed: file should be different after formatting`
       )
     })
-
     done()
   })
 })
