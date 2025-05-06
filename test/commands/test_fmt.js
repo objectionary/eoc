@@ -135,6 +135,34 @@ const formatTestCases = [
       '  "Hello, world!"',
       ''
     ].join('\n')
+  },
+  {
+    before: [
+      '+package f',
+      '+alias org.eolang.io.stdout',
+      '+alias org.eolang.txt.sprintf',
+      '',
+      '# No comments.',
+      '[] > app',
+      '  stdout > @',
+      '    sprintf *1',
+      '      "Hello, %s"',
+      '      "Jeff"'
+    ].join('\n'),
+    after: [
+      '+package f',
+      '+alias stdout Q.org.eolang.io.stdout',
+      '+alias sprintf Q.org.eolang.txt.sprintf',
+      '',
+      '# No comments.',
+      '[] > app',
+      '  io.stdout > @',
+      '    txt.sprintf',
+      '      "Hello, %s"',
+      '      *',
+      '        "Jeff"',
+      ''
+    ].join('\n')
   }
 ]
 
