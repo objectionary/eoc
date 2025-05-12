@@ -29,8 +29,8 @@ describe('test', () => {
         '+any',
         '',
         '# sample',
-        '[] > simple-comparison-works',
-        '  gt. > @',
+        '[] > simple-test',
+        '  gt. > works',
         '    10',
         '    5',
       ].join('\n')
@@ -55,8 +55,8 @@ describe('test', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOsimple_comparison_worksTest.java',
-        'target/classes/EOsimple_comparison_worksTest.class',
+        'target/generated-sources/EOsimple_testTest.java',
+        'target/classes/EOsimple_testTest.class',
       ]
     );
     done();

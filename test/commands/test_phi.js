@@ -41,15 +41,15 @@ describe('phi', () => {
     fs.mkdirSync(path.resolve(home, 'base/xmir'), {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'base/xmir/foo.xmir'),
-      '<program ms="1" name="foo" time="2024-01-01T01:01:01"' +
+      '<object ms="1" time="2024-01-01T01:01:01"' +
       ' version="1" revision="1" dob="2024-01-01T01:01:01">' +
       '<listing/>' +
       '<errors/>' +
       '<sheets/>' +
       '<license/>' +
       '<metas/>' +
-      '<objects/>' +
-      '</program>'
+      '<o name="foo"/>' +
+      '</object>'
     );
     const stdout = runSync([
       'phi',

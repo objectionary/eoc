@@ -43,8 +43,8 @@ describe('resolve', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/6-resolve/org.eolang/eo-runtime',
-        'target/6-resolve/net.java.dev.jna/jna',
+        'target/4-resolve/org.eolang/eo-runtime',
+        'target/4-resolve/net.java.dev.jna/jna',
         'target/classes/org/eolang/Phi.class',
         'target/classes/EOorg/EOeolang/EOerror.class',
         'target/classes/com/sun/jna',

@@ -14,8 +14,8 @@ describe('compile', () => {
   it('compiles a simple .EO program into Java bytecode .class files', (done) => {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/compile.eo'), simple('compile'));
+    fs.mkdirSync(path.resolve(home, 'src', 'foo', 'bar'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/foo/bar/compile.eo'), simple('compile'));
     const stdout = runSync([
       'compile',
       `--parser=${parserVersion}`,
@@ -40,16 +40,16 @@ describe('compile', () => {
   it('compiles a simple .EO unit test into Java bytecode .class files', (done) => {
     const home = path.resolve('temp/test-compile/junit');
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.mkdirSync(path.resolve(home, 'src', 'foo', 'bar'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple-test-compile.eo'),
+      path.resolve(home, 'src/foo/bar/simple-test-compile.eo'),
       [
         '+package foo.bar',
         '+tests',
         '',
         '# This is a sample object',
         '[] > simple-test-compile',
-        '  true > @',
+        '  true > tests',
       ].join('\n')
     );
     const stdout = runSync([
@@ -75,8 +75,8 @@ describe('compile', () => {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'target'), {recursive: true});
-    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/compile2.eo'), simple('compile2'));
+    fs.mkdirSync(path.resolve(home, 'src', 'foo', 'bar'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/foo/bar/compile2.eo'), simple('compile2'));
     runSync([
       'compile',
       '--clean',

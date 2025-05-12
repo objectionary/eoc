@@ -16,7 +16,7 @@ describe('foreign', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple.eo'),
+      path.resolve(home, 'src/app.eo'),
       [
         '# Simple app.',
         '[args] > app',
