@@ -75,7 +75,7 @@ function escapeRegExp(string) {
  * by removing all other placeholders from it
  *
  * @param {String} inputCode - Code to replace placeholders in
- * @param {Number} location of beggining of the placeholder that is being focused on
+ * @param {Number} location of beginning of the placeholder that is being focused on
  * @param {String} commentPlaceholder
  * @param {RegExp} commentPlaceholderRegex - regexp matching placeholders
  * @return {String}

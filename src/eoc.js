@@ -371,15 +371,15 @@ program.command('generate_comments')
     '(only usable with `openai` provider) url to openai-like api',
     'https://api.openai.com/')
   .requiredOption('--source <path>', 'File to process')
-  .option('--comment_placeholder <placholder>',
+  .option('--comment_placeholder <placeholder>',
     'A string placeholder, each instance of which will be replaced with a generated comment',
     '<COMMENT-TO-BE-ADDED>')
   .option('--output <path>',
-    'Output file path - the file will contain the replacment mapping',
+    'Output file path - the file will contain the replacement mapping',
     'out.json')
   .requiredOption('--prompt_template <path>',
     'Path to prompt template file, ' +
-    'where `{code}` placholder will be replaced with the code given by the user')
+    'where `{code}` placeholder will be replaced with the code given by the user')
   .action((str, opts) => {
     coms().generate_comments({...program.opts(), ...str});
   });
