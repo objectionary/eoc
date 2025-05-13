@@ -10,7 +10,7 @@ const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers')
 
 /**
  * Prepare test directory and return the home path
- * @return {string} Home directory path
+ * @return {Array} Array containing source and target directory paths
  */
 function prepareTestDirectory () {
   const home = path.resolve('temp/test-fmt/simple')
@@ -37,7 +37,8 @@ function createFile (source, content, filename = 'app.eo') {
 
 /**
  * Run the formatter on the source directory
- * @param {string} home - Home directory path
+ * @param {string} source - Source directory path
+ * @param {string} target - Target directory path
  */
 function fmt (source, target) {
   runSync([
@@ -48,7 +49,7 @@ function fmt (source, target) {
     '-s',
     source,
     '-t',
-    target,
+    target
   ])
 }
 
@@ -56,14 +57,14 @@ function fmt (source, target) {
  * Test cases for formatting
  * Each case has 'before' (input) and 'after' (expected output) fields
  */
-const formatTestCases = [
+const testCases = [
   {
     before: [
-      '# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com',
-      '# SPDX-License-Identifier: MIT',
+      '# EO file header',
+      '# Copyright notice for testing',
       '# This is a comment for the app',
       '[] > app',
-      '',
+      ''
     ].join('\n'),
     after: [
       '# No comments.',
@@ -131,8 +132,7 @@ describe('fmt', () => {
   before(weAreOnline)
   it('formats EO files according to expected patterns', done => {
     const [source, target] = prepareTestDirectory()
-    formatTestCases.forEach((testCase, index) => {
-      // const filename = `test${index}.eo`
+    testCases.forEach((testCase, index) => {
       const file = createFile(source, testCase.before)
       fmt(source, target)
       const formatted = fs.readFileSync(file, 'utf8')

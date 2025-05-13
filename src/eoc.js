@@ -403,7 +403,12 @@ program.command('fmt')
     clear(str);
     coms().register(program.opts())
       .then((r) => coms().parse(program.opts()))
-      .then((r) => coms().print({printInput: '1-parse', printOutput: program.opts().sources, ...program.opts()}));
+      .then((r) => coms()
+        .print({
+          printInput: '1-parse',
+          printOutput: program.opts().sources,
+          ...program.opts()
+        }));
   });
 
 try {
