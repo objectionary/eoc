@@ -15,13 +15,12 @@ describe('print', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'target/input'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'target/input/app.xmir'),
+      path.resolve(home, 'target/input/foo.xmir'),
       [
-        '<program ms="0" name="xx" time="2024-01-01T01:01:01"',
+        '<object ms="0" time="2024-01-01T01:01:01"',
         'version="0.0.0" dob="2024-01-01T01:01:01" revision="0">',
         '<listing/><errors/><sheets/><license/><metas/>',
-        '<objects><o abstract="" name="foo"/></objects>',
-        '</program>'
+        '<o name="foo"/></object>'
       ].join(' ')
     );
     const stdout = runSync([
@@ -37,7 +36,7 @@ describe('print', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/output/app.eo',
+        'target/output/foo.eo',
       ]
     );
     done();

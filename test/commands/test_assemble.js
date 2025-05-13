@@ -29,9 +29,7 @@ describe('assemble', () => {
       stdout, home,
       [
         'target/eo-foreign.json',
-        'target/1-parse/assemble.xmir',
-        'target/2-shake-steps/assemble',
-        'target/2-shake/assemble.xmir',
+        'target/1-parse/assemble.xmir'
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

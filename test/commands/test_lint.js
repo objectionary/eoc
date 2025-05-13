@@ -29,8 +29,8 @@ describe('lint', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/2-shake/simple.xmir',
-        'target/5-lint/simple.xmir',
+        'target/1-parse/simple.xmir',
+        'target/3-lint/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

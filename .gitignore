@@ -1,10 +1,10 @@
-*.tgz
 .DS_Store
 .eoc/
 .idea
 .idea/
 .mvn/
 .nyc_output
+*.tgz
 coverage.html
 coverage/
 eodocs.html

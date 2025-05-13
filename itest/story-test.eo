@@ -4,7 +4,7 @@
 +alias story
 
 # Simple test
-[] > story-is-not-empty
-  gt. > @
+[] > story-test
+  gt. > tests-story-is-not-empty
     story.length
     0
