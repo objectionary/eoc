@@ -13,6 +13,7 @@ const {mvnw, flags} = require('../mvnw');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
+  console.debug(opts)
   const input = path.resolve(opts.target, opts.printInput);
   console.debug('Reading from %s', rel(input));
   const output = path.resolve(opts.target, opts.printOutput);

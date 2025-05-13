@@ -31,7 +31,6 @@ const {program} = require('commander'),
     unphi: require('./commands/unphi'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
-    fmt: require('./commands/fmt'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble')
   },
@@ -404,7 +403,7 @@ program.command('fmt')
     clear(str);
     coms().register(program.opts())
       .then((r) => coms().parse(program.opts()))
-      .then((r) => coms().fmt(program.opts()));
+      .then((r) => coms().print({printInput: '1-parse', printOutput: program.opts().sources, ...program.opts()}));
   });
 
 try {

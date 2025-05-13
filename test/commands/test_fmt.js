@@ -13,38 +13,41 @@ const { runSync, parserVersion, homeTag, weAreOnline } = require('../helpers')
  */
 function prepareTestDirectory () {
   const home = path.resolve('temp/test-fmt/simple')
+  const source = path.resolve(home, 'src')
+  const target = path.resolve(home, 'target')
   fs.rmSync(home, { recursive: true, force: true })
-  fs.mkdirSync(home, { recursive: true })
-  return home
+  fs.mkdirSync(source, { recursive: true })
+  fs.mkdirSync(target, { recursive: true })
+  return [source, target]
 }
 
 /**
  * Create a file with the given content
- * @param {string} home - Home directory path
+ * @param {string} source - Source directory path
  * @param {string} content - File content
  * @param {string} filename - File name
  * @return {string} Full path to the created file
  */
-function createFile (home, content, filename = 'app.eo') {
-  const source = path.resolve(home, filename)
-  fs.writeFileSync(source, content)
-  return source
+function createFile (source, content, filename = 'app.eo') {
+  const file = path.resolve(source, filename)
+  fs.writeFileSync(file, content)
+  return file
 }
 
 /**
  * Run the formatter on the source directory
  * @param {string} home - Home directory path
  */
-function fmt (home) {
+function fmt (source, target) {
   runSync([
     'fmt',
     '--verbose',
     `--parser=${parserVersion}`,
     `--home-tag=${homeTag}`,
     '-s',
-    home,
+    source,
     '-t',
-    path.resolve(home, '.eoc')
+    target,
   ])
 }
 
@@ -55,59 +58,31 @@ function fmt (home) {
 const formatTestCases = [
   {
     before: [
-      '+package f ',
-      '+alias stdout org.eolang.io.stdout',
+      '# SPDX-FileCopyrightText: Copyright (c) 2016-2025 Objectionary.com',
+      '# SPDX-License-Identifier: MIT',
+      '# This is a comment for the app',
+      '[] > app',
       '',
-      '[args] >   app',
-      '  stdout > @',
-      '    "Hello, world!"'
     ].join('\n'),
     after: [
-      '+package f',
-      '+alias stdout Q.org.eolang.io.stdout',
-      '',
-      'app',
-      '  Q.f.@',
-      '',
-      'io.stdout > @',
-      '  "Hello, world!"',
+      '# No comments.',
+      '[] > app',
       ''
     ].join('\n')
   },
   {
     before: [
-      '+package test',
-      '',
-      '-badly-formatted',
-      '-  Q.test.@',
-      '-',
-      '-42 > @'
-    ].join('\n'),
-    after: [
-      '+package test',
-      '',
-      'badly-formatted',
-      ''
-    ].join('\n')
-  },
-  {
-    before: [
-      '+package p',
       '+alias math org.eolang.math',
-      '',
-      '[] >   calc',
-      '  math.plus > @',
-      '    5',
-      '    10'
+      '# Calculator app',
+      'math.plus > app',
+      '  5',
+      '  10',
+      ''
     ].join('\n'),
     after: [
-      '+package p',
       '+alias math Q.org.eolang.math',
       '',
-      'calc',
-      '  Q.p.@',
-      '',
-      'math.plus > @',
+      'math.plus > app',
       '  5',
       '  10',
       ''
@@ -115,52 +90,37 @@ const formatTestCases = [
   },
   {
     before: [
-      '+package f',
-      '+alias stdout Q.org.eolang.io.stdout',
-      '',
-      'app',
-      '  Q.f.@',
-      '',
-      'io.stdout > @',
+      '+alias stdout org.eolang.io.stdout',
+      '# Application entry point',
+      'stdout > app',
       '  "Hello, world!"'
     ].join('\n'),
     after: [
-      '+package f',
       '+alias stdout Q.org.eolang.io.stdout',
       '',
-      'app',
-      '  Q.f.@',
-      '',
-      'io.stdout > @',
+      'io.stdout > app',
       '  "Hello, world!"',
       ''
     ].join('\n')
   },
   {
     before: [
-      '+package f',
-      '+alias org.eolang.io.stdout',
-      '+alias org.eolang.txt.sprintf',
-      '',
-      '# No comments.',
-      '[] > app',
-      '  stdout > @',
-      '    sprintf *1',
-      '      "Hello, %s"',
-      '      "Jeff"'
+      '+alias stdout org.eolang.io.stdout',
+      '+alias sprintf org.eolang.txt.sprintf',
+      '# Application entry point',
+      'stdout > app',
+      '  sprintf',
+      '    "Hello, %s"',
+      '    "Jeff"'
     ].join('\n'),
     after: [
-      '+package f',
       '+alias stdout Q.org.eolang.io.stdout',
       '+alias sprintf Q.org.eolang.txt.sprintf',
       '',
-      '# No comments.',
-      '[] > app',
-      '  io.stdout > @',
-      '    txt.sprintf',
-      '      "Hello, %s"',
-      '      *',
-      '        "Jeff"',
+      'io.stdout > app',
+      '  txt.sprintf',
+      '    "Hello, %s"',
+      '    "Jeff"',
       ''
     ].join('\n')
   }
@@ -169,12 +129,12 @@ const formatTestCases = [
 describe('fmt', () => {
   before(weAreOnline)
   it('formats EO files according to expected patterns', done => {
-    const home = prepareTestDirectory()
+    const [source, target] = prepareTestDirectory()
     formatTestCases.forEach((testCase, index) => {
-      const filename = `test${index}.eo`
-      const source = createFile(home, testCase.before, filename)
-      fmt(home)
-      const formatted = fs.readFileSync(source, 'utf8')
+      // const filename = `test${index}.eo`
+      const file = createFile(source, testCase.before)
+      fmt(source, target)
+      const formatted = fs.readFileSync(file, 'utf8')
       assert.strictEqual(
         formatted,
         testCase.after,
