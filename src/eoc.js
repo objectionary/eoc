@@ -403,13 +403,8 @@ program.command('latex')
   .action((str, opts) => {
     clear(str);
     coms().register(program.opts())
-      .then((r) => 
-        coms().parse(program.opts())
-          .then((r) => {
-            coms().latex(program.opts())
-          }
-          )
-      )
+      .then((r) => coms().parse(program.opts()))
+      .then((r) => coms().latex(program.opts()));
   });
 
 try {

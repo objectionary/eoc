@@ -10,7 +10,6 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('latex', () => {
   before(weAreOnline);
-
   it('generates LaTeX files from a simple .EO program', (done) => {
     const home = path.resolve('temp/test-latex/simple');
     const target = path.resolve(home, 'target');
