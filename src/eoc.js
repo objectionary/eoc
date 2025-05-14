@@ -32,7 +32,8 @@ const {program} = require('commander'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
-    jeo_assemble: require('./commands/jeo/assemble')
+    jeo_assemble: require('./commands/jeo/assemble'),
+    latex: require('./commands/latex')
   },
   commands = {
     [language.java]: {
@@ -395,6 +396,20 @@ program.command('jeo:assemble')
   )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
+  });
+
+program.command('latex')
+  .description('Generate LaTeX files from EO sources')
+  .action((str, opts) => {
+    clear(str);
+    coms().register(program.opts())
+      .then((r) => 
+        coms().parse(program.opts())
+          .then((r) => {
+            coms().latex(program.opts())
+          }
+          )
+      )
   });
 
 try {
