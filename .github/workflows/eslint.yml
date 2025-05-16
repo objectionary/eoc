@@ -17,5 +17,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm install -g eslint@9.17.0
-      - run: npm install @eslint/js
+      - run: npm install
       - run: eslint
