@@ -26,7 +26,7 @@ module.exports = [
       'func-names': 'off',
       'func-style': 'off',
       'id-length': 'off',
-      'indent': ['error', 2],
+      'indent': ['error', 2, { "SwitchCase": 1 }],
       'init-declarations': 'off',
       'max-len': ['error', { code: 200 }],
       'max-lines': 'off',
