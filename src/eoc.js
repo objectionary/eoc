@@ -31,8 +31,10 @@ const {program} = require('commander'),
     unphi: require('./commands/unphi'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
+    generate_comments: require('./commands/generate_comments'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
-    jeo_assemble: require('./commands/jeo/assemble')
+    jeo_assemble: require('./commands/jeo/assemble'),
+    latex: require('./commands/latex')
   },
   commands = {
     [language.java]: {
@@ -358,6 +360,31 @@ program.command('docs')
     coms().docs(program.opts());
   });
 
+program.command('generate_comments')
+  .description('Generate documentation with LLM')
+  .requiredOption('--provider <provider>',
+    'Which LLM provider to use. Currently supported providers are: `openai`, `placeholder`.')
+  .option('--openai_model <model>',
+    '(only usable with `openai` provider) name of model to use')
+  .option('--openai_token <token>',
+    '(only usable with `openai` provider) openai api token')
+  .option('--openai_url <url>',
+    '(only usable with `openai` provider) url to openai-like api',
+    'https://api.openai.com/')
+  .requiredOption('--source <path>', 'File to process')
+  .option('--comment_placeholder <placeholder>',
+    'A string placeholder, each instance of which will be replaced with a generated comment',
+    '<COMMENT-TO-BE-ADDED>')
+  .option('--output <path>',
+    'Output file path - the file will contain the replacement mapping',
+    'out.json')
+  .requiredOption('--prompt_template <path>',
+    'Path to prompt template file, ' +
+    'where `{code}` placeholder will be replaced with the code given by the user')
+  .action((str, opts) => {
+    coms().generate_comments({...program.opts(), ...str});
+  });
+
 program.command('jeo:disassemble')
   .description('Disassemble .class files to .xmir files')
   .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
@@ -395,6 +422,29 @@ program.command('jeo:assemble')
   )
   .action((str, opts) => {
     coms().jeo_assemble({...program.opts(), ...str});
+  });
+
+program.command('latex')
+  .description('Generate LaTeX files from EO sources')
+  .action((str, opts) => {
+    clear(str);
+    coms().register(program.opts())
+      .then((r) => coms().parse(program.opts()))
+      .then((r) => coms().latex(program.opts()));
+  });
+
+program.command('fmt')
+  .description('Format EO files in the source directory')
+  .action((str, opts) => {
+    clear(str);
+    coms().register(program.opts())
+      .then((r) => coms().parse(program.opts()))
+      .then((r) => coms()
+        .print({
+          printInput: '1-parse',
+          printOutput: program.opts().sources,
+          ...program.opts()
+        }));
   });
 
 try {
