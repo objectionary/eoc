@@ -35,10 +35,20 @@
       <version>5.12.2</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.takes</groupId>
+      <artifactId>takes</artifactId>
+      <version>1.24.6</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
     <sourceDirectory>${eo.generatedDir}</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>${eo.generatedDir}</directory>
+      </resource>
+    </resources>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <testOutputDirectory>${eo.targetDir}/classes</testOutputDirectory>
@@ -100,7 +110,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>org.eolang.Main</mainClass>
+              <mainClass>org.eolang.App</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -126,6 +136,27 @@
               junit.jupiter.execution.parallel.mode.classes.default = concurrent
             </configurationParameters>
           </properties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>start-server</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.eolang.Inspect</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+          <arguments>
+            <argument>--port=${port}</argument>
+          </arguments>
         </configuration>
       </plugin>
     </plugins>
