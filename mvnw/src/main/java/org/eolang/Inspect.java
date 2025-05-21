@@ -1,31 +1,55 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
 package org.eolang;
 
+import java.io.IOException;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.http.Exit;
-import org.takes.http.FtBasic;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
+import org.takes.http.Exit;
+import org.takes.http.FtBasic;
 import org.takes.rq.RqPrint;
 import org.takes.rs.RsText;
 
-import java.io.IOException;
-
+/**
+ * HTTP inspection server.
+ * @since 0.29.0
+ */
 public final class Inspect {
+    /**
+     * Private constructor.
+     */
+    private Inspect() {
+        // Utility class
+    }
+
+    /**
+     * Main entry point.
+     * @param args Command line arguments
+     * @throws Exception If fails
+     */
     public static void main(final String... args) throws Exception {
         new FtBasic(
-                new TkFork(
-                        new FkRegex("/echo", new Take() {
+            new TkFork(
+                new FkRegex(
+                    "/echo",
+                        new Take() {
                             @Override
-                            public Response act(Request req) throws IOException {
-                                String body = new RqPrint(req).printBody();
+                            public Response act(final Request req) throws IOException {
+                                final String body = new RqPrint(req).printBody();
                                 return new RsText(body);
                             }
                         }),
-                        new FkRegex("/", new RsText("Server is running. Use /echo endpoint"))
+                    new FkRegex(
+                        "/",
+                        new RsText("Server is running. Use /echo endpoint")
+                    )
                 ),
-                8080
+            8080
         ).start(Exit.NEVER);
     }
 }

@@ -159,6 +159,21 @@
           </arguments>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>com.qulice</groupId>
+        <artifactId>qulice-maven-plugin</artifactId>
+        <version>0.24.0</version>
+        <configuration>
+          <license>file:${project.basedir}/LICENSE.txt</license>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

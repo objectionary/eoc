@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
 const { spawn } = require('child_process');
 const path = require('path');
 const os = require('os');
@@ -7,110 +11,66 @@ const fetch = require('node-fetch');
 module.exports = function(opts) {
   return new Promise((resolve, reject) => {
     const mvnDir = path.join(process.cwd(), 'mvnw');
-
     console.info('Building EO inspect server with Maven...');
 
-    const mvnCmd = os.platform() === 'win32' ? 'mvn.cmd' : 'mvn';
-
-    const mvn = spawn(mvnCmd, [
-      'clean',
-      'package',
-      'dependency:copy-dependencies',
-      '-Deo.targetDir=target',
-      '-DoutputDirectory=target/lib',
-    ], {
-      cwd: mvnDir,
-      stdio: 'inherit',
-    });
+    const mvn = spawn(os.platform() === 'win32' ? 'mvn.cmd' : 'mvn', [
+      'clean', 'package', 'dependency:copy-dependencies',
+      '-Deo.targetDir=target', '-DoutputDirectory=target/lib'
+    ], { cwd: mvnDir, stdio: 'inherit' });
 
     mvn.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error('Maven build failed'));
-        return;
-      }
+      if (code !== 0) {return reject(new Error('Maven build failed'));}
 
-      const isWindows = os.platform() === 'win32';
-      const sep = isWindows ? ';' : ':';
-      const classpath = [
-        path.join(mvnDir, 'target', 'classes'),
-        path.join(mvnDir, 'target', 'lib', '*'),
-      ].join(sep);
+      const server = spawn('java', [
+        '-cp',
+        [
+          path.join(mvnDir, 'target', 'classes'),
+          path.join(mvnDir, 'target', 'lib', '*')
+        ].join(os.platform() === 'win32' ? ';' : ':'),
+        'org.eolang.Inspect'
+      ], { cwd: mvnDir, stdio: ['pipe', 'pipe', 'pipe'] });
 
-      console.info('Starting EO inspect server...');
-      const server = spawn('java', ['-cp', classpath, 'org.eolang.Inspect'], {
-        cwd: mvnDir,
-        stdio: ['pipe', 'pipe', 'pipe'],
-      });
-
-      server.stdout.setEncoding('utf8');
-      server.stderr.setEncoding('utf8');
-
-      server.stdout.on('data', (data) => {
-        console.log(`[SERVER] ${data}`);
-      });
-
-      server.stderr.on('data', (data) => {
-        console.error(`[SERVER ERROR] ${data}`);
-      });
+      server.stdout.setEncoding('utf8').on('data', d => console.log(`[SERVER] ${d}`));
+      server.stderr.setEncoding('utf8').on('data', d => console.error(`[SERVER ERROR] ${d}`));
 
       setTimeout(() => {
         console.info('EO inspect server started.');
-
         const rl = readline.createInterface({
-          input: process.stdin,
-          output: process.stdout,
+          input: (opts && opts.stdin) || process.stdin,
+          output: (opts && opts.stdout) || process.stdout,
           terminal: true
         });
 
-        const ask = (query) => new Promise(res => rl.question(query, res));
+        const ask = (q) => new Promise(res => rl.question(q, res));
 
-        (async () => {
-          try {
-            while (true) {
-              const input = await ask('Enter text (or type "exit" to quit): ');
-              if (input.trim().toLowerCase() === 'exit') {
-                console.info('Exiting...');
-                server.kill();
-                rl.close();
-                resolve();
-                break;
-              }
-
-              console.log('Sending request with body:', input);
-
-              try {
-                const response = await fetch('http://localhost:8080/echo', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'text/plain; charset=utf-8'
-                  },
-                  body: input,
-                });
-
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const reply = await response.text();
-                console.log('Server responded:', reply);
-              } catch (err) {
-                console.error('Request failed:', err.message);
-              }
-            }
-          } catch (e) {
+        const processInput = async () => {
+          const input = await ask('Enter text (or type "exit" to quit): ');
+          if (input.trim().toLowerCase() === 'exit') {
             rl.close();
             server.kill();
-            reject(e);
+            return resolve();
           }
-        })();
 
+          console.log('Sending request with body:', input);
+          try {
+            const response = await fetch('http://localhost:8080/echo', {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+              body: input
+            });
+            console.log('Server responded:', await response.text());
+          } catch (err) {
+            console.error('Request failed:', err.message);
+          }
+          processInput();
+        };
+
+        processInput();
       }, 2000);
 
-      server.on('close', (code) => {
-        console.info(`Server stopped with code ${code}`);
-      });
+      server.on('close', code => console.info(`Server stopped with code ${code}`));
     });
 
-    mvn.on('error', (err) => reject(err));
+    mvn.on('error', reject);
   });
 };
