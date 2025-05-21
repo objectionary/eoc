@@ -110,7 +110,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>org.eolang.App</mainClass>
+              <mainClass>org.eolang.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
