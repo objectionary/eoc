@@ -77,7 +77,7 @@ if (process.argv.includes('--latest')) {
   // latest hash of the objectionary/home repository, and then
   // set it to the "hash" variable?
 } else {
-  console.debug(`EO parser ${parser}; use the --latest flag if you need a freshier one`);
+  console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
 }
 
 const version = require('./version');
@@ -282,7 +282,7 @@ program.command('compile')
   .description('Compile target language sources into binaries')
   .action((str, opts) => {
     clear(str);
-    if (program.opts().alone == undefined) {
+    if (program.opts().alone === undefined) {
       coms().register(program.opts())
         .then((r) => coms().assemble(program.opts()))
         .then((r) => coms().lint(program.opts()))
