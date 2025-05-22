@@ -46,8 +46,8 @@ describe('inspect command (mocked)', () => {
     await new Promise(res => setTimeout(res, 5000));
     mockStdin.end();
     await inspectPromise;
-    assert.strictEqual(lastResponseBody, 'hello', 'Ожидался эхо-ответ "hello"');
-    assert(spawnStub.calledTwice, 'Ожидалось два spawn-вызова: mvn и java');
-    assert(javaProc.kill.called, 'Ожидалось завершение сервера через kill()');
+    assert.strictEqual(lastResponseBody, 'hello', 'Expected echo response "hello"');
+    assert(spawnStub.calledTwice, 'Expected 2 spawn-call: mvn and java');
+    assert(javaProc.kill.called, 'Expected terminating server with kill()');
   });
 });

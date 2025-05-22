@@ -30,9 +30,9 @@ public final class Inspect {
     /**
      * Main entry point.
      * @param args Command line arguments
-     * @throws Exception If fails
+     * @throws IOException If server fails to start
      */
-    public static void main(final String... args) throws Exception {
+    public static void main(final String... args) throws IOException {
         new FtBasic(
             new TkFork(
                 new FkRegex(
