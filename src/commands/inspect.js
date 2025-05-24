@@ -15,7 +15,9 @@ module.exports = function(opts) {
 
     const mvn = spawn(os.platform() === 'win32' ? 'mvn.cmd' : 'mvn', [
       'clean', 'package', 'dependency:copy-dependencies',
-      '-Deo.targetDir=target', '-DoutputDirectory=target/lib'
+      '-Pinspect',
+      '-Deo.targetDir=target',
+      '-DoutputDirectory=target/lib'
     ], { cwd: mvnDir, stdio: 'inherit' });
 
     mvn.on('close', (code) => {
