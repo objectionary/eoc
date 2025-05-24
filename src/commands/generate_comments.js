@@ -81,9 +81,9 @@ function escapeRegExp(string) {
  * @return {String}
  */
 function getTextFocusedOnSpecificPlaceholder(
-  inputCode, 
-  location, 
-  commentPlaceholder, 
+  inputCode,
+  location,
+  commentPlaceholder,
   commentPlaceholderRegex) {
   const codeBefore = inputCode.slice(0, location.index);
   const replacedCodeBefore = codeBefore.replace(commentPlaceholderRegex, '');
