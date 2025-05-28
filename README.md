@@ -69,6 +69,8 @@ There are also commands that help manipulate with XMIR and EO sources
 * `phi` generates `.phi` files from `.xmir` files
 * `unphi` generates `.xmir` files from `.phi` files
 * `print` generates `.eo` files from `.phi` files
+* `generate_comments` generates `.json` files
+with LLM-generated documentation for `.eo` structures
 * ~~`translate` converts Java/C++/Python/etc. program to EO program~~
 * ~~`demu` removes `cage` and `memory` objects~~
 * ~~`dejump` removes `goto` objects~~
