@@ -39,11 +39,6 @@
   <build>
     <finalName>eoc</finalName>
     <sourceDirectory>${eo.generatedDir}</sourceDirectory>
-    <resources>
-      <resource>
-        <directory>${eo.generatedDir}</directory>
-      </resource>
-    </resources>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <testOutputDirectory>${eo.targetDir}/classes</testOutputDirectory>
@@ -148,25 +143,6 @@
       <build>
         <finalName>inspect</finalName>
         <plugins>
-          <plugin>
-            <groupId>com.qulice</groupId>
-            <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.24.0</version>
-            <configuration>
-              <license>file:${basedir}/LICENSE.txt</license>
-              <excludes>
-                <exclude>dependencies:org.junit.jupiter:junit-jupiter-api</exclude>
-                <exclude>dependencies:org.junit.jupiter:junit-jupiter-engine</exclude>
-              </excludes>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
