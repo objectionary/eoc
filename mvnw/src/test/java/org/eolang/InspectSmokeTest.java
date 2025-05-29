@@ -7,6 +7,9 @@ package org.eolang;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Smoke test to ensure that {@link Inspect} server starts without throwing exceptions.
  * <p>
@@ -37,9 +40,17 @@ final class InspectSmokeTest {
             }
         );
         server.setDaemon(false);
+        
         server.start();
         Thread.sleep(2000L);
+        
+        assertTrue(server.isAlive(), "Server thread should be running after start");
+        assertFalse(server.isInterrupted(), "Server thread should not be interrupted yet");
+        
         server.interrupt();
+        assertTrue(server.isInterrupted(), "Server thread should be interrupted");
+        
         server.join(1000L);
+        assertFalse(server.isAlive(), "Server thread should be terminated after interrupt");
     }
 }

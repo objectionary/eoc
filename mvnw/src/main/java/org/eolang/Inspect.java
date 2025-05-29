@@ -50,6 +50,6 @@ public final class Inspect {
                     )
                 ),
             8080
-        ).start(Exit.NEVER);
+        ).start(() -> Thread.currentThread().isInterrupted());
     }
 }
