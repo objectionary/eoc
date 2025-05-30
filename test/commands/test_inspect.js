@@ -33,7 +33,7 @@ describe('inspect command (mocked)', () => {
     spawn.onCall(1).returns(java);
     let lastBody = null;
     const inspect = proxyquire('../../src/commands/inspect', {
-      'child_process': { spawn: spawn },
+      'child_process': { spawn },
       'node-fetch': async (url, opts) => {
         lastBody = opts.body;
         return { ok: true, text: async () => opts.body };
