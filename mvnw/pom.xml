@@ -35,6 +35,12 @@
       <version>5.12.2</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>3.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
