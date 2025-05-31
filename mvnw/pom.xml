@@ -35,6 +35,12 @@
       <version>5.13.0</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>3.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
@@ -130,4 +136,54 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>inspect</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.takes</groupId>
+          <artifactId>takes</artifactId>
+          <version>1.24.6</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <finalName>inspect</finalName>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>start-server</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>org.eolang.Inspect</mainClass>
+              <cleanupDaemonThreads>false</cleanupDaemonThreads>
+              <arguments>
+                <argument>--port=${port}</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.4.2</version>
+            <configuration>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <mainClass>org.eolang.Inspect</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
