@@ -103,6 +103,13 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
         <configuration>
+          <excludes>
+            <exclude>org/eolang/Inspect.class</exclude>
+            <exclude>org/eolang/Inspect$*.class</exclude>
+            <exclude>**/InspectTest.class</exclude>
+            <exclude>**/InspectTest$*.class</exclude>
+            <exclude>**/package-info.class</exclude>
+          </excludes>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
@@ -139,6 +146,9 @@
   <profiles>
     <profile>
       <id>inspect</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>org.takes</groupId>
@@ -147,40 +157,34 @@
         </dependency>
       </dependencies>
       <build>
-        <finalName>inspect</finalName>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>3.1.0</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
             <executions>
               <execution>
-                <id>start-server</id>
-                <phase>pre-integration-test</phase>
+                <id>make-inspect-jar</id>
+                <phase>package</phase>
                 <goals>
-                  <goal>java</goal>
+                  <goal>single</goal>
                 </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/assembly/inspect.xml</descriptor>
+                  </descriptors>
+                  <archive>
+                    <manifest>
+                      <mainClass>org.eolang.Inspect</mainClass>
+                    </manifest>
+                  </archive>
+                  <finalName>inspect</finalName>
+                  <attach>false</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
               </execution>
             </executions>
-            <configuration>
-              <mainClass>org.eolang.Inspect</mainClass>
-              <cleanupDaemonThreads>false</cleanupDaemonThreads>
-              <arguments>
-                <argument>--port=${port}</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.4.2</version>
-            <configuration>
-              <archive>
-                <manifest>
-                  <addClasspath>true</addClasspath>
-                  <mainClass>org.eolang.Inspect</mainClass>
-                </manifest>
-              </archive>
-            </configuration>
           </plugin>
         </plugins>
       </build>

@@ -21,16 +21,8 @@ describe('inspect command (mocked)', () => {
         }
       }
     };
-    const mvn = {
-      on: (event, cb) => {
-        if (event === 'close') {
-          setTimeout(() => cb(0), 100);
-        }
-      }
-    };
     const spawn = sinon.stub();
-    spawn.onCall(0).returns(mvn);
-    spawn.onCall(1).returns(java);
+    spawn.onCall(0).returns(java);
     let lastBody = null;
     const inspect = proxyquire('../../src/commands/inspect', {
       'child_process': { spawn },
@@ -47,7 +39,6 @@ describe('inspect command (mocked)', () => {
     input.end();
     await inspectPromise;
     assert.strictEqual(lastBody, 'hello', 'Expected echo response "hello"');
-    assert(spawn.calledTwice, 'Expected 2 spawn-call: mvn and java');
     assert(java.kill.called, 'Expected terminating server with kill()');
   });
 });
