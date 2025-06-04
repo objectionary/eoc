@@ -32,6 +32,7 @@ const {program} = require('commander'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
     generate_comments: require('./commands/generate_comments'),
+    inspect: require('./commands/inspect'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble'),
     latex: require('./commands/latex')
@@ -445,6 +446,12 @@ program.command('fmt')
           printOutput: program.opts().sources,
           ...program.opts()
         }));
+  });
+
+program.command('inspect')
+  .description('Start EO inspect server and send input')
+  .action((str, opts) => {
+    coms().inspect(program.opts());
   });
 
 try {

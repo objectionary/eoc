@@ -35,6 +35,12 @@
       <version>5.13.0</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>3.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
@@ -97,6 +103,13 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
         <configuration>
+          <excludes>
+            <exclude>org/eolang/Inspect.class</exclude>
+            <exclude>org/eolang/Inspect$*.class</exclude>
+            <exclude>**/InspectTest.class</exclude>
+            <exclude>**/InspectTest$*.class</exclude>
+            <exclude>**/package-info.class</exclude>
+          </excludes>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
@@ -130,4 +143,51 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>inspect</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.takes</groupId>
+          <artifactId>takes</artifactId>
+          <version>1.24.6</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
+            <executions>
+              <execution>
+                <id>make-inspect-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/assembly/inspect.xml</descriptor>
+                  </descriptors>
+                  <archive>
+                    <manifest>
+                      <mainClass>org.eolang.Inspect</mainClass>
+                    </manifest>
+                  </archive>
+                  <finalName>inspect</finalName>
+                  <attach>false</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
