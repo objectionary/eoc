@@ -38,10 +38,7 @@ final class InspectTest {
                 }
             }
         );
-        server.setDaemon(false);
-        
         server.start();
-        
         final long start = System.currentTimeMillis() + 10_000L;
         while (System.currentTimeMillis() < start && !server.isAlive()) {
             Thread.sleep(100);
@@ -51,7 +48,6 @@ final class InspectTest {
             server.isAlive(),
             is(true)
         );
-        
         server.interrupt();
         final long stop = System.currentTimeMillis() + 5_000L;
         while (System.currentTimeMillis() < stop && server.isAlive()) {
