@@ -4,6 +4,7 @@
  */
 
 const { configs } = require('@eslint/js');
+const promise = require('eslint-plugin-promise');
 
 module.exports = [
   {
@@ -15,6 +16,9 @@ module.exports = [
     languageOptions: {
       ecmaVersion: 2019,
       sourceType: 'module'
+    },
+    plugins: {
+      promise,
     },
     rules: {
       ...configs.all.rules,
@@ -55,7 +59,17 @@ module.exports = [
       'require-await': 'off',
       'require-unicode-regexp': 'off',
       'sort-keys': 'off',
-      'sort-vars': 'off'
+      'sort-vars': 'off',
+      "promise/prefer-await-to-then": "off"
     }
+  },
+  {
+    files: [
+      'src/commands/js/transpile.js',
+      'src/commands/js/link.js',
+    ],
+    rules: {
+      'promise/prefer-await-to-then': 'warn',
+    },
   }
 ];

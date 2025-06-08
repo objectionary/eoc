@@ -13,10 +13,9 @@ const {program} = require('commander');
  * @param {Object} opts - All options
  * @return {Promise} of link task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const tests = program.args[0] === 'test' || Boolean(opts.tests);
-  return eo2jsw('link', {...opts, alone: true, project: 'project', tests}).then((r) => {
-    console.info(`NPM project generated in ${rel(path.resolve(opts.target, 'project'))}`);
-    return r;
-  });
+  const r = await eo2jsw('link', { ...opts, alone: true, project: 'project', tests });
+  console.info(`NPM project generated in ${rel(path.resolve(opts.target, 'project'))}`);
+  return r;
 };
