@@ -80,7 +80,7 @@ the [@objectionary](https://github.com/objectionary) GitHub organization.
 
 ## How to Contribute
 
-First, run `npm install`. Then, run `grunt`. All tests should pass.
+First, run `npm install`. Then, run `npx grunt`. All tests should pass.
 
 If you want to run a single test:
 
