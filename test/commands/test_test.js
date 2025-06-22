@@ -23,16 +23,16 @@ describe('test', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
-      path.resolve(home, 'src/simple-test.eo'),
+      path.resolve(home, 'src/simple.eo'),
       [
-        '+tests',
         '+any',
         '',
-        '# sample',
-        '[] > simple-test',
-        '  gt. > works',
-        '    10',
-        '    5',
+        '# Just a simple example of a unit test.',
+        '[] > simple',
+        '  [] +> works-correctly',
+        '    gt. > @',
+        '      10',
+        '      5',
       ].join('\n')
     );
     return runSync([
@@ -55,8 +55,10 @@ describe('test', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOsimple_testTest.java',
-        'target/classes/EOsimple_testTest.class',
+        'target/generated-sources/EOsimple.java',
+        'target/generated-test-sources/EOsimpleTest.java',
+        'target/classes/EOsimple.class',
+        'target/test-classes/EOsimpleTest.class'
       ]
     );
     done();

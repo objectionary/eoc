@@ -18,7 +18,7 @@ module.exports = function(opts) {
    * @todo #368:30min Wrap logs in 'elapsed'
    *  It is necessary to use 'elapsed' in all logging cases that require output of elapsed time
    */
-  return mvnw(['compiler:compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
+  return mvnw(['test-compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
     console.info('Java .class files compiled into %s', rel(target));
     return r;
   });
