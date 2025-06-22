@@ -16,7 +16,7 @@ const {elapsed} = require('../elapsed');
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
   return elapsed((tracked) => mvnw(['eo:assemble'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    tracked.print('EO program assembled in %s', rel(target));
+    tracked.print(`EO program assembled in ${rel(target)}`);
     return r;
   }));
 };

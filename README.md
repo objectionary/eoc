@@ -18,7 +18,7 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package:
 
 ```bash
-npm install -g eolang@0.29.0
+npm install -g eolang@0.30.1
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
@@ -69,8 +69,11 @@ There are also commands that help manipulate with XMIR and EO sources
 * `phi` generates `.phi` files from `.xmir` files
 * `unphi` generates `.xmir` files from `.phi` files
 * `print` generates `.eo` files from `.phi` files
-* `generate_comments` generates `.json` files
-with LLM-generated documentation for `.eo` structures
+* `generate_comments` generates `.json` files with LLM-generated
+  documentation for `.eo` structures
+* `docs` generates HTML documentation from `.xmir` files
+* `latex` generates `.tex` files from `.eo` sources
+* `fmt` formats `.eo` files in the source directory
 * ~~`translate` converts Java/C++/Python/etc. program to EO program~~
 * ~~`demu` removes `cage` and `memory` objects~~
 * ~~`dejump` removes `goto` objects~~

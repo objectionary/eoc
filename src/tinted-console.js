@@ -18,7 +18,7 @@ const util = require('node:util'),
     'trace': 'gray',
     'debug': 'gray',
     'info': 'white',
-    'warn': 'orange',
+    'warn': 'yellow',
     'error': 'red',
   };
 
