@@ -136,25 +136,33 @@ program.command('register')
 
 program.command('parse')
   .description('Parse EO files into XMIR')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().parse(program.opts()));
-    } else {
-      coms().parse(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+      }
+      await coms().parse(program.opts());
+    }
+    catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
 program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()));
-    } else {
-      coms().assemble(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+      }
+      await coms().assemble(program.opts());
+    }
+    catch (e){
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -166,14 +174,18 @@ program.command('sodg')
   .option('--dot', 'Generate .sodg.dot files')
   .option('--include <names>', 'Generate SODG for these object names (using mask)', '**')
   .option('--exclude <names>', 'Don\'t generate SODG for these objects')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().sodg({...program.opts(), ...str}));
-    } else {
-      coms().sodg({...program.opts(), ...str});
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+      }
+      await coms().sodg({...program.opts(), ...str});
+    }
+    catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -189,14 +201,17 @@ program.command('phi')
     'Directory where translated PHI files are stored (relative to --target)',
     'phi'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().phi({...program.opts(), ...str}));
-    } else {
-      coms().phi({...program.opts(), ...str});
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+      }
+      await coms().phi({...program.opts(), ...str});
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -237,76 +252,91 @@ program.command('print')
 
 program.command('lint')
   .description('Lint XMIR files and fail if any issues inside')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()));
-    } else {
-      coms().lint(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+      }
+      await coms().lint(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
 program.command('resolve')
   .description('Resolve all the dependencies required for compilation')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()));
-    } else {
-      coms().resolve(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+      }
+      await coms().resolve(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
 program.command('transpile')
   .description('Convert EO files into target language')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()))
-        .then((r) => coms().transpile(program.opts()));
-    } else {
-      coms().transpile(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+        await coms().resolve(program.opts());
+      }
+      await coms().transpile(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
 program.command('compile')
   .description('Compile target language sources into binaries')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()))
-        .then((r) => coms().transpile(program.opts()))
-        .then((r) => coms().compile(program.opts()));
-    } else {
-      coms().compile(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+        await coms().resolve(program.opts());
+        await coms().transpile(program.opts());
+      }
+      await coms().compile(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
 program.command('link')
   .description('Link together all binaries into a single executable binary')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()))
-        .then((r) => coms().transpile(program.opts()))
-        .then((r) => coms().compile(program.opts()))
-        .then((r) => coms().link(program.opts()));
-    } else {
-      coms().link(program.opts());
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+        await coms().resolve(program.opts());
+        await coms().transpile(program.opts());
+        await coms().compile(program.opts());
+      }
+      await coms().link(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -314,23 +344,24 @@ program.command('dataize')
   .description('Run the single executable binary and dataize an object')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()))
-        .then((r) => coms().transpile(program.opts()))
-        .then((r) => coms().compile(program.opts()))
-        .then((r) => coms().link(program.opts()))
-        .then((r) => coms().dataize(
-          program.args[1], program.args.slice(2), {...program.opts(), ...str}
-        ));
-    } else {
-      coms().dataize(
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+        await coms().resolve(program.opts());
+        await coms().transpile(program.opts());
+        await coms().compile(program.opts());
+        await coms().link(program.opts());
+      }
+      await coms().dataize(
         program.args[1], program.args.slice(2), {...program.opts(), ...str}
       );
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -338,19 +369,22 @@ program.command('test')
   .description('Run all visible unit tests')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().lint(program.opts()))
-        .then((r) => coms().resolve(program.opts()))
-        .then((r) => coms().transpile(program.opts()))
-        .then((r) => coms().compile(program.opts()))
-        .then((r) => coms().link(program.opts()))
-        .then((r) => coms().test({...program.opts(), ...str}));
-    } else {
-      coms().test({...program.opts(), ...str});
+    try {
+      if (program.opts().alone === undefined) {
+        await coms().register(program.opts());
+        await coms().assemble(program.opts());
+        await coms().lint(program.opts());
+        await coms().resolve(program.opts());
+        await coms().transpile(program.opts());
+        await coms().compile(program.opts());
+        await coms().link(program.opts());
+      }
+      await coms().test({...program.opts(), ...str});
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
     }
   });
 
@@ -426,25 +460,34 @@ program.command('jeo:assemble')
 
 program.command('latex')
   .description('Generate LaTeX files from EO sources')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    coms().register(program.opts())
-      .then((r) => coms().parse(program.opts()))
-      .then((r) => coms().latex(program.opts()));
+    try {
+      await coms().register(program.opts());
+      await coms().parse(program.opts());
+      await coms().latex(program.opts());
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
+    }
   });
 
 program.command('fmt')
   .description('Format EO files in the source directory')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     clear(str);
-    coms().register(program.opts())
-      .then((r) => coms().parse(program.opts()))
-      .then((r) => coms()
-        .print({
-          printInput: '1-parse',
-          printOutput: program.opts().sources,
-          ...program.opts()
-        }));
+    try {
+      await coms().register(program.opts());
+      await coms().parse(program.opts());
+      await coms().print({
+        printInput: '1-parse',
+        printOutput: program.opts().sources,
+        ...program.opts()
+      });
+    } catch (e) {
+      console.error(e.message);
+      process.exit(1);
+    }
   });
 
 try {
