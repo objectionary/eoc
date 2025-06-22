@@ -44,7 +44,7 @@
   </dependencies>
   <build>
     <finalName>eoc</finalName>
-    <sourceDirectory>${eo.generatedDir}</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <testOutputDirectory>${eo.targetDir}/test-classes</testOutputDirectory>
@@ -154,6 +154,7 @@
             </goals>
             <configuration>
               <sources>
+                <source>${eo.generatedDir}</source>
                 <source>${project.build.directory}/generated-test-sources</source>
               </sources>
             </configuration>
