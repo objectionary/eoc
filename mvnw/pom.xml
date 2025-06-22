@@ -147,6 +147,18 @@
         <version>3.6.1</version>
         <executions>
           <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${eo.generatedDir}</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
             <id>add-test-sources</id>
             <phase>generate-test-sources</phase>
             <goals>
@@ -154,7 +166,6 @@
             </goals>
             <configuration>
               <sources>
-                <source>${eo.generatedDir}</source>
                 <source>${project.build.directory}/generated-test-sources</source>
               </sources>
             </configuration>
