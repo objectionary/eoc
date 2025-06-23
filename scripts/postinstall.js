@@ -17,15 +17,9 @@ const { spawn } = require('child_process');
 
 // Check if we're in a development environment by checking if devDependencies are installed
 const gruntMochaCli = path.join(__dirname, '..', 'node_modules', 'grunt-mocha-cli');
-let patchPackageResolved;
+const patchPackageBin = path.join(__dirname, '..', 'node_modules', '.bin', 'patch-package');
 
-try {
-  patchPackageResolved = require.resolve('patch-package');
-} catch (error) {
-  patchPackageResolved = null;
-}
-
-if (fs.existsSync(gruntMochaCli) && patchPackageResolved) {
+if (fs.existsSync(gruntMochaCli) && fs.existsSync(patchPackageBin)) {
   console.log('Development environment detected, running patch-package...');
   const child = spawn(patchPackageBin, [], { stdio: 'inherit' });
   child.on('exit', (code) => {
