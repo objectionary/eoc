@@ -39,12 +39,11 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <version>3.0</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
-    <sourceDirectory>src/main/java</sourceDirectory>
+    <sourceDirectory>../inspect/src/main/java</sourceDirectory>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <testOutputDirectory>${eo.targetDir}/test-classes</testOutputDirectory>
@@ -106,8 +105,8 @@
           <excludes>
             <exclude>org/eolang/Inspect.class</exclude>
             <exclude>org/eolang/Inspect$*.class</exclude>
-            <exclude>**/InspectTest.class</exclude>
-            <exclude>**/InspectTest$*.class</exclude>
+            <exclude>org/eolang/InspectTest.class</exclude>
+            <exclude>org/eolang/InspectTest$*.class</exclude>
             <exclude>org/eolang/package-info.class</exclude>
           </excludes>
           <archive>
@@ -202,7 +201,7 @@
                 </goals>
                 <configuration>
                   <descriptors>
-                    <descriptor>src/assembly/inspect.xml</descriptor>
+                    <descriptor>../inspect/src/assembly/inspect.xml</descriptor>
                   </descriptors>
                   <archive>
                     <manifest>
