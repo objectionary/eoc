@@ -27,9 +27,13 @@ try {
 
 if (fs.existsSync(gruntMochaCli) && patchPackageResolved) {
   console.log('Development environment detected, running patch-package...');
-  const child = spawn('patch-package', [], { stdio: 'inherit', shell: true });
+  const child = spawn(patchPackageBin, [], { stdio: 'inherit' });
   child.on('exit', (code) => {
     process.exit(code);
+  });
+  child.on('error', (err) => {
+    console.error('Failed to execute patch-package:', err);
+    process.exit(1);
   });
 } else {
   console.log('Production environment detected, skipping patch-package.');
