@@ -17,11 +17,40 @@ const { spawn } = require('child_process');
 
 // Check if we're in a development environment by checking if devDependencies are installed
 const gruntMochaCli = path.join(__dirname, '..', 'node_modules', 'grunt-mocha-cli');
-const patchPackageBin = path.join(__dirname, '..', 'node_modules', '.bin', 'patch-package');
 
-if (fs.existsSync(gruntMochaCli) && fs.existsSync(patchPackageBin)) {
+// Function to check if patch-package is available
+function findPatchPackage() {
+  const binDir = path.join(__dirname, '..', 'node_modules', '.bin');
+  
+  // On Windows, check for .cmd file first
+  if (process.platform === 'win32') {
+    const cmdFile = path.join(binDir, 'patch-package.cmd');
+    if (fs.existsSync(cmdFile)) {
+      return cmdFile;
+    }
+  }
+  
+  // On Unix systems or as fallback
+  const binFile = path.join(binDir, 'patch-package');
+  if (fs.existsSync(binFile)) {
+    return binFile;
+  }
+  
+  return null;
+}
+
+const patchPackageBin = findPatchPackage();
+
+if (fs.existsSync(gruntMochaCli) && patchPackageBin) {
   console.log('Development environment detected, running patch-package...');
-  const child = spawn(patchPackageBin, [], { stdio: 'inherit' });
+  
+  // Use shell on Windows to properly handle .cmd files
+  const spawnOptions = {
+    stdio: 'inherit',
+    shell: process.platform === 'win32'
+  };
+  
+  const child = spawn(patchPackageBin, [], spawnOptions);
   child.on('exit', (code) => {
     process.exit(code);
   });
