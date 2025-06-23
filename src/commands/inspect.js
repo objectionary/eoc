@@ -12,16 +12,13 @@ module.exports = function(opts) {
   return new Promise((resolve, reject) => {
     const mvnDir = path.join(process.cwd(), 'mvnw');
     const jar = path.join(mvnDir, 'target', 'inspect.jar');
-
     const server = spawn('java', [
       '-cp',
       jar,
       'org.eolang.Inspect'
     ], { cwd: mvnDir, stdio: ['pipe', 'pipe', 'pipe'] });
-
     server.stdout.setEncoding('utf8').on('data', d => console.log(`[SERVER] ${d}`));
     server.stderr.setEncoding('utf8').on('data', d => console.error(`[SERVER ERROR] ${d}`));
-
     setTimeout(() => {
       console.info('EO inspect server started.');
       const rl = readline.createInterface({
@@ -29,9 +26,7 @@ module.exports = function(opts) {
         output: (opts && opts.stdout) || process.stdout,
         terminal: true
       });
-
       const ask = (q) => new Promise(res => rl.question(q, res));
-
       const processInput = async () => {
         const input = await ask('Enter text (or type "exit" to quit): ');
         if (input.trim().toLowerCase() === 'exit') {
@@ -39,7 +34,6 @@ module.exports = function(opts) {
           server.kill();
           return resolve();
         }
-
         console.log('Sending request with body:', input);
         try {
           const response = await fetch('http://localhost:8080/echo', {
@@ -53,10 +47,8 @@ module.exports = function(opts) {
         }
         processInput();
       };
-
       processInput();
     }, 2000);
-
     server.on('close', code => console.info(`Server stopped with code ${code}`));
   });
 };
