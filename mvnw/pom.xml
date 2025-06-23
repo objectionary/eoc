@@ -108,7 +108,7 @@
             <exclude>org/eolang/Inspect$*.class</exclude>
             <exclude>**/InspectTest.class</exclude>
             <exclude>**/InspectTest$*.class</exclude>
-            <exclude>**/package-info.class</exclude>
+            <exclude>org/eolang/package-info.class</exclude>
           </excludes>
           <archive>
             <manifest>
