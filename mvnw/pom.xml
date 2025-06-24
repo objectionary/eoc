@@ -35,10 +35,15 @@
       <version>5.13.1</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>3.0</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
-    <sourceDirectory>${eo.generatedDir}</sourceDirectory>
+    <sourceDirectory>../inspect/src/main/java</sourceDirectory>
     <directory>${eo.targetDir}</directory>
     <outputDirectory>${eo.targetDir}/classes</outputDirectory>
     <testOutputDirectory>${eo.targetDir}/test-classes</testOutputDirectory>
@@ -97,6 +102,11 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
         <configuration>
+          <excludes>
+            <exclude>org/eolang/Inspect.class</exclude>
+            <exclude>org/eolang/Inspect$*.class</exclude>
+            <exclude>org/eolang/package-info.class</exclude>
+          </excludes>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
@@ -134,6 +144,18 @@
         <version>3.6.1</version>
         <executions>
           <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${eo.generatedDir}</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
             <id>add-test-sources</id>
             <phase>generate-test-sources</phase>
             <goals>
@@ -149,4 +171,51 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>inspect</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.takes</groupId>
+          <artifactId>takes</artifactId>
+          <version>1.24.6</version>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
+            <executions>
+              <execution>
+                <id>make-inspect-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptors>
+                    <descriptor>../inspect/src/assembly/inspect.xml</descriptor>
+                  </descriptors>
+                  <archive>
+                    <manifest>
+                      <mainClass>org.eolang.Inspect</mainClass>
+                    </manifest>
+                  </archive>
+                  <finalName>inspect</finalName>
+                  <attach>false</attach>
+                  <appendAssemblyId>false</appendAssemblyId>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
