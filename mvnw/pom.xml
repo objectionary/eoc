@@ -105,8 +105,6 @@
           <excludes>
             <exclude>org/eolang/Inspect.class</exclude>
             <exclude>org/eolang/Inspect$*.class</exclude>
-            <exclude>org/eolang/InspectTest.class</exclude>
-            <exclude>org/eolang/InspectTest$*.class</exclude>
             <exclude>org/eolang/package-info.class</exclude>
           </excludes>
           <archive>
