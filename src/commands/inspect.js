@@ -35,6 +35,8 @@ module.exports = function(opts) {
           return resolve();
         }
         console.log('Sending request with body:', input);
+        // @todo #500 Make the port configurable instead of hardcoding 8080.
+        // If another app is using this port, the server will fail.
         try {
           const response = await fetch('http://localhost:8080/echo', {
             method: 'POST',
