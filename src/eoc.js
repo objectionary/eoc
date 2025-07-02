@@ -24,11 +24,9 @@ const {program} = require('commander'),
     clean: require('./commands/clean'),
     foreign: require('./commands/foreign'),
     parse: require('./commands/parse'),
-    phi: require('./commands/phi'),
     print: require('./commands/print'),
     register: require('./commands/register'),
     sodg: require('./commands/sodg'),
-    unphi: require('./commands/unphi'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
     generate_comments: require('./commands/generate_comments'),
@@ -175,47 +173,6 @@ program.command('sodg')
     } else {
       coms().sodg({...program.opts(), ...str});
     }
-  });
-
-program.command('phi')
-  .description('Generate PHI files from XMIR')
-  .option(
-    '--phi-input <dir>',
-    'Directory where XMIR files for translation to PHI are taken (relative to --target)',
-    '2-optimize'
-  )
-  .option(
-    '--phi-output <dir>',
-    'Directory where translated PHI files are stored (relative to --target)',
-    'phi'
-  )
-  .action((str, opts) => {
-    clear(str);
-    if (program.opts().alone === undefined) {
-      coms().register(program.opts())
-        .then((r) => coms().assemble(program.opts()))
-        .then((r) => coms().phi({...program.opts(), ...str}));
-    } else {
-      coms().phi({...program.opts(), ...str});
-    }
-  });
-
-program.command('unphi')
-  .option('--tests', 'Add "+tests" meta to result XMIR files')
-  .option(
-    '--unphi-input <dir>',
-    'Directory where PHI files for translation to XMIR are taken (relative to --target)',
-    'phi'
-  )
-  .option(
-    '--unphi-output <dir>',
-    'Directory where translated XMIR files are stored (relative to --target)',
-    'unphi'
-  )
-  .description('Generate XMIR files from PHI files')
-  .action((str, opts) => {
-    clear(str);
-    coms().unphi({...program.opts(), ...str});
   });
 
 program.command('print')
@@ -409,11 +366,6 @@ program.command('jeo:assemble')
     '--xmirs <dir>',
     'Directory with .xmir files (relative to --target)',
     'xmir'
-  )
-  .option(
-    '--unrolled <dir>',
-    'Directory with unrolled .xmir files (relative to --target)',
-    'unrolled'
   )
   .option(
     '--classes <dir>',

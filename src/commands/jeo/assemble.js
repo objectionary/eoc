@@ -14,14 +14,12 @@ const path = require('path');
  */
 module.exports = function(opts) {
   return mvnw(
-    ['jeo:unroll-phi', 'jeo:assemble']
+    ['jeo:assemble']
       .concat(flags(opts))
       .concat(
         [
           `-Djeo.version=${opts.jeoVersion}`,
-          `-Djeo.unroll-phi.sourcesDir=${path.resolve(opts.target, opts.xmirs)}`,
-          `-Djeo.unroll-phi.outputDir=${path.resolve(opts.target, opts.unrolled)}`,
-          `-Djeo.assemble.sourcesDir=${path.resolve(opts.target, opts.unrolled)}`,
+          `-Djeo.assemble.sourcesDir=${path.resolve(opts.target, opts.xmirs)}`,
           `-Djeo.assemble.outputDir=${path.resolve(opts.target, opts.classes)}`,
         ]
       ),

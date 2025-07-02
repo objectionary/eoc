@@ -32,7 +32,6 @@ describe('jeo:assemble', () => {
       '--verbose',
       `--jeo-version=${version}`,
       '--xmirs', home,
-      '--unrolled', path.resolve(home, 'unrolled'),
       '--classes', home,
     ]);
     assertFilesExist(
