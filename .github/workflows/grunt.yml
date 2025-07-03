@@ -31,5 +31,4 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
       - run: npm install
-      - run: npm install --force -g grunt-cli
-      - run: grunt
+      - run: npx grunt
