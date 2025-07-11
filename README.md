@@ -18,7 +18,7 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package:
 
 ```bash
-npm install -g eolang@0.30.1
+npm install -g eolang@0.31.0
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
@@ -66,9 +66,7 @@ There are also commands that help manipulate with XMIR and EO sources
 * `audit` inspects all required packages and reports their status
 * `foreign` inspects all objects found in the program after the `assemble` step
 * `sodg` generates `.sodg` from `.xmir`, further rederable as XML or [Dot][dot]
-* `phi` generates `.phi` files from `.xmir` files
-* `unphi` generates `.xmir` files from `.phi` files
-* `print` generates `.eo` files from `.phi` files
+* `print` generates `.eo` files from `.xmir` files
 * `generate_comments` generates `.json` files with LLM-generated
   documentation for `.eo` structures
 * `docs` generates HTML documentation from `.xmir` files
