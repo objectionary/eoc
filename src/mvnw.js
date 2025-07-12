@@ -143,34 +143,34 @@ function print() {
    * @return {Integer} Total number files.
    */
   function count(dir, curr) {
-    if (fs.existsSync(dir)) {
+    if (!fs.existsSync(dir)) {
+      return curr;
+    }
+    let files;
+    try {
+      files = fs.readdirSync(dir);
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        return curr;
+      }
+      throw err;
+    }
+  
+    for (const f of files) {
+      const next = path.join(dir, f);
       try {
-        for (const f of fs.readdirSync(dir)) {
-          const next = path.join(dir, f);
-          try {
-            if (fs.statSync(next).isDirectory()) {
-              curr = count(next, curr);
-            } else {
-              curr++;
-            }
-          } catch (err) {
-            // Handle race condition: file might be deleted during counting
-            if (err.code === 'ENOENT') {
-              // Skip this file/directory if it no longer exists
-              continue;
-            }
-            // Re-throw other errors
-            throw err;
-          }
+        const stats = fs.statSync(next);
+        if (stats.isDirectory()) {
+          curr = count(next, curr);
+        } else {
+          curr++;
         }
       } catch (err) {
-        // Handle race condition: directory might be deleted during counting
         if (err.code === 'ENOENT') {
-          // Return current count if directory no longer exists
-          return curr;
+          // ignore
+        } else {
+          throw err;
         }
-        // Re-throw other errors
-        throw err;
       }
     }
     return curr;
