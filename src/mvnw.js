@@ -155,7 +155,6 @@ function print() {
       }
       throw err;
     }
-  
     for (const f of files) {
       const next = path.join(dir, f);
       try {
@@ -166,9 +165,7 @@ function print() {
           curr++;
         }
       } catch (err) {
-        if (err.code === 'ENOENT') {
-          // ignore
-        } else {
+        if (err.code !== 'ENOENT') {
           throw err;
         }
       }
