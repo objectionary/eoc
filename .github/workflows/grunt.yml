@@ -6,7 +6,7 @@ name: grunt
 'on':
   push:
     branches:
-      - master
+      - ci-issue
   pull_request:
     branches:
       - master
