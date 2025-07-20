@@ -32,6 +32,7 @@ const {program} = require('commander'),
     generate_comments: require('./commands/generate_comments'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble'),
+    normalize: require('./commands/normalize'),
     latex: require('./commands/latex')
   },
   commands = {
@@ -58,7 +59,7 @@ const {program} = require('commander'),
       }
     }
   };
-
+  
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
@@ -111,6 +112,20 @@ program.command('audit')
   .action((str, opts) => {
     coms().audit(program.opts());
   });
+
+program.command('normalize')
+  .description('Normalize EO programs by rewriting their .phi representation')
+  .action((str, opts) => {
+    clear(str);
+    if (program.opts().alone === undefined) {
+      coms().register(program.opts())
+        .then(() => coms().parse(program.opts()))
+        .then(() => coms().normalize({...program.opts(), ...str}));
+    } else {
+      coms().normalize({...program.opts(), ...str});
+    }
+  });
+
 
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')
