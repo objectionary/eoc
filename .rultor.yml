@@ -11,8 +11,6 @@ assets:
 install: |
   pip install git+https://chromium.googlesource.com/external/gyp
   npm install --no-color
-  sudo npm install --no-color --global grunt-cli
-  npm uninstall --no-color grunt-cli
   npm install --no-color mocha
   pdd -f /dev/null -v
 release:
@@ -22,10 +20,10 @@ release:
     sed -i "s/0\.0\.0/${tag}/" package.json
     sed -i "s/0\.0\.0/${tag}/" src/version.js
     sed -i "s/0000-00-00/$(date +%Y-%m-%d)/" src/version.js
-    grunt --no-color
+    npx grunt --no-color
     git commit -am "set version to ${tag}"
     chmod 600 ../npmrc
     npm publish --no-color --userconfig=../npmrc
 merge:
   script: |-
-    grunt --no-color
+    npx grunt --no-color

@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 name: grunt
-'on':
+"on":
   push:
     branches:
       - master
@@ -28,8 +28,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: "zulu"
           java-version: ${{ matrix.java }}
       - run: npm install
-      - run: npm install --force -g grunt-cli
-      - run: grunt
+      - run: npx grunt
