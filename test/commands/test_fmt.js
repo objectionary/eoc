@@ -85,8 +85,8 @@ const testCases = [
       '+alias math Q.org.eolang.math',
       '',
       'math.plus > app',
-      '  5',
-      '  10',
+      '  5:0',
+      '  10:1',
       ''
     ].join('\n')
   },
@@ -101,7 +101,7 @@ const testCases = [
       '+alias stdout Q.org.eolang.io.stdout',
       '',
       'io.stdout > app',
-      '  "Hello, world!"',
+      '  "Hello, world!":0',
       ''
     ].join('\n')
   },
@@ -120,9 +120,9 @@ const testCases = [
       '+alias sprintf Q.org.eolang.txt.sprintf',
       '',
       'io.stdout > app',
-      '  txt.sprintf',
-      '    "Hello, %s"',
-      '    "Jeff"',
+      '  txt.sprintf:0',
+      '    "Hello, %s":0',
+      '    "Jeff":1',
       ''
     ].join('\n')
   }
