@@ -62,15 +62,21 @@ module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     target = tgt;
     phase = args[0];
+    const jvmLogArgs = [
+      '-Dorg.slf4j.simpleLogger.showDateTime=true',
+      '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss'
+    ];
     const home = path.resolve(__dirname, '../mvnw'),
       bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : ''),
-      params = args.filter((t) => t !== '').concat([
-        '--batch-mode',
-        '--color=never',
-        '--update-snapshots',
-        '--fail-fast',
-        '--strict-checksums',
-      ]),
+      params = jvmLogArgs.concat(
+        args.filter((t) => t !== '').concat([
+          '--batch-mode',
+          '--color=never',
+          '--update-snapshots',
+          '--fail-fast',
+          '--strict-checksums',
+        ])
+      ),
       cmd = `${bin  } ${  params.join(' ')}`;
     console.debug('+ %s', cmd);
     const result = spawn(
