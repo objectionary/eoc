@@ -15,14 +15,13 @@ and check for errors.
 
 First, you install [npm][npm-install] and [Java SE][java-se].
 
-Then, you install [eolang][npm] package:
-Option 1. using npm:
+Then, you install [eolang][npm] package, using [npm][npm-install]:
 
 ```bash
 npm install -g eolang@0.31.0
 ```
 
-Option 2. using Homebrew (on macOS):
+You can also use [Homebrew] (on macOS):
 
 ```bash
 brew tap objectionary/eoc
@@ -108,3 +107,4 @@ a pull request.
 [npm-install]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 [dot]: https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29
 [blog]: https://www.yegor256.com/2021/10/21/objectionary.html
+[Homebrew]: https://brew.sh/
