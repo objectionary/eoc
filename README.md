@@ -16,9 +16,17 @@ and check for errors.
 First, you install [npm][npm-install] and [Java SE][java-se].
 
 Then, you install [eolang][npm] package:
+Option 1. using npm:
 
 ```bash
 npm install -g eolang@0.31.0
+```
+
+Option 2. using Homebrew (on macOS):
+
+```bash
+brew tap objectionary/eolang
+brew install eolang
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
