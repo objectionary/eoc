@@ -9,13 +9,13 @@ index 59f7a07..4cc7182 100644
  const path = require('path')
  const grunt = require('grunt')
 +const os = require('os')
- 
+
  const BOOL_OPTIONS = [
    'allow-uncaught',
 @@ -55,6 +56,10 @@ module.exports = function(options) {
      spawnOptions.cmd = path.dirname(spawnOptions.cmd)
      spawnOptions.cmd += '/../.bin/mocha'
- 
+
 +    if (os.platform() === 'win32') {
 +      spawnOptions.opts.shell = true
 +    }
