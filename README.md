@@ -25,7 +25,7 @@ npm install -g eolang@0.31.0
 Option 2. using Homebrew (on macOS):
 
 ```bash
-brew tap objectionary/eolang
+brew tap objectionary/eoc
 brew install eolang
 ```
 
