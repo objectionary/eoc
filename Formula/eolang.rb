@@ -1,7 +1,7 @@
-/*
- * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
- * SPDX-License-Identifier: MIT
- */
+#
+# SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+#
 
 require "language/node"
 class Eolang < Formula
