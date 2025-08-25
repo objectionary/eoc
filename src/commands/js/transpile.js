@@ -14,6 +14,6 @@ const path = require('path');
  */
 module.exports = async function(opts) {
   const r = await eo2jsw('transpile', { ...opts, alone: true, project: 'project' });
-  console.info(`JS sources are generated in ${rel(path.resolve(opts.target, 'project'))}`);
+  console.info(`JS sources generated in ${rel(path.resolve(opts.target, 'project'))}`);
   return r;
 };

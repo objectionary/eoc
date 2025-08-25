@@ -26,7 +26,7 @@ module.exports = function(opts) {
     opts.target, opts.batch
   ).then((r) => {
     console.info(
-      'EO .xmir files from %s assembled to .class to %s',
+      'EO .xmir files from %s assembled to .class files in %s',
       rel(opts.xmirs), rel(opts.classes)
     );
     return r;

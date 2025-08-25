@@ -19,7 +19,7 @@ module.exports = function(opts) {
    *  It is necessary to use 'elapsed' in all logging cases that require output of elapsed time
    */
   return mvnw(['test-compile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java .class files compiled into %s', rel(target));
+    console.info('Java .class files compiled in %s', rel(target));
     return r;
   });
 };

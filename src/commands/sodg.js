@@ -14,9 +14,9 @@ const {mvnw, flags} = require('../mvnw');
  */
 module.exports = function(opts) {
   const argv = ['eo:sodg'].concat(flags(opts));
-  argv.push(`-Deo.sodgIncludes=${  opts.include}`);
+  argv.push(`-Deo.sodgIncludes=${opts.include}`);
   if (opts.exclude) {
-    argv.push(`-Deo.sodgExcludes=${  opts.exclude}`);
+    argv.push(`-Deo.sodgExcludes=${opts.exclude}`);
   }
   if (opts.xml) {
     argv.push('-Deo.generateSodgXmlFiles');

@@ -26,7 +26,7 @@ module.exports = function(opts) {
     opts.target, opts.batch
   ).then((r) => {
     console.info(
-      'Bytecode .class files from %s disassembled to .xmir to %s',
+      'Bytecode .class files from %s disassembled to .xmir files in %s',
       rel(opts.classes), rel(opts.xmirs)
     );
     return r;

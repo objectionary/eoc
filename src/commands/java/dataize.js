@@ -22,10 +22,10 @@ module.exports = function(obj, args, opts) {
     obj,
     ...args,
   ].filter((i) => i);
-  console.debug(`+ java ${  params.join(' ')}`);
+  console.debug(`+ java ${params.join(' ')}`);
   spawn('java', params, {stdio: 'inherit'}).on('close', (code) => {
     if (code !== 0) {
-      console.error(`JVM failed with exit code #${code}`);
+      console.error(`JVM failed with exit code ${code}`);
       process.exit(1);
     }
   });

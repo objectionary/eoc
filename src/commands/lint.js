@@ -26,7 +26,7 @@ module.exports = function(opts) {
       return r;
     }).catch((error) => {
       throw new Error(
-        'There are error and/or warnings; you may disable warnings via the --easy option'
+        'There are errors and/or warnings; you may disable warnings via the --easy option'
       );
     });
   }

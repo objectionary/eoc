@@ -46,7 +46,7 @@ module.exports = function(opts) {
     fs.writeFileSync(packages, '');
     const css = path.join(output, 'styles.css');
     fs.writeFileSync(css, '');
-    console.info('Documentation generation completed in %s directory', output);
+    console.info('Documentation generation completed in the %s directory', output);
   } catch (error) {
     console.error('Error generating documentation:', error);
     throw error;

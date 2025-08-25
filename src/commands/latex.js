@@ -16,7 +16,7 @@ const fs = require('fs');
 module.exports = function(opts) {
   const latex = path.resolve(opts.target, 'latex');
   return mvnw(['eo:latex'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('LaTeX files generated into %s', rel(latex));
+    console.info('LaTeX files generated in %s', rel(latex));
     return r;
   });
 };
