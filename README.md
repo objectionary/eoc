@@ -18,7 +18,7 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package, using [npm][npm-install]:
 
 ```bash
-npm install -g eolang@0.31.0
+npm install -g eolang@0.32.0
 ```
 
 You can also use [Homebrew] (on macOS):
