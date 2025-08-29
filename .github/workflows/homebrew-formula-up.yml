@@ -19,7 +19,7 @@ jobs:
       - name: Extract tag version
         id: extract_tag
         run: |
-          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
 
       - name: Run homebrew_formula_up script
         env:
