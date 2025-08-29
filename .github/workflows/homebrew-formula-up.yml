@@ -18,14 +18,15 @@ jobs:
       - run: sudo apt-get install --yes curl jq
       - name: Extract tag version
         id: extract_tag
-        run: echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: |
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Run homebrew_formula_up script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_VERSION: ${{ env.TAG_VERSION }}
         run: |
-          bash .github/create_versioned_formula.sh "$GITHUB_TOKEN" "$TAG_VERSION"
+          bash .github/homebrew_formula_up.sh "$GITHUB_TOKEN" "$TAG_VERSION"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
