@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: homebrew-formulas-update
+'on':
+  release:
+    types: [published]
+concurrency:
+  group: homebrew-formula-up-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  update-formula:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get install --yes curl jq
+      - name: Extract tag version
+        id: extract_tag
+        run: |
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
+
+      - name: Run homebrew_formula_up script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_VERSION: ${{ env.TAG_VERSION }}
+        run: |
+          bash .github/homebrew_formula_up.sh "$GITHUB_TOKEN" "$TAG_VERSION"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          sign-commits: true
+          branch: homebrew-formulas-update
+          commit-message: 'Update Homebrew versioned formula files'
+          delete-branch: true
+          title: 'Update Homebrew versioned formula files'
+          base: master

@@ -8,7 +8,7 @@ class Eolang < Formula
   desc "Command-line Tool-Kit"
   homepage "https://github.com/objectionary/eoc"
   url "https://github.com/objectionary/eoc/archive/refs/tags/0.32.0.tar.gz"
-  version "0.31.0"
+  version "0.32.0"
   sha256 "a24da178f48e1e64280aa467fd97986d9456a25ea023525bf36a9308ec1a4cea"
   license "MIT"
 
