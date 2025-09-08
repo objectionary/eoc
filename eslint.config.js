@@ -69,7 +69,7 @@ module.exports = [
       'src/commands/js/link.js',
     ],
     rules: {
-      'promise/prefer-await-to-then': 'warn',
+      'promise/prefer-await-to-then': 'error',
     },
   }
 ];
