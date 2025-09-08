@@ -12,10 +12,9 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of transpile task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
-  return mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Java sources generated in %s', rel(sources));
-    return r;
-  });
+  const r = await mvnw(['eo:transpile'].concat(flags(opts)), opts.target, opts.batch);
+  console.info('Java sources generated in %s', rel(sources));
+  return r;
 };

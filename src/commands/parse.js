@@ -12,10 +12,9 @@ const {mvnw, flags} = require('../mvnw');
  * @param {Hash} opts - All options
  * @return {Promise} of assemble task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const target = path.resolve(opts.target);
-  return mvnw(['eo:parse'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO sources parsed in %s', rel(target));
-    return r;
-  });
+  const r = await mvnw(['eo:parse'].concat(flags(opts)), opts.target, opts.batch);
+  console.info('EO sources parsed in %s', rel(target));
+  return r;
 };

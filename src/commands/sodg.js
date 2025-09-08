@@ -12,7 +12,7 @@ const {mvnw, flags} = require('../mvnw');
  * @param {Hash} opts - All options
  * @return {Promise} of sodg task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const argv = ['eo:sodg'].concat(flags(opts));
   argv.push(`-Deo.sodgIncludes=${opts.include}`);
   if (opts.exclude) {
@@ -36,8 +36,7 @@ module.exports = function(opts) {
     argv.push('-Deo.generateGraphFiles');
     argv.push('-Deo.generateDotFiles');
   }
-  return mvnw(argv, opts.target, opts.batch).then((r) => {
-    console.info('SODG files generated in %s', rel(path.resolve(opts.target)));
-    return r;
-  });
+  const r = await mvnw(argv, opts.target, opts.batch);
+  console.info('SODG files generated in %s', rel(path.resolve(opts.target)));
+  return r;
 };

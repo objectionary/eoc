@@ -13,10 +13,9 @@ const fs = require('fs');
  * @param {Object} opts - All options
  * @return {Promise} of latex generation task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const latex = path.resolve(opts.target, 'latex');
-  return mvnw(['eo:latex'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('LaTeX files generated in %s', rel(latex));
-    return r;
-  });
+  const r = await mvnw(['eo:latex'].concat(flags(opts)), opts.target, opts.batch);
+  console.info('LaTeX files generated in %s', rel(latex));
+  return r;
 };

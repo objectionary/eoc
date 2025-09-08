@@ -12,10 +12,9 @@ const path = require('path');
  * @param {Hash} opts - All options
  * @return {Promise} of register task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
-  return mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('EO objects registered in %s', rel(foreign));
-    return r;
-  });
+  const r = await mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch);
+  console.info('EO objects registered in %s', rel(foreign));
+  return r;
 };

@@ -12,8 +12,8 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of assemble task
  */
-module.exports = function(opts) {
-  return mvnw(
+module.exports = async function(opts) {
+  const r = await mvnw(
     ['jeo:assemble']
       .concat(flags(opts))
       .concat(
@@ -24,11 +24,10 @@ module.exports = function(opts) {
         ]
       ),
     opts.target, opts.batch
-  ).then((r) => {
-    console.info(
-      'EO .xmir files from %s assembled to .class files in %s',
-      rel(opts.xmirs), rel(opts.classes)
-    );
-    return r;
-  });
+  );
+  console.info(
+    'EO .xmir files from %s assembled to .class files in %s',
+    rel(opts.xmirs), rel(opts.classes)
+  );
+  return r;
 };

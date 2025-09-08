@@ -12,8 +12,8 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of disassemble task
  */
-module.exports = function(opts) {
-  return mvnw(
+module.exports = async function(opts) {
+  const r = await mvnw(
     ['jeo:disassemble']
       .concat(flags(opts))
       .concat(
@@ -24,11 +24,10 @@ module.exports = function(opts) {
         ]
       ),
     opts.target, opts.batch
-  ).then((r) => {
-    console.info(
-      'Bytecode .class files from %s disassembled to .xmir files in %s',
-      rel(opts.classes), rel(opts.xmirs)
-    );
-    return r;
-  });
+  );
+  console.info(
+    'Bytecode .class files from %s disassembled to .xmir files in %s',
+    rel(opts.classes), rel(opts.xmirs)
+  );
+  return r;
 };

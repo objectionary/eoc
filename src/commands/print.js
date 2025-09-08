@@ -12,12 +12,12 @@ const {mvnw, flags} = require('../mvnw');
  * @param {Object} opts - All options
  * @return {Promise} of assemble task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const input = path.resolve(opts.target, opts.printInput);
   console.debug('Reading from %s', rel(input));
   const output = path.resolve(opts.target, opts.printOutput);
   console.debug('Writing to %s', rel(output));
-  return mvnw(
+  const r = await mvnw(
     ['eo:print']
       .concat(flags(opts))
       .concat(
@@ -27,8 +27,7 @@ module.exports = function(opts) {
         ]
       ),
     opts.target, opts.batch
-  ).then((r) => {
-    console.info('XMIR files converted to EO files at %s', rel(output));
-    return r;
-  });
+  );
+  console.info('XMIR files converted to EO files at %s', rel(output));
+  return r;
 };

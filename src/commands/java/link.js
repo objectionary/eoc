@@ -12,10 +12,9 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of link task
  */
-module.exports = function(opts) {
+module.exports = async function(opts) {
   const jar = path.resolve(opts.target, 'eoc.jar');
-  return mvnw(['jar:jar', 'shade:shade'].concat(flags(opts)), opts.target, opts.batch).then((r) => {
-    console.info('Executable JAR created at %s', rel(jar));
-    return r;
-  });
+  const r = await mvnw(['jar:jar', 'shade:shade'].concat(flags(opts)), opts.target, opts.batch);
+  console.info('Executable JAR created at %s', rel(jar));
+  return r;
 };
