@@ -64,10 +64,6 @@ module.exports = [
     }
   },
   {
-    files: [
-      'src/commands/js/transpile.js',
-      'src/commands/js/link.js',
-    ],
     rules: {
       'promise/prefer-await-to-then': 'error',
     },
