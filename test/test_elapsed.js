@@ -9,7 +9,7 @@ const assert = require('assert');
 describe('elapsed', () => {
   const snooze = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   it('measures time correctly', async () => elapsed(async (tracked) => {
-    await snooze(300);
+    await snooze(333);
     return tracked.print('task');
   }).then(
     (actual) => assert(
