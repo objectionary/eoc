@@ -43,10 +43,10 @@ function transformDocument(xmir, xsl) {
     )?output`, 
     null, 
     {
-        params : {
-            'xml' : xmir, 
-            'xslt' : xsl
-        } 
+      params : {
+        'xml' : xmir, 
+        'xslt' : xsl
+      } 
     }
   );
 
@@ -117,7 +117,7 @@ function createXmirHtmlBlock(path) {
     const xmir = fs.readFileSync(path).toString();
     return transformDocument(xmir, BLOCK_XSL);
   } catch(error) {
-    throw new Error(`Error while applying XSL to XMIR: ${error.message}`);
+    throw new Error('Error while applying XSL to XMIR:', error);
   }
 }
 
@@ -175,7 +175,7 @@ module.exports = async function(opts) {
     const css = path.join(output, 'styles.css');
     fs.writeFileSync(css, '');
 
-    let packages_info = {};
+    const packages_info = {};
     const all_xmir_htmls = [];
 
     const xmirs = readXmirsRecursively(input);
@@ -183,7 +183,7 @@ module.exports = async function(opts) {
       const relative = path.relative(input, xmir);
       const name = path.parse(xmir).name;
 
-      const xmir_html = await createXmirHtmlBlock(xmir);
+      const xmir_html = createXmirHtmlBlock(xmir);
       const html_app = path.join(output, path.dirname(relative),`${name}.html`);
       fs.mkdirSync(path.dirname(html_app), {recursive: true});
       fs.writeFileSync(html_app, wrapHtml(xmir_html, css));
@@ -202,10 +202,10 @@ module.exports = async function(opts) {
       all_xmir_htmls.push(xmir_html);
     }
 
-    for (const package_name in packages_info) {
+    for (const package_name of Object.keys(packages_info)) {
       fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
       fs.writeFileSync(packages_info[package_name].path,
-                       generatePackageHtml(package_name, packages_info[package_name].xmir_htmls, css));
+        generatePackageHtml(package_name, packages_info[package_name].xmir_htmls, css));
     }
 
     const packages = path.join(output, 'packages.html');
