@@ -60,12 +60,7 @@ module.exports = [
       'require-unicode-regexp': 'off',
       'sort-keys': 'off',
       'sort-vars': 'off',
-      "promise/prefer-await-to-then": "off"
+      "promise/prefer-await-to-then": "error"
     }
   },
-  {
-    rules: {
-      'promise/prefer-await-to-then': 'error',
-    },
-  }
 ];
