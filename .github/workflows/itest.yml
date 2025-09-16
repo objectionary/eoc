@@ -41,6 +41,7 @@ jobs:
             "--batch"
             "--language=${{ matrix.lang }}"
             "--easy"
+            "--blind"
           )
           node "${opts[@]}" link
           node "${opts[@]}" --alone dataize program
