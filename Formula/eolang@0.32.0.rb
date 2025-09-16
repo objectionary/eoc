@@ -7,9 +7,9 @@ require "language/node"
 class Eolang < Formula
   desc "Command-line Tool-Kit"
   homepage "https://github.com/objectionary/eoc"
-  url "https://github.com/objectionary/eoc/archive/refs/tags/0.32.1.tar.gz"
+  url "https://github.com/objectionary/eoc/archive/refs/tags/0.33.0.tar.gz"
   version "0.32.0"
-  sha256 "6770b4eb3068b5675e2f8c1cce580693f2ad844c6f9472fd2e236f81ba356ab2"
+  sha256 "6e01b4d88ba92018c359fa0bffc3a23742610de454107a7605cd2eecb9ba9a33"
   license "MIT"
 
   depends_on "node"
