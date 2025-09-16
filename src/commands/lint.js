@@ -28,7 +28,8 @@ module.exports = async function(opts) {
       return r;
     } catch (error) {
       throw new Error(
-        'There are errors and/or warnings; you may disable warnings via the --easy option'
+        'There are errors and/or warnings; you may disable warnings via the --easy option',
+        { cause: error }
       );
     }
   }
@@ -40,7 +41,10 @@ module.exports = async function(opts) {
     console.info('EO program verified in %s', rel(path.resolve(opts.target)));
     return r;
   } catch (error) {
-    throw new Error('You may disable warnings via the --easy option');
+    throw new Error(
+      'You may disable warnings via the --easy option',
+      { cause: error }
+    );
   }
 
 };
