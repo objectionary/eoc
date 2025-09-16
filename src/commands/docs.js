@@ -123,6 +123,27 @@ function createXmirHtmlBlock(path) {
 }
 
 /**
+ * Generates Package HTML
+ * @param {String} name - Package name
+ * @param {String[]} xmir_htmls - Array of xmirs htmls
+ * @param {String} css_path - CSS file path
+ * @return {String} HTML of the package
+ */
+function generatePackageHtml(name, xmir_htmls, css_path) {
+  const title = `<h1 class="package-title">Package ${name} documentation</h1>`;
+  return `<!DOCTYPE html>
+    <html>
+      <head>
+        <link href="${css_path}" rel="stylesheet" type="text/css">
+        ${title}
+      </head>
+      <body>
+        ${xmir_htmls.join('\n')}
+      </body>
+    </html>`;
+}
+
+/**
  * Wraps given html body
  * @param {String} html - HTML body
  * @param {String} css_path - CSS file path
@@ -155,6 +176,9 @@ module.exports = async function(opts) {
     const css = path.join(output, 'styles.css');
     fs.writeFileSync(css, '');
 
+    let packages_info = {};
+    const all_xmir_htmls = [];
+
     const xmirs = readXmirsRecursively(input);
     for (const xmir of xmirs) {
       const relative = path.relative(input, xmir);
@@ -164,7 +188,29 @@ module.exports = async function(opts) {
       const html_app = path.join(output, path.dirname(relative),`${name}.html`);
       fs.mkdirSync(path.dirname(html_app), {recursive: true});
       fs.writeFileSync(html_app, wrapHtml(xmir_html, css));
+
+      const packages = path.dirname(relative).split(path.sep).join('.');
+      const html_package = path.join(output, `package_${packages}.html`);
+
+      if (!(packages in packages_info)) {
+        packages_info[packages] = {
+          xmir_htmls : [],
+          path: html_package
+        };
+      }
+
+      packages_info[packages].xmir_htmls.push(xmir_html);
+      all_xmir_htmls.push(xmir_html);
     }
+
+    for (const package in packages_info) {
+      fs.mkdirSync(path.dirname(packages_info[package].path), {recursive: true});
+      fs.writeFileSync(packages_info[package].path,
+                       generatePackageHtml(package, packages_info[package].xmir_htmls, css));
+    }
+
+    const packages = path.join(output, 'packages.html');
+    fs.writeFileSync(packages, generatePackageHtml('', all_xmir_htmls, css));
 
     console.info('Documentation generation completed in the %s directory', output);
   } catch (error) {
