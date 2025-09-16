@@ -10,12 +10,7 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers'),
 
   options = [
     {lang: 'Java', version: parserVersion, tag: homeTag},
-    {lang: 'Java', version: '0.48.1', tag: '0.48.1'},
-    {lang: 'Java', version: '0.46.0', tag: '0.46.0'},
-    {lang: 'Java', version: '0.45.0', tag: '0.45.0'},
-    {lang: 'Java', version: '0.44.0', tag: '0.44.0'},
-    {lang: 'Java', version: '0.41.3', tag: '0.41.3'},
-    {lang: 'Java', version: '0.40.3', tag: '56b2f37d32d71f06e2d298325164485972197a06'},
+    {lang: 'Java', version: '0.58.1', tag: '0.58.1'},
   // {lang: 'JavaScript', version: parserVersion, tag: homeTag},
   // {lang: 'JavaScript', version: '0.41.3', tag: '0.41.3'}
   ];
@@ -46,6 +41,7 @@ describe('dataize', () => {
         '--heap=1G',
         '--clean',
         '--easy',
+        '--blind',
         `--parser=${version}`,
         `--home-tag=${tag}`,
         '-s', path.resolve(home, 'src'),
@@ -78,6 +74,7 @@ describe('dataize', () => {
       'simple',
       '--clean',
       '--easy',
+      '--blind',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', home,

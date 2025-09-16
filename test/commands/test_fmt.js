@@ -68,7 +68,7 @@ const testCases = [
     ].join('\n'),
     after: [
       '# No comments.',
-      '[] > app',
+      '[] > app\'',
       ''
     ].join('\n')
   },

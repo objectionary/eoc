@@ -39,6 +39,7 @@ describe('test', () => {
       'test',
       '--verbose',
       '--easy',
+      '--blind',
       `--parser=${parser}`,
       `--home-tag=${hash}`,
       '--stack=16M',

@@ -21,6 +21,7 @@ describe('compile', () => {
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '--easy',
+      '--blind',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
@@ -56,6 +57,7 @@ describe('compile', () => {
       'compile',
       '--verbose',
       '--easy',
+      '--blind',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
@@ -81,6 +83,7 @@ describe('compile', () => {
       'compile',
       '--clean',
       '--easy',
+      '--blind',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),

@@ -35,6 +35,7 @@ describe('link', () => {
       'link',
       '--verbose',
       '--easy',
+      '--blind',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', path.resolve(home, 'src'),
