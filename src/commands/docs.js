@@ -5,7 +5,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const xml2js = require('xml2js');
 const SaxonJS = require('saxon-js');
 
 /**
@@ -28,7 +27,7 @@ function readXmirsRecursively(dir) {
 }
 
 /**
- * Applys XSLT to XMIR
+ * Applies XSLT to XMIR
  * @param {String} xmir - Text of XMIR file
  * @param {String} xsl - Text of XSL file
  * @return {String} HTML document
@@ -118,7 +117,7 @@ function createXmirHtmlBlock(path) {
     const xmir = fs.readFileSync(path).toString();
     return transformDocument(xmir, BLOCK_XSL);
   } catch(error) {
-    throw new Error(`Error while applying XSL to XMIR: ${error.mesage}`);
+    throw new Error(`Error while applying XSL to XMIR: ${error.message}`);
   }
 }
 
@@ -203,10 +202,10 @@ module.exports = async function(opts) {
       all_xmir_htmls.push(xmir_html);
     }
 
-    for (const package in packages_info) {
-      fs.mkdirSync(path.dirname(packages_info[package].path), {recursive: true});
-      fs.writeFileSync(packages_info[package].path,
-                       generatePackageHtml(package, packages_info[package].xmir_htmls, css));
+    for (const package_name in packages_info) {
+      fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
+      fs.writeFileSync(packages_info[package_name].path,
+                       generatePackageHtml(package_name, packages_info[package_name].xmir_htmls, css));
     }
 
     const packages = path.join(output, 'packages.html');
