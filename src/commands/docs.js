@@ -63,7 +63,7 @@ function createXmirHtmlBlock(xmir_path) {
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
     return transformDocument(xmir, xsl);
   } catch(error) {
-    throw new Error(`Error while applying XSL to XMIR: ${error.message}`);
+    throw new Error(`Error while applying XSL to XMIR: ${error.message}`, error);
   }
 }
 
