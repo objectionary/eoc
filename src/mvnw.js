@@ -63,14 +63,14 @@ module.exports.mvnw = function(args, tgt, batch) {
     target = tgt;
     phase = args[0];
     const home = path.resolve(__dirname, '../mvnw'),
-      bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : ''),
+    let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : ''),
       params = args.filter((t) => t !== '').concat([
         '--batch-mode',
         '--color=never',
         '--update-snapshots',
         '--fail-fast',
         '--strict-checksums',
-      ]),
+      ]);
       cmd = `${bin  } ${  params.join(' ')}`;
     console.debug('+ %s', cmd);
     const result = spawn(
