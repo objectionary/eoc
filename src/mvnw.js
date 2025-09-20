@@ -62,25 +62,20 @@ module.exports.mvnw = function (args, tgt, batch) {
   return new Promise((resolve, reject) => {
     target = tgt;
     phase = args[0];
-    const home = path.resolve(__dirname, '../mvnw'),
-      bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
-
-    // fallback: if mvnw is not found, try system mvn
+    const home = path.resolve(__dirname, '../mvnw');
+    let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
       console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
       bin = 'mvn';
     }
-
     params = args.filter((t) => t !== '').concat([
       '--batch-mode',
       '--color=never',
       '--update-snapshots',
       '--fail-fast',
       '--strict-checksums',
-    ]),
-
-
-      cmd = `${bin} ${params.join(' ')}`;
+    ]);
+    cmd = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
