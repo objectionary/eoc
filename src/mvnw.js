@@ -64,6 +64,10 @@ module.exports.mvnw = function (args, tgt, batch) {
     phase = args[0];
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
+    if (!fs.existsSync(bin)) {
+      console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
+      bin = 'mvn';
+    }
     params = args.filter((t) => t !== '').concat([
       '--batch-mode',
       '--color=never',

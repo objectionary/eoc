@@ -55,9 +55,9 @@ describe('mvnw', () => {
       }
       return curr;
     }
-    setTimeout(() => {
+    if (fs.existsSync(problematicFile)) {
       fs.unlinkSync(problematicFile);
-    }, 50);
+    }
     try {
       const result = count(classesDir, 0);
       assert(result >= 0, 'Count should complete without ENOENT error');
