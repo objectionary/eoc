@@ -157,10 +157,9 @@ function print() {
             curr++;
           }
         } catch (error) {
-          if (error.code === 'ENOENT') {
-            continue;
+          if (error.code !== 'ENOENT') {
+            throw error;
           }
-          throw error;
         }
       }
     }

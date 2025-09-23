@@ -47,7 +47,7 @@ describe('mvnw', () => {
             }
           } catch (error) {
             if (error.code === 'ENOENT') {
-              continue;
+              throw error;
             }
             throw error;
           }
