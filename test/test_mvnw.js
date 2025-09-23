@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-const { mvnw, flags } = require('../src/mvnw');
+const {mvnw, flags} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 
 describe('mvnw', () => {
   it('prints Maven own version', (done) => {
-    const opts = { batch: true };
+    const opts = {batch: true};
     mvnw(['--version', '--quiet'], null, opts.batch);
     done();
   });
@@ -25,7 +25,6 @@ describe('mvnw', () => {
     assert.ok(args.includes('-Deo.tag=homeTag'));
     assert.ok(args.includes('-Deo.version=parser'));
   });
-
   it('should handle ENOENT race condition in count function', function (done) {
     this.timeout(3000);
     const tempDir = path.resolve('temp/test-mvnw-enoent');
