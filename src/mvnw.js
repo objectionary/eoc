@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const rel = require('relative');
 const readline = require('readline');
-const { spawn } = require('child_process');
+const {spawn} = require('child_process');
 const colors = require('colors');
 
 /**
@@ -30,7 +30,7 @@ let beginning,
  * @param {Object} opts - Opts provided to the "eoc"
  * @return {Array} of Maven options
  */
-module.exports.flags = function (opts) {
+module.exports.flags = function(opts) {
   const sources = path.resolve(opts.sources);
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
@@ -58,7 +58,7 @@ module.exports.flags = function (opts) {
  * @param {Boolean} [batch] - Is it batch mode (TRUE) or interactive (FALSE)?
  * @return {Promise} of maven execution task
  */
-module.exports.mvnw = function (args, tgt, batch) {
+module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     target = tgt;
     phase = args[0];
@@ -118,7 +118,7 @@ module.exports.mvnw = function (args, tgt, batch) {
 function start() {
   running = true;
   beginning = Date.now();
-  const check = function () {
+  const check = function() {
     if (running) {
       print();
       setTimeout(check, 1000);
@@ -147,23 +147,35 @@ function print() {
    * @return {Integer} Total number files.
    */
   function count(dir, curr) {
-    if (fs.existsSync(dir)) {
-      for (const f of fs.readdirSync(dir)) {
-        const next = path.join(dir, f);
-        try {
-          if (fs.statSync(next).isDirectory()) {
-            curr = count(next, curr);
-          } else {
-            curr++;
-          }
-        } catch (error) {
-          if (error.code !== 'ENOENT') {
-            throw error;
-          }
-        }
+    if (!fs.existsSync(dir)) {
+      return curr;
+    }
+    try {
+      const files = fs.readdirSync(dir);
+      for (const f of files) {
+        curr = processFile(path.join(dir, f), curr);
       }
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return curr;
+      }
+      throw error;
     }
     return curr;
+  }
+  function processFile(filePath, curr) {
+    try {
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        return count(filePath, curr);
+      }
+      return curr + 1;
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return curr;
+      }
+      throw error;
+    }
   }
   let elapsed;
   if (duration < 1000) {
