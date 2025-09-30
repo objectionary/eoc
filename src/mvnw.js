@@ -68,14 +68,14 @@ module.exports.mvnw = function (args, tgt, batch) {
       console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
       bin = 'mvn';
     }
-    params = args.filter((t) => t !== '').concat([
+    const params = args.filter((t) => t !== '').concat([
       '--batch-mode',
       '--color=never',
       '--update-snapshots',
       '--fail-fast',
       '--strict-checksums',
     ]);
-    cmd = `${bin} ${params.join(' ')}`;
+    const cmd = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
@@ -147,17 +147,35 @@ function print() {
    * @return {Integer} Total number files.
    */
   function count(dir, curr) {
-    if (fs.existsSync(dir)) {
-      for (const f of fs.readdirSync(dir)) {
-        const next = path.join(dir, f);
-        if (fs.statSync(next).isDirectory()) {
-          curr = count(next, curr);
-        } else {
-          curr++;
-        }
+    if (!fs.existsSync(dir)) {
+      return curr;
+    }
+    try {
+      const files = fs.readdirSync(dir);
+      for (const f of files) {
+        curr = processFile(path.join(dir, f), curr);
       }
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return curr;
+      }
+      throw error;
     }
     return curr;
+  }
+  function processFile(filePath, curr) {
+    try {
+      const stat = fs.statSync(filePath);
+      if (stat.isDirectory()) {
+        return count(filePath, curr);
+      }
+      return curr + 1;
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return curr;
+      }
+      throw error;
+    }
   }
   let elapsed;
   if (duration < 1000) {
