@@ -35,7 +35,6 @@
       </xsl:for-each>
     </div>
   </xsl:template>
-
   <xsl:template name="break">
     <xsl:param name="text" select="string(.)"/>
     <xsl:choose>
