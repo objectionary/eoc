@@ -55,7 +55,7 @@ describe('docs', () => {
    * Tests that the 'docs' command generates expected comments in HTML.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
-  it('generates neccesary comments from XMIR to HTML', (done) => {
+  it('generates necessary comments from XMIR to HTML', (done) => {
     const sample = path.join(parsed, 'foo');
     fs.mkdirSync(sample, {recursive: true});
     const xmir1 = path.join(sample, 'test1.xmir');
