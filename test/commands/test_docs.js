@@ -51,4 +51,48 @@ describe('docs', () => {
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
     done();
   });
+  /**
+   * Tests that the 'docs' command generates expected comments in HTML.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('generates neccesary comments from XMIR to HTML', (done) => {
+    const sample = path.join(parsed, 'foo');
+    fs.mkdirSync(sample, {recursive: true});
+    const xmir1 = path.join(sample, 'test1.xmir');
+    fs.writeFileSync(xmir1, fs.readFileSync(path.join(__dirname, '..', 'resources', 'test1.xmir')).toString());
+    const xmir2 = path.join(sample, 'test2.xmir');
+    fs.writeFileSync(xmir2, fs.readFileSync(path.join(__dirname, '..', 'resources', 'test2.xmir')).toString());
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
+
+    const test1_html = path.join(docs, 'foo/test1.html');
+    assert(fs.existsSync(test1_html), `Expected file ${test1_html} but it was not created`);
+    const test1_content = fs.readFileSync(test1_html);
+    assert(test1_content.includes('This is documentation for app'), `Expected documentation but it was not found in ${test1_html}`);
+    assert(test1_content.includes('First docs line'), `Expected documentation but it was not found in ${test1_html}`);
+    assert(test1_content.includes('Second docs line'), `Expected documentation but it was not found in ${test1_html}`);
+
+    const package_html = path.join(docs, 'package_foo.html');
+    assert(fs.existsSync(package_html), `Expected file ${package_html} but it was not created`);
+    const package_content = fs.readFileSync(package_html);
+    assert(package_content.includes('This is documentation for app'), `Expected documentation but it was not found in ${package_html}`);
+    assert(package_content.includes('First docs line'), `Expected documentation but it was not found in ${package_html}`);
+    assert(package_content.includes('Second docs line'), `Expected documentation but it was not found in ${package_html}`);
+    assert(package_content.includes('Second test app'), `Expected documentation but it was not found in ${package_html}`);
+
+    const packages_html = path.join(docs, 'packages.html');
+    assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
+    const packages_content = fs.readFileSync(packages_html);
+    assert(packages_content.includes('This is documentation for app'), `Expected documentation but it was not found in ${packages_html}`);
+    assert(packages_content.includes('First docs line'), `Expected documentation but it was not found in ${packages_html}`);
+    assert(packages_content.includes('Second docs line'), `Expected documentation but it was not found in ${packages_html}`);
+    assert(packages_content.includes('Second test app'), `Expected documentation but it was not found in ${packages_html}`);
+    
+    done();
+  });
 });
