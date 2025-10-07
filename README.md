@@ -18,14 +18,14 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package, using [npm][npm-install]:
 
 ```bash
-npm install -g eolang@0.33.1
+npm install -g eolang@0.33.2
 ```
 
 You can also use [Homebrew] (on macOS):
 
 ```bash
 brew tap objectionary/eoc https://github.com/objectionary/eoc
-brew install objectionary/eoc/eolang@0.33.1
+brew install objectionary/eoc/eolang@0.33.2
 ```
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
