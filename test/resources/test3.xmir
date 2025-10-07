@@ -6,22 +6,22 @@
 <object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         author="eo-parser"
         dob="2025-09-15T13:34:49"
-        ms="695"
+        ms="873"
         revision="aa0072f"
-        time="2025-10-07T01:16:57.037424Z"
+        time="2025-10-07T01:58:33.387117Z"
         version="0.58.6"
         xsi:noNamespaceSchemaLocation="https://www.eolang.org/xsd/XMIR-0.58.6.xsd">
-   <listing># Second test app
-[args] &amp;gt; app2
+   <listing>[args] &amp;gt; app3
+  # Not docs
   QQ.io.stdout &amp;gt; @
     &amp;quot;Test\n&amp;quot;
 </listing>
    <comments>
-      <comment line="2">Second test app</comment>
+      <comment line="3">Not docs</comment>
    </comments>
-   <o line="2" name="app2" pos="0">
-      <o base="ξ" line="2" name="xi🌵" pos="0"/>
-      <o base="∅" line="2" name="args" pos="1"/>
+   <o line="1" name="app3" pos="0">
+      <o base="ξ" line="1" name="xi🌵" pos="0"/>
+      <o base="∅" line="1" name="args" pos="1"/>
       <o base="Φ.org.eolang.io.stdout" line="3" name="φ" pos="7">
          <o as="α0" base="Φ.org.eolang.string" line="4" pos="4">
             <o as="α0" base="Φ.org.eolang.bytes" line="4" pos="4">
