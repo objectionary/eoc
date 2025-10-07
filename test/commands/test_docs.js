@@ -10,18 +10,18 @@ const {runSync} = require('../helpers');
 
 describe('docs', () => {
   const home = path.resolve('temp/test-docs');
-  const target = path.resolve(home, 'target');
-  const source = path.resolve(home, 'src');
+  const parsed = path.resolve(home, '1-parse');
+  const docs = path.join(home, 'docs');
   beforeEach(() => {
     fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(source, {recursive: true});
+    fs.mkdirSync(parsed, {recursive: true});
   });
   /**
    * Tests that the 'docs' command generates HTML files in the docs directory.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
   it('generates HTML files for files and packages', (done) => {
-    const sample = path.join(source, 'foo', 'bar');
+    const sample = path.join(parsed, 'foo', 'bar');
     fs.mkdirSync(sample, {recursive: true});
     const xmir1 = path.join(sample, 'test1.xmir');
     fs.writeFileSync(xmir1, '<program name="test" />');
@@ -30,10 +30,9 @@ describe('docs', () => {
     runSync([
       'docs',
       '--verbose',
-      '-s', source,
-      '-t', target,
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
     ]);
-    const docs = path.join(target, 'docs');
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
 
     const test1_html = path.join(docs, 'foo/bar/test1.html');
