@@ -45,10 +45,10 @@ describe('docs', () => {
     assert(fs.existsSync(package_foo_bar_html), `Expected file ${package_foo_bar_html} but it was not created`);
 
     const packages_html = path.join(docs, 'packages.html');
-    assert(fs.existsSync(packages), `Expected file ${packages} but it was not created`);
+    assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
 
-    const css = path.join(docs, 'styles.css');
-    assert(fs.existsSync(css), `Expected file ${css} but it was not created`);
+    const css_html = path.join(docs, 'styles.css');
+    assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
     done();
   });
 });
