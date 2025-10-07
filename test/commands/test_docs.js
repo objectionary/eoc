@@ -34,19 +34,14 @@ describe('docs', () => {
       '-t', home,
     ]);
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
-
     const test1_html = path.join(docs, 'foo/bar/test1.html');
     assert(fs.existsSync(test1_html), `Expected file ${test1_html} but it was not created`);
-
     const test2_html = path.join(docs, 'foo/bar/test2.html');
     assert(fs.existsSync(test2_html), `Expected file ${test2_html} but it was not created`);
-
     const package_foo_bar_html = path.join(docs, 'package_foo.bar.html');
     assert(fs.existsSync(package_foo_bar_html), `Expected file ${package_foo_bar_html} but it was not created`);
-
     const packages_html = path.join(docs, 'packages.html');
     assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
-
     const css_html = path.join(docs, 'styles.css');
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
     done();
@@ -69,14 +64,12 @@ describe('docs', () => {
       '-t', home,
     ]);
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
-
     const test1_html = path.join(docs, 'foo/test1.html');
     assert(fs.existsSync(test1_html), `Expected file ${test1_html} but it was not created`);
     const test1_content = fs.readFileSync(test1_html);
     assert(test1_content.includes('This is documentation for app'), `Expected documentation but it was not found in ${test1_html}`);
     assert(test1_content.includes('First docs line'), `Expected documentation but it was not found in ${test1_html}`);
     assert(test1_content.includes('Second docs line'), `Expected documentation but it was not found in ${test1_html}`);
-
     const package_html = path.join(docs, 'package_foo.html');
     assert(fs.existsSync(package_html), `Expected file ${package_html} but it was not created`);
     const package_content = fs.readFileSync(package_html);
@@ -84,7 +77,6 @@ describe('docs', () => {
     assert(package_content.includes('First docs line'), `Expected documentation but it was not found in ${package_html}`);
     assert(package_content.includes('Second docs line'), `Expected documentation but it was not found in ${package_html}`);
     assert(package_content.includes('Second test app'), `Expected documentation but it was not found in ${package_html}`);
-
     const packages_html = path.join(docs, 'packages.html');
     assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
     const packages_content = fs.readFileSync(packages_html);
@@ -92,7 +84,6 @@ describe('docs', () => {
     assert(packages_content.includes('First docs line'), `Expected documentation but it was not found in ${packages_html}`);
     assert(packages_content.includes('Second docs line'), `Expected documentation but it was not found in ${packages_html}`);
     assert(packages_content.includes('Second test app'), `Expected documentation but it was not found in ${packages_html}`);
-    
     done();
   });
   /**
@@ -111,7 +102,6 @@ describe('docs', () => {
       '-t', home,
     ]);
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
-
     const test_html = path.join(docs, 'test.html');
     assert(fs.existsSync(test_html), `Expected file ${test_html} but it was not created`);
     const test_content = fs.readFileSync(test_html);
