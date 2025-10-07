@@ -25,7 +25,7 @@ describe('docs', () => {
     fs.mkdirSync(sample, {recursive: true});
     const xmir1 = path.join(sample, 'test1.xmir');
     fs.writeFileSync(xmir1, '<program name="test" />');
-    const xmir2 = path.join(sample, 'test1.xmir');
+    const xmir2 = path.join(sample, 'test2.xmir');
     fs.writeFileSync(xmir2, '<program name="test" />');
     runSync([
       'docs',
