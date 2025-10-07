@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+  -->
+<object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        author="eo-parser"
+        dob="2025-09-15T13:34:49"
+        ms="873"
+        revision="aa0072f"
+        time="2025-10-07T01:58:33.387117Z"
+        version="0.58.6"
+        xsi:noNamespaceSchemaLocation="https://www.eolang.org/xsd/XMIR-0.58.6.xsd">
+   <listing>[args] &amp;gt; app3
+  # Not docs
+  QQ.io.stdout &amp;gt; @
+    &amp;quot;Test\n&amp;quot;
+</listing>
+   <comments>
+      <comment line="3">Not docs</comment>
+   </comments>
+   <o line="1" name="app3" pos="0">
+      <o base="ξ" line="1" name="xi🌵" pos="0"/>
+      <o base="∅" line="1" name="args" pos="1"/>
+      <o base="Φ.org.eolang.io.stdout" line="3" name="φ" pos="7">
+         <o as="α0" base="Φ.org.eolang.string" line="4" pos="4">
+            <o as="α0" base="Φ.org.eolang.bytes" line="4" pos="4">
+               <o as="α0" line="4" pos="4">54-65-73-74-0A</o>
+            </o>
+         </o>
+      </o>
+   </o>
+   <sheets>
+      <sheet>validate-before-stars</sheet>
+      <sheet>resolve-before-stars</sheet>
+      <sheet>wrap-method-calls</sheet>
+      <sheet>const-to-dataized</sheet>
+      <sheet>stars-to-tuples</sheet>
+      <sheet>vars-float-up</sheet>
+      <sheet>move-voids-up</sheet>
+      <sheet>validate-objects-count</sheet>
+      <sheet>build-fqns</sheet>
+      <sheet>expand-qqs</sheet>
+      <sheet>expand-aliases</sheet>
+      <sheet>resolve-aliases</sheet>
+      <sheet>add-default-package</sheet>
+      <sheet>roll-bases</sheet>
+      <sheet>cti-adds-errors</sheet>
+      <sheet>decorate</sheet>
+      <sheet>add-as-attributes-inside-application</sheet>
+      <sheet>st-hex</sheet>
+   </sheets>
+</object>

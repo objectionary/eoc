@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+ * SPDX-License-Identifier: MIT
+  -->
+<object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        author="eo-parser"
+        dob="2025-09-15T13:34:49"
+        ms="709"
+        revision="aa0072f"
+        time="2025-10-07T00:46:19.631309Z"
+        version="0.58.6"
+        xsi:noNamespaceSchemaLocation="https://www.eolang.org/xsd/XMIR-0.58.6.xsd">
+   <listing># This is documentation for app
+[args] &amp;gt; app
+  # First docs line
+  # Second docs line
+  [] &amp;gt; test_obj
+    QQ.io.stdout &amp;gt; @
+      &amp;quot;Test\n&amp;quot;
+</listing>
+   <comments>
+      <comment line="2">This is documentation for app</comment>
+      <comment line="5">First docs line\nSecond docs line</comment>
+   </comments>
+   <o line="2" name="app" pos="0">
+      <o base="ξ" line="2" name="xi🌵" pos="0"/>
+      <o base="∅" line="2" name="args" pos="1"/>
+      <o line="5" name="test_obj" pos="2">
+         <o base="ξ" line="5" name="xi🌵" pos="2"/>
+         <o base="Φ.org.eolang.io.stdout" line="6" name="φ" pos="9">
+            <o as="α0" base="Φ.org.eolang.string" line="7" pos="6">
+               <o as="α0" base="Φ.org.eolang.bytes" line="7" pos="6">
+                  <o as="α0" line="7" pos="6">54-65-73-74-0A</o>
+               </o>
+            </o>
+         </o>
+      </o>
+   </o>
+   <sheets>
+      <sheet>validate-before-stars</sheet>
+      <sheet>resolve-before-stars</sheet>
+      <sheet>wrap-method-calls</sheet>
+      <sheet>const-to-dataized</sheet>
+      <sheet>stars-to-tuples</sheet>
+      <sheet>vars-float-up</sheet>
+      <sheet>move-voids-up</sheet>
+      <sheet>validate-objects-count</sheet>
+      <sheet>build-fqns</sheet>
+      <sheet>expand-qqs</sheet>
+      <sheet>expand-aliases</sheet>
+      <sheet>resolve-aliases</sheet>
+      <sheet>add-default-package</sheet>
+      <sheet>roll-bases</sheet>
+      <sheet>cti-adds-errors</sheet>
+      <sheet>decorate</sheet>
+      <sheet>add-as-attributes-inside-application</sheet>
+      <sheet>st-hex</sheet>
+   </sheets>
+</object>
