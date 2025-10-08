@@ -148,10 +148,9 @@ describe('docs', () => {
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
     const test_html = path.join(docs, 'test.html');
     assert(fs.existsSync(test_html), `Expected file ${test_html} but it was not created`);
-    const cheerio = require('cheerio');
     const test_content = fs.readFileSync(test_html);
-    const test_html_processor = cheerio.load(test_content);
-    const test_text_content = test_html_processor('body').text().trim();
+    test_content.replace(/<[^>]*>/g, '');
+    test_content.replace(/\s+/g, '');
     assert(test_text_content.length > 0);
     done();
   });
