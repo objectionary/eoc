@@ -144,7 +144,7 @@ module.exports = async function(opts) {
     for (const package_name of Object.keys(packages_info)) {
       fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
       fs.writeFileSync(packages_info[package_name].path,
-        generatePackageHtml(package_name + " package", packages_info[package_name].xmir_htmls, css));
+        generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
     }
     const packages = path.join(output, 'packages.html');
     fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
