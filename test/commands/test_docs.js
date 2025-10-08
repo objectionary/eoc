@@ -148,10 +148,10 @@ describe('docs', () => {
     assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
     const test_html = path.join(docs, 'test.html');
     assert(fs.existsSync(test_html), `Expected file ${test_html} but it was not created`);
-    const test_content = fs.readFileSync(test_html);
-    test_content.replace(/<[^>]*>/g, '');
-    test_content.replace(/\s+/g, '');
-    assert(test_text_content.length > 0);
+    const test_content = fs.readFileSync(test_html).toString();
+    const text_only = test_content.replace(/<[^>]*>/g, '')
+                                  .replace(/\s+/g, '');
+    assert(text_only.length > 0);
     done();
   });
 });
