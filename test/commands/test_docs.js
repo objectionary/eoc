@@ -130,4 +130,29 @@ describe('docs', () => {
     assert(!test_content.includes('Tests this comment is not in docs.'), `Unnecessary comment found in ${test_html}`);
     done();
   });
+  /**
+   * Tests that the 'docs' command does not generate comletely empty HTML for empty docblocks.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('does not generate empty HTML for empty docblocks', (done) => {
+    const sample = parsed;
+    fs.mkdirSync(sample, {recursive: true});
+    const xmir = path.join(sample, 'test.xmir');
+    fs.writeFileSync(xmir, fs.readFileSync(path.join(__dirname, '..', 'resources', 'test5.xmir')).toString());
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    assert(fs.existsSync(docs), 'Expected the docs directory to be created but it is missing');
+    const test_html = path.join(docs, 'test.html');
+    assert(fs.existsSync(test_html), `Expected file ${test_html} but it was not created`);
+    const cheerio = require('cheerio');
+    const test_content = fs.readFileSync(test_html);
+    const test_html_processer = cheerio.load(test_content);
+    const test_text_content = test_html_processer('body').text().trim();
+    assert(test_text_content.length > 0);
+    done();
+  });
 });
