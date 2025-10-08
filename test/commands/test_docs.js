@@ -150,7 +150,7 @@ describe('docs', () => {
     assert(fs.existsSync(test_html), `Expected file ${test_html} but it was not created`);
     const test_content = fs.readFileSync(test_html).toString();
     const text_only = test_content.replace(/<[^>]*>/g, '')
-                                  .replace(/\s+/g, '');
+      .replace(/\s+/g, '');
     assert(text_only.length > 0);
     done();
   });
