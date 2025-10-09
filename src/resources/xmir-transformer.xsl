@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:output method="html"/>
   <xsl:template match="/">
-    <div class="app-block">
-      <xsl:for-each select="//o[(@name and @name != 'φ') and (not(@base) or (@base != '∅' and @base != 'ξ'))]">
+    <article class="app-block">
+      <xsl:for-each select="//o[(@name and (@name != 'φ' and @name != 'λ' and not(starts-with(@name, '+')))) and (not(@base) or (@base != '∅' and @base != 'ξ'))]">
         <xsl:if test="//comments/comment[@line = current()/@line]">
           <div class="object-block">
             <xsl:variable name="fullname">
@@ -17,7 +18,7 @@
                 </xsl:choose>
               </xsl:for-each>
             </xsl:variable>
-            <h2 class="object-title"><xsl:value-of select="$fullname"/></h2>
+            <h1 class="object-title"><xsl:value-of select="$fullname"/></h1>
             <p class="object-sign">
               <xsl:value-of select="$fullname"/>(<xsl:for-each select="current()/o[@base and @base = '∅']">
                 <xsl:value-of select="@name"/>
@@ -25,15 +26,15 @@
                   <xsl:when test="position() != last()">, </xsl:when>
                 </xsl:choose>
               </xsl:for-each>)</p>
-            <p class="object-desc">
+            <div class="object-desc">
               <xsl:call-template name="break">
                 <xsl:with-param name="text" select="//comments/comment[@line = current()/@line]"/>
               </xsl:call-template>
-            </p>
+            </div>
           </div>
         </xsl:if>
       </xsl:for-each>
-    </div>
+    </article>
   </xsl:template>
   <xsl:template name="break">
     <xsl:param name="text" select="string(.)"/>

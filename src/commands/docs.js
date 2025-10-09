@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
+const { marked } = require('marked');
 
 /**
  * Recursively reads all .xmir files from a directory.
@@ -53,6 +54,17 @@ function transformDocument(xmir, xsl) {
 }
 
 /**
+ * Converts Markdown blocks in documentation to HTML
+ * @param {String} html - text of HTML file
+ * @return {String} HTML document
+ */
+function convertMarkdownToHtml(html) {
+  const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
+  const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
+  return converted_html;
+}
+
+/**
  * Creates documentation block from given XMIR
  * @param {String} xmir_path - path of XMIR
  * @return {String} HTML block
@@ -61,7 +73,7 @@ function createXmirHtmlBlock(xmir_path) {
   try {
     const xmir = fs.readFileSync(xmir_path).toString();
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
-    return transformDocument(xmir, xsl);
+    return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
     throw new Error(`Error while applying XSL to XMIR: ${error.message}`, error);
   }
@@ -75,37 +87,38 @@ function createXmirHtmlBlock(xmir_path) {
  * @return {String} HTML of the package
  */
 function generatePackageHtml(name, xmir_htmls, css_path) {
-  const title = `<h1 class="package-title">Package ${name} documentation</h1>`;
+  xmir_htmls = xmir_htmls.filter(item => item !== '<article class="app-block"></article>');
+  const cur_date = new Date();
   return `<!DOCTYPE html>
     <html>
       <head>
+        <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tacit-css@1.9.1/dist/tacit-css.min.css"/>
         <link href="${css_path}" rel="stylesheet" type="text/css">
-        ${title}
       </head>
       <body>
-        ${xmir_htmls.join('\n')}
+        <section>
+          <header>
+            <nav>
+              <h1>${name} documentation</h1>
+              <p>Creation date: ${cur_date.toUTCString()}</p>
+            </nav>
+          </header>
+          ${xmir_htmls.join('\n')}
+        </section>
       </body>
     </html>`;
 }
 
 /**
  * Wraps given html body
+ * @param {String} name - File name
  * @param {String} html - HTML body
  * @param {String} css_path - CSS file path
  * @return {String} Ready HTML
  */
-function wrapHtml(html, css_path) {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <link href="${css_path}" rel="stylesheet" type="text/css">
-      </head>
-      <body>
-        ${html}
-      </body>
-    </html>
-  `;
+function wrapHtml(name, html, css_path) {
+  return generatePackageHtml(name, [html], css_path);
 }
 
 /**
@@ -128,7 +141,7 @@ module.exports = async function(opts) {
       const xmir_html = createXmirHtmlBlock(xmir);
       const html_app = path.join(output, path.dirname(relative),`${name}.html`);
       fs.mkdirSync(path.dirname(html_app), {recursive: true});
-      fs.writeFileSync(html_app, wrapHtml(xmir_html, css));
+      fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
       const packages = path.dirname(relative).split(path.sep).join('.');
       const html_package = path.join(output, `package_${packages}.html`);
       if (!(packages in packages_info)) {
@@ -143,10 +156,10 @@ module.exports = async function(opts) {
     for (const package_name of Object.keys(packages_info)) {
       fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
       fs.writeFileSync(packages_info[package_name].path,
-        generatePackageHtml(package_name, packages_info[package_name].xmir_htmls, css));
+        generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
     }
     const packages = path.join(output, 'packages.html');
-    fs.writeFileSync(packages, generatePackageHtml('', all_xmir_htmls, css));
+    fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
     console.info('Documentation generation completed in the %s directory', output);
   } catch (error) {
     console.error('Error generating documentation:', error);
