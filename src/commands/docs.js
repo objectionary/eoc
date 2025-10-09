@@ -58,7 +58,7 @@ function transformDocument(xmir, xsl) {
  * @return {String} HTML document
  */
 async function convertMarkdownToHtml(html) {
-  const { marked } = await import('marked');
+  const { marked } = await import('marked'); // eslint-disable-line
   const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
   const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
   return converted_html;
