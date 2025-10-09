@@ -14,7 +14,8 @@
     "relative": "^3.0.2",
     "semver": "^7.7.2",
     "sync-request": "^6.1.0",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "cheerio": "^1.1.2"
   },
   "description": "A collection of command line tools for EOLANG: compiling, parsing, transpiling to other languages, optimizing, and analyzing",
   "devDependencies": {
