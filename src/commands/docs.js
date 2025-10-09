@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
-const cheerio = require('cheerio');
+const { JSDOM } = require('jsdom');
 const marked = require('marked');
 
 /**
@@ -60,13 +60,15 @@ function transformDocument(xmir, xsl) {
  * @return {String} HTML document
  */
 function convertMarkdownToHtml(html) {
-  const parser = cheerio.load(html);
-  parser('div.object-desc').each(function() {
-    const markdown_text = parser(this).text();
+  const dom = new JSDOM(html);
+  const doc = dom.window.document;
+  const description_elements = doc.querySelectorAll('div.object-desc');
+  description_elements.forEach(desc => {
+    const markdown_text = desc.innerHTML;
     const converted_html = marked.parse(markdown_text);
-    parser(this).html(converted_html);
-  });
-  return parser('body').html();
+    desc.innerHTML = converted_html;
+  }); 
+  return doc.body.innerHTML;
 }
 
 /**
