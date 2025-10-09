@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
+const { marked } = require('marked');
 
 /**
  * Recursively reads all .xmir files from a directory.
@@ -57,8 +58,7 @@ function transformDocument(xmir, xsl) {
  * @param {String} html - text of HTML file
  * @return {String} HTML document
  */
-async function convertMarkdownToHtml(html) {
-  const { marked } = await import('marked'); // eslint-disable-line
+function convertMarkdownToHtml(html) {
   const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
   const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
   return converted_html;
@@ -69,11 +69,11 @@ async function convertMarkdownToHtml(html) {
  * @param {String} xmir_path - path of XMIR
  * @return {String} HTML block
  */
-async function createXmirHtmlBlock(xmir_path) {
+function createXmirHtmlBlock(xmir_path) {
   try {
     const xmir = fs.readFileSync(xmir_path).toString();
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
-    return await convertMarkdownToHtml(transformDocument(xmir, xsl));
+    return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
     throw new Error(`Error while applying XSL to XMIR: ${error.message}`, error);
   }
@@ -138,7 +138,7 @@ module.exports = async function(opts) {
     for (const xmir of xmirs) {
       const relative = path.relative(input, xmir);
       const name = path.parse(xmir).name;
-      const xmir_html = await createXmirHtmlBlock(xmir);
+      const xmir_html = createXmirHtmlBlock(xmir);
       const html_app = path.join(output, path.dirname(relative),`${name}.html`);
       fs.mkdirSync(path.dirname(html_app), {recursive: true});
       fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
