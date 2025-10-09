@@ -176,6 +176,5 @@ describe('docs', () => {
     assert(test_content.includes('<strong>Strong test</strong>'), `Markdown not processed correctly in ${test_html}`);
     assert(test_content.includes('<code>Code test</code>'), `Markdown not processed correctly in ${test_html}`);
     done();
-    done();
   });
 });
