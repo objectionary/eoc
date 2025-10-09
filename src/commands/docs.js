@@ -6,7 +6,6 @@
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
-const { JSDOM } = require('jsdom');
 const marked = require('marked');
 
 /**
@@ -60,15 +59,11 @@ function transformDocument(xmir, xsl) {
  * @return {String} HTML document
  */
 function convertMarkdownToHtml(html) {
-  const dom = new JSDOM(html);
-  const doc = dom.window.document;
-  const description_elements = doc.querySelectorAll('div.object-desc');
-  description_elements.forEach(desc => {
-    const markdown_text = desc.innerHTML;
-    const converted_html = marked.parse(markdown_text);
-    desc.innerHTML = converted_html;
-  }); 
-  return doc.body.innerHTML;
+  const regex = /(<div\s+class\s*=\s*["']object-desc["'][^>]*>)([\s\S]*?)(<\/div>)/gi;
+  const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => {
+    return `${opening_tag}${marked.parse(content)}${closing_tag}`;
+  });
+  return converted_html;
 }
 
 /**
