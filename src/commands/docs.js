@@ -64,9 +64,9 @@ function convertMarkdownToHtml(html) {
   const doc = dom.window.document;
   const description_elements = doc.querySelectorAll('div.object-desc');
   description_elements.forEach(desc => {
-      const markdown_text = desc.innerHTML;
-      const converted_html = marked.parse(markdown_text);
-      desc.innerHTML = converted_html;
+    const markdown_text = desc.innerHTML;
+    const converted_html = marked.parse(markdown_text);
+    desc.innerHTML = converted_html;
   }); 
   return doc.body.innerHTML;
 }
