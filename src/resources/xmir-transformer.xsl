@@ -26,11 +26,11 @@
                   <xsl:when test="position() != last()">, </xsl:when>
                 </xsl:choose>
               </xsl:for-each>)</p>
-            <p class="object-desc">
+            <div class="object-desc">
               <xsl:call-template name="break">
                 <xsl:with-param name="text" select="//comments/comment[@line = current()/@line]"/>
               </xsl:call-template>
-            </p>
+            </div>
           </div>
         </xsl:if>
       </xsl:for-each>
