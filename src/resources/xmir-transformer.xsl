@@ -6,7 +6,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template match="/">
     <div class="app-block">
-      <xsl:for-each select="//o[(@name and (@name != 'φ' and @name != 'λ')) and (not(@base) or (@base != '∅' and @base != 'ξ'))]">
+      <xsl:for-each select="//o[(@name and (@name != 'φ' and @name != 'λ' and not(starts-with(@name, '+')))) and (not(@base) or (@base != '∅' and @base != 'ξ'))]">
         <xsl:if test="//comments/comment[@line = current()/@line]">
           <div class="object-block">
             <xsl:variable name="fullname">
