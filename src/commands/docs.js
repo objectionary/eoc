@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
+const { marked } = require('marked');
 
 /**
  * Recursively reads all .xmir files from a directory.
@@ -53,6 +54,17 @@ function transformDocument(xmir, xsl) {
 }
 
 /**
+ * Converts Markdown blocks in documentation to HTML
+ * @param {String} html - text of HTML file
+ * @return {String} HTML document
+ */
+function convertMarkdownToHtml(html) {
+  const regex = /(?<opening_tag><p\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/p>)/gi;
+  const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
+  return converted_html;
+}
+
+/**
  * Creates documentation block from given XMIR
  * @param {String} xmir_path - path of XMIR
  * @return {String} HTML block
@@ -61,7 +73,7 @@ function createXmirHtmlBlock(xmir_path) {
   try {
     const xmir = fs.readFileSync(xmir_path).toString();
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
-    return transformDocument(xmir, xsl);
+    return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
     throw new Error(`Error while applying XSL to XMIR: ${error.message}`, error);
   }
