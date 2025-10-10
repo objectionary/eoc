@@ -66,12 +66,12 @@ function convertMarkdownToHtml(html) {
 
 /**
  * Creates documentation block from given XMIR
- * @param {String} path - path of XMIR
+ * @param {String} filepath - path of XMIR
  * @return {String} HTML block
  */
-function createXmirHtmlBlock(path) {
+function createXmirHtmlBlock(filepath) {
   try {
-    const xmir = fs.readFileSync(path).toString();
+    const xmir = fs.readFileSync(filepath).toString();
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
     return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
