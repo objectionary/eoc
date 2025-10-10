@@ -66,12 +66,12 @@ function convertMarkdownToHtml(html) {
 
 /**
  * Creates documentation block from given XMIR
- * @param {String} xmir_path - path of XMIR
+ * @param {String} path - path of XMIR
  * @return {String} HTML block
  */
-function createXmirHtmlBlock(xmir_path) {
+function createXmirHtmlBlock(path) {
   try {
-    const xmir = fs.readFileSync(xmir_path).toString();
+    const xmir = fs.readFileSync(path).toString();
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
     return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
@@ -82,27 +82,27 @@ function createXmirHtmlBlock(xmir_path) {
 /**
  * Generates Package HTML
  * @param {String} name - Package name
- * @param {String[]} xmir_htmls - Array of xmirs htmls
- * @param {String} css_path - CSS file path
+ * @param {String[]} htmls - Array of xmirs htmls
+ * @param {String} css - CSS file path
  * @return {String} HTML of the package
  */
-function generatePackageHtml(name, xmir_htmls, css_path) {
-  xmir_htmls = xmir_htmls.filter(item => item !== '<article class="app-block"></article>');
-  const cur_date = new Date();
+function generatePackageHtml(name, htmls, css) {
+  htmls = htmls.filter(item => item !== '<article class="app-block"></article>');
+  const date = new Date();
   return `<!DOCTYPE html>
     <html>
       <head>
-        <link href="${css_path}" rel="stylesheet" type="text/css">
+        <link href="${css}" rel="stylesheet" type="text/css">
       </head>
       <body>
         <section>
           <header>
             <nav>
               <h1>${name} documentation</h1>
-              <p>Creation date: ${cur_date.toUTCString()}</p>
+              <p>Creation date: ${date.toUTCString()}</p>
             </nav>
           </header>
-          ${xmir_htmls.join('\n')}
+          ${htmls.join('\n')}
         </section>
       </body>
     </html>`;
@@ -112,11 +112,11 @@ function generatePackageHtml(name, xmir_htmls, css_path) {
  * Wraps given html body
  * @param {String} name - File name
  * @param {String} html - HTML body
- * @param {String} css_path - CSS file path
+ * @param {String} css - CSS file path
  * @return {String} Ready HTML
  */
-function wrapHtml(name, html, css_path) {
-  return generatePackageHtml(name, [html], css_path);
+function wrapHtml(name, html, css) {
+  return generatePackageHtml(name, [html], css);
 }
 
 /**
