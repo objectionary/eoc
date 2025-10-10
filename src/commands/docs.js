@@ -59,7 +59,7 @@ function transformDocument(xmir, xsl) {
  * @return {String} HTML document
  */
 function convertMarkdownToHtml(html) {
-  const regex = /(?<opening_tag><p\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/p>)/gi;
+  const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
   const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
   return converted_html;
 }
@@ -93,6 +93,8 @@ function generatePackageHtml(name, htmls, css) {
     <html>
       <head>
         <link href="${css}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tacit-css@1.9.1/dist/tacit-css.min.css"/>
       </head>
       <body>
         <section>
