@@ -87,37 +87,36 @@ function createXmirHtmlBlock(xmir_path) {
  * @return {String} HTML of the package
  */
 function generatePackageHtml(name, xmir_htmls, css_path) {
-  const title = `<h1 class="package-title">Package ${name} documentation</h1>`;
+  xmir_htmls = xmir_htmls.filter(item => item !== '<article class="app-block"></article>');
+  const cur_date = new Date();
   return `<!DOCTYPE html>
     <html>
       <head>
         <link href="${css_path}" rel="stylesheet" type="text/css">
-        ${title}
       </head>
       <body>
-        ${xmir_htmls.join('\n')}
+        <section>
+          <header>
+            <nav>
+              <h1>${name} documentation</h1>
+              <p>Creation date: ${cur_date.toUTCString()}</p>
+            </nav>
+          </header>
+          ${xmir_htmls.join('\n')}
+        </section>
       </body>
     </html>`;
 }
 
 /**
  * Wraps given html body
+ * @param {String} name - File name
  * @param {String} html - HTML body
  * @param {String} css_path - CSS file path
  * @return {String} Ready HTML
  */
-function wrapHtml(html, css_path) {
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <link href="${css_path}" rel="stylesheet" type="text/css">
-      </head>
-      <body>
-        ${html}
-      </body>
-    </html>
-  `;
+function wrapHtml(name, html, css_path) {
+  return generatePackageHtml(name, [html], css_path);
 }
 
 /**
@@ -140,7 +139,7 @@ module.exports = async function(opts) {
       const xmir_html = createXmirHtmlBlock(xmir);
       const html_app = path.join(output, path.dirname(relative),`${name}.html`);
       fs.mkdirSync(path.dirname(html_app), {recursive: true});
-      fs.writeFileSync(html_app, wrapHtml(xmir_html, css));
+      fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
       const packages = path.dirname(relative).split(path.sep).join('.');
       const html_package = path.join(output, `package_${packages}.html`);
       if (!(packages in packages_info)) {
@@ -155,10 +154,10 @@ module.exports = async function(opts) {
     for (const package_name of Object.keys(packages_info)) {
       fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
       fs.writeFileSync(packages_info[package_name].path,
-        generatePackageHtml(package_name, packages_info[package_name].xmir_htmls, css));
+        generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
     }
     const packages = path.join(output, 'packages.html');
-    fs.writeFileSync(packages, generatePackageHtml('', all_xmir_htmls, css));
+    fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
     console.info('Documentation generation completed in the %s directory', output);
   } catch (error) {
     console.error('Error generating documentation:', error);
