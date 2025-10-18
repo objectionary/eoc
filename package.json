@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "@langchain/core": "^0.3.55",
-    "@langchain/openai": "^0.6.0",
+    "@langchain/openai": "^1.0.0",
     "colors": "^1.4.0",
     "commander": "^12.1.0",
     "eo2js": "^0.0.8",
