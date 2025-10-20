@@ -10,42 +10,31 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        eoc = pkgs.stdenv.mkDerivation {
+        package = pkgs.buildNpmPackage {
           pname = "eolang";
-          version = "0.0.0";
-
+          version = "0.33.3";
           src = ./.;
 
-          nativeBuildInputs = [ pkgs.nodejs_24 pkgs.makeWrapper ];
-
-          buildPhase = ''
-            mkdir -p $out/lib/node_modules/eolang
-            cp -r ./* $out/lib/node_modules/eolang
-            cd $out/lib/node_modules/eolang
-            npm install --omit=dev --ignore-scripts
+          postPatch = ''
+            substituteInPlace package.json \
+              --replace "\"node\": \"^25.0.0\"," ""
           '';
+          buildInputs = [ pkgs.nodejs ];
+
+          dontNpmBuild = true;
 
           installPhase = ''
             mkdir -p $out/bin
-            ${pkgs.makeWrapper}/bin/makeWrapper \
-              $out/lib/node_modules/eolang/src/eoc.js \
-              $out/bin/eoc \
-              --set NODE_PATH $out/lib/node_modules
-          '';
+            cp -r . $out/lib
 
-          meta = with pkgs.lib; {
-            description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
-            license = licenses.mit;
-            maintainers = with maintainers; [ yourGitHubNick ];
-          };
+            ln -s $out/lib/src/eoc.js $out/bin/eoc
+            chmod +x $out/bin/eoc
+            '';
+
+          npmDepsHash = "sha256-lbVR20QXXcOGphDcOyXmMOfr8fh/V3/E0nvXInMvLfE=";
         };
-      in
-      {
-        packages = {
-          eoc = eoc;
-        };
-        defaultPackage = eoc;
-      }
-    );
+      in {
+        packages.default = package;
+      });
 }
 
