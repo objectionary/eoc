@@ -1,5 +1,7 @@
+
 {
   description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
   };
@@ -13,39 +15,42 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-        in
-        pkgs.stdenv.mkDerivation {
-          pname = "eoc";
-          version = "latest";
-          src = ./.; 
+          eoc = pkgs.stdenv.mkDerivation {
+            pname = "eoc";
+            version = "latest";
+            src = ./.; 
 
-          nativeBuildInputs = [ pkgs.nodejs pkgs.npm ];
+            nativeBuildInputs = [ pkgs.nodejs pkgs.npm ];
 
-          buildPhase = ''
-            echo "Installing eoc dependencies..."
-            npm install
-          '';
+            buildPhase = ''
+              echo "Installing eoc dependencies..."
+              npm install
+            '';
 
-          installPhase = ''
-            mkdir -p $out/bin
-            npm install -g . --prefix $out
-          '';
+            installPhase = ''
+              mkdir -p $out/bin
+              npm install -g . --prefix $out
+            '';
 
-          meta = with pkgs.lib; {
-            description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
-            homepage = "https://github.com/objectionary/eoc";
-            license = licenses.mit;
-            platforms = platforms.all;
+            meta = with pkgs.lib; {
+              description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
+              homepage = "https://github.com/objectionary/eoc";
+              license = licenses.mit;
+              platforms = platforms.all;
+            };
           };
+        in {
+          default = eoc;
         }
       );
 
       apps = forAllSystems (system: {
         type = "app";
-        program = "${self.packages.${system}}/bin/eoc";
+        program = "${self.packages.${system}.default}/bin/eoc";
       });
 
-      defaultPackage = forAllSystems (system: self.packages.${system});
+      defaultPackage = forAllSystems (system: self.packages.${system}.default);
       defaultApp = forAllSystems (system: self.apps.${system});
     };
 }
+
