@@ -10,13 +10,15 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        node2nixPkgs = pkgs.callPackage ./nix/default.nix { src = ./.; };
+        node2nixPkgs = import ./nix/default.nix {
+          inherit pkgs;
+          src = ./.;
+        };
         eocPackage = node2nixPkgs.package;
       in
-      {
+        {
         packages.eoc = eocPackage;
 
-        # опционально — приложение (bin)
         apps.eoc = {
           type = "app";
           program = "${eocPackage}/bin/eoc";
