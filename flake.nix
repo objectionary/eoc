@@ -22,7 +22,7 @@
             mkdir -p $out/lib/node_modules/eolang
             cp -r ./* $out/lib/node_modules/eolang
             cd $out/lib/node_modules/eolang
-            npm install --omit=dev
+            npm install --omit=dev --ignore-scripts
           '';
 
           installPhase = ''
