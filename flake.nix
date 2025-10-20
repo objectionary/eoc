@@ -19,7 +19,7 @@
             version = "latest";
             src = ./.; 
 
-            nativeBuildInputs = [ pkgs.nodejs pkgs.npm ];
+            nativeBuildInputs = [ pkgs.nodejs ];
 
             buildPhase = ''
               echo "Installing eoc dependencies..."
