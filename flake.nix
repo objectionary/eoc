@@ -1,4 +1,3 @@
-
 {
   description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
 
