@@ -8,7 +8,7 @@ let
     name = "eolang";
     packageName = "eolang";
     version = "0.0.0";
-    src = ./.;
+    src = ./..;
     buildInputs = globalBuildInputs;
     meta = {
       description = "A collection of command line tools for EOLANG: compiling, parsing, transpiling to other languages, optimizing, and analyzing";
