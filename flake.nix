@@ -22,7 +22,6 @@
             nativeBuildInputs = [ pkgs.nodejs ];
 
             buildPhase = ''
-              echo "Installing eoc dependencies..."
               npm install
             '';
 
