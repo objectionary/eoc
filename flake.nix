@@ -76,5 +76,6 @@
           license = licenses.mit;
           author = packageJson.author;
         };
-      });
+      }
+    );
 }
