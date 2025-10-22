@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
 {
   description = "Command-line toolkit for parsing, compiling, transpiling, optimizing, linking, dataizing, and running EOLANG programs";
 
