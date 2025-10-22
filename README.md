@@ -28,7 +28,7 @@ brew tap objectionary/eoc https://github.com/objectionary/eoc
 brew install objectionary/eoc/eolang@0.33.3
 ```
 
-Or intall it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
+Or install it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
 
 ```bash
 nix run github:objectionary/eoc 
@@ -67,6 +67,7 @@ After that, select one of the methods for installing the package:
   ];
 }
 ```
+
 ```nix
 #configuration.nix (For user)
 {
@@ -75,6 +76,7 @@ After that, select one of the methods for installing the package:
   ];
 }
 ```
+
 ```nix
 #home.nix (For home-manager)
 {
