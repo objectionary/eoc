@@ -28,6 +28,62 @@ brew tap objectionary/eoc https://github.com/objectionary/eoc
 brew install objectionary/eoc/eolang@0.33.3
 ```
 
+Or intall it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
+
+```bash
+nix run github:objectionary/eoc 
+```
+
+You can also include EOLANG in your own flake:
+
+```nix
+{
+  inputs = {
+    eoc.url = "github:objectionary/eolang";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+  };
+
+  outputs = { self, nixpkgs, eoc, ... }: {
+    nixConfigurations.<hostname> = nixpkgs.lib.nixosSystem {
+      modules = [
+        {
+          nixpkgs.config.packageOverrides = pkgs: {
+            eoc = eoc.packages.${system}.default;
+          };
+        }
+      ];
+    } 
+  };
+}
+```
+
+After that, select one of the methods for installing the package:
+
+```nix
+#configuration.nix (Global)
+{
+  environment.systemPackages = with pkgs; [
+    eoc
+  ];
+}
+```
+```nix
+#configuration.nix (For user)
+{
+  users.users.<your-user-name>.packages = with pkgs; [
+    eoc
+  ];
+}
+```
+```nix
+#home.nix (For home-manager)
+{
+  home.packages = with pkgs; [
+    eoc
+  ];
+}
+```
+
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
 in the current directory:
 
