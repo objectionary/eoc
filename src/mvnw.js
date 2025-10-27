@@ -69,6 +69,8 @@ module.exports.mvnw = function (args, tgt, batch) {
       bin = 'mvn';
     }
     const params = args.filter((t) => t !== '').concat([
+      '-Dorg.slf4j.simpleLogger.showDateTime=true',
+      '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
       '--batch-mode',
       '--color=never',
       '--update-snapshots',
