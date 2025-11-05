@@ -34,14 +34,8 @@ jobs:
           java-version: ${{ matrix.java }}
       - run: npm install
       - name: Run unit tests
-        run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            npx mocha test/**/*.js --timeout 1200000
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            npx mocha test/**/*.js --timeout 1200000
-          else
-            npx grunt mochacli
-          fi
+        shell: bash
+        run: npx grunt mochacli
       - shell: bash
         run: |
           cd itest
