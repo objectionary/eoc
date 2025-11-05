@@ -33,6 +33,8 @@ jobs:
           distribution: 'zulu'
           java-version: ${{ matrix.java }}
       - run: npm install
+      - name: Run unit tests
+        run: npx grunt mochacli
       - shell: bash
         run: |
           cd itest
