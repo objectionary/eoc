@@ -57,8 +57,9 @@
   ],
   "repository": "objectionary/eoc",
   "scripts": {
-    "test": "grunt mochacli",
-    "coverage": "nyc --reporter=lcov --reporter=text-summary grunt mochacli"
+    "postinstall": "node scripts/postinstall.js",
+    "test": "mocha test/**/*.js --timeout 1200000",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary mocha test/**/*.js --timeout 1200000"
   },
   "nyc": {
     "include": [

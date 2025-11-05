@@ -34,8 +34,7 @@ jobs:
           java-version: ${{ matrix.java }}
       - run: npm install
       - name: Run unit tests
-        shell: bash
-        run: npx grunt mochacli
+        run: npm test
       - shell: bash
         run: |
           cd itest
@@ -63,7 +62,7 @@ jobs:
       - name: Install coverage tools
         run: npm install --save-dev nyc
       - name: Run tests with coverage
-        run: npx nyc --reporter=lcov --reporter=text-summary grunt mochacli
+        run: npm run coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
