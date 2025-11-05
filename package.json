@@ -27,7 +27,9 @@
     "grunt-contrib-clean": "^2.0.1",
     "grunt-eslint": "^26.0.0",
     "grunt-mocha-cli": "^7.0.0",
+    "istanbul": "^0.4.5",
     "mocha": "^11.5.0",
+    "nyc": "^17.1.0",
     "patch-package": "^8.0.0"
   },
   "engines": {
@@ -55,8 +57,23 @@
   ],
   "repository": "objectionary/eoc",
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
-    "test": "mocha --timeout 1200000"
+    "test": "grunt mochacli",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary grunt mochacli"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js",
+      "lib/**/*.js"
+    ],
+    "exclude": [
+      "test/**",
+      "**/*.test.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all": true
   },
   "version": "0.0.0"
 }

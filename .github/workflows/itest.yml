@@ -47,3 +47,24 @@ jobs:
           node "${opts[@]}" --alone dataize program
           node "${opts[@]}" clean
           node "${opts[@]}" test
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+      - name: Install coverage tools
+        run: npm install --save-dev nyc
+      - name: Run tests with coverage
+        run: npx nyc --reporter=lcov --reporter=text-summary grunt mochacli
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
