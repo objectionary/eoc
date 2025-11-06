@@ -63,8 +63,7 @@
   },
   "nyc": {
     "include": [
-      "src/**/*.js",
-      "lib/**/*.js"
+      "src/**/*.js"
     ],
     "exclude": [
       "test/**",
