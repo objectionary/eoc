@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: codecov
+'on':
+  push:
+    branches:
+      - master
+concurrency:
+  group: codecov-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  codecov:
+    name: Coverage
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 18
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-
+      - name: Install dependencies
+        run: npm install
+      - name: Install coverage tools
+        run: npm install --save-dev nyc
+      - name: Run tests with coverage
+        run: npm run coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+        if: github.ref == 'refs/heads/master'
