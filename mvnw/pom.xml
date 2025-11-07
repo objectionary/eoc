@@ -23,18 +23,6 @@
       <artifactId>eo-runtime</artifactId>
       <version>${eo.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>6.0.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>6.0.1</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
   <build>
     <finalName>eoc</finalName>
@@ -68,7 +56,7 @@
         <configuration>
           <excludeSources>**/.eoc/**</excludeSources>
           <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
-          <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
+          <sodgExcludes>${eo.sodgIncludes},**/*-test.eo</sodgExcludes>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
         </configuration>
@@ -149,4 +137,44 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>test</id>
+      <activation>
+        <property>
+          <name>!skipTests</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-api</artifactId>
+          <version>6.0.1</version>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <version>6.0.1</version>
+          <scope>compile</scope>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>eo-maven-plugin</artifactId>
+            <version>${eo.version}</version>
+            <configuration>
+              <excludeSources>**/.eoc/**</excludeSources>
+              <sodgIncludes>${eo.sodgIncludes},**/*-test.eo</sodgIncludes>
+              <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
+              <foreign>${project.build.directory}/eo-foreign.json</foreign>
+              <foreignFormat>json</foreignFormat>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
