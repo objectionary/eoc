@@ -16,6 +16,7 @@
     <eo.version>undefined</eo.version>
     <heap-size>undefined</heap-size>
     <stack-size>undefined</stack-size>
+    <junit.version>5.10.0</junit.version>
   </properties>
   <dependencies>
     <dependency>
@@ -101,39 +102,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.4</version>
         <configuration>
-          <failIfNoTests>true</failIfNoTests>
-          <useFile>false</useFile>
-          <trimStackTrace>false</trimStackTrace>
-          <runOrder>random</runOrder>
-          <argLine>-Xmx${heap-size} -Xss${stack-size}</argLine>
-          <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
-          <properties>
-            <configurationParameters>
-              junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = concurrent
-              junit.jupiter.execution.parallel.mode.classes.default = concurrent
-            </configurationParameters>
-          </properties>
+          <skipTests>true</skipTests>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.1</version>
-        <executions>
-          <execution>
-            <id>add-test-sources</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated-test-sources</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -142,21 +112,20 @@
       <id>test</id>
       <activation>
         <property>
-          <name>eoc.command</name>
-          <value>test</value>
+          <name>!skipTests</name>
         </property>
       </activation>
       <dependencies>
         <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-api</artifactId>
-          <version>6.0.1</version>
+          <version>${junit.version}</version>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter-engine</artifactId>
-          <version>6.0.1</version>
+          <version>${junit.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -172,6 +141,45 @@
               <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
               <foreign>${project.build.directory}/eo-foreign.json</foreign>
               <foreignFormat>json</foreignFormat>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.6.1</version>
+            <executions>
+              <execution>
+                <id>add-test-source</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.build.directory}/generated-test-sources</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.5.4</version>
+            <configuration>
+              <skipTests>false</skipTests>
+              <failIfNoTests>true</failIfNoTests>
+              <useFile>false</useFile>
+              <trimStackTrace>false</trimStackTrace>
+              <runOrder>random</runOrder>
+              <argLine>-Xmx${heap-size} -Xss${stack-size}</argLine>
+              <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
+              <properties>
+                <configurationParameters>
+                  junit.jupiter.execution.parallel.enabled = true
+                  junit.jupiter.execution.parallel.mode.default = concurrent
+                  junit.jupiter.execution.parallel.mode.classes.default = concurrent
+                </configurationParameters>
+              </properties>
             </configuration>
           </plugin>
         </plugins>
