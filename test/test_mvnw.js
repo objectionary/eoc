@@ -9,10 +9,9 @@ const fs = require('fs');
 const path = require('path');
 
 describe('mvnw', () => {
-  it('prints Maven own version', (done) => {
+  it('prints Maven own version', async () => {
     const opts = {batch: true};
-    mvnw(['--version', '--quiet'], null, opts.batch);
-    done();
+    await mvnw(['--version', '--quiet'], null, opts.batch);
   });
   it('sets right flags from options', async () => {
     const opts = {
