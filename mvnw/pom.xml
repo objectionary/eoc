@@ -16,7 +16,7 @@
     <eo.version>undefined</eo.version>
     <heap-size>undefined</heap-size>
     <stack-size>undefined</stack-size>
-    <junit.version>5.10.0</junit.version>
+    <junit.version>6.0.1</junit.version>
   </properties>
   <dependencies>
     <dependency>
