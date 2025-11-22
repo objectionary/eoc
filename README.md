@@ -6,6 +6,7 @@
 [![grunt](https://github.com/objectionary/eoc/actions/workflows/grunt.yml/badge.svg)](https://github.com/objectionary/eoc/actions/workflows/grunt.yml)
 [![node-current](https://img.shields.io/node/v/eolang)](https://www.npmjs.com/package/eolang)
 [![PDD status](https://www.0pdd.com/svg?name=objectionary/eoc)](https://www.0pdd.com/p?name=objectionary/eoc)
+[![codecov](https://codecov.io/gh/objectionary/eoc/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eoc)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
 
