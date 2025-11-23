@@ -40,7 +40,7 @@ You can also include EOLANG in your own flake:
 ```nix
 {
   inputs = {
-    eoc.url = "github:objectionary/eolang";
+    eoc.url = "github:objectionary/eoc";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
   };
 
