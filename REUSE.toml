@@ -33,6 +33,7 @@ path = [
     "MANIFEST.MF",
     "README.md",
     "renovate.json",
+    "flake.lock"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2025 Yegor Bugayenko"
