@@ -17,8 +17,6 @@
  *                          is invoked with a `tracked` object as an argument.
  * @return {*} Result of the wrapped callback function. The result of the
  *             `task` callback will be returned unchanged.
- * @todo #368:30min Decide if the `elapsed` utility function is in the right place,
- *  consider relocating it and its test file if needed
  */
 module.exports.elapsed = function elapsed(task) {
   const startTime = Date.now();
