@@ -6,6 +6,7 @@
 const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
+const {elapsed} = require('../elapsed');
 const semver = require('semver');
 
 /**
@@ -13,38 +14,39 @@ const semver = require('semver');
  * @param {Hash} opts - All options
  * @return {Promise} of assemble task
  */
-module.exports = async function(opts) {
+module.exports = function(opts) {
   const extra = [
     `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
     `-Deo.skipLinting=${opts.blind ? 'true' : 'false'}`,
   ];
-  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+  return elapsed(async (tracked) => {
+    if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+      try {
+        const r = await mvnw(
+          ['eo:lint'].concat(flags(opts)).concat(extra),
+          opts.target, opts.batch
+        );
+        tracked.print(`EO program linted in ${rel(path.resolve(opts.target))}`);
+        return r;
+      } catch (error) {
+        throw new Error(
+          'There are errors and/or warnings; you may disable warnings via the --easy option',
+          { cause: error }
+        );
+      }
+    }
     try {
       const r = await mvnw(
-        ['eo:lint'].concat(flags(opts)).concat(extra),
+        ['eo:verify'].concat(flags(opts)).concat(extra),
         opts.target, opts.batch
       );
-      console.info('EO program linted in %s', rel(path.resolve(opts.target)));
+      tracked.print(`EO program verified in ${rel(path.resolve(opts.target))}`);
       return r;
     } catch (error) {
       throw new Error(
-        'There are errors and/or warnings; you may disable warnings via the --easy option',
+        'You may disable warnings via the --easy option',
         { cause: error }
       );
     }
-  }
-  try {
-    const r = await mvnw(
-      ['eo:verify'].concat(flags(opts)).concat(extra),
-      opts.target, opts.batch
-    );
-    console.info('EO program verified in %s', rel(path.resolve(opts.target)));
-    return r;
-  } catch (error) {
-    throw new Error(
-      'You may disable warnings via the --easy option',
-      { cause: error }
-    );
-  }
-
+  });
 };

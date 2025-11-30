@@ -5,6 +5,7 @@
 
 const rel = require('relative');
 const {mvnw, flags} = require('../../mvnw');
+const {elapsed} = require('../../elapsed');
 const path = require('path');
 
 /**
@@ -12,12 +13,14 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of resolve task
  */
-module.exports = async function(opts) {
-  await mvnw(['eo:resolve'].concat(flags(opts)), opts.target, opts.batch);
-  const sources = path.resolve(opts.target, 'eo/6-resolve');
-  console.info('Dependencies resolved in %s', rel(sources));
-  const r = await mvnw(['eo:place'].concat(flags(opts)), opts.target, opts.batch);
-  const classes = path.resolve(opts.target, 'classes');
-  console.info('Dependencies placed in %s', rel(classes));
-  return r;
+module.exports = function(opts) {
+  return elapsed(async (tracked) => {
+    await mvnw(['eo:resolve'].concat(flags(opts)), opts.target, opts.batch);
+    const sources = path.resolve(opts.target, 'eo/6-resolve');
+    console.info('Dependencies resolved in %s', rel(sources));
+    const r = await mvnw(['eo:place'].concat(flags(opts)), opts.target, opts.batch);
+    const classes = path.resolve(opts.target, 'classes');
+    tracked.print(`Dependencies placed in ${rel(classes)}`);
+    return r;
+  });
 };

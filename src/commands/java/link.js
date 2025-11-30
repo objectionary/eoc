@@ -5,6 +5,7 @@
 
 const rel = require('relative');
 const {mvnw, flags} = require('../../mvnw');
+const {elapsed} = require('../../elapsed');
 const path = require('path');
 
 /**
@@ -12,9 +13,11 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of link task
  */
-module.exports = async function(opts) {
+module.exports = function(opts) {
   const jar = path.resolve(opts.target, 'eoc.jar');
-  const r = await mvnw(['jar:jar', 'shade:shade'].concat(flags(opts)), opts.target, opts.batch);
-  console.info('Executable JAR created at %s', rel(jar));
-  return r;
+  return elapsed(async (tracked) => {
+    const r = await mvnw(['jar:jar', 'shade:shade'].concat(flags(opts)), opts.target, opts.batch);
+    tracked.print(`Executable JAR created at ${rel(jar)}`);
+    return r;
+  });
 };

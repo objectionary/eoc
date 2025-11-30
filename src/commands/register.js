@@ -5,6 +5,7 @@
 
 const rel = require('relative');
 const {mvnw, flags} = require('../mvnw');
+const {elapsed} = require('../elapsed');
 const path = require('path');
 
 /**
@@ -12,9 +13,11 @@ const path = require('path');
  * @param {Hash} opts - All options
  * @return {Promise} of register task
  */
-module.exports = async function(opts) {
+module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
-  const r = await mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch);
-  console.info('EO objects registered in %s', rel(foreign));
-  return r;
+  return elapsed(async (tracked) => {
+    const r = await mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch);
+    tracked.print(`EO objects registered in ${rel(foreign)}`);
+    return r;
+  });
 };

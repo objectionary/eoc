@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
+const {elapsed} = require('../elapsed');
 
 /**
  * Recursively reads all .xmir files from a directory.
@@ -125,44 +126,46 @@ function wrapHtml(name, html, css) {
  * Command to generate documentation.
  * @param {Hash} opts - All options
  */
-module.exports = async function(opts) {
-  try {
-    const input = path.resolve(opts.target, '1-parse');
-    const output = path.resolve(opts.target, 'docs');
-    fs.mkdirSync(output, {recursive: true});
-    const css = path.join(output, 'styles.css');
-    fs.writeFileSync(css, '');
-    const packages_info = {};
-    const all_xmir_htmls = [];
-    const xmirs = readXmirsRecursively(input);
-    for (const xmir of xmirs) {
-      const relative = path.relative(input, xmir);
-      const name = path.parse(xmir).name;
-      const xmir_html = createXmirHtmlBlock(xmir);
-      const html_app = path.join(output, path.dirname(relative),`${name}.html`);
-      fs.mkdirSync(path.dirname(html_app), {recursive: true});
-      fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
-      const packages = path.dirname(relative).split(path.sep).join('.');
-      const html_package = path.join(output, `package_${packages}.html`);
-      if (!(packages in packages_info)) {
-        packages_info[packages] = {
-          xmir_htmls : [],
-          path: html_package
-        };
+module.exports = function(opts) {
+  return elapsed(async (tracked) => {
+    try {
+      const input = path.resolve(opts.target, '1-parse');
+      const output = path.resolve(opts.target, 'docs');
+      fs.mkdirSync(output, {recursive: true});
+      const css = path.join(output, 'styles.css');
+      fs.writeFileSync(css, '');
+      const packages_info = {};
+      const all_xmir_htmls = [];
+      const xmirs = readXmirsRecursively(input);
+      for (const xmir of xmirs) {
+        const relative = path.relative(input, xmir);
+        const name = path.parse(xmir).name;
+        const xmir_html = createXmirHtmlBlock(xmir);
+        const html_app = path.join(output, path.dirname(relative),`${name}.html`);
+        fs.mkdirSync(path.dirname(html_app), {recursive: true});
+        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
+        const packages = path.dirname(relative).split(path.sep).join('.');
+        const html_package = path.join(output, `package_${packages}.html`);
+        if (!(packages in packages_info)) {
+          packages_info[packages] = {
+            xmir_htmls : [],
+            path: html_package
+          };
+        }
+        packages_info[packages].xmir_htmls.push(xmir_html);
+        all_xmir_htmls.push(xmir_html);
       }
-      packages_info[packages].xmir_htmls.push(xmir_html);
-      all_xmir_htmls.push(xmir_html);
+      for (const package_name of Object.keys(packages_info)) {
+        fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
+        fs.writeFileSync(packages_info[package_name].path,
+          generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
+      }
+      const packages = path.join(output, 'packages.html');
+      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      tracked.print(`Documentation generation completed in the ${output} directory`);
+    } catch (error) {
+      console.error('Error generating documentation:', error);
+      throw error;
     }
-    for (const package_name of Object.keys(packages_info)) {
-      fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
-      fs.writeFileSync(packages_info[package_name].path,
-        generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
-    }
-    const packages = path.join(output, 'packages.html');
-    fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
-    console.info('Documentation generation completed in the %s directory', output);
-  } catch (error) {
-    console.error('Error generating documentation:', error);
-    throw error;
-  }
+  });
 };
