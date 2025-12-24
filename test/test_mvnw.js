@@ -17,12 +17,12 @@ describe('mvnw', () => {
     const opts = {
       sources: 'sources',
       target: 'target',
-      parser: 'parser',
+      parser: '0.28.11',
       homeTag: 'homeTag'
     };
     const args = await mvnw(['--version', '--quiet', ...flags(opts)]);
     assert.ok(args.includes('-Deo.tag=homeTag'));
-    assert.ok(args.includes('-Deo.version=parser'));
+    assert.ok(args.includes('-Deo.version=0.28.11'));
   });
   it('should handle ENOENT race condition in count function', function (done) {
     this.timeout(3000);

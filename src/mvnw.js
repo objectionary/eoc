@@ -9,6 +9,7 @@ const rel = require('relative');
 const readline = require('readline');
 const { spawn } = require('child_process');
 const colors = require('colors');
+const parserVersion = require('./parser-version');
 
 /**
  * The shell to use (depending on operating system).
@@ -35,6 +36,16 @@ module.exports.flags = function (opts) {
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
+
+  if (opts.parser && !parserVersion.exists(opts.parser)) {
+    console.error(colors.red(
+      `Parser version ${opts.parser} is not available in Maven Central.\n` +
+      `Please check available versions at: https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/\n` +
+      `Or use --latest flag to get the most recent version.`
+    ));
+    process.exit(1);
+  }
+
   return [
     `-Deo.version=${opts.parser}`,
     `-Deo.tag=${opts.homeTag ? opts.homeTag : opts.parser}`,
