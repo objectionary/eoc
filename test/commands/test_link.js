@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('link', () => {
   before(weAreOnline);
-
   /**
    * Run 'link' command
    * @param {String} home - Home directory
@@ -60,7 +59,6 @@ describe('link', () => {
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
-
   it('creates and builds NPM project', function(done) {
     this.skip();
     this.timeout(0);

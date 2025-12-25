@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('assemble', () => {
   before(weAreOnline);
-
   it('assembles a simple .EO program', (done) => {
     const home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});

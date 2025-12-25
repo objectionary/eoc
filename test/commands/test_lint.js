@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('lint', () => {
   before(weAreOnline);
-
   it('lints a simple .EO program', (done) => {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});

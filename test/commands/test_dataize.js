@@ -17,7 +17,6 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers'),
 
 describe('dataize', () => {
   before(weAreOnline);
-
   options.forEach(({lang, version, tag}) => {
     it(`dataizes: lang ${lang}, version ${version}, tag ${tag}`, function(done) {
       this.timeout(0);
@@ -55,7 +54,6 @@ describe('dataize', () => {
       done();
     });
   });
-
   it(`dataizes with command-line argument`, function(done) {
     this.timeout(0);
     const home = path.resolve('temp/test-dataize-with-arg');

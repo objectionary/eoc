@@ -11,7 +11,6 @@ const {runSync, assertFilesExist, weAreOnline} = require('../../helpers'),
 
 describe('jeo:disassemble', () => {
   before(weAreOnline);
-
   it('converts CLASS files to XMIR files', (done) => {
     const home = path.resolve('temp/test-jeo-disassemble/simple');
     fs.rmSync(home, {recursive: true, force: true});

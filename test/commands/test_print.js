@@ -9,7 +9,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('print', () => {
   before(weAreOnline);
-
   it('converts XMIR files to EO files', (done) => {
     const home = path.resolve('temp/test-print/simple');
     fs.rmSync(home, {recursive: true, force: true});

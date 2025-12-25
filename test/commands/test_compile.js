@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('compile', () => {
   before(weAreOnline);
-
   it('compiles a simple .EO program into Java bytecode .class files', (done) => {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
@@ -37,7 +36,6 @@ describe('compile', () => {
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
-
   it('compiles a simple .EO unit test into Java bytecode .class files', (done) => {
     const home = path.resolve('temp/test-compile/junit');
     fs.rmSync(home, {recursive: true, force: true});
@@ -72,7 +70,6 @@ describe('compile', () => {
     );
     done();
   });
-
   it('Cleans and compiles a simple .EO program', (done) => {
     const home = path.resolve('temp/test-compile/simple');
     fs.rmSync(home, {recursive: true, force: true});
@@ -91,7 +88,6 @@ describe('compile', () => {
     ]);
     done();
   });
-
   it('Skips compilation for JavaScript', () => {
     const stdout = runSync([
       'compile',

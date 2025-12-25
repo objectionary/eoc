@@ -12,7 +12,6 @@ const {runSync} = require('../helpers');
 describe('clean', () => {
   const testDir = 'temp/test-clean',
     eoDir = path.join(os.homedir(), '.eo');
-
   /**
    * Setup test environment.
    * @param {String} home - Home directory
@@ -25,7 +24,6 @@ describe('clean', () => {
     fs.mkdirSync(eo, {recursive: true});
     fs.writeFileSync(path.resolve(home, 'src/clean.eo'), '# sample\n[] > clean\n');
   }
-
   /**
    * Run clean command.
    * @param {String} home - Home directory
@@ -37,7 +35,6 @@ describe('clean', () => {
     if (global) {args.push('--global');}
     return runSync(args);
   }
-
   it('deletes all temporary files with --global', (done) => {
     const home = path.resolve(testDir, 'simple');
     setupTestEnvironment(home, eoDir);
@@ -46,7 +43,6 @@ describe('clean', () => {
     assert(!fs.existsSync(eoDir), stdout);
     done();
   });
-
   it('deletes target directory without affecting global eo', (done) => {
     const home = path.resolve(testDir, 'without-global');
     setupTestEnvironment(home, eoDir);

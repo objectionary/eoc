@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('test', () => {
   before(weAreOnline);
-
   /**
    * Run test command.
    * @param {String} home - Home directory
@@ -49,7 +48,6 @@ describe('test', () => {
       `--language=${lang}`
     ]);
   };
-
   it('executes a single Java unit test', (done) => {
     const home = path.resolve('temp/test-test/java'),
       stdout = test(home, 'Java', parserVersion, homeTag);
@@ -64,7 +62,6 @@ describe('test', () => {
     );
     done();
   });
-
   it('executes a single JavaScript unit test', function(done) {
     this.skip(); // it doesn't work with 0.42.0
     const home = path.resolve('temp/test-test/javascript'),

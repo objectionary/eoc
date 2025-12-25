@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('transpile', () => {
   before(weAreOnline);
-
   const transpile = function(home, lang) {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
@@ -36,7 +35,6 @@ describe('transpile', () => {
       `--language=${lang}`,
     ]);
   };
-
   it('transpiles a simple .EO program to Java', function(done) {
     this.timeout(0);
     const home = path.resolve(`temp/test-transpile/java`),
@@ -47,7 +45,6 @@ describe('transpile', () => {
     );
     done();
   });
-
   it('transpiles a simple .EO program to JavaScript', function(done) {
     this.skip();
     this.timeout(0);
@@ -59,7 +56,6 @@ describe('transpile', () => {
     );
     done();
   });
-
   it('attempts to transpile a simple .EO program to wrong platform', (done) => {
     const {spawnSync} = require('child_process'),
       s = spawnSync(

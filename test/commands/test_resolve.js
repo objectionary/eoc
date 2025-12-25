@@ -9,7 +9,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('resolve', () => {
   before(weAreOnline);
-
   const resolve = function(home) {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
@@ -36,7 +35,6 @@ describe('resolve', () => {
       '-t', path.resolve(home, 'target'),
     ]);
   };
-
   it('resolves eo-runtime', function(done) {
     this.timeout(0);
     const home = path.resolve(`temp/test-resolve`),

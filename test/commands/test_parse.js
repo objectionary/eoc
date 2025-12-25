@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('parse', () => {
   before(weAreOnline);
-
   const createTestProject = (dir) => {
     fs.rmSync(dir, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(dir, 'src'), {recursive: true});
@@ -19,7 +18,6 @@ describe('parse', () => {
       '# sample\n[] > simple\n'
     );
   };
-
   it('parses a simple .EO program', (done) => {
     const home = path.resolve('temp/test-parse/simple');
     createTestProject(home);
@@ -41,7 +39,6 @@ describe('parse', () => {
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
-
   it('rejects invalid parser version', function () {
     this.timeout(30000);
     const home = path.resolve('temp/test-parse/invalid-version');
@@ -58,7 +55,6 @@ describe('parse', () => {
       'Command should fail with invalid parser version'
     );
   });
-
   it('accepts valid parser version', function () {
     this.timeout(60000);
     const home = path.resolve('temp/test-parse/valid-version');
@@ -70,7 +66,6 @@ describe('parse', () => {
       '-t', path.resolve(home, 'target'),
     ]);
   });
-
   it('validates parser version before calling Maven', function () {
     this.timeout(30000);
     const home = path.resolve('temp/test-parse/early-validation');
@@ -87,7 +82,6 @@ describe('parse', () => {
       'Command should fail with invalid version'
     );
   });
-
   it('handles assemble command with invalid version', function () {
     this.timeout(30000);
     const home = path.resolve('temp/test-parse/assemble-invalid');
@@ -104,7 +98,6 @@ describe('parse', () => {
       'Assemble should fail with invalid version'
     );
   });
-
   it('handles lint command with invalid version', function () {
     this.timeout(30000);
     const home = path.resolve('temp/test-parse/lint-invalid');

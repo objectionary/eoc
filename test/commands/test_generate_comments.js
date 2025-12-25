@@ -21,7 +21,6 @@ describe('generate_comments', () => {
     (error) => error.message.includes('`nonexisting` provider is not supported.'));
     done();
   });
-
   it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
     for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
@@ -39,7 +38,6 @@ describe('generate_comments', () => {
     }
     done();
   });
-
   it('fills output as expected when encountering valid EO code', (done) => {
     const home = makeHome();
     for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {

@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, weAreOnline} = require('../helpers');
 
 describe('register', () => {
   before(weAreOnline);
-
   it('registers a simple .EO program', (done) => {
     const home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});

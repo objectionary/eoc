@@ -13,7 +13,6 @@ describe('eoc', () => {
     assert.equal(`${version.what  }\n`, stdout);
     done();
   });
-
   it('prints help screen', (done) => {
     const stdout = runSync(['--help']);
     assert(stdout.includes('Usage: eoc'));
@@ -25,7 +24,6 @@ describe('eoc', () => {
 
 describe('eoc', () => {
   before(weAreOnline);
-
   it('loads latest version', (done) => {
     const stdout = runSync(['--latest', '--version']);
     assert(!stdout.includes('29.0.4'));

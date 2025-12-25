@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('sodg', () => {
   before(weAreOnline);
-
   it('generates SODG files for a simple .EO program', function (done) {
     this.skip()
     const home = path.resolve('temp/test-sodg/simple');

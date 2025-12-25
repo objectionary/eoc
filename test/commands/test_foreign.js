@@ -10,7 +10,6 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 
 describe('foreign', () => {
   before(weAreOnline);
-
   it('inspects foreign objects and prints a report', (done) => {
     const home = path.resolve('temp/test-foreign/simple');
     fs.rmSync(home, {recursive: true, force: true});
