@@ -32,18 +32,21 @@ const request = require('sync-request'),
      * @return {Boolean} True if version exists, false otherwise
      */
     exists(ver) {
-      if (!ver || ver === 'undefined') {
-        return false;
+      let result;
+      if (ver && ver !== 'undefined') {
+        try {
+          const repo = 'org/eolang/eo-maven-plugin',
+            artifactId = 'eo-maven-plugin',
+            url = `https://repo.maven.apache.org/maven2/${repo}/${ver}/${artifactId}-${ver}.pom`,
+            res = request('GET', url, {timeout: 10000, socketTimeout: 10000});
+          result = res.statusCode === 200;
+        } catch (e) {
+          console.debug('Unable to validate parser version (network error): %s', e.message);
+          result = false;
+        }
+      } else {
+        result = false;
       }
-      try {
-        const repo = 'org/eolang/eo-maven-plugin',
-          artifactId = 'eo-maven-plugin',
-          url = `https://repo.maven.apache.org/maven2/${repo}/${ver}/${artifactId}-${ver}.pom`,
-          res = request('GET', url, {timeout: 10000, socketTimeout: 10000});
-        return res.statusCode === 200;
-      } catch (e) {
-        console.debug('Unable to validate parser version (network error): %s', e.message);
-        return true;
-      }
+      return result;
     }
   };
