@@ -37,18 +37,18 @@ function readXmirsRecursively(dir) {
 function transformDocument(xmir, xsl) {
   const html = SaxonJS.XPath.evaluate(
     `transform(
-        map { 
-            'source-node' : parse-xml($xml), 
+        map {
+            'source-node' : parse-xml($xml),
             'stylesheet-text' : $xslt,
-            'delivery-format' : 'serialized' 
+            'delivery-format' : 'serialized'
         }
-    )?output`, 
-    null, 
+    )?output`,
+    null,
     {
       params : {
-        'xml' : xmir, 
+        'xml' : xmir,
         'xslt' : xsl
-      } 
+      }
     }
   );
   return html;

@@ -43,8 +43,8 @@
         <xsl:value-of select="substring-before($text, '\n')"/>
         <br/>
         <xsl:call-template name="break">
-          <xsl:with-param 
-            name="text" 
+          <xsl:with-param
+            name="text"
             select="substring-after($text, '\n')"
           />
         </xsl:call-template>

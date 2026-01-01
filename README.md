@@ -32,7 +32,7 @@ brew install objectionary/eoc/eolang@0.33.3
 Or install it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
 
 ```bash
-nix run github:objectionary/eoc 
+nix run github:objectionary/eoc
 ```
 
 You can also include EOLANG in your own flake:
@@ -53,7 +53,7 @@ You can also include EOLANG in your own flake:
           };
         }
       ];
-    } 
+    }
   };
 }
 ```
