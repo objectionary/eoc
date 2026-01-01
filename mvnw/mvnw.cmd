@@ -1,6 +1,6 @@
 <# : batch portion
 
-@REM SPDX-FileCopyrightText: Copyright (c) 2022-2025 Objectionary.com
+@REM SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
 @REM SPDX-License-Identifier: MIT
 
 @REM ----------------------------------------------------------------------------
