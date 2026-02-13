@@ -93,8 +93,8 @@ program
 program
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
-  .option('--easy', 'Ignore "warnings" and only fail if there are "errors" or "criticals"')
-  .option('--blind', 'Ignore "warnings," "errors," and "criticals"')
+  .option('--easy', 'Ignore "warnings" and only fail if there are "errors" or "critical" errors')
+  .option('--blind', 'Ignore "warnings," "errors," and "critical" errors')
   .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', tag)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
