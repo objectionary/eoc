@@ -147,17 +147,45 @@ There are also commands that help manipulate with XMIR and EO sources
 This command line toolkit simply integrates other tools available in
 the [@objectionary](https://github.com/objectionary) GitHub organization.
 
-## How to Contribute
+## How to Test
 
-First, run `npm install`. Then, run `grunt`. All tests should pass.
-
-If you want to run a single test:
+To execute the project tests, use the following command:
 
 ```bash
-npm test -- test/test_mvnw.js
+npx grunt
 ```
 
-Make your changes and then
+This command will run all the testing steps, including tests, linting,
+coverage, and more.
+If you only need to run the tests, use:
+
+```bash
+npm test
+```
+
+To run a specific test based on its description, use the following command:
+
+```bash
+npm test -- --grep="<test-description>"
+```
+
+For example, to run a test with the description
+"formats EO files according to expected patterns," execute:
+
+```bash
+npm test -- --grep="formats EO files according to expected patterns"
+```
+
+You can also run a specific test file using `npx grunt`:
+
+```bash
+npx grunt --file=test/commands/test_fmt.js
+```
+
+## How to Contribute
+
+First, run `npm install`.
+Make your changes, run [tests](#how-to-test) and then
 [make](https://www.yegor256.com/2014/04/15/github-guidelines.html)
 a pull request.
 
