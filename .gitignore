@@ -14,3 +14,4 @@ mvnw/dependency-reduced-pom.xml
 node_modules/
 target/
 temp/
+.aidy/
