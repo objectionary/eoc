@@ -11,7 +11,7 @@ module.exports = function(grunt) {
       test: {
         options: {
           timeout: '1200000',
-          files: ['test/**/*.js'],
+          files: grunt.option('file') ? [grunt.option('file')] : ['test/**/*.js'],
           require: ['nyc']
         },
       },
