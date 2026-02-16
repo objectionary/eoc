@@ -147,6 +147,32 @@ There are also commands that help manipulate with XMIR and EO sources
 This command line toolkit simply integrates other tools available in
 the [@objectionary](https://github.com/objectionary) GitHub organization.
 
+## Options
+
+You can apply the following options to the `eoc` command:
+
+* `--help` prints help information
+* `--alone` runs a single command without dependencies
+* `--batch` runs in batch mode, suppress interactive messages
+* `--blind` disables linting
+* `--clean` deletes .eoc directory before running a command
+* `--debug` print ALL debug messages, heavily overloading the log
+* `--easy` ignores "warnings" and only fail if there are "errors" or
+  "critical"
+* `--home-tag <version>` git tag in objectionary/home to compile against
+* `--language <name>` language of target execution platform
+* `--latest` use the latest parser version from Maven Central
+* `--no-color` disable colorization of console messages
+* `--parser <version>` set the version of EO parser to use
+* `--sources <path>` directory with .EO sources
+* `--target <path>` directory with all generated files
+* `--track-transformation-steps`  save intermediate XMIR files
+* `--version` print the number of the version (0.33.3)
+* `--verbose` print debug messages and full output of child processes
+
+There are two ways to work with linting. The `--easy` option enables linting
+but ignores warnings, while the `--blind` option completely disables linting.
+
 ## How to Test
 
 To execute the project tests, use the following command:

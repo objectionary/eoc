@@ -17,7 +17,6 @@ const semver = require('semver');
 module.exports = function(opts) {
   const extra = [
     `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
-    `-Deo.skipLinting=${opts.blind ? 'true' : 'false'}`,
   ];
   return elapsed(async (tracked) => {
     if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
