@@ -34,8 +34,11 @@ describe('eoc', () => {
 describe('eoc', () => {
   before(weAreOnline);
   it('fails due version mismatch if different --pin provided', (done) => {
-    const stdout = runSync(['--pin=29.9.4', 'clean']);
-    assert(stdout.includes("Version mismatch: you are running eoc 0.0.0, but --pin option requires 29.9.4"));
+    assert.throws(
+      () => {    runSync(['--pin=29.9.4', 'clean']); },
+      /Version mismatch: you are running eoc 0.0.0, but --pin option requires 29.9.4/
+    );
+    done();
   });
 });
 
@@ -44,6 +47,7 @@ describe('eoc', () => {
   it('cleans successfully when versions match with --pin', (done) => {
     const stdout = runSync(['--pin=0.0.0', 'clean']);
     assert(stdout.includes("The directory .eoc does not exist, no need to delete it"));
+    done();
   });
 });
 
@@ -52,5 +56,6 @@ describe('eoc', () => {
   it('cleans successfully when if --pin not provided', (done) => {
     const stdout = runSync(['clean']);
     assert(stdout.includes("The directory .eoc does not exist, no need to delete it"));
+    done();
   });
 });
