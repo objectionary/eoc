@@ -111,13 +111,13 @@ program
 program.command('audit')
   .description('Inspect all packages and report their status')
   .action((str, opts) => {
-    coms().audit(opts);
+    coms().audit(program.opts());
   });
 
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')
   .action((str, opts) => {
-    coms().foreign(opts);
+    coms().foreign(program.opts());
   });
 
 program
