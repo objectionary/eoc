@@ -105,7 +105,8 @@ program
   .option('--track-transformation-steps', 'Save intermediate XMIR files')
   .option('-c, --clean', 'Delete .eoc directory before running a command')
   .option('--debug', 'Print ALL debug messages, heavily overloading the log')
-  .option('--verbose', 'Print debug messages and full output of child processes');
+  .option('--verbose', 'Print debug messages and full output of child processes')
+  .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what);
 
 program.command('audit')
   .description('Inspect all packages and report their status')
@@ -124,18 +125,21 @@ program
   .option('--global', 'delete ~/.eo directory')
   .description('Delete all temporary files')
   .action((str, opts) => {
+    pin(program.opts());
     coms().clean({...program.opts(), ...str});
   });
 
 program.command('register')
   .description('Register all visible EO source files')
   .action((str, opts) => {
+    pin(program.opts());
     coms().register(program.opts());
   });
 
 program.command('parse')
   .description('Parse EO files into XMIR')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -148,6 +152,7 @@ program.command('parse')
 program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -166,6 +171,7 @@ program.command('sodg')
   .option('--include <names>', 'Generate SODG for these object names (using mask)', '**')
   .option('--exclude <names>', 'Don\'t generate SODG for these objects')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -189,6 +195,7 @@ program.command('print')
     'print'
   )
   .action((str, opts) => {
+    pin(program.opts());
     clear(str);
     coms().print({...program.opts(), ...str});
   });
@@ -196,6 +203,7 @@ program.command('print')
 program.command('lint')
   .description('Lint XMIR files and fail if any issues inside')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -209,6 +217,7 @@ program.command('lint')
 program.command('resolve')
   .description('Resolve all the dependencies required for compilation')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -223,6 +232,7 @@ program.command('resolve')
 program.command('transpile')
   .description('Convert EO files into target language')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -238,6 +248,7 @@ program.command('transpile')
 program.command('compile')
   .description('Compile target language sources into binaries')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -273,6 +284,7 @@ program.command('dataize')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -297,6 +309,7 @@ program.command('test')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await coms().register(program.opts());
@@ -315,6 +328,7 @@ program.command('test')
 program.command('docs')
   .description('Generate documentation from XMIR files')
   .action((str, opts) => {
+    pin(program.opts());
     coms().docs(program.opts());
   });
 
@@ -357,6 +371,7 @@ program.command('jeo:disassemble')
     'xmir'
   )
   .action((str, opts) => {
+    pin(program.opts());
     coms().jeo_disassemble({...program.opts(), ...str});
   });
 
@@ -380,6 +395,7 @@ program.command('jeo:assemble')
 program.command('latex')
   .description('Generate LaTeX files from EO sources')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     await coms().register(program.opts());
     await coms().parse(program.opts());
@@ -389,6 +405,7 @@ program.command('latex')
 program.command('fmt')
   .description('Format EO files in the source directory')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     await coms().register(program.opts());
     await coms().parse(program.opts());
@@ -414,6 +431,17 @@ try {
 function clear(str) {
   if (program.opts().clean) {
     coms().clean({...program.opts(), ...str});
+  }
+}
+
+/** Checks --pin option and fails if version mismatch.
+ * @param {*} opts Options
+ * @throws {Error} If version mismatch
+ */
+function pin(opts) {
+  if (opts.pin && opts.pin !== version.what) {
+    console.error(`Version mismatch: you are running eoc ${version.what}, but --pin option requires ${opts.pin}`);
+    process.exit(1);
   }
 }
 
