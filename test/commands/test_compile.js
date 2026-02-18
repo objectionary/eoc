@@ -96,6 +96,25 @@ describe('compile', () => {
     ]);
     assert.ok(stdout.includes('skipped for JavaScript'));
   });
+  it('Skips linting if --blind specified', () => {
+    const home = path.resolve('temp/test-compile/simple');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src', 'foo', 'bar'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/foo/bar/compile3.eo'), simple('compile3'));
+    const stdout = runSync([
+      'compile',
+      '--verbose',
+      '--blind',
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
+    ]);
+    assert.ok(
+      stdout.includes('Linting is skipped because eo:skipLinting is TRUE'),
+      'Linting should be skipped with --blind option'
+    );
+  });
 });
 
 /**

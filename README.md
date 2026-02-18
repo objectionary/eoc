@@ -147,6 +147,11 @@ There are also commands that help manipulate with XMIR and EO sources
 This command line toolkit simply integrates other tools available in
 the [@objectionary](https://github.com/objectionary) GitHub organization.
 
+## Linting
+
+There are two ways to work with linting. The `--easy` option enables linting
+but ignores warnings, while the `--blind` option completely disables linting.
+
 ## How to Test
 
 To execute the project tests, use the following command:
