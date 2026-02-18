@@ -56,6 +56,7 @@ module.exports.flags = function (opts) {
     `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
     `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
     `-Deo.placedFormat=csv`,
+    `-Deo.skipLinting=${opts.blind ? 'true' : 'false'}`,
     opts.trackTransformationSteps ? '-Deo.trackTransformationSteps' : '',
   ];
 };
@@ -69,6 +70,7 @@ module.exports.flags = function (opts) {
  */
 module.exports.mvnw = function (args, tgt, batch) {
   return new Promise((resolve, reject) => {
+    console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
     target = tgt;
     phase = args[0];
     const home = path.resolve(__dirname, '../mvnw');
