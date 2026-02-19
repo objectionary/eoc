@@ -36,7 +36,7 @@ describe('eoc', () => {
   it('fails due version mismatch if different --pin provided', (done) => {
     assert.throws(
       () => {    runSync(['--pin=29.9.4', 'clean']); },
-      /Version mismatch: you are running eoc 0.0.0, but --pin option requires 29.9.4/
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
     );
     done();
   });
@@ -45,7 +45,7 @@ describe('eoc', () => {
 describe('eoc', () => {
   before(weAreOnline);
   it('cleans successfully when versions match with --pin', (done) => {
-    const stdout = runSync(['--pin=0.0.0', 'clean']);
+    const stdout = runSync([`--pin=${version.what}`, 'clean']);
     assert(stdout.includes("The directory .eoc does not exist, no need to delete it"));
     done();
   });
