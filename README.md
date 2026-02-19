@@ -35,7 +35,9 @@ Or install it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
 nix run github:objectionary/eoc
 ```
 
-You can also include EOLANG in your own flake:
+<details>
+
+<summary>You can also include EOLANG in your own flake</summary>
 
 ```nix
 {
@@ -86,6 +88,8 @@ After that, select one of the methods for installing the package:
   ];
 }
 ```
+
+</details>
 
 Then, you write a simple [EO](https://www.eolang.org) program in `hello.eo` file
 in the current directory:
