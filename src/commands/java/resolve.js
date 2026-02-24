@@ -13,14 +13,13 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of resolve task
  */
+const goals = ['eo:resolve', 'eo:place'];
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
-    await mvnw(['eo:resolve'].concat(flags(opts)), opts.target, opts.batch);
-    const sources = path.resolve(opts.target, 'eo/6-resolve');
-    console.info('Dependencies resolved in %s', rel(sources));
-    const r = await mvnw(['eo:place'].concat(flags(opts)), opts.target, opts.batch);
+    const r = await mvnw(goals.concat(flags(opts)), opts.target, opts.batch);
     const classes = path.resolve(opts.target, 'classes');
     tracked.print(`Dependencies placed in ${rel(classes)}`);
     return r;
   });
 };
+module.exports.goals = goals;

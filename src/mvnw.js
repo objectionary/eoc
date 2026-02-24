@@ -72,7 +72,7 @@ module.exports.mvnw = function (args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
     target = tgt;
-    phase = args[0];
+    phase = args.filter((a) => !a.startsWith('-')).join(' + ');
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {

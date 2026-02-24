@@ -13,11 +13,13 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of compile task
  */
+const goals = ['test-compile'];
 module.exports = function(opts) {
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
-    const r = await mvnw(['test-compile'].concat(flags(opts)), opts.target, opts.batch);
+    const r = await mvnw(goals.concat(flags(opts)), opts.target, opts.batch);
     tracked.print(`Java .class files compiled in ${rel(target)}`);
     return r;
   });
 };
+module.exports.goals = goals;

@@ -13,11 +13,13 @@ const path = require('path');
  * @param {Hash} opts - All options
  * @return {Promise} of register task
  */
+const goals = ['eo:register'];
 module.exports = function(opts) {
   const foreign = path.resolve(opts.target, 'eo-foreign.json');
   return elapsed(async (tracked) => {
-    const r = await mvnw(['eo:register'].concat(flags(opts)), opts.target, opts.batch);
+    const r = await mvnw(goals.concat(flags(opts)), opts.target, opts.batch);
     tracked.print(`EO objects registered in ${rel(foreign)}`);
     return r;
   });
 };
+module.exports.goals = goals;

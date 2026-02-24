@@ -14,15 +14,18 @@ const semver = require('semver');
  * @param {Hash} opts - All options
  * @return {Promise} of assemble task
  */
+const goals = (opts) =>
+  (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0'))
+    ? ['eo:lint'] : ['eo:verify'];
+const extraFlags = (opts) =>
+  [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`];
 module.exports = function(opts) {
-  const extra = [
-    `-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`,
-  ];
+  const extra = extraFlags(opts);
   return elapsed(async (tracked) => {
-    if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+    if (goals(opts)[0] === 'eo:lint') {
       try {
         const r = await mvnw(
-          ['eo:lint'].concat(flags(opts)).concat(extra),
+          goals(opts).concat(flags(opts)).concat(extra),
           opts.target, opts.batch
         );
         tracked.print(`EO program linted in ${rel(path.resolve(opts.target))}`);
@@ -36,7 +39,7 @@ module.exports = function(opts) {
     }
     try {
       const r = await mvnw(
-        ['eo:verify'].concat(flags(opts)).concat(extra),
+        goals(opts).concat(flags(opts)).concat(extra),
         opts.target, opts.batch
       );
       tracked.print(`EO program verified in ${rel(path.resolve(opts.target))}`);
@@ -49,3 +52,5 @@ module.exports = function(opts) {
     }
   });
 };
+module.exports.goals = goals;
+module.exports.extraFlags = extraFlags;
