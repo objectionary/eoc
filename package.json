@@ -28,7 +28,7 @@
     "grunt-mocha-cli": "^7.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^11.5.0",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "patch-package": "^8.0.0"
   },
   "engines": {
