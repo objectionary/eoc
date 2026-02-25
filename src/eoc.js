@@ -192,7 +192,7 @@ program.command('print')
   )
   .option(
     '--print-output <dir>',
-    'Directory where translated EO files are pipelinesd (relative to --target)',
+    'Directory where translated EO files are stored (relative to --target)',
     'print'
   )
   .action((str, opts) => {
