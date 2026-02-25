@@ -11,18 +11,18 @@ const {elapsed} = require('../../elapsed');
  * @param {Object} coms - Command map to resolve goals and extra flags from
  * @param {Array.<String>} commands - Command names to collect goals for
  * @param {Object} opts - All options
- * @return {{goalList: Array.<String>, extraFlags: Array.<String>}}
+ * @return {{goalList: Array.<String>, flagList: Array.<String>}}
  */
 const collect = function(coms, commands, opts) {
-  const extraFlags = [];
+  const flagList = [];
   const goalList = commands.flatMap((cmd) => {
     const command = coms[cmd];
     if (command.extraFlags) {
-      extraFlags.push(...command.extraFlags(opts));
+      flagList.push(...command.extraFlags(opts));
     }
     return typeof command.goals === 'function' ? command.goals(opts) : command.goals || [];
   });
-  return {goalList, extraFlags};
+  return {goalList, flagList};
 };
 
 /**
@@ -34,8 +34,8 @@ const collect = function(coms, commands, opts) {
  */
 module.exports = function(coms, commands, opts) {
   return elapsed(async (tracked) => {
-    const {goalList, extraFlags} = collect(coms, commands, opts);
-    const result = await mvnw(goalList.concat(flags(opts)).concat(extraFlags), opts.target, opts.batch);
+    const {goalList, flagList} = collect(coms, commands, opts);
+    const result = await mvnw(goalList.concat(flags(opts)).concat(flagList), opts.target, opts.batch);
     tracked.print(`Pipeline [${commands.join(' \u2192 ')}] done`);
     return result;
   });
