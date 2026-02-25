@@ -106,7 +106,8 @@ program
   .option('-c, --clean', 'Delete .eoc directory before running a command')
   .option('--debug', 'Print ALL debug messages, heavily overloading the log')
   .option('--verbose', 'Print debug messages and full output of child processes')
-  .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what);
+  .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what)
+  .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
 
 program.command('audit')
   .description('Inspect all packages and report their status')

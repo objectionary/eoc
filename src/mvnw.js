@@ -50,6 +50,7 @@ module.exports.flags = function (opts) {
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
+    opts.updateSnapshots ? '--update-snapshots' : '',
     `-Deo.sourcesDir=${sources}`,
     `-Deo.targetDir=${target}`,
     `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
@@ -82,7 +83,6 @@ module.exports.mvnw = function (args, tgt, batch) {
     const params = args.filter((t) => t !== '').concat([
       '--batch-mode',
       '--color=never',
-      '--update-snapshots',
       '--fail-fast',
       '--strict-checksums',
     ]);
