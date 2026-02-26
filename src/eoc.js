@@ -43,7 +43,7 @@ const {program} = require('commander'),
         link: require('./commands/java/link'),
         compile: require('./commands/java/compile'),
         dataize: require('./commands/java/dataize'),
-        test: require('./commands/java/test')
+        test: require('./commands/java/test'),
       }
     },
     [language.js]: {
@@ -54,9 +54,13 @@ const {program} = require('commander'),
         link: require('./commands/js/link'),
         compile: require('./commands/js/compile'),
         dataize: require('./commands/js/dataize'),
-        test: require('./commands/js/test')
+        test: require('./commands/js/test'),
       }
     }
+  },
+  pipelines = {
+    [language.java]: require('./commands/java/pipeline'),
+    [language.js]: require('./commands/js/pipeline'),
   };
 
 if (process.argv.includes('--verbose')) {
@@ -143,8 +147,7 @@ program.command('parse')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().parse(program.opts());
+      await pipe()(coms(), ['register', 'parse'], program.opts());
     } else {
       await coms().parse(program.opts());
     }
@@ -156,8 +159,7 @@ program.command('assemble')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
+      await pipe()(coms(), ['register', 'assemble'], program.opts());
     } else {
       await coms().assemble(program.opts());
     }
@@ -175,8 +177,7 @@ program.command('sodg')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
+      await pipe()(coms(), ['register', 'assemble'], program.opts());
       await coms().sodg({...program.opts(), ...str});
     } else {
       await coms().sodg({...program.opts(), ...str});
@@ -207,9 +208,7 @@ program.command('lint')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint'], program.opts());
     } else {
       await coms().lint(program.opts());
     }
@@ -221,10 +220,7 @@ program.command('resolve')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve'], program.opts());
     } else {
       await coms().resolve(program.opts());
     }
@@ -236,11 +232,7 @@ program.command('transpile')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
-      await coms().transpile(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile'], program.opts());
     } else {
       await coms().transpile(program.opts());
     }
@@ -252,12 +244,7 @@ program.command('compile')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
-      await coms().transpile(program.opts());
-      await coms().compile(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile'], program.opts());
     } else {
       await coms().compile(program.opts());
     }
@@ -268,13 +255,7 @@ program.command('link')
   .action(async (str, opts) => {
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
-      await coms().transpile(program.opts());
-      await coms().compile(program.opts());
-      await coms().link(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
     } else {
       await coms().link(program.opts());
     }
@@ -288,13 +269,7 @@ program.command('dataize')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
-      await coms().transpile(program.opts());
-      await coms().compile(program.opts());
-      await coms().link(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
       await coms().dataize(
         program.args[1], program.args.slice(2), {...program.opts(), ...str}
       );
@@ -313,13 +288,7 @@ program.command('test')
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
-      await coms().register(program.opts());
-      await coms().assemble(program.opts());
-      await coms().lint(program.opts());
-      await coms().resolve(program.opts());
-      await coms().transpile(program.opts());
-      await coms().compile(program.opts());
-      await coms().link(program.opts());
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
       await coms().test({...program.opts(), ...str});
     } else {
       await coms().test({...program.opts(), ...str});
@@ -398,8 +367,7 @@ program.command('latex')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    await coms().register(program.opts());
-    await coms().parse(program.opts());
+    await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().latex(program.opts());
   });
 
@@ -408,8 +376,7 @@ program.command('fmt')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    await coms().register(program.opts());
-    await coms().parse(program.opts());
+    await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().print({
       printInput: '1-parse',
       printOutput: program.opts().sources,
@@ -457,4 +424,17 @@ function coms() {
     throw new Error(`Unknown platform ${lang}`);
   }
   return hash;
+}
+
+/**
+ * Get pipeline for the target language.
+ * @return {Function} - pipeline function
+ */
+function pipe() {
+  const lang = program.opts().language,
+    pipeline = pipelines[lang];
+  if (pipeline === undefined) {
+    throw new Error(`Unknown platform ${lang}`);
+  }
+  return pipeline;
 }
