@@ -6,6 +6,6 @@
 // The values here are replaced automatically by the .rultor.yml script,
 // at the "release" pipeline:
 module.exports = {
-  what: '0.0.0',
-  when: '0000-00-00'
+  what: '0.34.1',
+  when: '2026-02-26'
 };
