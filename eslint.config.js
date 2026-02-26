@@ -14,7 +14,7 @@ const localPlugin = {
 
 module.exports = [
   {
-    ignores: ['node_modules/'],
+    ignores: ['node_modules/', '.aidy/'],
   },
   {
     ...configs.all,

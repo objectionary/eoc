@@ -13,13 +13,21 @@ const path = require('path');
  * @param {Object} opts - All options
  * @return {Promise} of resolve task
  */
-const goals = ['eo:resolve', 'eo:place'];
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
-    const r = await mvnw(goals.concat(flags(opts)), opts.target, opts.batch);
+    const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);
     const classes = path.resolve(opts.target, 'classes');
     tracked.print(`Dependencies placed in ${rel(classes)}`);
     return r;
   });
 };
+
+/**
+ * Command to get Maven goals for resolve command.
+ * @return {Array.<String>} of Maven goals to run for resolve command
+ */
 module.exports.goals = goals;
+
+function goals() {
+  return ['eo:resolve', 'eo:place'];
+}

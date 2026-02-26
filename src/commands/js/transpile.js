@@ -15,7 +15,7 @@ const path = require('path');
  */
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
-    const r = await eo2jsw('transpile', { ...opts, alone: true, project: 'project' });
+    const r = await eo2jsw('transpile', {...opts, alone: true, project: 'project'});
     tracked.print(`JS sources generated in ${rel(path.resolve(opts.target, 'project'))}`);
     return r;
   });

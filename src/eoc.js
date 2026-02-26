@@ -32,7 +32,7 @@ const {program} = require('commander'),
     generate_comments: require('./commands/generate_comments'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble'),
-    latex: require('./commands/latex')
+    latex: require('./commands/latex'),
   },
   commands = {
     [language.java]: {
@@ -431,8 +431,8 @@ function coms() {
  * @return {Function} - pipeline function
  */
 function pipe() {
-  const lang = program.opts().language,
-    pipeline = pipelines[lang];
+  const lang = program.opts().language;
+  const pipeline = pipelines[lang];
   if (pipeline === undefined) {
     throw new Error(`Unknown platform ${lang}`);
   }

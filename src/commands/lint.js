@@ -14,11 +14,6 @@ const semver = require('semver');
  * @param {Hash} opts - All options
  * @return {Promise} of assemble task
  */
-const goals = (opts) =>
-  (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0'))
-    ? ['eo:lint'] : ['eo:verify'];
-const extraFlags = (opts) =>
-  [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`];
 module.exports = function(opts) {
   const extra = extraFlags(opts);
   return elapsed(async (tracked) => {
@@ -33,7 +28,7 @@ module.exports = function(opts) {
       } catch (error) {
         throw new Error(
           'There are errors and/or warnings; you may disable warnings via the --easy option',
-          { cause: error }
+          {cause: error}
         );
       }
     }
@@ -47,10 +42,31 @@ module.exports = function(opts) {
     } catch (error) {
       throw new Error(
         'You may disable warnings via the --easy option',
-        { cause: error }
+        {cause: error}
       );
     }
   });
 };
+
+/**
+ * Command to get Maven goals for lint command.
+ * @return {Array.<String>} of Maven goals to run for lint command
+ */
 module.exports.goals = goals;
-module.exports.extraFlags = extraFlags;
+
+/**
+* Command to get extra Maven flags for lint command.
+* @return {Array.<String>} of extra Maven flags to run for lint command
+*/
+module.exports.extras = extras;
+
+function goals(opts) {
+  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+    return ['eo:lint'];
+  }
+  return ['eo:verify'];
+}
+
+function extras(opts) {
+  return [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`];
+}

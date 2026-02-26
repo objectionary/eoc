@@ -2,36 +2,71 @@
  * SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-
 const assert = require('assert');
-const {collect} = require('../../../src/commands/java/pipeline');
+const path = require('path');
+const pipeline = require('../../../src/commands/java/pipeline');
 
-describe('java/pipeline collect', () => {
-  it('collects static goals from commands', () => {
+describe('java/pipeline', () => {
+  it('builds correct command for eo:register and eo:assemble', async () => {
     const coms = {
-      register: {goals: ['eo:register']},
-      assemble: {goals: ['eo:assemble']},
+      register: {goals: () => ['eo:register']},
+      assemble: {goals: () => ['eo:assemble']},
     };
-    const {goalList, flagList} = collect(coms, ['register', 'assemble'], {});
-    assert.deepStrictEqual(goalList, ['eo:register', 'eo:assemble']);
-    assert.deepStrictEqual(flagList, []);
+    calls = [];
+    const maven = function maven(command) {
+      calls.push(command);
+    }
+    opts = {sources: 'sources-dir', target: 'target-dir'};
+    await pipeline(coms, ['register', 'assemble'], opts, maven)
+    assert.deepStrictEqual(
+      calls[0],
+      [
+        'eo:register',
+        'eo:assemble',
+        '-Deo.version=undefined',
+        '-Deo.tag=undefined',
+        '--quiet',
+        `-Deo.sourcesDir=${path.resolve(opts.sources)}`,
+        `-Deo.targetDir=${path.resolve(opts.target)}`,
+        `-Deo.outputDir=${path.resolve(opts.target, 'classes')}`,
+        `-Deo.generatedDir=${path.resolve(opts.target, 'generated-sources')}`,
+        `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
+        '-Deo.placedFormat=csv',
+        '-Deo.skipLinting=false',
+      ]
+    );
   });
-  it('resolves dynamic goals from function', () => {
+  it('resolves dynamic goals for lint', async () => {
     const coms = {
       lint: {
         goals: (opts) => opts.newParser ? ['eo:lint'] : ['eo:verify'],
-        extraFlags: (opts) => [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`],
+        extras: (opts) => [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`],
       },
     };
-    const {goalList, flagList} = collect(coms, ['lint'], {newParser: true, easy: false});
-    assert.deepStrictEqual(goalList, ['eo:lint']);
-    assert.deepStrictEqual(flagList, ['-Deo.failOnWarning=true']);
-  });
-  it('collects multiple goals from single command', () => {
-    const coms = {
-      resolve: {goals: ['eo:resolve', 'eo:place']},
+    calls = [];
+    const maven = function maven(command) {
+      calls.push(command);
+    }
+    opts = {
+      sources: 'lint-sources-dir',
+      target: 'lint-target-dir',
+      newParser: true,
+      easy: true,
     };
-    const {goalList} = collect(coms, ['resolve'], {});
-    assert.deepStrictEqual(goalList, ['eo:resolve', 'eo:place']);
+    await pipeline(coms, ['lint'], opts, maven)
+    assert(calls[0].includes('eo:lint'));
+    assert(calls[0].includes('-Deo.failOnWarning=false'));
+  });
+  it('uses multiple goals from single command', async () => {
+    const coms = {
+      resolve: {goals: () => ['eo:resolve', 'eo:place']},
+    };
+    calls = [];
+    const maven = function maven(command) {
+      calls.push(command);
+    }
+    await pipeline(coms, ['resolve'], {sources: 'srs', target: 'tgt'}, maven)
+    assert(calls[0].includes('eo:resolve'));
+    assert(calls[0].includes('eo:place'));
   });
 });
