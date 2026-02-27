@@ -10,7 +10,7 @@
     "commander": "^12.1.0",
     "eo2js": "^0.0.8",
     "fast-xml-parser": "^5.2.3",
-    "marked": "^4.3.0",
+    "marked": "^17.0.0",
     "relative": "^3.0.2",
     "semver": "^7.7.2",
     "sync-request": "^6.1.0",
