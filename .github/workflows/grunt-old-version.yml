@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: grunt-for-an-old-fixed-version
+"on":
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-24.04]
+        java: [17]
+        node: [18]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: "zulu"
+          java-version: ${{ matrix.java }}
+      - run: npm install
+      - run: echo '0.59.3' > eo-version.txt
+      - run: npx grunt
