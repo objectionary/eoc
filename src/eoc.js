@@ -33,6 +33,7 @@ const {program} = require('commander'),
     jeo_disassemble: require('./commands/jeo/disassemble'),
     jeo_assemble: require('./commands/jeo/assemble'),
     latex: require('./commands/latex'),
+    normalize: require('./commands/normalize'),
   },
   commands = {
     [language.java]: {
@@ -369,6 +370,15 @@ program.command('latex')
     clear(str);
     await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().latex(program.opts());
+  });
+
+program.command('normalize')
+  .description('Normalize EO files using phi-calculus normalization via phino')
+  .action(async (str, opts) => {
+    pin(program.opts());
+    clear(str);
+    await pipe()(coms(), ['register', 'parse'], program.opts());
+    await coms().normalize(program.opts());
   });
 
 program.command('fmt')
