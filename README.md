@@ -142,7 +142,9 @@ There are also commands that help manipulate with XMIR and EO sources
 * `docs` generates HTML documentation from `.xmir` files
 * `latex` generates `.tex` files from `.eo` sources
 * `fmt` formats `.eo` files in the source directory
-* `normalize` normalizes `.eo` files via phi-calculus rewriting using [phino](https://github.com/objectionary/phino) (must be installed separately); original files are saved to `.eoc/before-normalize/` for debugging
+* `normalize` normalizes `.eo` files via phi-calculus rewriting using
+  [phino](https://github.com/objectionary/phino) (must be installed separately);
+  original files are saved to `.eoc/before-normalize/` for debugging
 * ~~`translate` converts Java/C++/Python/etc. program to EO program~~
 * ~~`demu` removes `cage` and `memory` objects~~
 * ~~`dejump` removes `goto` objects~~
