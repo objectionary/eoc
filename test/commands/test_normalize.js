@@ -9,25 +9,19 @@ const path = require('path');
 const {execSync} = require('child_process');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-/**
- * Check whether phino is installed on this machine.
- * @return {boolean} - true if phino is available
- */
-function phinoInstalled() {
-  try {
-    execSync('phino --version', {stdio: 'pipe'});
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 describe('normalize', () => {
   before(weAreOnline);
-  it('normalizes EO files and saves originals in before-normalize/', function(done) {
-    if (!phinoInstalled()) {
-      this.skip();
+  before(() => {
+    try {
+      execSync('phino --version', {stdio: 'pipe'});
+    } catch (e) {
+      throw new Error(
+        'phino is required to run normalize tests, see https://github.com/objectionary/phino',
+        {cause: e}
+      );
     }
+  });
+  it('normalizes EO files and saves originals in before-normalize/', done => {
     const home = path.resolve('temp/test-normalize/simple');
     const source = path.resolve(home, 'src');
     const target = path.resolve(home, 'target');
@@ -54,10 +48,7 @@ describe('normalize', () => {
     );
     done();
   });
-  it('normalized output matches expected content', function(done) {
-    if (!phinoInstalled()) {
-      this.skip();
-    }
+  it('normalized output matches expected content', done => {
     const home = path.resolve('temp/test-normalize/content');
     const source = path.resolve(home, 'src');
     const target = path.resolve(home, 'target');
@@ -81,10 +72,7 @@ describe('normalize', () => {
     );
     done();
   });
-  it('backup matches original input and all pipeline files are produced', function(done) {
-    if (!phinoInstalled()) {
-      this.skip();
-    }
+  it('backup matches original input and all pipeline files are produced', done => {
     const home = path.resolve('temp/test-normalize/pipeline');
     const source = path.resolve(home, 'src');
     const target = path.resolve(home, 'target');
@@ -124,30 +112,6 @@ describe('normalize', () => {
     }
     const normalized = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
     assert(normalized.length > 0, 'Normalized .eo file must not be empty');
-    done();
-  });
-  it('fails when phino is not installed', function(done) {
-    if (phinoInstalled()) {
-      this.skip();
-    }
-    const home = path.resolve('temp/test-normalize/no-phino');
-    const source = path.resolve(home, 'src');
-    const target = path.resolve(home, 'target');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(source, {recursive: true});
-    fs.mkdirSync(target, {recursive: true});
-    fs.writeFileSync(path.resolve(source, 'simple.eo'), '# sample\n[] > simple\n');
-    assert.throws(
-      () => runSync([
-        'normalize',
-        '--verbose',
-        `--parser=${parserVersion}`,
-        `--home-tag=${homeTag}`,
-        '-s', source,
-        '-t', target,
-      ]),
-      'normalize should fail when phino is not installed'
-    );
     done();
   });
 });
