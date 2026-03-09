@@ -96,6 +96,7 @@ describe('normalize', () => {
     runSync([
       'normalize',
       '--verbose',
+      '--debug',
       `--parser=${parserVersion}`,
       `--home-tag=${homeTag}`,
       '-s', source,
