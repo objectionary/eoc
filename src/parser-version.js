@@ -12,6 +12,7 @@ const request = require('sync-request'),
  */
   version = module.exports = {
     value: '',
+    existsCache: {},
     get() {
       if (version.value === '') {
         const repo = 'org/eolang/eo-maven-plugin',
@@ -32,6 +33,9 @@ const request = require('sync-request'),
      * @return {Boolean} True if version exists, false otherwise
      */
     exists(ver) {
+      if (ver in version.existsCache) {
+        return version.existsCache[ver];
+      }
       let result;
       if (ver && ver !== 'undefined') {
         try {
@@ -42,11 +46,12 @@ const request = require('sync-request'),
           result = res.statusCode === 200;
         } catch (e) {
           console.debug('Unable to validate parser version (network error): %s', e.message);
-          result = false;
+          result = true;
         }
       } else {
         result = false;
       }
+      version.existsCache[ver] = result;
       return result;
     }
   };
