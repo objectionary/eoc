@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+const fs = require('fs');
 const path = require('path');
 const {execSync} = require('child_process');
 const {mvnw, flags} = require('../mvnw');
@@ -44,8 +45,8 @@ module.exports = function(opts) {
       console.debug('Normalizing %s', relPath);
       let ts = Date.now();
       const phi = execSync(
-        `phino rewrite --input=xmir --output=phi "${xmirFile}"`,
-        {stdio: ['pipe', 'pipe', 'pipe']}
+        'phino rewrite --input=xmir --output=phi',
+        {input: fs.readFileSync(xmirFile), stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('XMIR -> phi done in %dms', Date.now() - ts);
       ts = Date.now();
