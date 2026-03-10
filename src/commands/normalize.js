@@ -25,14 +25,14 @@ module.exports = function(opts) {
   if (opts.target === undefined) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
+  try {
+    execSync('phino --version', {stdio: 'pipe'});
+  } catch (e) {
+    throw new Error('phino is not installed, see https://github.com/objectionary/phino', {cause: e});
+  }
   const sources = path.resolve(opts.sources);
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
-    try {
-      execSync('phino --version', {stdio: 'pipe'});
-    } catch (e) {
-      throw new Error('phino is not installed, see https://github.com/objectionary/phino', { cause: e });
-    }
     copyDir(sources, path.join(target, 'before-normalize'), '.eo');
     const xmirDir = path.join(target, '1-parse');
     const xmirNormDir = path.join(target, 'xmir-normalized');
