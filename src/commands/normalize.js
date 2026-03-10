@@ -35,8 +35,6 @@ module.exports = function(opts) {
     }
     copyDir(sources, path.join(target, 'before-normalize'), '.eo');
     const xmirDir = path.join(target, '1-parse');
-    const phiDir = opts.debug ? path.join(target, 'phi') : null;
-    const phiNormDir = opts.debug ? path.join(target, 'phi-normalized') : null;
     const xmirNormDir = path.join(target, 'xmir-normalized');
     const xmirFiles = findFiles(xmirDir, '.xmir');
     console.debug('Found %d XMIR file(s) to normalize', xmirFiles.length);
@@ -62,10 +60,6 @@ module.exports = function(opts) {
         {input: phiNorm, stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('phi -> XMIR done in %dms', Date.now() - ts);
-      if (opts.debug) {
-        saveFile(phiDir, `${base}.phi`, phi);
-        saveFile(phiNormDir, `${base}.phi`, phiNorm);
-      }
       saveFile(xmirNormDir, `${base}.xmir`, xmirNorm);
     }
     const r = await mvnw(
