@@ -9,6 +9,7 @@
 [![codecov](https://codecov.io/gh/objectionary/eoc/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eoc)
 [![Hits-of-Code](https://hitsofcode.com/github/objectionary/eoc)](https://hitsofcode.com/view/github/objectionary/eoc)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eoc/blob/master/LICENSE.txt)
+[![Release](https://img.shields.io/github/v/release/objectionary/eoc.svg)](https://github.com/objectionary/eoc/releases/tag/0.34.1)
 
 This is a command-line tool-kit for [EO](https://www.eolang.org)
 programming languages, allowing you to compile EO programs, test, dataize,
