@@ -39,6 +39,9 @@ else
   echo "Copied $ORIG_FORMULA to $FORMULA_FILE_PREV"
 fi
 
+DOTLESS_VERSION="${VERSION//./}"
+sed -i -E "s/^class Eolang /class EolangAT${DOTLESS_VERSION} /" "$FORMULA_FILE_PREV"
+
 TARBALL_URL="https://github.com/${GITHUB_REPO}/archive/refs/tags/${TAG_VERSION}.tar.gz"
 
 curl -L -o "/tmp/eolang-${VERSION}.tar.gz" "$TARBALL_URL"
