@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-const fs = require('fs');
 const path = require('path');
 const {execSync} = require('child_process');
 const {mvnw, flags} = require('../mvnw');
 const {elapsed} = require('../elapsed');
 const {findFiles, saveFile, copyDir} = require('../files');
-const rel = require('relative');
+const relative = require('relative');
 
 /**
  * Command to normalize .EO files via phi-calculus using phino.
@@ -35,44 +34,31 @@ module.exports = function(opts) {
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
     copyDir(sources, path.join(target, 'before-normalize'), '.eo');
-    const xmirDir = path.join(target, '1-parse');
-    const xmirNormDir = path.join(target, 'xmir-normalized');
-    const xmirFiles = findFiles(xmirDir, '.xmir');
-    console.debug('Found %d XMIR file(s) to normalize', xmirFiles.length);
-    for (const xmirFile of xmirFiles) {
-      const relPath = path.relative(xmirDir, xmirFile);
-      const base = relPath.replace(/\.xmir$/, '');
-      console.debug('Normalizing %s', relPath);
-      let ts = Date.now();
-      const phi = execSync(
-        'phino rewrite --input=xmir --output=phi',
-        {input: fs.readFileSync(xmirFile), stdio: ['pipe', 'pipe', 'pipe']}
+    const parsed = path.join(target, '1-parse');
+    const normed = path.join(target, 'xmir-normalized');
+    const xmirs = findFiles(parsed, '.xmir');
+    console.debug('Found %d XMIR file(s) to normalize', xmirs.length);
+    for (const xmir of xmirs) {
+      const rel = path.relative(parsed, xmir);
+      console.debug('Normalizing %s', rel);
+      const ts = Date.now();
+      const out = execSync(
+        `phino rewrite --input=xmir --output=xmir --normalize ${xmir}`,
+        {stdio: ['pipe', 'pipe', 'pipe']}
       );
-      console.debug('XMIR -> phi done in %dms', Date.now() - ts);
-      ts = Date.now();
-      const phiNorm = execSync(
-        'phino rewrite --normalize',
-        {input: phi, stdio: ['pipe', 'pipe', 'pipe']}
-      );
-      console.debug('phi normalized in %dms', Date.now() - ts);
-      ts = Date.now();
-      const xmirNorm = execSync(
-        'phino rewrite --input=phi --output=xmir',
-        {input: phiNorm, stdio: ['pipe', 'pipe', 'pipe']}
-      );
-      console.debug('phi -> XMIR done in %dms', Date.now() - ts);
-      saveFile(xmirNormDir, `${base}.xmir`, xmirNorm);
+      console.debug('Normalized in %dms', Date.now() - ts);
+      saveFile(normed, rel, out);
     }
     const r = await mvnw(
       ['eo:print']
         .concat(flags(opts))
         .concat([
-          `-Deo.printSourcesDir=${xmirNormDir}`,
+          `-Deo.printSourcesDir=${normed}`,
           `-Deo.printOutputDir=${sources}`,
         ]),
       opts.target, opts.batch
     );
-    tracked.print(`EO files normalized in ${rel(sources)}`);
+    tracked.print(`EO files normalized in ${relative(sources)}`);
     return r;
   });
 };

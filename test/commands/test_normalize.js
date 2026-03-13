@@ -9,6 +9,27 @@ const path = require('path');
 const {execSync} = require('child_process');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
+const eo = '# sample\n[] > simple\n';
+
+function setup(name, content = eo) {
+  const home = path.resolve('temp/test-normalize', name);
+  const source = path.resolve(home, 'src');
+  const target = path.resolve(home, 'target');
+  fs.rmSync(home, {recursive: true, force: true});
+  fs.mkdirSync(source, {recursive: true});
+  fs.mkdirSync(target, {recursive: true});
+  fs.writeFileSync(path.resolve(source, 'simple.eo'), content);
+  runSync([
+    'normalize',
+    '--verbose',
+    `--parser=${parserVersion}`,
+    `--home-tag=${homeTag}`,
+    '-s', source,
+    '-t', target,
+  ]);
+  return {home, source, target};
+}
+
 describe('normalize', () => {
   before(weAreOnline);
   before(() => {
@@ -22,22 +43,7 @@ describe('normalize', () => {
     }
   });
   it('normalizes EO files and saves originals in before-normalize/', done => {
-    const home = path.resolve('temp/test-normalize/simple');
-    const source = path.resolve(home, 'src');
-    const target = path.resolve(home, 'target');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(source, {recursive: true});
-    fs.mkdirSync(target, {recursive: true});
-    const content = '# sample\n[] > simple\n';
-    fs.writeFileSync(path.resolve(source, 'simple.eo'), content);
-    runSync([
-      'normalize',
-      '--verbose',
-      `--parser=${parserVersion}`,
-      `--home-tag=${homeTag}`,
-      '-s', source,
-      '-t', target,
-    ]);
+    const {source, target} = setup('simple');
     assert(
       fs.existsSync(path.resolve(target, 'before-normalize/simple.eo')),
       'Original .eo file should be saved in before-normalize/'
@@ -49,21 +55,7 @@ describe('normalize', () => {
     done();
   });
   it('normalized output matches expected content', done => {
-    const home = path.resolve('temp/test-normalize/content');
-    const source = path.resolve(home, 'src');
-    const target = path.resolve(home, 'target');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(source, {recursive: true});
-    fs.mkdirSync(target, {recursive: true});
-    fs.writeFileSync(path.resolve(source, 'simple.eo'), '# sample\n[] > simple\n');
-    runSync([
-      'normalize',
-      '--verbose',
-      `--parser=${parserVersion}`,
-      `--home-tag=${homeTag}`,
-      '-s', source,
-      '-t', target,
-    ]);
+    const {source} = setup('content');
     const actual = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
     const expected = '# No comments.\n[] > simple\n';
     assert.strictEqual(
@@ -73,27 +65,12 @@ describe('normalize', () => {
     done();
   });
   it('backup matches original input and all pipeline files are produced', done => {
-    const home = path.resolve('temp/test-normalize/pipeline');
-    const source = path.resolve(home, 'src');
-    const target = path.resolve(home, 'target');
-    fs.rmSync(home, {recursive: true, force: true});
-    fs.mkdirSync(source, {recursive: true});
-    fs.mkdirSync(target, {recursive: true});
-    const original = '# sample\n[] > simple\n';
-    fs.writeFileSync(path.resolve(source, 'simple.eo'), original);
-    runSync([
-      'normalize',
-      '--verbose',
-      `--parser=${parserVersion}`,
-      `--home-tag=${homeTag}`,
-      '-s', source,
-      '-t', target,
-    ]);
+    const {source, target} = setup('pipeline');
     const backup = fs.readFileSync(
       path.resolve(target, 'before-normalize/simple.eo'), 'utf8'
     );
     assert.strictEqual(
-      backup, original,
+      backup, eo,
       'Backup in before-normalize/ must exactly match the original input'
     );
     const xmirNorm = path.resolve(target, 'xmir-normalized/simple.xmir');

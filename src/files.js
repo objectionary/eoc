@@ -25,7 +25,6 @@ function findFiles(dir, ext) {
   }
   return result;
 }
-module.exports.findFiles = findFiles;
 
 /**
  * Write content to a file, creating parent directories as needed.
@@ -38,7 +37,6 @@ function saveFile(dir, name, content) {
   fs.mkdirSync(path.dirname(file), {recursive: true});
   fs.writeFileSync(file, content);
 }
-module.exports.saveFile = saveFile;
 
 /**
  * Recursively copy files with given extension from src to dst directory.
@@ -59,4 +57,5 @@ function copyDir(src, dst, ext) {
     }
   }
 }
-module.exports.copyDir = copyDir;
+
+module.exports = {findFiles, saveFile, copyDir};
