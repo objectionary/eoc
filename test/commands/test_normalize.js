@@ -73,9 +73,9 @@ describe('normalize', () => {
       backup, eo,
       'Backup in before-normalize/ must exactly match the original input'
     );
-    const xmirNorm = path.resolve(target, 'xmir-normalized/simple.xmir');
-    assert(fs.existsSync(xmirNorm), 'Normalized XMIR file must exist');
-    assert(fs.readFileSync(xmirNorm).length > 0, 'Normalized XMIR file must not be empty');
+    const xmir = path.resolve(target, 'xmir-normalized/simple.xmir');
+    assert(fs.existsSync(xmir), 'Normalized XMIR file must exist');
+    assert(fs.readFileSync(xmir).length > 0, 'Normalized XMIR file must not be empty');
     const normalized = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
     assert(normalized.length > 0, 'Normalized .eo file must not be empty');
     done();
