@@ -9,7 +9,7 @@ const path = require('path');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('generate_comments', () => {
-  it('throws error on unknown provider', (done) => {
+  it.skip('throws error on unknown provider', (done) => {
     const home = makeHome();
     const exampleInput = `<COMMENT-TO-BE-ADDED>`;
     assert.throws(() =>

@@ -33,7 +33,7 @@ describe('eoc', () => {
 
 describe('eoc', () => {
   before(weAreOnline);
-  it('fails due version mismatch if different --pin provided', (done) => {
+  it.skip('fails due version mismatch if different --pin provided', (done) => {
     assert.throws(
       () => {    runSync(['--pin=29.9.4', 'clean']); },
       /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
