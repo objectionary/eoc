@@ -47,7 +47,7 @@ module.exports = function(opts) {
         {stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('Normalized in %dms', Date.now() - ts);
-      console.debug('phino output (first 300 chars): %s', out.toString('utf8').slice(0, 300));
+      console.debug('phino output (first 5 lines):\n%s', out.toString('utf8').split('\n').slice(0, 20).join('\n'));
       saveFile(normed, rel, out);
     }
     const r = await mvnw(
