@@ -30,6 +30,7 @@ module.exports.runSync = function runSync(args) {
       {
         'timeout': 1200000,
         'windowsHide': true,
+        'stdio': ['pipe', 'pipe', 'inherit'],
       }
     ).toString();
   } catch (ex) {

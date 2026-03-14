@@ -26,7 +26,8 @@ module.exports = function(opts) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
   try {
-    execSync('phino --version', {stdio: 'pipe'});
+    const ver = execSync('phino --version', {stdio: 'pipe'});
+    process.stderr.write(`phino version: ${ver.toString('utf8').trim()}\n`);
   } catch (e) {
     throw new Error('phino is not installed, see https://github.com/objectionary/phino', {cause: e});
   }
@@ -47,7 +48,7 @@ module.exports = function(opts) {
         {stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('Normalized in %dms', Date.now() - ts);
-      console.debug('phino output (first 5 lines):\n%s', out.toString('utf8').split('\n').slice(0, 20).join('\n'));
+      process.stderr.write(`phino output (first 20 lines):\n${out.toString('utf8').split('\n').slice(0, 20).join('\n')}\n`);
       saveFile(normed, rel, out);
     }
     const r = await mvnw(
