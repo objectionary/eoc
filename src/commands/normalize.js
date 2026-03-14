@@ -47,14 +47,8 @@ module.exports = function(opts) {
         {stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('Normalized in %dms', Date.now() - ts);
-      let xmlContent = out.toString('utf8');
-      console.debug('phino output (first 300 chars): %s', xmlContent.slice(0, 300));
-      const declEnd = xmlContent.startsWith('<?xml') ? xmlContent.indexOf('?>') + 2 : 0;
-      if (declEnd > 0) {
-        xmlContent = xmlContent.slice(0, declEnd) +
-          xmlContent.slice(declEnd).replace(/<\?xml[^?]*\?>/g, '');
-      }
-      saveFile(normed, rel, xmlContent);
+      console.debug('phino output (first 300 chars): %s', out.toString('utf8').slice(0, 300));
+      saveFile(normed, rel, out);
     }
     const r = await mvnw(
       ['eo:print']
