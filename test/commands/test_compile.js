@@ -36,7 +36,7 @@ describe('compile', () => {
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
     done();
   });
-  it.skip('compiles a simple .EO unit test into Java bytecode .class files', (done) => {
+  it('compiles a simple .EO unit test into Java bytecode .class files', (done) => {
     const home = path.resolve('temp/test-compile/junit');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src', 'foo', 'bar'), {recursive: true});
