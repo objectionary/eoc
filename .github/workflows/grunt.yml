@@ -33,7 +33,7 @@ jobs:
       - name: Install phino (Linux)
         if: matrix.os == 'ubuntu-24.04'
         run: |
-          curl -fsSL -o phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest
+          curl -fsSL -H "Cache-Control: no-cache" -o phino http://phino.objectionary.com/releases/ubuntu-24.04/phino-latest
           chmod +x phino
           sudo mv phino /usr/local/bin/phino
       - name: Install phino (macOS)
