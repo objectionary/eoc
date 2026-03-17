@@ -48,12 +48,12 @@ function copyDir(src, dst, ext) {
   if (!fs.existsSync(src)) {return;}
   fs.mkdirSync(dst, {recursive: true});
   for (const entry of fs.readdirSync(src, {withFileTypes: true})) {
-    const srcPath = path.join(src, entry.name);
-    const dstPath = path.join(dst, entry.name);
+    const source = path.join(src, entry.name);
+    const dest = path.join(dst, entry.name);
     if (entry.isDirectory()) {
-      copyDir(srcPath, dstPath, ext);
+      copyDir(source, dest, ext);
     } else if (!ext || entry.name.endsWith(ext)) {
-      fs.copyFileSync(srcPath, dstPath);
+      fs.copyFileSync(source, dest);
     }
   }
 }
