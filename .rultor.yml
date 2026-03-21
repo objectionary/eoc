@@ -13,6 +13,9 @@ install: |
   pip install git+https://chromium.googlesource.com/external/gyp
   npm install --no-color
   npm install --no-color mocha
+  curl -fsSL -o phino http://phino.objectionary.com/releases/ubuntu-22.04/phino-latest
+  chmod +x phino
+  sudo mv phino /usr/local/bin/phino
   pdd -f /dev/null -v
 release:
   pre: false
