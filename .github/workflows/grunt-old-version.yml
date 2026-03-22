@@ -27,6 +27,11 @@ jobs:
         with:
           distribution: "zulu"
           java-version: ${{ matrix.java }}
+      - name: Install phino
+        run: |
+          curl -fsSL -o phino http://phino.objectionary.com/releases/ubuntu-22.04/phino-latest
+          chmod +x phino
+          sudo mv phino /usr/local/bin/phino
       - run: npm install
       - run: echo '0.59.3' > eo-version.txt
       - run: echo '0.59.3' > home-tag.txt

@@ -8,25 +8,8 @@ const path = require('path');
 const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
+const {findFiles} = require('../files');
 
-/**
- * Recursively reads all .xmir files from a directory.
- * @param {string} dir - Directory path
- * @return {string[]} Array of file paths
- */
-function readXmirsRecursively(dir) {
-  const files = [];
-  const entries = fs.readdirSync(dir, {withFileTypes: true});
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...readXmirsRecursively(full));
-    } else if (entry.name.endsWith('.xmir')) {
-      files.push(full);
-    }
-  }
-  return files;
-}
 
 /**
  * Applies XSLT to XMIR
@@ -136,7 +119,7 @@ module.exports = function(opts) {
       fs.writeFileSync(css, '');
       const packages_info = {};
       const all_xmir_htmls = [];
-      const xmirs = readXmirsRecursively(input);
+      const xmirs = findFiles(input, '.xmir');
       for (const xmir of xmirs) {
         const relative = path.relative(input, xmir);
         const name = path.parse(xmir).name;
