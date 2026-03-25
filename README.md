@@ -154,7 +154,6 @@ There are also commands that help manipulate with XMIR and EO sources
 * ~~`flatten` moves inner objects to upper level~~
 <!-- END COMMANDS SECTION -->
 
-
 This command line toolkit simply integrates other tools available in
 the [@objectionary](https://github.com/objectionary) GitHub organization.
 
