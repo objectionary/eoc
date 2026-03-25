@@ -394,12 +394,18 @@ program.command('fmt')
     });
   });
 
-try {
-  program.parse(process.argv);
-} catch (e) {
-  console.error(e.message);
-  console.debug(e.stack);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    program.parse(process.argv);
+  } catch (e) {
+    console.error(e.message);
+    console.debug(e.stack);
+    process.exit(1);
+  }
+}
+
+module.exports.getHelp = function getHelp() {
+  return program.helpInformation();
 }
 
 /**
