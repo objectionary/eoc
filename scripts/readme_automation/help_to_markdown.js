@@ -15,7 +15,7 @@ function updateSection(sectionName, newContent, readMeContent) {
     `(${escapeRegex(start)})([\\s\\S]*?)(${escapeRegex(end)})`,
     "g"
   );
-  return readMeContent.replace(regex, `$1\n${newContent}\n$3`);
+  return readMeContent.replace(regex, `$1\n${newContent}$3`);
 }
 
 function bulletListTemplate(rows) {
