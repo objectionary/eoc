@@ -18,8 +18,7 @@ function updateSection(sectionName, newContent, readMeContent) {
   return readMeContent.replace(regex, `$1\n${newContent}\n$3`);
 }
 
-function bulletListTemplate(rows)
-{
+function bulletListTemplate(rows) {
   const list = rows.map(([cmd, desc]) => `* \`${cmd}\`  ${desc}`);
   return `${list.join("\n")  }\n`;
 }
@@ -40,8 +39,7 @@ function parseBlock(block_name,text) {
       rows.push([cmd, desc]);
     }
   }
-  if (!rows.length)
-  {
+  if (!rows.length) {
     throw new Error('no data something wrong');
   }
   return rows;

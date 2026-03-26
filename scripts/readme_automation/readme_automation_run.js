@@ -9,7 +9,7 @@ const assert = require('assert');
 const { parseBlock, bulletListTemplate, updateSection } = require("./help_to_markdown");
 const { getHelp } = require("../../src/eoc");
 
-function main (){
+function main () {
   let help_text = getHelp();
   help_text = help_text.replace(/\r\n/g, "\n");
   assert.ok(["Options:","Commands:"].every(sub => help_text.includes(sub)),'"eoc --help" should includes Commands and Options');
