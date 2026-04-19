@@ -136,7 +136,6 @@ There are also commands that help manipulate with XMIR and EO sources
 
 * `audit` inspects all required packages and reports their status
 * `foreign` inspects all objects found in the program after the `assemble` step
-* `sodg` generates `.sodg` from `.xmir`, further rederable as XML or [Dot][dot]
 * `print` generates `.eo` files from `.xmir` files
 * `generate_comments` generates `.json` files with LLM-generated
   documentation for `.eo` structures

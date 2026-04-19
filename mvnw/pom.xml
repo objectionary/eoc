@@ -56,8 +56,6 @@
         <version>${eo.version}</version>
         <configuration>
           <excludeSources>**/.eoc/**</excludeSources>
-          <sodgIncludes>${eo.sodgIncludes}</sodgIncludes>
-          <sodgExcludes>${eo.sodgIncludes},**/*-test.eo</sodgExcludes>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
         </configuration>
@@ -137,8 +135,6 @@
             <version>${eo.version}</version>
             <configuration>
               <excludeSources>**/.eoc/**</excludeSources>
-              <sodgIncludes>${eo.sodgIncludes},**/*-test.eo</sodgIncludes>
-              <sodgExcludes>${eo.sodgExcludes}</sodgExcludes>
               <foreign>${project.build.directory}/eo-foreign.json</foreign>
               <foreignFormat>json</foreignFormat>
             </configuration>
