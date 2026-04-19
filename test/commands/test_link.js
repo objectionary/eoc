@@ -23,7 +23,7 @@ describe('link', () => {
       path.resolve(home, 'src/foo/bar/link.eo'),
       [
         '+package foo.bar',
-        '+alias org.eolang.io.stdout',
+        '+alias io.stdout',
         '',
         '# sample object',
         '[args] > link',

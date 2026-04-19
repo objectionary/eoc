@@ -125,7 +125,7 @@ describe('compile', () => {
 function simple(name) {
   return [
     '+package foo.bar',
-    '+alias org.eolang.io.stdout',
+    '+alias io.stdout',
     '',
     '# This is a simple object',
     `[args] > ${name}`,

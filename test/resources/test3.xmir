@@ -22,7 +22,7 @@
    <o line="1" name="app3" pos="0">
       <o base="ξ" line="1" name="xi🌵" pos="0"/>
       <o base="∅" line="1" name="args" pos="1"/>
-      <o base="Φ.org.eolang.io.stdout" line="3" name="φ" pos="7">
+      <o base="Φ.io.stdout" line="3" name="φ" pos="7">
          <o as="α0" base="Φ.org.eolang.string" line="4" pos="4">
             <o as="α0" base="Φ.org.eolang.bytes" line="4" pos="4">
                <o as="α0" line="4" pos="4">54-65-73-74-0A</o>

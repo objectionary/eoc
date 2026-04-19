@@ -27,7 +27,7 @@ describe('dataize', () => {
         path.resolve(home, 'src/foo/bar/simple.eo'),
         [
           '+package foo.bar',
-          '+alias org.eolang.io.stdout',
+          '+alias io.stdout',
           '',
           '# sample',
           '[args] > simple',
