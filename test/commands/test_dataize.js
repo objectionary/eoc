@@ -10,9 +10,9 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers'),
 
   options = [
     {lang: 'Java', version: parserVersion, tag: homeTag},
-    {lang: 'Java', version: '0.59.5', tag: '0.59.5'},
-  // {lang: 'JavaScript', version: parserVersion, tag: homeTag},
-  // {lang: 'JavaScript', version: '0.41.3', tag: '0.41.3'}
+    // {lang: 'Java', version: '0.59.5', tag: '0.59.5'},
+    // {lang: 'JavaScript', version: parserVersion, tag: homeTag},
+    // {lang: 'JavaScript', version: '0.41.3', tag: '0.41.3'}
   ];
 
 describe('dataize', () => {
