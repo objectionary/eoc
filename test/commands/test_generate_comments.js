@@ -44,13 +44,13 @@ describe('generate_comments', () => {
       const exampleInput = [
         '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
         '[args] > simple',
-        '  QQ.io.stdout (args.at 0) > @',
+        '  io.stdout (args.at 0) > @',
         '  # <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
         '  [] > current-time',
         '    output. > @',
-        '      QQ.sys.posix',
+        '      sys.posix',
         '        "gettimeofday"',
-        '        * QQ.sys.posix.timeval'
+        '        * sys.posix.timeval'
       ].join('\n');
       const outputFilePath = path.resolve(home, 'out.json');
       const stdout = runSync([

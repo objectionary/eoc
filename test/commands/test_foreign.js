@@ -19,7 +19,7 @@ describe('foreign', () => {
       [
         '# Simple app.',
         '[args] > app',
-        '  QQ.io.stdout "Hello, world!" > @',
+        '  io.stdout "Hello, world!" > @',
       ].join('\n')
     );
     runSync([

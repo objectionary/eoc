@@ -13,7 +13,7 @@
         xsi:noNamespaceSchemaLocation="https://www.eolang.org/xsd/XMIR-0.58.6.xsd">
    <listing>[args] &amp;gt; app3
   # Not docs
-  QQ.io.stdout &amp;gt; @
+  io.stdout &amp;gt; @
     &amp;quot;Test\n&amp;quot;
 </listing>
    <comments>

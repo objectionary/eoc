@@ -12,7 +12,7 @@
         version="0.58.6"
         xsi:noNamespaceSchemaLocation="https://www.eolang.org/xsd/XMIR-0.58.6.xsd">
    <listing>[args] &amp;gt; app
-  QQ.io.stdout &amp;gt; @
+  io.stdout &amp;gt; @
     &amp;quot;Hello, world!\n&amp;quot;
 </listing>
    <o line="1" name="app" pos="0">

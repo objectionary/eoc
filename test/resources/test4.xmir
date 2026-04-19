@@ -15,7 +15,7 @@
 [] &amp;gt; app
   # Tests this comment is not in docs.
   [] +&amp;gt; some-check
-    QQ.io.stdout &amp;gt; @
+    io.stdout &amp;gt; @
       &amp;quot;Test passed!&amp;quot;
 </listing>
    <comments>

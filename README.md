@@ -98,7 +98,7 @@ in the current directory:
 ```eo
 # My first object in EO!
 [args] > hello
-  QQ.io.stdout > @
+  io.stdout > @
     "Hello, world!\n"
 ```
 

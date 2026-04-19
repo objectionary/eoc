@@ -64,7 +64,7 @@ describe('dataize', () => {
       [
         '# sample',
         '[args] > simple',
-        '  QQ.io.stdout (args.at 0) > @',
+        '  io.stdout (args.at 0) > @',
       ].join('\n')
     );
     const stdout = runSync([

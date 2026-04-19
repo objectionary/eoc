@@ -4,5 +4,5 @@
 
 # A program
 [args] > program
-  QQ.io.stdout > @
+  io.stdout > @
     story

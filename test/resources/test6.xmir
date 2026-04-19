@@ -14,7 +14,7 @@
    <listing># **Strong test**
 # `Code test`
 [args] &amp;gt; app
-  QQ.io.stdout &amp;gt; @
+  io.stdout &amp;gt; @
     &amp;quot;Test passed!&amp;quot;
 </listing>
    <comments>

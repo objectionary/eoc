@@ -16,7 +16,7 @@
   # First docs line
   # Second docs line
   [] &amp;gt; test_obj
-    QQ.io.stdout &amp;gt; @
+    io.stdout &amp;gt; @
       &amp;quot;Test\n&amp;quot;
 </listing>
    <comments>
