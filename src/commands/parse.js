@@ -31,4 +31,3 @@ module.exports.goals = goals;
 function goals() {
   return ['eo:parse'];
 }
-

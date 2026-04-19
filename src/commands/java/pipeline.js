@@ -33,4 +33,3 @@ function collect(coms, commands, opts) {
   });
   return {goals, extras};
 };
-
