@@ -204,6 +204,5 @@ a pull request.
 [npm]: https://www.npmjs.com/package/eolang
 [java-se]: https://www.oracle.com/java/technologies/downloads/
 [npm-install]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-[dot]: https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29
 [blog]: https://www.yegor256.com/2021/10/21/objectionary.html
 [Homebrew]: https://brew.sh/
