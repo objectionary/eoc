@@ -41,7 +41,7 @@ describe('transpile', () => {
       stdout = transpile(home, 'Java');
     assertFilesExist(
       stdout, home,
-      ['target/generated-sources/EOtranspile.java']
+      ['target/generated-sources/org/eolang/EOtranspile.java']
     );
     done();
   });

@@ -27,10 +27,10 @@ describe('compile', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOcompile.java',
-        'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOcompile.class',
-        'target/classes/EOorg/EOeolang/EOnumber.class',
+        'target/generated-sources/org/eolang/EOfoo/EObar/EOcompile.java',
+        'target/generated-sources/org/eolang/EObytes.java',
+        'target/classes/org/eolang/EOfoo/EObar/EOcompile.class',
+        'target/classes/org/eolang/EOnumber.class',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
@@ -64,8 +64,8 @@ describe('compile', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOsimple_test_compileTest.java',
-        'target/classes/EOfoo/EObar/EOsimple_test_compileTest.class',
+        'target/generated-sources/org/eolang/EOfoo/EObar/EOsimple_test_compileTest.java',
+        'target/classes/org/eolang/EOfoo/EObar/EOsimple_test_compileTest.class',
       ]
     );
     done();

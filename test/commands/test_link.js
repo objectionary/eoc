@@ -49,10 +49,10 @@ describe('link', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOfoo/EObar/EOlink.java',
-        'target/generated-sources/EOorg/EOeolang/EObytes.java',
-        'target/classes/EOfoo/EObar/EOlink.class',
-        'target/classes/EOorg/EOeolang/EOnumber.class',
+        'target/generated-sources/org/eolang/EOfoo/EObar/EOlink.java',
+        'target/generated-sources/org/eolang/EObytes.java',
+        'target/classes/org/eolang/EOfoo/EObar/EOlink.class',
+        'target/classes/org/eolang/EOnumber.class',
         'target/eoc.jar',
       ]
     );

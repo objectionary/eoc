@@ -120,7 +120,7 @@ const testCases = [
       '+alias sprintf Q.tt.sprintf',
       '',
       'io.stdout > app',
-      '  txt.sprintf',
+      '  tt.sprintf',
       '    "Hello, %s"',
       '    "Jeff"',
       ''
