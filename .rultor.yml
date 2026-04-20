@@ -15,7 +15,7 @@ install: |
   npm install --no-color mocha
   curl -fsSL -o phino http://phino.objectionary.com/releases/ubuntu-22.04/phino-latest
   chmod +x phino
-  sudo mv "${pwd}/phino" /usr/local/bin/phino
+  sudo mv "$(pwd)/phino" /usr/local/bin/phino
   pdd -f /dev/null -v
 release:
   pre: false
