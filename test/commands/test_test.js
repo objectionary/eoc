@@ -54,10 +54,10 @@ describe('test', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/EOsimple.java',
-        'target/generated-test-sources/EOsimpleTest.java',
-        'target/classes/EOsimple.class',
-        'target/test-classes/EOsimpleTest.class'
+        'target/generated-sources/org/eolang/EOsimple.java',
+        'target/generated-test-sources/org/eolang/EOsimpleTest.java',
+        'target/classes/org/eolang/EOsimple.class',
+        'target/test-classes/org/eolang/EOsimpleTest.class'
       ]
     );
     done();

@@ -45,7 +45,7 @@ describe('resolve', () => {
         'target/4-resolve/org.eolang/eo-runtime',
         'target/4-resolve/net.java.dev.jna/jna',
         'target/classes/org/eolang/Phi.class',
-        'target/classes/EOorg/EOeolang/EOerror.class',
+        'target/classes/org/eolang/EOerror.class',
         'target/classes/com/sun/jna',
       ]
     );

@@ -26,7 +26,6 @@ const {program} = require('commander'),
     parse: require('./commands/parse'),
     print: require('./commands/print'),
     register: require('./commands/register'),
-    sodg: require('./commands/sodg'),
     lint: require('./commands/lint'),
     docs: require('./commands/docs'),
     generate_comments: require('./commands/generate_comments'),
@@ -163,25 +162,6 @@ program.command('assemble')
       await pipe()(coms(), ['register', 'assemble'], program.opts());
     } else {
       await coms().assemble(program.opts());
-    }
-  });
-
-program.command('sodg')
-  .description('Generate SODG files from XMIR')
-  .option('--xml', 'Generate .sodg.xml files')
-  .option('--xembly', 'Generate .sodg.xe files')
-  .option('--graph', 'Generate .sodg.graph files')
-  .option('--dot', 'Generate .sodg.dot files')
-  .option('--include <names>', 'Generate SODG for these object names (using mask)', '**')
-  .option('--exclude <names>', 'Don\'t generate SODG for these objects')
-  .action(async (str, opts) => {
-    pin(program.opts());
-    clear(str);
-    if (program.opts().alone === undefined) {
-      await pipe()(coms(), ['register', 'assemble'], program.opts());
-      await coms().sodg({...program.opts(), ...str});
-    } else {
-      await coms().sodg({...program.opts(), ...str});
     }
   });
 

@@ -7,19 +7,19 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: ['temp', 'coverage'],
-    mochacli: {
+    mochaTest: {
       test: {
         options: {
-          timeout: '1200000',
-          files: grunt.option('file') ? [grunt.option('file')] : ['test/**/*.js'],
+          timeout: 1200000,
           require: ['nyc']
         },
+        src: grunt.option('file') ? [grunt.option('file')] : ['test/**/*.js']
       },
     }
   });
   grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-mocha-cli');
+  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.registerTask('default', ['mochacli']);
-  grunt.registerTask('coverage', ['mochacli']);
+  grunt.registerTask('default', ['mochaTest']);
+  grunt.registerTask('coverage', ['mochaTest']);
 };

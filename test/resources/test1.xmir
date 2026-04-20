@@ -16,7 +16,7 @@
   # First docs line
   # Second docs line
   [] &amp;gt; test_obj
-    QQ.io.stdout &amp;gt; @
+    io.stdout &amp;gt; @
       &amp;quot;Test\n&amp;quot;
 </listing>
    <comments>
@@ -28,7 +28,7 @@
       <o base="∅" line="2" name="args" pos="1"/>
       <o line="5" name="test_obj" pos="2">
          <o base="ξ" line="5" name="xi🌵" pos="2"/>
-         <o base="Φ.org.eolang.io.stdout" line="6" name="φ" pos="9">
+         <o base="Φ.io.stdout" line="6" name="φ" pos="9">
             <o as="α0" base="Φ.org.eolang.string" line="7" pos="6">
                <o as="α0" base="Φ.org.eolang.bytes" line="7" pos="6">
                   <o as="α0" line="7" pos="6">54-65-73-74-0A</o>

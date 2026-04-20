@@ -98,7 +98,7 @@ in the current directory:
 ```eo
 # My first object in EO!
 [args] > hello
-  QQ.io.stdout > @
+  io.stdout > @
     "Hello, world!\n"
 ```
 
@@ -136,7 +136,6 @@ There are also commands that help manipulate with XMIR and EO sources
 
 * `audit` inspects all required packages and reports their status
 * `foreign` inspects all objects found in the program after the `assemble` step
-* `sodg` generates `.sodg` from `.xmir`, further rederable as XML or [Dot][dot]
 * `print` generates `.eo` files from `.xmir` files
 * `generate_comments` generates `.json` files with LLM-generated
   documentation for `.eo` structures
@@ -205,6 +204,5 @@ a pull request.
 [npm]: https://www.npmjs.com/package/eolang
 [java-se]: https://www.oracle.com/java/technologies/downloads/
 [npm-install]: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
-[dot]: https://en.wikipedia.org/wiki/DOT_%28graph_description_language%29
 [blog]: https://www.yegor256.com/2021/10/21/objectionary.html
 [Homebrew]: https://brew.sh/

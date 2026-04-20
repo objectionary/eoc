@@ -74,7 +74,7 @@ const testCases = [
   },
   {
     before: [
-      '+alias math org.eolang.math',
+      '+alias math math',
       '# Calculator app',
       'math.plus > app',
       '  5',
@@ -82,7 +82,7 @@ const testCases = [
       ''
     ].join('\n'),
     after: [
-      '+alias math Q.org.eolang.math',
+      '+alias math Q.math',
       '',
       'math.plus > app',
       '  5',
@@ -92,13 +92,13 @@ const testCases = [
   },
   {
     before: [
-      '+alias stdout org.eolang.io.stdout',
+      '+alias stdout io.stdout',
       '# Application entry point',
       'stdout > app',
       '  "Hello, world!"'
     ].join('\n'),
     after: [
-      '+alias stdout Q.org.eolang.io.stdout',
+      '+alias stdout Q.io.stdout',
       '',
       'io.stdout > app',
       '  "Hello, world!"',
@@ -107,8 +107,8 @@ const testCases = [
   },
   {
     before: [
-      '+alias stdout org.eolang.io.stdout',
-      '+alias sprintf org.eolang.txt.sprintf',
+      '+alias stdout io.stdout',
+      '+alias sprintf tt.sprintf',
       '# Application entry point',
       'stdout > app',
       '  sprintf',
@@ -116,11 +116,11 @@ const testCases = [
       '    "Jeff"'
     ].join('\n'),
     after: [
-      '+alias stdout Q.org.eolang.io.stdout',
-      '+alias sprintf Q.org.eolang.txt.sprintf',
+      '+alias stdout Q.io.stdout',
+      '+alias sprintf Q.tt.sprintf',
       '',
       'io.stdout > app',
-      '  txt.sprintf',
+      '  tt.sprintf',
       '    "Hello, %s"',
       '    "Jeff"',
       ''
