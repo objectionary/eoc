@@ -32,14 +32,12 @@ function setup(name, content = eo) {
 
 describe('normalize', () => {
   before(weAreOnline);
-  before(() => {
+  before(function () {
     try {
       execSync('phino --version', {stdio: 'pipe'});
     } catch (e) {
-      throw new Error(
-        'phino is required to run normalize tests, see https://github.com/objectionary/phino',
-        {cause: e}
-      );
+      console.log('phino is not available, skipping normalize tests');
+      this.skip();
     }
   });
   it('normalizes EO files and saves originals in before-normalize/', done => {
