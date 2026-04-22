@@ -30,7 +30,7 @@ jobs:
         run: npm install -g
       - name: Run readme_automation script
         run: |-
-          node scripts/readme_automation/readme_automation_run.js
+          node scripts/readme_automation.js
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:

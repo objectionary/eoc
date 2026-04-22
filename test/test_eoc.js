@@ -20,11 +20,12 @@ describe('eoc', () => {
     assert(stdout.includes(version.when));
     done();
   });
-  it('can get help from eoc as a module', (done) => {
-    const output = require('../src/eoc').getHelp();
-    assert(output.includes('Usage: eoc'));
-    assert(output.includes(version.what));
-    assert(output.includes(version.when));
+  it('can get commands description from eoc as a module', (done) => {
+    const commandsDescriptionList = require('../src/eoc').commandsDescription();
+    assert(commandsDescriptionList.length > 0,"commandsDescriptionList should have more then one element");
+    assert(commandsDescriptionList[0].length == 2,"commandsDescriptionList element should have 2 values");
+    assert(commandsDescriptionList[0][0].length > 0,"First value of commandsDescriptionList element should have non-zero length");
+    assert(commandsDescriptionList[0][1].length > 0,"Second value of commandsDescriptionList element should have non-zero length");
     done();
   });
 });

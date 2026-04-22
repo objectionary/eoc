@@ -404,8 +404,9 @@ if (require.main === module) {
   }
 }
 
-module.exports.getHelp = function getHelp() {
-  return program.helpInformation();
+module.exports.commandsDescription = function commandsDescription() {
+  return program.commands
+    .map(c => [c.name(),c.description()]);
 }
 
 /**
