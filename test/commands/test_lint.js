@@ -6,9 +6,15 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const lint = require('../../src/commands/lint');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 describe('lint', () => {
+  it('extras returns failOnWarning flag', (done) => {
+    assert.deepEqual(lint.extras({easy: false}), ['-Deo.failOnWarning=true']);
+    assert.deepEqual(lint.extras({easy: true}), ['-Deo.failOnWarning=false']);
+    done();
+  });
   before(weAreOnline);
   it('lints a simple .EO program', (done) => {
     const home = path.resolve('temp/test-lint/simple');

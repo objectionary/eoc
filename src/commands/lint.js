@@ -15,7 +15,7 @@ const semver = require('semver');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  const extra = extraFlags(opts);
+  const extra = extras(opts);
   return elapsed(async (tracked) => {
     if (goals(opts)[0] === 'eo:lint') {
       try {
