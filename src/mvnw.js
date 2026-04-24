@@ -91,6 +91,8 @@ module.exports.mvnw = function(args, tgt, batch) {
       '--color=never',
       '--fail-fast',
       '--strict-checksums',
+      '-Dorg.slf4j.simpleLogger.showDateTime=true',
+      '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
     ]);
     const cmd = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmd);
