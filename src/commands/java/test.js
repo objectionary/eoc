@@ -19,10 +19,11 @@ module.exports = function(opts, maven = mvnw) {
   ];
   if (opts.object) {
     const parts = opts.object.split('.');
+    const method = parts.pop().replace(/-/g, '_');
     const obj = parts.pop().replace(/-/g, '_');
     const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');
-    const cls = `EO${obj}Test`;
-    args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}`);
+    const cls = `EO${obj}TestTest`;
+    args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`);
   }
   return maven(args.concat(flags(opts)));
 };

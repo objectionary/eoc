@@ -13,19 +13,19 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.EOfoo.EOapp.EOworks_fineTest'),
-      `expected -Dtest=org.eolang.EOfoo.EOapp.EOworks_fineTest, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.EOfoo.EOappTestTest#works_fine'),
+      `expected -Dtest=org.eolang.EOfoo.EOappTestTest#works_fine, got: ${captured}`
     );
   });
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
     await test(
-      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'works-fine'},
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app.works-fine'},
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.EOworks_fineTest'),
-      `expected -Dtest=org.eolang.EOworks_fineTest, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.EOappTestTest#works_fine'),
+      `expected -Dtest=org.eolang.EOappTestTest#works_fine, got: ${captured}`
     );
   });
   it('omits -Dtest when --object is not provided', async () => {
