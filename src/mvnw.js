@@ -200,7 +200,7 @@ function print() {
   } else if (duration < 60 * 1000) {
     elapsed = `${Math.ceil(duration / 1000)}s`;
   } else {
-    elapsed = `${Math.ceil(duration / 3600000)}min`;
+    elapsed = `${Math.ceil(duration / (60 * 1000))}min`;
   }
   process.stdout.write(
     colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated so far...`)

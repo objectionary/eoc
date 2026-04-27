@@ -29,7 +29,7 @@ module.exports.elapsed = function elapsed(task) {
       } else if (duration < 60 * 1000) {
         extended = `${Math.ceil(duration / 1000)}s`;
       } else {
-        extended = `${Math.ceil(duration / 3600000)}min`;
+        extended = `${Math.ceil(duration / (60 * 1000))}min`;
       }
       const msg = `${message} in ${extended}`;
       console.info(msg);
