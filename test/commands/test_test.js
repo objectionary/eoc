@@ -18,7 +18,7 @@ describe('test', () => {
    * @param {String} hash - Git SHA in objectionary/home
    * @return {String} - Stdout
    */
-  const test = function(home, lang = 'Java', parser, hash) {
+  const test = function(home, lang = 'Java', parser, hash, args = []) {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
@@ -45,7 +45,8 @@ describe('test', () => {
       '--heap=128M',
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
-      `--language=${lang}`
+      `--language=${lang}`,
+      ...args,
     ]);
   };
   it('executes a single Java unit test', (done) => {
@@ -69,6 +70,15 @@ describe('test', () => {
     assert.ok(stdout.includes('1 passing'));
     assertFilesExist(
       stdout, home, ['target/project/simple-test.test.js',]
+    );
+    done();
+  });
+  it('runs only the specified test when --object is provided', (done) => {
+    const home = path.resolve('temp/test-test/object-filter'),
+      stdout = test(home, 'Java', parserVersion, homeTag, ['--object', 'simple.works-correctly']);
+    assert.ok(
+      stdout.includes('Tests run: 1, Failures: 0, Errors: 0, Skipped: 0'),
+      `expected exactly 1 test to run, got: ${stdout}`
     );
     done();
   });
