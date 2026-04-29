@@ -234,6 +234,7 @@ program.command('compile')
 program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action(async (str, opts) => {
+    pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
@@ -341,6 +342,7 @@ program.command('jeo:assemble')
     'classes'
   )
   .action((str, opts) => {
+    pin(program.opts());
     coms().jeo_assemble({...program.opts(), ...str});
   });
 
