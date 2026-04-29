@@ -59,3 +59,21 @@ describe('eoc', () => {
     done();
   });
 });
+
+describe('eoc', () => {
+  before(weAreOnline);
+  it('fails link due to version mismatch if different --pin provided', (done) => {
+    assert.throws(
+      () => { runSync(['--pin=29.9.4', '--alone', 'link']); },
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
+    );
+    done();
+  });
+  it('fails jeo:assemble due to version mismatch if different --pin provided', (done) => {
+    assert.throws(
+      () => { runSync(['--pin=29.9.4', 'jeo:assemble']); },
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
+    );
+    done();
+  });
+});
