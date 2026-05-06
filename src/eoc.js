@@ -377,12 +377,19 @@ program.command('fmt')
     });
   });
 
-try {
-  program.parse(process.argv);
-} catch (e) {
-  console.error(e.message);
-  console.debug(e.stack);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    program.parse(process.argv);
+  } catch (e) {
+    console.error(e.message);
+    console.debug(e.stack);
+    process.exit(1);
+  }
+}
+
+module.exports.commandsDescription = function commandsDescription() {
+  return program.commands
+    .map(c => [c.name(),c.description()]);
 }
 
 /**
