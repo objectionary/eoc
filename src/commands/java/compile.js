@@ -5,6 +5,7 @@
 const rel = require('relative');
 const {mvnw, flags} = require('../../mvnw');
 const {elapsed} = require('../../elapsed');
+const {verifyJavac} = require('../../jdk');
 const path = require('path');
 
 /**
@@ -13,6 +14,7 @@ const path = require('path');
  * @return {Promise} of compile task
  */
 module.exports = function(opts) {
+  verifyJavac();
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
     const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);

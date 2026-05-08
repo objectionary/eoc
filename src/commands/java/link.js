@@ -6,6 +6,7 @@
 const rel = require('relative');
 const {mvnw, flags} = require('../../mvnw');
 const {elapsed} = require('../../elapsed');
+const {verifyJavac} = require('../../jdk');
 const path = require('path');
 
 /**
@@ -14,6 +15,7 @@ const path = require('path');
  * @return {Promise} of link task
  */
 module.exports = function(opts) {
+  verifyJavac();
   const jar = path.resolve(opts.target, 'eoc.jar');
   return elapsed(async (tracked) => {
     const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);

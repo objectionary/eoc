@@ -20,14 +20,14 @@ First, you install [npm][npm-install] and [Java SE][java-se].
 Then, you install [eolang][npm] package, using [npm][npm-install]:
 
 ```bash
-npm install -g eolang@0.35.0
+npm install -g eolang@0.35.1
 ```
 
 You can also use [Homebrew] (on macOS):
 
 ```bash
 brew tap objectionary/eoc https://github.com/objectionary/eoc
-brew install objectionary/eoc/eolang@0.35.0
+brew install objectionary/eoc/eolang@0.35.1
 ```
 
 Or install it via [Nix flakes](https://nixos.wiki/wiki/Flakes):
@@ -116,8 +116,11 @@ You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
 * `register` finds necessary `.eo` files and registers them in a JSON catalog
+* `parse` parses `.eo` files into `.xmir` without pulling foreign objects
 * `assemble` parses `.eo` files into `.xmir`, optimizes them,
   and pulls foreign EO objects
+* `lint` finds style-related errors in EO and XMIR files
+* `resolve` resolves all the dependencies required for compilation
 * `transpile` converts `.xmir` files to the target programming
 language (Java by default)
 * `compile` converts target language sources (e.g., `.java`)
@@ -125,7 +128,6 @@ to binaries (e.g., `.class`)
 * `link` puts all binaries together into a single executable binary
 * `dataize` dataizes a single object from the executable binary
 * `test` dataizes all visible unit tests
-* `lint` finds style-related errors in EO and XMIR files
 * `jeo:disassemble` converts Java `.class` files to `.xmir`
 (via [jeo](https://github.com/objectionary/jeo-maven-plugin))
 * `jeo:assemble` converts `.xmir` files to Java `.class` files
@@ -135,6 +137,7 @@ There are also commands that help manipulate with XMIR and EO sources
 (the list is not completed, while some of them are not implemented as of yet):
 
 * `audit` inspects all required packages and reports their status
+* `clean` deletes all temporary files (use `--global` to also delete `~/.eo`)
 * `foreign` inspects all objects found in the program after the `assemble` step
 * `print` generates `.eo` files from `.xmir` files
 * `generate_comments` generates `.json` files with LLM-generated

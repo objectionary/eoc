@@ -5,6 +5,16 @@
 
 const {mvnw, flags} = require('../../mvnw');
 const {elapsed} = require('../../elapsed');
+const {verifyJavac} = require('../../jdk');
+
+/**
+ * Commands whose Maven goals require `javac` to be on the PATH.
+ * Anything that triggers the maven-compiler-plugin (or surefire test
+ * compilation) must be listed here so we can fail fast with a clear
+ * diagnostic instead of letting Maven die with `release version 11
+ * not supported`.
+ */
+const JAVAC_COMMANDS = ['compile', 'link', 'test'];
 
 /**
  * Runs multiple Maven goals in a single Maven invocation.
@@ -14,6 +24,9 @@ const {elapsed} = require('../../elapsed');
  * @return {Promise} of pipeline task
  */
 module.exports = function(coms, commands, opts, maven = mvnw) {
+  if (commands.some((cmd) => JAVAC_COMMANDS.includes(cmd))) {
+    verifyJavac();
+  }
   return elapsed(async (tracked) => {
     const {goals, extras} = collect(coms, commands, opts);
     const result = await maven(goals.concat(flags(opts)).concat(extras), opts.target, opts.batch);

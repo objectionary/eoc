@@ -4,6 +4,7 @@
  */
 
 const {mvnw, flags} = require('../../mvnw');
+const {verifyJavac} = require('../../jdk');
 
 /**
  * Command to run all available unit tests.
@@ -12,6 +13,7 @@ const {mvnw, flags} = require('../../mvnw');
  * @return {Promise} of compile task
  */
 module.exports = function(opts, maven = mvnw) {
+  verifyJavac();
   const args = [
     'surefire:test',
     `-Dstack-size=${opts.stack}`,
