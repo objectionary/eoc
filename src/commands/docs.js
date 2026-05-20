@@ -10,6 +10,17 @@ const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
 const {findFiles} = require('../files');
 
+/**
+ * Escape special XML characters.
+ * @param {String} str - Raw string
+ * @return {String} XML-safe string
+ */
+function xmlEscape(str) {
+  return str.replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 /**
  * Applies XSLT to XMIR
@@ -145,6 +156,26 @@ module.exports = function(opts) {
       }
       const packages = path.join(output, 'packages.html');
       fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      const summary = path.join(output, 'summary.xml');
+      const pkgNames = Object.keys(packages_info);
+      const lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        `<eodoc packages="${pkgNames.length}" objects="${xmirs.length}">`
+      ];
+      for (const pkg of pkgNames) {
+        lines.push(`  <package name="${xmlEscape(pkg)}">`);
+        for (const xmir of xmirs) {
+          const rel_path = path.relative(input, xmir);
+          if (path.dirname(rel_path).split(path.sep).join('.') === pkg) {
+            const name = path.parse(xmir).name;
+            lines.push(`    <object name="${xmlEscape(name)}"/>`);
+          }
+        }
+        lines.push('  </package>');
+      }
+      lines.push('</eodoc>');
+      fs.writeFileSync(summary, lines.join('\n'));
+      tracked.print('Summary XML generated at %s', rel(summary));
       tracked.print(`Documentation generation completed in the ${output} directory`);
     } catch (error) {
       console.error('Error generating documentation:', error);
