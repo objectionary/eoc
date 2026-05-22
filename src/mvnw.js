@@ -21,6 +21,18 @@ function shell() {
   }
 }
 
+/**
+ * Format a timestamp for log lines.
+ * @return {String} Timestamp string in [HH:MM:SS] format
+ */
+function timestamp() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  return `[${h}:${m}:${s}]`;
+}
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -99,10 +111,28 @@ module.exports.mvnw = function(args, tgt, batch) {
       process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
       {
         cwd: home,
-        stdio: 'inherit',
+        stdio: ['pipe', 'pipe', 'inherit'],
         shell: shell(),
       }
     );
+    result.stdout.on('data', (chunk) => {
+      const ts = timestamp();
+      const lines = chunk.toString().split('\n');
+      for (const line of lines) {
+        if (line.trim()) {
+          process.stdout.write(`${ts} ${line.trim()}\n`);
+        }
+      }
+    });
+    result.stderr.on('data', (chunk) => {
+      const ts = timestamp();
+      const lines = chunk.toString().split('\n');
+      for (const line of lines) {
+        if (line.trim()) {
+          process.stderr.write(`${ts} ${line.trim()}\n`);
+        }
+      }
+    });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();
