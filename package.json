@@ -28,8 +28,7 @@
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.5",
     "mocha": "^11.5.0",
-    "nyc": "^18.0.0",
-    "patch-package": "^8.0.0"
+    "nyc": "^18.0.0"
   },
   "engines": {
     "node": ">6.0",
@@ -71,7 +70,6 @@
   "repository": "objectionary/eoc",
   "scripts": {
     "coverage": "nyc --reporter=lcov --reporter=text-summary mocha test/**/*.js --timeout 1200000",
-    "postinstall": "node scripts/postinstall.js",
     "test": "mocha 'test/**/*.js' --timeout 1200000"
   },
   "version": "0.0.0"
