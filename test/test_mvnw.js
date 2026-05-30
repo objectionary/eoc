@@ -7,6 +7,7 @@ const {mvnw, flags} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const {execSync} = require('child_process');
 
 describe('mvnw', () => {
   it('prints Maven own version', async () => {
@@ -23,6 +24,39 @@ describe('mvnw', () => {
     const args = await mvnw(['--version', '--quiet', ...flags(opts)]);
     assert.ok(args.includes('-Deo.tag=homeTag'));
     assert.ok(args.includes('-Deo.version=0.28.11'));
+  });
+  it('includes slf4j-simple timestamp flags', () => {
+    const opts = {
+      sources: 'sources',
+      target: 'target',
+    };
+    const result = flags(opts);
+    assert.ok(
+      result.includes('-Dorg.slf4j.simpleLogger.showDateTime=true'),
+      'Expected slf4j showDateTime flag'
+    );
+    assert.ok(
+      result.includes('-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss'),
+      'Expected slf4j dateTimeFormat flag'
+    );
+  });
+  it('shows timestamps in Maven log output', function () {
+    this.timeout(60000);
+    const home = path.resolve('temp/test-mvnw-timestamp');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'src/simple.eo'),
+      '# sample\n[] > simple\n'
+    );
+    const combined = execSync(
+      `node ${path.resolve('./src/eoc.js')} parse --verbose -s ${path.resolve(home, 'src')} -t ${path.resolve(home, 'target')} 2>&1`,
+      {timeout: 300000, windowsHide: true}
+    ).toString();
+    assert.ok(
+      /\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01]) \d{2}:\d{2}:\d{2} \[INFO\]/.test(combined),
+      'Expected Maven INFO logs to include timestamps in yyyy-MM-dd HH:mm:ss format'
+    );
   });
   it('should handle ENOENT race condition in count function', function (done) {
     this.timeout(3000);
