@@ -113,33 +113,44 @@ module.exports.mvnw = function(args, tgt, batch) {
       process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
       {
         cwd: home,
-        stdio: ['pipe', 'pipe', 'inherit'],
+        stdio: ['pipe', 'pipe', 'pipe'],
         shell: shell(),
       }
     );
+    let outBuf = '';
+    let errBuf = '';
     result.stdout.on('data', (chunk) => {
-      const ts = timestamp();
-      const lines = chunk.toString().split('\n');
-      for (const line of lines) {
-        if (line.trim()) {
-          process.stdout.write(`${ts} ${line.trim()}\n`);
-        }
+      outBuf += chunk.toString();
+      let idx;
+      while ((idx = outBuf.indexOf('\n')) !== -1) {
+        process.stdout.write(`${timestamp()} ${outBuf.slice(0, idx)}\n`);
+        outBuf = outBuf.slice(idx + 1);
       }
     });
     result.stderr.on('data', (chunk) => {
-      const ts = timestamp();
-      const lines = chunk.toString().split('\n');
-      for (const line of lines) {
-        if (line.trim()) {
-          process.stderr.write(`${ts} ${line.trim()}\n`);
-        }
+      errBuf += chunk.toString();
+      let idx;
+      while ((idx = errBuf.indexOf('\n')) !== -1) {
+        process.stderr.write(`${timestamp()} ${errBuf.slice(0, idx)}\n`);
+        errBuf = errBuf.slice(idx + 1);
       }
     });
+    function flush() {
+      if (outBuf) {
+        process.stdout.write(`${timestamp()} ${outBuf}\n`);
+        outBuf = '';
+      }
+      if (errBuf) {
+        process.stderr.write(`${timestamp()} ${errBuf}\n`);
+        errBuf = '';
+      }
+    }
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();
       }
       result.on('close', (code) => {
+        flush();
         if (code !== 0) {
           console.error(`The command "${cmd}" exited with #${code} code`);
           process.exit(1);
@@ -151,6 +162,7 @@ module.exports.mvnw = function(args, tgt, batch) {
       });
     } else {
       result.on('close', (code) => {
+        flush();
         if (code !== 0) {
           console.error(`The command "${cmd}" exited with #${code} code`);
           process.exit(1);
