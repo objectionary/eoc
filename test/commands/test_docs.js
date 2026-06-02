@@ -47,6 +47,31 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that the 'docs' command generates a summary.xml with correct counts.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('generates summary XML with correct package and object counts', (done) => {
+    const sample = path.join(parsed, 'foo', 'bar');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'test1.xmir'), '<program name="test" />');
+    fs.writeFileSync(path.join(sample, 'test2.xmir'), '<program name="test" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const summary = path.join(docs, 'summary.xml');
+    assert(fs.existsSync(summary), `Expected file ${summary} but it was not created`);
+    const content = fs.readFileSync(summary, 'utf-8');
+    assert(content.includes('packages="1"'), 'Expected 1 package in summary.xml');
+    assert(content.includes('objects="2"'), 'Expected 2 objects in summary.xml');
+    assert(content.includes('<package name="foo.bar">'), 'Expected package foo.bar in summary.xml');
+    assert(content.includes('<object name="test1"/>'), 'Expected object test1 in summary.xml');
+    assert(content.includes('<object name="test2"/>'), 'Expected object test2 in summary.xml');
+    done();
+  });
+  /**
    * Tests that the 'docs' command generates expected comments from XMIR to HTML.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
