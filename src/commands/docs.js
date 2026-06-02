@@ -143,10 +143,12 @@ module.exports = function(opts) {
         if (!(packages in packages_info)) {
           packages_info[packages] = {
             xmir_htmls : [],
+            names: [],
             path: html_package
           };
         }
         packages_info[packages].xmir_htmls.push(xmir_html);
+        packages_info[packages].names.push(name);
         all_xmir_htmls.push(xmir_html);
       }
       for (const package_name of Object.keys(packages_info)) {
@@ -164,18 +166,14 @@ module.exports = function(opts) {
       ];
       for (const pkg of pkgNames) {
         lines.push(`  <package name="${xmlEscape(pkg)}">`);
-        for (const xmir of xmirs) {
-          const rel_path = path.relative(input, xmir);
-          if (path.dirname(rel_path).split(path.sep).join('.') === pkg) {
-            const name = path.parse(xmir).name;
-            lines.push(`    <object name="${xmlEscape(name)}"/>`);
-          }
+        for (const obj of packages_info[pkg].names) {
+          lines.push(`    <object name="${xmlEscape(obj)}"/>`);
         }
         lines.push('  </package>');
       }
       lines.push('</eodoc>');
       fs.writeFileSync(summary, lines.join('\n'));
-      tracked.print('Summary XML generated at %s', rel(summary));
+      tracked.print('Summary XML generated at %s', path.relative(process.cwd(), summary));
       tracked.print(`Documentation generation completed in the ${output} directory`);
     } catch (error) {
       console.error('Error generating documentation:', error);
