@@ -4,10 +4,37 @@
  */
 
 const {XMLParser} = require('fast-xml-parser');
-const {execSync} = require('child_process');
+const {execFileSync} = require('child_process');
 
 const repo = 'org/eolang/eo-maven-plugin';
 const base = 'https://repo.maven.apache.org/maven2';
+
+/**
+ * Fetch a URL synchronously using a Node.js subprocess.
+ * @param {String} url - URL to fetch
+ * @param {Number} timeout - Timeout in milliseconds
+ * @return {String} Response body
+ */
+function fetchSync(url, timeout) {
+  const script = `
+    const https = require('https');
+    const url = process.argv[1];
+    const req = https.get(url, (res) => {
+      if (res.statusCode !== 200) {
+        process.stderr.write('HTTP ' + res.statusCode);
+        process.exit(1);
+      }
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => process.stdout.write(Buffer.concat(chunks)));
+    });
+    req.on('error', (e) => { process.stderr.write(e.message); process.exit(1); });
+  `;
+  return execFileSync(
+    process.execPath, ['-e', script, url],
+    {encoding: 'utf8', timeout}
+  );
+}
 
 /**
  * Load the latest version from Maven Central.
@@ -20,10 +47,7 @@ const version = module.exports = {
       const url = `${base}/${repo}/maven-metadata.xml`;
       let body;
       try {
-        body = execSync(
-          `curl -sL --fail --max-time 30 "${url}"`,
-          {encoding: 'utf8', timeout: 35000}
-        );
+        body = fetchSync(url, 35000);
       } catch (e) {
         throw new Error(`Failed to fetch ${url}: ${e.message}`, {cause: e});
       }
@@ -45,10 +69,7 @@ const version = module.exports = {
     const artifactId = 'eo-maven-plugin';
     const url = `${base}/${repo}/${ver}/${artifactId}-${ver}.pom`;
     try {
-      execSync(
-        `curl -sL -o /dev/null --fail --max-time 10 "${url}"`,
-        {timeout: 15000}
-      );
+      fetchSync(url, 15000);
       return true;
     } catch {
       return false;
