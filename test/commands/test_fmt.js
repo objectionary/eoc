@@ -148,4 +148,20 @@ describe('fmt', () => {
     })
     done()
   })
+  it('formats relative sources in place without writing under target', done => {
+    const [source, target] = prepareTestDirectory()
+    const file = createFile(source, testCases[0].before)
+    const relativeSource = path.relative(process.cwd(), source)
+    fmt(relativeSource, target)
+    assert.strictEqual(
+      fs.readFileSync(file, 'utf8'),
+      testCases[0].after,
+      'Relative --sources must be overwritten in place'
+    )
+    assert(
+      !fs.existsSync(path.resolve(target, relativeSource, 'app.eo')),
+      'Relative --sources must not create formatted files under --target'
+    )
+    done()
+  })
 })
