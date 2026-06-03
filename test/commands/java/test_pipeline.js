@@ -33,6 +33,8 @@ describe('java/pipeline', () => {
         `-Deo.placed=${path.resolve(opts.target, 'eo-placed.csv')}`,
         '-Deo.placedFormat=csv',
         '-Deo.skipLinting=false',
+        '-Dorg.slf4j.simpleLogger.showDateTime=true',
+        '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
       ]
     );
   });

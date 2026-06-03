@@ -65,6 +65,8 @@ module.exports.flags = function(opts) {
     `-Deo.placedFormat=csv`,
     `-Deo.skipLinting=${opts.blind ? 'true' : 'false'}`,
     opts.trackTransformationSteps ? '-Deo.trackTransformationSteps' : '',
+    '-Dorg.slf4j.simpleLogger.showDateTime=true',
+    '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
   ].filter(flag => flag !== '');
 };
 
