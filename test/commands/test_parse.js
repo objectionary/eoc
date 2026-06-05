@@ -44,15 +44,14 @@ describe('parse', () => {
     const home = path.resolve('temp/test-parse/invalid-version');
     createTestProject(home);
     assert.throws(
-      () => {
-        runSync([
-          'parse',
-          '--parser=999.999.999',
-          '-s', path.resolve(home, 'src'),
-          '-t', path.resolve(home, 'target'),
-        ]);
-      },
-      'Command should fail with invalid parser version'
+      () => runSync([
+        'parse',
+        '--parser=999.999.999',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]),
+      (error) => error.status === 1,
+      'invalid parser version was not rejected with a non-zero exit'
     );
   });
   it('accepts valid parser version', function () {
@@ -66,20 +65,19 @@ describe('parse', () => {
       '-t', path.resolve(home, 'target'),
     ]);
   });
-  it('validates parser version before calling Maven', function () {
+  it('rejects a malformed parser version', function () {
     this.timeout(30000);
-    const home = path.resolve('temp/test-parse/early-validation');
+    const home = path.resolve('temp/test-parse/malformed-version');
     createTestProject(home);
     assert.throws(
-      () => {
-        runSync([
-          'parse',
-          '--parser=999.999.999',
-          '-s', path.resolve(home, 'src'),
-          '-t', path.resolve(home, 'target'),
-        ]);
-      },
-      'Command should fail with invalid version'
+      () => runSync([
+        'parse',
+        '--parser=not-a-version',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]),
+      (error) => error.status === 1,
+      'malformed parser version was not rejected with a non-zero exit'
     );
   });
   it('handles assemble command with invalid version', function () {
@@ -87,15 +85,14 @@ describe('parse', () => {
     const home = path.resolve('temp/test-parse/assemble-invalid');
     createTestProject(home);
     assert.throws(
-      () => {
-        runSync([
-          'assemble',
-          '--parser=999.999.999',
-          '-s', path.resolve(home, 'src'),
-          '-t', path.resolve(home, 'target'),
-        ]);
-      },
-      'Assemble should fail with invalid version'
+      () => runSync([
+        'assemble',
+        '--parser=999.999.999',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]),
+      (error) => error.status === 1,
+      'assemble with an invalid parser version was not rejected with a non-zero exit'
     );
   });
   it('handles lint command with invalid version', function () {
@@ -103,15 +100,14 @@ describe('parse', () => {
     const home = path.resolve('temp/test-parse/lint-invalid');
     createTestProject(home);
     assert.throws(
-      () => {
-        runSync([
-          'lint',
-          '--parser=999.999.999',
-          '-s', path.resolve(home, 'src'),
-          '-t', path.resolve(home, 'target'),
-        ]);
-      },
-      'Lint should fail with invalid version'
+      () => runSync([
+        'lint',
+        '--parser=999.999.999',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]),
+      (error) => error.status === 1,
+      'lint with an invalid parser version was not rejected with a non-zero exit'
     );
   });
 });
