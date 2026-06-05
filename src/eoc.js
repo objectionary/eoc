@@ -372,7 +372,7 @@ program.command('fmt')
     await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().print({
       printInput: '1-parse',
-      printOutput: program.opts().sources,
+      printOutput: path.resolve(program.opts().sources),
       ...program.opts()
     });
   });
