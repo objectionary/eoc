@@ -37,17 +37,10 @@ describe('mvnw', () => {
       if (fs.existsSync(dir)) {
         for (const f of fs.readdirSync(dir)) {
           const next = path.join(dir, f);
-          try {
-            if (fs.statSync(next).isDirectory()) {
-              curr = count(next, curr);
-            } else {
-              curr++;
-            }
-          } catch (error) {
-            if (error.code === 'ENOENT') {
-              throw error;
-            }
-            throw error;
+          if (fs.statSync(next).isDirectory()) {
+            curr = count(next, curr);
+          } else {
+            curr++;
           }
         }
       }
