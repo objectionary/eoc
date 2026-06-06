@@ -6,6 +6,41 @@
 const assert = require('assert');
 const parserVersion = require('../src/parser-version');
 const {weAreOnline} = require('./helpers');
+const parserModule = '../src/parser-version';
+const requestModule = 'sync-request';
+
+/**
+ * Load parser-version with a temporary sync-request implementation.
+ * @param {Function} request Request stub
+ * @param {Function} check Test callback
+ * @return {*} Callback result
+ */
+const withRequestStub = (request, check) => {
+  const parserPath = require.resolve(parserModule),
+    requestPath = require.resolve(requestModule),
+    originalParser = require.cache[parserPath],
+    originalRequest = require.cache[requestPath];
+  delete require.cache[parserPath];
+  require.cache[requestPath] = {
+    'id': requestPath,
+    'filename': requestPath,
+    'loaded': true,
+    'exports': request,
+  };
+  try {
+    return check(require(parserModule));
+  } finally {
+    delete require.cache[parserPath];
+    if (originalParser) {
+      require.cache[parserPath] = originalParser;
+    }
+    if (originalRequest) {
+      require.cache[requestPath] = originalRequest;
+    } else {
+      delete require.cache[requestPath];
+    }
+  }
+};
 
 describe('parser-version', () => {
   before(weAreOnline);
@@ -62,14 +97,32 @@ describe('parser-version', () => {
     });
     it('constructs correct Maven Central URL', function () {
       this.timeout(15000);
-      const exists = parserVersion.exists('0.28.11');
-      assert.strictEqual(exists, true, 'URL should be correctly formatted to find version 0.28.11');
+      const calls = [],
+        exists = withRequestStub(
+          (method, url, options) => {
+            calls.push({method, url, options});
+            return {'statusCode': 200};
+          },
+          (subject) => subject.exists('0.28.11')
+        );
+      assert.strictEqual(exists, true, 'Version should exist for stubbed 200 response');
+      assert.deepStrictEqual(calls, [
+        {
+          'method': 'GET',
+          'url': 'https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/0.28.11/eo-maven-plugin-0.28.11.pom',
+          'options': {'timeout': 10000, 'socketTimeout': 10000},
+        },
+      ]);
     });
     it('handles network errors gracefully', function () {
       this.timeout(15000);
-      assert.doesNotThrow(() => {
-        parserVersion.exists('0.28.11');
-      });
+      const exists = withRequestStub(
+        () => {
+          throw new Error('offline');
+        },
+        (subject) => subject.exists('0.28.11')
+      );
+      assert.strictEqual(exists, false, 'Network errors should make the version absent');
     });
   });
 });
