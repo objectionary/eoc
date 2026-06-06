@@ -70,16 +70,28 @@ describe('parse', () => {
     this.timeout(30000);
     const home = path.resolve('temp/test-parse/early-validation');
     createTestProject(home);
-    assert.throws(
-      () => {
-        runSync([
-          'parse',
-          '--parser=999.999.999',
-          '-s', path.resolve(home, 'src'),
-          '-t', path.resolve(home, 'target'),
-        ]);
-      },
-      'Command should fail with invalid version'
+    let error;
+    try {
+      runSync([
+        'parse',
+        '--parser=999.999.999',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]);
+    } catch (caught) {
+      error = caught;
+    }
+    assert(error, 'Command should fail with invalid version');
+    assert(
+      error.stderr.toString().includes(
+        'Parser version 999.999.999 is not available in Maven Central.'
+      ),
+      error.stderr.toString()
+    );
+    assert.strictEqual(
+      fs.existsSync(path.resolve(home, 'target')),
+      false,
+      'Maven target directory should not be created after early parser validation'
     );
   });
   it('handles assemble command with invalid version', function () {
