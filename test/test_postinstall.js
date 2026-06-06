@@ -7,7 +7,7 @@ const assert = require('assert');
 const lock = require('../package-lock.json');
 const pkg = require('../package.json');
 
-const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+const hasOwn = (obj, key) => Object.hasOwn(obj, key);
 
 describe('postinstall', () => {
   it('does not run stale patch-package hook', () => {
