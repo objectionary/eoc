@@ -23,7 +23,7 @@ describe('generate_comments', () => {
   });
   it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
-    for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
+    for (let numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
       const exampleInput =
         '# <COMMENT-TO-BE-ADDED>\n'.repeat(numberOfPlaceholders);
       const outputFilePath = path.resolve(home, 'out.json');
@@ -40,7 +40,7 @@ describe('generate_comments', () => {
   });
   it('fills output as expected when encountering valid EO code', (done) => {
     const home = makeHome();
-    for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
+    for (let numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
       const exampleInput = [
         '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
         '[args] > simple',
@@ -64,6 +64,9 @@ describe('generate_comments', () => {
       verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
     }
     done();
+  });
+  it('does not leak placeholder counters into global scope', () => {
+    assert.strictEqual(globalThis.numberOfPlaceholders, undefined);
   });
 });
 
