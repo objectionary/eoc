@@ -115,6 +115,7 @@ That's it.
 You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
+<!-- BEGIN COMMANDS SECTION -->
 * `register` finds necessary `.eo` files and registers them in a JSON catalog
 * `parse` parses `.eo` files into `.xmir` without pulling foreign objects
 * `assemble` parses `.eo` files into `.xmir`, optimizes them,
@@ -153,6 +154,7 @@ There are also commands that help manipulate with XMIR and EO sources
 * ~~`dejump` removes `goto` objects~~
 * ~~`infer` suggests object names where it's possible to infer them~~
 * ~~`flatten` moves inner objects to upper level~~
+<!-- END COMMANDS SECTION -->
 
 This command line toolkit simply integrates other tools available in
 the [@objectionary](https://github.com/objectionary) GitHub organization.
