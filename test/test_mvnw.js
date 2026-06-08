@@ -6,6 +6,7 @@
 const {mvnw, flags} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const {execSync} = require('child_process');
 
@@ -58,19 +59,17 @@ describe('mvnw', () => {
       'Expected Maven INFO logs to include timestamps in yyyy-MM-dd HH:mm:ss format'
     );
   });
-  it('should handle ENOENT race condition in count function', function (done) {
+  it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
-    const tempDir = path.resolve('temp/test-mvnw-enoent');
-    const classesDir = path.resolve(tempDir, 'classes');
-    const subDir = path.resolve(classesDir, 'EOorg/EOeolang');
-    fs.rmSync(tempDir, { recursive: true, force: true });
-    fs.mkdirSync(subDir, { recursive: true });
-    const problematicFile = path.resolve(classesDir, 'EOorg/EOeolang/EOnan$EOtimes.class');
-    fs.writeFileSync(problematicFile, 'test content');
-    function count(dir, curr) {
-      if (fs.existsSync(dir)) {
-        for (const f of fs.readdirSync(dir)) {
-          const next = path.join(dir, f);
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));
+    const classes = path.join(dir, 'EOorg/EOeolang');
+    fs.mkdirSync(classes, {recursive: true});
+    fs.writeFileSync(path.join(classes, 'EOnan.class'), 'real');
+    fs.symlinkSync(path.join(classes, 'EOmissing.class'), path.join(classes, 'EOnan$EOtimes.class'));
+    function count(root, curr) {
+      if (fs.existsSync(root)) {
+        for (const f of fs.readdirSync(root)) {
+          const next = path.join(root, f);
           try {
             if (fs.statSync(next).isDirectory()) {
               curr = count(next, curr);
@@ -78,29 +77,14 @@ describe('mvnw', () => {
               curr++;
             }
           } catch (error) {
-            if (error.code === 'ENOENT') {
+            if (error.code !== 'ENOENT') {
               throw error;
             }
-            throw error;
           }
         }
       }
       return curr;
     }
-    if (fs.existsSync(problematicFile)) {
-      fs.unlinkSync(problematicFile);
-    }
-    try {
-      const result = count(classesDir, 0);
-      assert(result >= 0, 'Count should complete without ENOENT error');
-      done();
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        assert.fail('ENOENT error should be handled gracefully');
-      } else {
-        throw error;
-      }
-    }
-    fs.rmSync(tempDir, { recursive: true, force: true });
+    assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
   });
 });
