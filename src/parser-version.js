@@ -27,18 +27,26 @@ const request = require('sync-request'),
       return version.value;
     },
     /**
+     * Build the Maven Central URL of a parser version POM.
+     * @param {String} ver - Version to locate, for example '0.23.1'
+     * @return {String} Full URL of the eo-maven-plugin POM
+     */
+    url(ver) {
+      const repo = 'org/eolang/eo-maven-plugin',
+        artifactId = 'eo-maven-plugin';
+      return `https://repo.maven.apache.org/maven2/${repo}/${ver}/${artifactId}-${ver}.pom`;
+    },
+    /**
      * Check if a specific parser version exists in Maven Central.
      * @param {String} ver - Version to check, for example '0.23.1'
+     * @param {function} fetch - HTTP call, defaults to sync-request
      * @return {Boolean} True if version exists, false otherwise
      */
-    exists(ver) {
+    exists(ver, fetch = request) {
       let result;
       if (ver && ver !== 'undefined') {
         try {
-          const repo = 'org/eolang/eo-maven-plugin',
-            artifactId = 'eo-maven-plugin',
-            url = `https://repo.maven.apache.org/maven2/${repo}/${ver}/${artifactId}-${ver}.pom`,
-            res = request('GET', url, {timeout: 10000, socketTimeout: 10000});
+          const res = fetch('GET', version.url(ver), {timeout: 10000, socketTimeout: 10000});
           result = res.statusCode === 200;
         } catch (e) {
           console.debug('Unable to validate parser version (network error): %s', e.message);
