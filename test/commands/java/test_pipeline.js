@@ -12,11 +12,11 @@ describe('java/pipeline', () => {
       register: {goals: () => ['eo:register']},
       assemble: {goals: () => ['eo:assemble']},
     };
-    calls = [];
+    const calls = [];
     const maven = function maven(command) {
       calls.push(command);
     }
-    opts = {sources: 'sources-dir', target: 'target-dir'};
+    const opts = {sources: 'sources-dir', target: 'target-dir'};
     await pipeline(coms, ['register', 'assemble'], opts, maven)
     assert.deepStrictEqual(
       calls[0],
@@ -45,11 +45,11 @@ describe('java/pipeline', () => {
         extras: (opts) => [`-Deo.failOnWarning=${opts.easy ? 'false' : 'true'}`],
       },
     };
-    calls = [];
+    const calls = [];
     const maven = function maven(command) {
       calls.push(command);
     }
-    opts = {
+    const opts = {
       sources: 'lint-sources-dir',
       target: 'lint-target-dir',
       newParser: true,
@@ -63,12 +63,29 @@ describe('java/pipeline', () => {
     const coms = {
       resolve: {goals: () => ['eo:resolve', 'eo:place']},
     };
-    calls = [];
+    const calls = [];
     const maven = function maven(command) {
       calls.push(command);
     }
     await pipeline(coms, ['resolve'], {sources: 'srs', target: 'tgt'}, maven)
     assert(calls[0].includes('eo:resolve'));
     assert(calls[0].includes('eo:place'));
+  });
+  it('does not leak the maven accumulator into the global scope', () => {
+    assert.strictEqual(globalThis.calls, undefined, 'calls leaked onto the global object');
+  });
+  it('does not leak the pipeline options into the global scope', () => {
+    assert.strictEqual(globalThis.opts, undefined, 'opts leaked onto the global object');
+  });
+  it('starts every run with an isolated accumulator', async () => {
+    const coms = {
+      register: {goals: () => ['eo:register']},
+    };
+    const calls = [];
+    const maven = function maven(command) {
+      calls.push(command);
+    }
+    await pipeline(coms, ['register'], {sources: 'iso-srs', target: 'iso-tgt'}, maven)
+    assert.strictEqual(calls.length, 1, 'accumulator carried commands from another run');
   });
 });

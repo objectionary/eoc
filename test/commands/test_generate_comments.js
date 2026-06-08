@@ -23,9 +23,9 @@ describe('generate_comments', () => {
   });
   it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
-    for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
+    for (let placeholders = 0; placeholders < 3; ++placeholders) {
       const exampleInput =
-        '# <COMMENT-TO-BE-ADDED>\n'.repeat(numberOfPlaceholders);
+        '# <COMMENT-TO-BE-ADDED>\n'.repeat(placeholders);
       const outputFilePath = path.resolve(home, 'out.json');
       const stdout = runSync([
         'generate_comments',
@@ -33,14 +33,14 @@ describe('generate_comments', () => {
         `--prompt_template=${makePromptFile(home, '')}`,
         `--source=${makeInputFile(home, exampleInput)}`,
         `--output=${outputFilePath}`]);
-      const expectedContents = Array(numberOfPlaceholders).fill('<PLACEHOLDER_RESPONSE>');
+      const expectedContents = Array(placeholders).fill('<PLACEHOLDER_RESPONSE>');
       verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
     }
     done();
   });
   it('fills output as expected when encountering valid EO code', (done) => {
     const home = makeHome();
-    for (numberOfPlaceholders = 0; numberOfPlaceholders < 3; ++numberOfPlaceholders) {
+    for (let placeholders = 0; placeholders < 3; ++placeholders) {
       const exampleInput = [
         '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
         '[args] > simple',
@@ -64,6 +64,21 @@ describe('generate_comments', () => {
       verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
     }
     done();
+  });
+  it('produces empty output when the source carries no placeholder', (done) => {
+    const home = makeHome();
+    const outputFilePath = path.resolve(home, 'out.json');
+    const stdout = runSync([
+      'generate_comments',
+      '--provider=placeholder',
+      `--prompt_template=${makePromptFile(home, '')}`,
+      `--source=${makeInputFile(home, '[args] > app')}`,
+      `--output=${outputFilePath}`]);
+    verifyGeneratedOutput(stdout, home, outputFilePath, []);
+    done();
+  });
+  it('does not leak the placeholders counter into the global scope', () => {
+    assert.strictEqual(globalThis.placeholders, undefined, 'placeholders leaked onto the global object');
   });
 });
 
