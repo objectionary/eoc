@@ -116,44 +116,27 @@ You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
 <!-- BEGIN COMMANDS SECTION -->
-* `register` finds necessary `.eo` files and registers them in a JSON catalog
-* `parse` parses `.eo` files into `.xmir` without pulling foreign objects
-* `assemble` parses `.eo` files into `.xmir`, optimizes them,
-  and pulls foreign EO objects
-* `lint` finds style-related errors in EO and XMIR files
-* `resolve` resolves all the dependencies required for compilation
-* `transpile` converts `.xmir` files to the target programming
-language (Java by default)
-* `compile` converts target language sources (e.g., `.java`)
-to binaries (e.g., `.class`)
-* `link` puts all binaries together into a single executable binary
-* `dataize` dataizes a single object from the executable binary
-* `test` dataizes all visible unit tests
-* `jeo:disassemble` converts Java `.class` files to `.xmir`
-(via [jeo](https://github.com/objectionary/jeo-maven-plugin))
-* `jeo:assemble` converts `.xmir` files to Java `.class` files
-(via [jeo](https://github.com/objectionary/jeo-maven-plugin))
-
-There are also commands that help manipulate with XMIR and EO sources
-(the list is not completed, while some of them are not implemented as of yet):
-
-* `audit` inspects all required packages and reports their status
-* `clean` deletes all temporary files (use `--global` to also delete `~/.eo`)
-* `foreign` inspects all objects found in the program after the `assemble` step
-* `print` generates `.eo` files from `.xmir` files
-* `generate_comments` generates `.json` files with LLM-generated
-  documentation for `.eo` structures
-* `docs` generates HTML documentation from `.xmir` files
-* `latex` generates `.tex` files from `.eo` sources
-* `fmt` formats `.eo` files in the source directory
-* `normalize` normalizes `.eo` files via phi-calculus rewriting using
-  [phino](https://github.com/objectionary/phino) (must be installed separately);
-  original files are saved to `.eoc/before-normalize/` for debugging
-* ~~`translate` converts Java/C++/Python/etc. program to EO program~~
-* ~~`demu` removes `cage` and `memory` objects~~
-* ~~`dejump` removes `goto` objects~~
-* ~~`infer` suggests object names where it's possible to infer them~~
-* ~~`flatten` moves inner objects to upper level~~
+* `audit` Inspect all packages and report their status
+* `foreign` Inspect and print the list of foreign objects
+* `clean` Delete all temporary files
+* `register` Register all visible EO source files
+* `parse` Parse EO files into XMIR
+* `assemble` Parse EO files into XMIR and join them with required dependencies
+* `print` Generate EO files from XMIR files
+* `lint` Lint XMIR files and fail if any issues inside
+* `resolve` Resolve all the dependencies required for compilation
+* `transpile` Convert EO files into target language
+* `compile` Compile target language sources into binaries
+* `link` Link together all binaries into a single executable binary
+* `dataize` Run the single executable binary and dataize an object
+* `test` Run all visible unit tests
+* `docs` Generate documentation from XMIR files
+* `generate_comments` Generate documentation with LLM
+* `jeo:disassemble` Disassemble .class files to .xmir files
+* `jeo:assemble` Assemble .xmir files to .class files
+* `latex` Generate LaTeX files from EO sources
+* `normalize` Normalize EO files using phi-calculus normalization via phino
+* `fmt` Format EO files in the source directory
 <!-- END COMMANDS SECTION -->
 
 This command line toolkit simply integrates other tools available in
