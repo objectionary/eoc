@@ -60,16 +60,23 @@ describe('parser-version', () => {
       const exists = parserVersion.exists('undefined');
       assert.strictEqual(exists, false, 'String "undefined" should return false');
     });
-    it('constructs correct Maven Central URL', function () {
-      this.timeout(15000);
-      const exists = parserVersion.exists('0.28.11');
-      assert.strictEqual(exists, true, 'URL should be correctly formatted to find version 0.28.11');
+    it('constructs correct Maven Central URL', () => {
+      const url = parserVersion.url('0.28.11');
+      assert.strictEqual(
+        url,
+        'https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/0.28.11/eo-maven-plugin-0.28.11.pom',
+        `URL ${url} should point to the eo-maven-plugin POM of 0.28.11`
+      );
     });
-    it('handles network errors gracefully', function () {
-      this.timeout(15000);
-      assert.doesNotThrow(() => {
-        parserVersion.exists('0.28.11');
+    it('returns false when the HTTP call throws', () => {
+      const exists = parserVersion.exists('0.28.11', () => {
+        throw new Error('connection refused');
       });
+      assert.strictEqual(exists, false, 'A failing HTTP call should make exists return false');
+    });
+    it('returns false when the HTTP status is not 200', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 404}));
+      assert.strictEqual(exists, false, 'A non-200 response should make exists return false');
     });
   });
 });
