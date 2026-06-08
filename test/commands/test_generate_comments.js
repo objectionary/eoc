@@ -65,6 +65,18 @@ describe('generate_comments', () => {
     }
     done();
   });
+  it('produces empty output when the source carries no placeholder', (done) => {
+    const home = makeHome();
+    const outputFilePath = path.resolve(home, 'out.json');
+    const stdout = runSync([
+      'generate_comments',
+      '--provider=placeholder',
+      `--prompt_template=${makePromptFile(home, '')}`,
+      `--source=${makeInputFile(home, '[args] > app')}`,
+      `--output=${outputFilePath}`]);
+    verifyGeneratedOutput(stdout, home, outputFilePath, []);
+    done();
+  });
   it('does not leak the placeholders counter into the global scope', () => {
     assert.strictEqual(globalThis.placeholders, undefined, 'placeholders leaked onto the global object');
   });

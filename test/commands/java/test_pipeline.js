@@ -74,4 +74,18 @@ describe('java/pipeline', () => {
   it('does not leak the maven accumulator into the global scope', () => {
     assert.strictEqual(globalThis.calls, undefined, 'calls leaked onto the global object');
   });
+  it('does not leak the pipeline options into the global scope', () => {
+    assert.strictEqual(globalThis.opts, undefined, 'opts leaked onto the global object');
+  });
+  it('starts every run with an isolated accumulator', async () => {
+    const coms = {
+      register: {goals: () => ['eo:register']},
+    };
+    const calls = [];
+    const maven = function maven(command) {
+      calls.push(command);
+    }
+    await pipeline(coms, ['register'], {sources: 'iso-srs', target: 'iso-tgt'}, maven)
+    assert.strictEqual(calls.length, 1, 'accumulator carried commands from another run');
+  });
 });
