@@ -59,6 +59,25 @@ describe('mvnw', () => {
       'Expected Maven INFO logs to include timestamps in yyyy-MM-dd HH:mm:ss format'
     );
   });
+  it('prefixes mvnw output lines with [HH:MM:SS] timestamp', async function () {
+    this.timeout(30000);
+    const orig = process.stdout.write;
+    const captured = [];
+    process.stdout.write = (chunk) => {
+      captured.push(chunk.toString());
+    };
+    try {
+      await mvnw(['--version', '--quiet'], null, true);
+    } finally {
+      process.stdout.write = orig;
+    }
+    const timestamped = captured.join('').split('\n')
+      .filter((l) => /^\[\d{2}:\d{2}:\d{2}\] /.test(l));
+    assert.ok(
+      timestamped.length > 0,
+      'Expected at least one output line with [HH:MM:SS] prefix'
+    );
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));
