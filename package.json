@@ -27,7 +27,7 @@
     "grunt-eslint": "^26.0.0",
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.5",
-    "mocha": "^11.5.0",
+    "mocha": "^11.7.6",
     "nyc": "^18.0.0"
   },
   "engines": {
@@ -72,5 +72,5 @@
     "coverage": "nyc --reporter=lcov --reporter=text-summary mocha test/**/*.js --timeout 1200000",
     "test": "mocha 'test/**/*.js' --timeout 1200000"
   },
-  "version": "0.0.0"
+  "version": "0.35.2"
 }
