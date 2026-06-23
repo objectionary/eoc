@@ -59,6 +59,16 @@ describe('mvnw', () => {
       'Expected Maven INFO logs to include timestamps in yyyy-MM-dd HH:mm:ss format'
     );
   });
+  it('skips the Maven Central check for SNAPSHOT parser versions', () => {
+    const opts = {
+      sources: 'sources',
+      target: 'target',
+      parser: '1.0-SNAPSHOT',
+      homeTag: 'homeTag'
+    };
+    const result = flags(opts);
+    assert.ok(result.includes('-Deo.version=1.0-SNAPSHOT'));
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));

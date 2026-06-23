@@ -42,7 +42,7 @@ module.exports.flags = function(opts) {
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
-  if (opts.parser && !parserVersion.exists(opts.parser)) {
+  if (opts.parser && !opts.parser.endsWith('-SNAPSHOT') && !parserVersion.exists(opts.parser)) {
     console.error(colors.red(
       `Parser version ${opts.parser} is not available in Maven Central.\n` +
       `Please check available versions at: https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/\n` +
