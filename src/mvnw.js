@@ -110,20 +110,20 @@ module.exports.mvnw = function(args, tgt, batch) {
         start();
       }
       result.on('close', (code) => {
-        if (code !== 0) {
-          console.error(`The command "${cmd}" exited with #${code} code`);
-          process.exit(1);
-        }
         if (!batch) {
           stop();
+        }
+        if (code !== 0) {
+          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          return;
         }
         resolve(args);
       });
     } else {
       result.on('close', (code) => {
         if (code !== 0) {
-          console.error(`The command "${cmd}" exited with #${code} code`);
-          process.exit(1);
+          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          return;
         }
         resolve(args);
       });

@@ -69,6 +69,36 @@ describe('mvnw', () => {
     const result = flags(opts);
     assert.ok(result.includes('-Deo.version=1.0-SNAPSHOT'));
   });
+  it('rejects when a quiet Maven run exits with a non-zero code', async function () {
+    this.timeout(60000);
+    await assert.rejects(
+      mvnw(['--unrecognized-eoc-flag', '--quiet'], null, true),
+      /exited with/,
+      'mvnw should reject instead of killing the process when a quiet run fails'
+    );
+  });
+  it('rejects when a verbose Maven run exits with a non-zero code', async function () {
+    this.timeout(60000);
+    await assert.rejects(
+      mvnw(['--unrecognized-eoc-flag'], undefined, true),
+      /exited with/,
+      'mvnw should reject instead of killing the process when a verbose run fails'
+    );
+  });
+  it('rejects with an Error so callers can wrap it as a cause', async function () {
+    this.timeout(60000);
+    await assert.rejects(
+      mvnw(['--unrecognized-eoc-flag'], undefined, true),
+      (error) => error instanceof Error,
+      'mvnw rejection is not a proper Error, callers cannot wrap it as a cause'
+    );
+  });
+  it('runs again after a previous run failed', async function () {
+    this.timeout(120000);
+    await assert.rejects(mvnw(['--unrecognized-eoc-flag', '--quiet'], null, true));
+    const args = await mvnw(['--version', '--quiet'], null, true);
+    assert.ok(args.includes('--version'), 'mvnw cannot run again, the process did not survive a failed run');
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));

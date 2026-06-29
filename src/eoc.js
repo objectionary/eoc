@@ -378,13 +378,7 @@ program.command('fmt')
   });
 
 if (require.main === module) {
-  try {
-    program.parse(process.argv);
-  } catch (e) {
-    console.error(e.message);
-    console.debug(e.stack);
-    process.exit(1);
-  }
+  program.parseAsync(process.argv);
 }
 
 module.exports.commandsDescription = function commandsDescription() {
