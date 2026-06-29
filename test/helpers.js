@@ -23,10 +23,11 @@ module.exports.homeTag = fs.readFileSync(
  */
 module.exports.runSync = function runSync(args) {
   const path = require('path'),
-    {execSync} = require('child_process');
+    {execFileSync} = require('child_process');
   try {
-    return execSync(
-      `node ${path.resolve('./src/eoc.js')} --batch ${args.join(' ')}`,
+    return execFileSync(
+      'node',
+      [path.resolve('./src/eoc.js'), '--batch'].concat(args),
       {
         'timeout': 1200000,
         'windowsHide': true,

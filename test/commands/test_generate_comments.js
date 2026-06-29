@@ -56,7 +56,7 @@ describe('generate_comments', () => {
       const stdout = runSync([
         'generate_comments',
         '--provider=placeholder',
-        '--comment_placeholder="<STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>"',
+        '--comment_placeholder=<STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
         `--prompt_template=${makePromptFile(home, '')}`,
         `--source=${makeInputFile(home, exampleInput)}`,
         `--output=${outputFilePath}`]);
