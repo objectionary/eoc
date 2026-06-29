@@ -4,6 +4,7 @@
  */
 
 const {XMLParser} = require('fast-xml-parser');
+const colors = require('colors');
 const request = require('sync-request'),
 
   /**
@@ -40,7 +41,7 @@ const request = require('sync-request'),
      * Check if a specific parser version exists in Maven Central.
      * @param {String} ver - Version to check, for example '0.23.1'
      * @param {function} fetch - HTTP call, defaults to sync-request
-     * @return {Boolean} True if version exists, false otherwise
+     * @return {Boolean} True if version exists or cannot be verified, false if confirmed absent
      */
     exists(ver, fetch = request) {
       let result;
@@ -49,8 +50,10 @@ const request = require('sync-request'),
           const res = fetch('GET', version.url(ver), {timeout: 10000, socketTimeout: 10000});
           result = res.statusCode === 200;
         } catch (e) {
-          console.debug('Unable to validate parser version (network error): %s', e.message);
-          result = false;
+          console.warn(colors.yellow(
+            `Cannot verify parser version ${ver} in Maven Central (${e.message}), proceeding anyway`
+          ));
+          result = true;
         }
       } else {
         result = false;
