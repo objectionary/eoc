@@ -62,6 +62,33 @@ describe('normalize', () => {
     );
     done();
   });
+  it('normalizes EO files when the project path contains spaces', done => {
+    const {source} = setup('with spaces');
+    assert.strictEqual(
+      fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
+      '# No comments.\n[] > simple\n',
+      'Normalized output must be produced even when the project path contains spaces'
+    );
+    done();
+  });
+  it('normalizes EO files when the project path contains shell metacharacters', done => {
+    const {source} = setup('weird (dir) & name');
+    assert.strictEqual(
+      fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
+      '# No comments.\n[] > simple\n',
+      'Normalized output must be produced even when the project path contains shell metacharacters'
+    );
+    done();
+  });
+  it('normalizes EO files when the project path contains a semicolon', done => {
+    const {source} = setup('with; semicolon');
+    assert.strictEqual(
+      fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
+      '# No comments.\n[] > simple\n',
+      'Normalized output must be produced even when the project path contains a semicolon'
+    );
+    done();
+  });
   it('backup matches original input and all pipeline files are produced', done => {
     const {source, target} = setup('pipeline');
     const backup = fs.readFileSync(

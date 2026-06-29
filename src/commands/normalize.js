@@ -4,7 +4,7 @@
  */
 
 const path = require('path');
-const {execSync} = require('child_process');
+const {execSync, execFileSync} = require('child_process');
 const {mvnw, flags} = require('../mvnw');
 const {elapsed} = require('../elapsed');
 const {findFiles, saveFile, copyDir} = require('../files');
@@ -42,8 +42,9 @@ module.exports = function(opts) {
       const rel = path.relative(parsed, xmir);
       console.debug('Normalizing %s', rel);
       const ts = Date.now();
-      const out = execSync(
-        `phino rewrite --input=xmir --output=xmir --normalize ${xmir}`,
+      const out = execFileSync(
+        'phino',
+        ['rewrite', '--input=xmir', '--output=xmir', '--normalize', xmir],
         {stdio: ['pipe', 'pipe', 'pipe']}
       );
       console.debug('Normalized in %dms', Date.now() - ts);
