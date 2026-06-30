@@ -119,6 +119,7 @@ function wrapHtml(name, html, css) {
 /**
  * Command to generate documentation.
  * @param {Hash} opts - All options
+ * @return {Promise.<String>} Resolves to the message reporting the summary path
  */
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
@@ -173,8 +174,9 @@ module.exports = function(opts) {
       }
       lines.push('</eodoc>');
       fs.writeFileSync(summary, lines.join('\n'));
-      tracked.print('Summary XML generated at %s', path.relative(process.cwd(), summary));
+      const located = tracked.print(`Summary XML generated at ${path.relative(process.cwd(), summary)}`);
       tracked.print(`Documentation generation completed in the ${output} directory`);
+      return located;
     } catch (error) {
       console.error('Error generating documentation:', error);
       throw error;

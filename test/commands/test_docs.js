@@ -7,6 +7,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync} = require('../helpers');
+const generateDocs = require('../../src/commands/docs');
 
 describe('docs', () => {
   const home = path.resolve('temp/test-docs');
@@ -70,6 +71,22 @@ describe('docs', () => {
     assert(content.includes('<object name="test1"/>'), 'Expected object test1 in summary.xml');
     assert(content.includes('<object name="test2"/>'), 'Expected object test2 in summary.xml');
     done();
+  });
+  /**
+   * Tests that the 'docs' command reports the real summary path, rather
+   * than the literal "%s" left over by a printf-style call.
+   * @return {Promise} of the docs command, resolved to its summary message
+   */
+  it('reports the path of the generated summary', async () => {
+    const sample = path.join(parsed, 'foo', 'bar');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'test1.xmir'), '<program name="test" />');
+    const expected = path.relative(process.cwd(), path.join(docs, 'summary.xml'));
+    const message = await generateDocs({target: home, sources: path.resolve(home, 'src')});
+    assert(
+      message.includes(expected),
+      `Expected "${message}" to contain "${expected}"`
+    );
   });
   /**
    * Tests that the 'docs' command generates expected comments from XMIR to HTML.
