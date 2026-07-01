@@ -40,6 +40,30 @@ describe('eoc', () => {
 });
 
 describe('eoc', () => {
+  const {spawnSync} = require('child_process'),
+    path = require('path'),
+    eoc = function(...args) {
+      return spawnSync('node', [path.resolve('./src/eoc.js'), '--batch', ...args]);
+    };
+  it('accepts the "js" alias for the --language option', (done) => {
+    assert.strictEqual(eoc('--language=js', 'clean').status, 0);
+    done();
+  });
+  it('accepts the full "javascript" name for the --language option', (done) => {
+    assert.strictEqual(eoc('--language=javascript', 'clean').status, 0);
+    done();
+  });
+  it('accepts a mixed-case value for the --language option', (done) => {
+    assert.strictEqual(eoc('--language=JAVA', 'clean').status, 0);
+    done();
+  });
+  it('rejects an unknown --language value', (done) => {
+    assert.notStrictEqual(eoc('--language=Eiffel', 'clean').status, 0);
+    done();
+  });
+});
+
+describe('eoc', () => {
   before(weAreOnline);
   it('fails due version mismatch if different --pin provided', (done) => {
     assert.throws(
