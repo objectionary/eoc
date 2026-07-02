@@ -63,6 +63,20 @@ const {program} = require('commander'),
     [language.js]: require('./commands/js/pipeline'),
   };
 
+/**
+ * Every language name a user may type, mapped (in lower case) to its
+ * canonical platform key. Derived from `language` so the accepted names
+ * and the platforms can never drift apart. For each `[alias, canonical]`
+ * pair we accept the short alias (e.g. `js`) and the canonical name
+ * lower-cased (e.g. `javascript`); `select()` lower-cases the input, so
+ * mixed-case spellings such as `JavaScript` are matched too.
+ */
+const platforms = {};
+for (const [alias, canonical] of Object.entries(language)) {
+  platforms[alias] = canonical;
+  platforms[canonical.toLowerCase()] = canonical;
+}
+
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
@@ -103,7 +117,7 @@ program
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
-  .option('-l, --language <name>', 'Language of target execution platform', language.java)
+  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-transformation-steps', 'Save intermediate XMIR files')
@@ -412,12 +426,7 @@ function pin(opts) {
  * @return {Object} - commands
  */
 function coms() {
-  const lang = program.opts().language,
-    hash = commands[lang];
-  if (hash === undefined) {
-    throw new Error(`Unknown platform ${lang}`);
-  }
-  return hash;
+  return select(commands, program.opts().language);
 }
 
 /**
@@ -425,10 +434,24 @@ function coms() {
  * @return {Function} - pipeline function
  */
 function pipe() {
-  const lang = program.opts().language;
-  const pipeline = pipelines[lang];
-  if (pipeline === undefined) {
+  return select(pipelines, program.opts().language);
+}
+
+/**
+ * Resolve the entry registered for the requested language, matching the
+ * name case-insensitively and accepting aliases (e.g. `js`, `java`). The
+ * lookup and its validation live here, so callers never repeat the
+ * "unknown platform" check.
+ *
+ * @param {Object} registry - Map keyed by canonical platform name
+ * @param {String} lang - Language name as provided on the command line
+ * @return {*} The entry registered for the resolved platform
+ * @throws {Error} If the language does not resolve to a known platform
+ */
+function select(registry, lang) {
+  const found = registry[platforms[String(lang).toLowerCase()]];
+  if (found === undefined) {
     throw new Error(`Unknown platform ${lang}`);
   }
-  return pipeline;
+  return found;
 }
