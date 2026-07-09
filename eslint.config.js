@@ -5,6 +5,7 @@
 
 const { configs } = require('@eslint/js');
 const promise = require('eslint-plugin-promise');
+const jsdoc = require('eslint-plugin-jsdoc');
 const noEmptyLinesInMethod = require('./eslintPlugin/rules/noEmptyLinesInMethod');
 
 const localPlugin = {
@@ -25,6 +26,7 @@ module.exports = [
     },
     plugins: {
       promise,
+      jsdoc,
       local: localPlugin
     },
     rules: {
@@ -68,6 +70,7 @@ module.exports = [
       'sort-keys': 'off',
       'sort-vars': 'off',
       'promise/prefer-await-to-then': 'error',
+      'jsdoc/check-alignment': 'error',
       'local/no-empty-lines-in-method': 'error'
     }
   },

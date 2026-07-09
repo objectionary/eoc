@@ -8,16 +8,16 @@ const tinted = require('./tinted-console');
 const {program} = require('commander'),
 
   /**
- * Target language option.
- */
+   * Target language option.
+   */
   language = {
     java: 'Java',
     js: 'JavaScript',
   },
 
   /**
- * Platform dependent commands.
- */
+   * Platform dependent commands.
+   */
   common = {
     assemble: require('./commands/assemble'),
     audit: require('./commands/audit'),

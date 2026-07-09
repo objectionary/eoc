@@ -7,11 +7,11 @@ const path = require('path');
 const {execSync} = require('child_process'),
 
   /**
- * Convert eoc arguments to appropriate eo2js flags
- * @param {Object} args - eoc arguments
- * @param {String} lib - Path to eo2js lib
- * @return {Array.<String>} - Flags for eo2js
- */
+   * Convert eoc arguments to appropriate eo2js flags
+   * @param {Object} args - eoc arguments
+   * @param {String} lib - Path to eo2js lib
+   * @return {Array.<String>} - Flags for eo2js
+   */
   flags = function(args, lib) {
     return [
       '--target', args.target,
@@ -24,11 +24,11 @@ const {execSync} = require('child_process'),
   },
 
   /**
- * Wrapper for eo2js.
- * @param {String} command - Command to execute
- * @param {Object} args - Command arguments
- * @return {Promise<Array.<String>>}
- */
+   * Wrapper for eo2js.
+   * @param {String} command - Command to execute
+   * @param {Object} args - Command arguments
+   * @return {Promise<Array.<String>>}
+   */
   eo2jsw = function(command, args) {
     const lib = path.resolve(__dirname, '../node_modules/eo2js/src'),
       bin = path.resolve(lib, 'eo2js.js');

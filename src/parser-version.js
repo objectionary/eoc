@@ -8,9 +8,9 @@ const colors = require('colors');
 const request = require('sync-request'),
 
   /**
- * Load the latest version from GitHub releases.
- * @return {String} Latest version, for example '0.23.1'
- */
+   * Load the latest version from GitHub releases.
+   * @return {String} Latest version, for example '0.23.1'
+   */
   version = module.exports = {
     value: '',
     get() {
