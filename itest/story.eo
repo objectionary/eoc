@@ -4,3 +4,8 @@
 # A story
 [] > story
   "Hello, Jeff" > @
+  # Tests that the story greeting is not empty.
+  [] +> tests-story-is-not-empty
+    gt. > @
+      "Hello, Jeff".length
+      0

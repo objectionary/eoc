@@ -55,9 +55,9 @@ module.exports = function(opts) {
 module.exports.goals = goals;
 
 /**
-* Command to get extra Maven flags for lint command.
-* @return {Array.<String>} of extra Maven flags to run for lint command
-*/
+ * Command to get extra Maven flags for lint command.
+ * @return {Array.<String>} of extra Maven flags to run for lint command
+ */
 module.exports.extras = extras;
 
 function goals(opts) {

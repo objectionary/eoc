@@ -12,6 +12,17 @@ const colors = require('colors');
 const parserVersion = require('./parser-version');
 
 /**
+ * Short label for the Maven goals being executed, collapsing a list
+ * into a count and leaving a lone goal under its own name.
+ * @param {Array} args The arguments passed to Maven
+ * @return {String} Either the single goal or a count like "5 steps"
+ */
+module.exports.summary = function(args) {
+  const steps = args.filter((a) => !a.startsWith('-'));
+  return steps.length > 1 ? `${steps.length} steps` : steps.join('');
+};
+
+/**
  * The shell to use (depending on operating system).
  * @return {String} Path to shell or "undefined" if default one should be used
  */
@@ -81,7 +92,7 @@ module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
     target = tgt;
-    phase = args.filter((a) => !a.startsWith('-')).join(' + ');
+    phase = module.exports.summary(args);
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {

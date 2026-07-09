@@ -5,63 +5,65 @@
  */
 
 const tinted = require('./tinted-console');
-const {program} = require('commander'),
+const {program} = require('commander');
 
-  /**
+/**
  * Target language option.
  */
-  language = {
-    java: 'Java',
-    js: 'JavaScript',
-  },
+const language = {
+  java: 'Java',
+  js: 'JavaScript',
+};
 
-  /**
+/**
  * Platform dependent commands.
  */
-  common = {
-    assemble: require('./commands/assemble'),
-    audit: require('./commands/audit'),
-    clean: require('./commands/clean'),
-    foreign: require('./commands/foreign'),
-    parse: require('./commands/parse'),
-    print: require('./commands/print'),
-    register: require('./commands/register'),
-    lint: require('./commands/lint'),
-    docs: require('./commands/docs'),
-    generate_comments: require('./commands/generate_comments'),
-    jeo_disassemble: require('./commands/jeo/disassemble'),
-    jeo_assemble: require('./commands/jeo/assemble'),
-    latex: require('./commands/latex'),
-    normalize: require('./commands/normalize'),
-  },
-  commands = {
-    [language.java]: {
-      ...common,
-      ...{
-        resolve: require('./commands/java/resolve'),
-        transpile: require('./commands/java/transpile'),
-        link: require('./commands/java/link'),
-        compile: require('./commands/java/compile'),
-        dataize: require('./commands/java/dataize'),
-        test: require('./commands/java/test'),
-      }
-    },
-    [language.js]: {
-      ...common,
-      ...{
-        resolve: require('./commands/js/resolve'),
-        transpile: require('./commands/js/transpile'),
-        link: require('./commands/js/link'),
-        compile: require('./commands/js/compile'),
-        dataize: require('./commands/js/dataize'),
-        test: require('./commands/js/test'),
-      }
+const common = {
+  assemble: require('./commands/assemble'),
+  audit: require('./commands/audit'),
+  clean: require('./commands/clean'),
+  foreign: require('./commands/foreign'),
+  parse: require('./commands/parse'),
+  print: require('./commands/print'),
+  register: require('./commands/register'),
+  lint: require('./commands/lint'),
+  docs: require('./commands/docs'),
+  generate_comments: require('./commands/generate_comments'),
+  jeo_disassemble: require('./commands/jeo/disassemble'),
+  jeo_assemble: require('./commands/jeo/assemble'),
+  latex: require('./commands/latex'),
+  normalize: require('./commands/normalize'),
+};
+
+const commands = {
+  [language.java]: {
+    ...common,
+    ...{
+      resolve: require('./commands/java/resolve'),
+      transpile: require('./commands/java/transpile'),
+      link: require('./commands/java/link'),
+      compile: require('./commands/java/compile'),
+      dataize: require('./commands/java/dataize'),
+      test: require('./commands/java/test'),
     }
   },
-  pipelines = {
-    [language.java]: require('./commands/java/pipeline'),
-    [language.js]: require('./commands/js/pipeline'),
-  };
+  [language.js]: {
+    ...common,
+    ...{
+      resolve: require('./commands/js/resolve'),
+      transpile: require('./commands/js/transpile'),
+      link: require('./commands/js/link'),
+      compile: require('./commands/js/compile'),
+      dataize: require('./commands/js/dataize'),
+      test: require('./commands/js/test'),
+    }
+  }
+};
+
+const pipelines = {
+  [language.java]: require('./commands/java/pipeline'),
+  [language.js]: require('./commands/js/pipeline'),
+};
 
 /**
  * Every language name a user may type, mapped (in lower case) to its

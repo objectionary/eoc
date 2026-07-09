@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags} = require('../src/mvnw');
+const {mvnw, flags, summary} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -98,6 +98,27 @@ describe('mvnw', () => {
     await assert.rejects(mvnw(['--unrecognized-eoc-flag', '--quiet'], null, true));
     const args = await mvnw(['--version', '--quiet'], null, true);
     assert.ok(args.includes('--version'), 'mvnw cannot run again, the process did not survive a failed run');
+  });
+  it('collapses several Maven goals into a count', () => {
+    assert.strictEqual(
+      summary(['register', 'assemble', 'lint', 'resolve', 'place']),
+      '5 steps',
+      'multiple goals cannot be shown as a plain count'
+    );
+  });
+  it('keeps a lone Maven goal as its own name', () => {
+    assert.strictEqual(
+      summary(['transpile']),
+      'transpile',
+      'a single goal cannot survive as its own name'
+    );
+  });
+  it('ignores flags when counting Maven goals', () => {
+    assert.strictEqual(
+      summary(['register', 'assemble', '--quiet', '--batch-mode']),
+      '2 steps',
+      'flags cannot be excluded from the goal count'
+    );
   });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
