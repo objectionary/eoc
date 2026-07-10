@@ -111,6 +111,7 @@ program
   .configureHelp({sortOptions: true, sortSubcommands: true});
 
 program
+  .option('-C, --dir <path>', 'Directory where the work should be done', '.')
   .option('-s, --sources <path>', 'Directory with .EO sources', '.')
   .option('-t, --target <path>', 'Directory with all generated files', '.eoc')
   .option('--easy', 'Ignore "warnings" and only fail if there are "errors" or "critical" errors')
@@ -128,6 +129,19 @@ program
   .option('--verbose', 'Print debug messages and full output of child processes')
   .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what)
   .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
+
+program.hook('preAction', (command) => {
+  const dir = command.opts().dir;
+  if (path.resolve(dir) !== process.cwd()) {
+    try {
+      process.chdir(dir);
+    } catch (err) {
+      console.error('Cannot switch to the working directory %s: %s', dir, err.message);
+      process.exit(1);
+    }
+    console.debug(`Working directory changed to ${process.cwd()}`);
+  }
+});
 
 program.command('audit')
   .description('Inspect all packages and report their status')

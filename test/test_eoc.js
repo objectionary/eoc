@@ -64,6 +64,32 @@ describe('eoc', () => {
 });
 
 describe('eoc', () => {
+  const fs = require('fs');
+  const os = require('os');
+  const path = require('path');
+  it('does the work in the directory set by --dir', (done) => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-dir-'));
+    fs.mkdirSync(path.join(dir, '.eoc'));
+    const stdout = runSync(['--dir', dir, 'clean']);
+    assert(
+      !fs.existsSync(path.join(dir, '.eoc')),
+      `The .eoc directory under --dir was not deleted\n${stdout}`
+    );
+    done();
+  });
+});
+
+describe('eoc', () => {
+  it('fails when the --dir directory does not exist', (done) => {
+    assert.throws(
+      () => runSync(['--dir', 'absent-directory-xyz', 'clean']),
+      /Cannot switch to the working directory/
+    );
+    done();
+  });
+});
+
+describe('eoc', () => {
   before(weAreOnline);
   it('fails due version mismatch if different --pin provided', (done) => {
     assert.throws(
