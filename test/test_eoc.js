@@ -80,6 +80,16 @@ describe('eoc', () => {
 });
 
 describe('eoc', () => {
+  it('fails when the --dir directory does not exist', (done) => {
+    assert.throws(
+      () => runSync(['--dir', 'absent-directory-xyz', 'clean']),
+      /Cannot switch to the working directory/
+    );
+    done();
+  });
+});
+
+describe('eoc', () => {
   before(weAreOnline);
   it('fails due version mismatch if different --pin provided', (done) => {
     assert.throws(

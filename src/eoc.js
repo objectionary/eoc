@@ -133,11 +133,12 @@ program
 program.hook('preAction', (command) => {
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
-    if (!fs.existsSync(dir)) {
-      console.error('The directory %s does not exist', dir);
+    try {
+      process.chdir(dir);
+    } catch (err) {
+      console.error('Cannot switch to the working directory %s: %s', dir, err.message);
       process.exit(1);
     }
-    process.chdir(dir);
     console.debug(`Working directory changed to ${process.cwd()}`);
   }
 });
