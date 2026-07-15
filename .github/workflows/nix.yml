@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: nix
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+concurrency:
+  group: nix-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  nix:
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build the flake
+        run: nix build --print-build-logs .#
+      - name: Run eoc from the store
+        run: nix run .# -- --version
