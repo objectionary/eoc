@@ -58,7 +58,38 @@ describe('eoc', () => {
     done();
   });
   it('rejects an unknown --language value', (done) => {
-    assert.notStrictEqual(eoc('--language=Eiffel', 'clean').status, 0);
+    const result = eoc('--language=Eiffel', 'clean');
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(
+      /^error: option '-l, --language <name>' argument 'Eiffel' is invalid\. Unknown platform Eiffel/.test(stderr),
+      stderr
+    );
+    assert(!stderr.includes('at '), stderr);
+    assert(!stderr.includes('eoc.js:'), stderr);
+    done();
+  });
+});
+
+describe('canonicalLanguage', () => {
+  const {canonicalLanguage} = require('../src/eoc');
+  it('canonicalizes the "js" alias', (done) => {
+    assert.strictEqual(canonicalLanguage('js'), 'JavaScript');
+    done();
+  });
+  it('canonicalizes the full "javascript" name case-insensitively', (done) => {
+    assert.strictEqual(canonicalLanguage('JavaScript'), 'JavaScript');
+    done();
+  });
+  it('canonicalizes a mixed-case "JAVA" value', (done) => {
+    assert.strictEqual(canonicalLanguage('JAVA'), 'Java');
+    done();
+  });
+  it('throws InvalidArgumentError for an unknown platform', (done) => {
+    assert.throws(
+      () => canonicalLanguage('Eiffel'),
+      /Unknown platform Eiffel/
+    );
     done();
   });
 });

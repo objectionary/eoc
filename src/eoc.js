@@ -5,7 +5,7 @@
  */
 
 const tinted = require('./tinted-console');
-const {program} = require('commander');
+const {program, InvalidArgumentError} = require('commander');
 
 /**
  * Target language option.
@@ -79,6 +79,22 @@ for (const [alias, canonical] of Object.entries(language)) {
   platforms[canonical.toLowerCase()] = canonical;
 }
 
+/**
+ * Validate and canonicalize the value of the --language option, so an
+ * unknown platform is rejected right away with a clean commander error
+ * instead of surfacing later as an unhandled exception.
+ * @param {String} value - Raw value from the command line
+ * @return {String} The canonical platform name
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
+ */
+function canonicalLanguage(value) {
+  const canonical = platforms[String(value).toLowerCase()];
+  if (canonical === undefined) {
+    throw new InvalidArgumentError(`Unknown platform ${value}`);
+  }
+  return canonical;
+}
+
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
@@ -120,7 +136,7 @@ program
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
-  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', language.java)
+  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', canonicalLanguage, language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-transformation-steps', 'Save intermediate XMIR files')
@@ -408,13 +424,33 @@ program.command('fmt')
   });
 
 if (require.main === module) {
-  program.parseAsync(process.argv);
+  (async () => {
+    try {
+      // @todo #1065:30min Add a test that exercises this catch block through
+      //  a real async command action, not just through commander's own
+      //  InvalidArgumentError handling (the --language=Eiffel case never
+      //  reaches this catch, since commander intercepts it before the
+      //  action runs). Every action that awaits a command properly (parse,
+      //  assemble, transpile, etc.) needs java/mvn/phino to actually fail,
+      //  and the one action that fails without those (generate_comments)
+      //  does not await its own call, so its rejection never reaches here
+      //  either, that is a separate bug worth its own ticket. Fixing that
+      //  bug first (making the action await/return the call) would also
+      //  give this catch block a lightweight, dependency-free test case.
+      await program.parseAsync(process.argv);
+    } catch (err) {
+      console.error(err && err.message ? err.message : err);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports.commandsDescription = function commandsDescription() {
   return program.commands
     .map(c => [c.name(),c.description()]);
 }
+
+module.exports.canonicalLanguage = canonicalLanguage;
 
 /**
  * Checks --clean option and clears the .eoc directory if true.
@@ -459,6 +495,16 @@ function pipe() {
  * lookup and its validation live here, so callers never repeat the
  * "unknown platform" check.
  *
+ * @todo #1065:30min Remove the duplicated "unknown platform" validation.
+ *  This check is now unreachable from the CLI, since canonicalLanguage()
+ *  already rejects an invalid --language value before it ever reaches
+ *  select(). It is kept only as a defensive fallback for any future
+ *  direct caller of select()/coms()/pipe() that bypasses the --language
+ *  option. Once it is confirmed no such caller exists (or after adding
+ *  one that needs it), either delete this duplicated check or extract a
+ *  single shared validator that both canonicalLanguage() and select()
+ *  call, so the "unknown platform" message and behavior can never drift
+ *  apart.
  * @param {Object} registry - Map keyed by canonical platform name
  * @param {String} lang - Language name as provided on the command line
  * @return {*} The entry registered for the resolved platform
