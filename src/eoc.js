@@ -5,7 +5,7 @@
  */
 
 const tinted = require('./tinted-console');
-const {program} = require('commander');
+const {program, InvalidArgumentError} = require('commander');
 
 /**
  * Target language option.
@@ -79,6 +79,22 @@ for (const [alias, canonical] of Object.entries(language)) {
   platforms[canonical.toLowerCase()] = canonical;
 }
 
+/**
+ * Validate and canonicalize the value of the --language option, so an
+ * unknown platform is rejected right away with a clean commander error
+ * instead of surfacing later as an unhandled exception.
+ * @param {String} value - Raw value from the command line
+ * @return {String} The canonical platform name
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
+ */
+function canonicalLanguage(value) {
+  const canonical = platforms[String(value).toLowerCase()];
+  if (canonical === undefined) {
+    throw new InvalidArgumentError(`Unknown platform ${value}`);
+  }
+  return canonical;
+}
+
 if (process.argv.includes('--verbose')) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
@@ -120,7 +136,7 @@ program
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
-  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', language.java)
+  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', canonicalLanguage, language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-transformation-steps', 'Save intermediate XMIR files')
@@ -408,7 +424,14 @@ program.command('fmt')
   });
 
 if (require.main === module) {
-  program.parseAsync(process.argv);
+  (async () => {
+    try {
+      await program.parseAsync(process.argv);
+    } catch (err) {
+      console.error(err.message);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports.commandsDescription = function commandsDescription() {
