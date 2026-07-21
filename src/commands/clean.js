@@ -9,19 +9,19 @@ const path = require('path');
 const os = require('os');
 
 /**
- * Checks that deleting the given directory would not destroy anything
- * outside the project's own temporary files: the current working
- * directory itself, an ancestor of it, or the user's home directory.
+ * Refuses, by throwing, to delete a directory that is the current
+ * working directory, an ancestor of it, or the user's home directory.
  * @param {String} target - Resolved absolute path of the directory to delete
- * @return {Boolean} True when the target is not the current directory,
- *  an ancestor of it, or the home directory
  */
-function isSafeToDelete(target) {
+function guard(target) {
   const cwd = process.cwd();
-  const fromTargetToCwd = path.relative(target, cwd);
-  const targetIsCwdOrAncestor = fromTargetToCwd === '' ||
-    (!fromTargetToCwd.startsWith('..') && !path.isAbsolute(fromTargetToCwd));
-  return !targetIsCwdOrAncestor && target !== os.homedir();
+  const route = path.relative(target, cwd);
+  const encloses = route === '' || (!route.startsWith('..') && !path.isAbsolute(route));
+  if (encloses || target === os.homedir()) {
+    throw new Error(
+      `Refusing to delete ${rel(target)}: it is the current directory, an ancestor of it, or the home directory`
+    );
+  }
 }
 
 /**
@@ -30,11 +30,7 @@ function isSafeToDelete(target) {
  */
 module.exports = function(opts) {
   const home = path.resolve(opts.target);
-  if (!isSafeToDelete(home)) {
-    throw new Error(
-      `Refusing to delete ${rel(home)}: it is the current directory, an ancestor of it, or the home directory`
-    );
-  }
+  guard(home);
   if (fs.existsSync(home)) {
     fs.rmSync(home, {recursive: true, force: true});
     console.info('The directory %s was deleted', rel(home));
