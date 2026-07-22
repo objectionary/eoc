@@ -112,9 +112,10 @@ describe('eoc', () => {
  * @return {String} The last non-empty line
  */
 function lastLine(stderr) {
-  const lines = stderr.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
-  // eslint-disable-next-line no-control-regex
-  return lines[lines.length - 1].replace(/\x1b\[[0-9;]*m/g, '');
+  const esc = String.fromCharCode(27),
+    ansi = new RegExp(`${esc}\\[[0-9;]*m`, 'g'),
+    lines = stderr.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  return lines[lines.length - 1].replace(ansi, '');
 }
 
 describe('canonicalLanguage', () => {
