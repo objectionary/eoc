@@ -70,8 +70,8 @@ const pipelines = {
  * canonical platform key. Derived from `language` so the accepted names
  * and the platforms can never drift apart. For each `[alias, canonical]`
  * pair we accept the short alias (e.g. `js`) and the canonical name
- * lower-cased (e.g. `javascript`); `select()` lower-cases the input, so
- * mixed-case spellings such as `JavaScript` are matched too.
+ * lower-cased (e.g. `javascript`); `canonicalLanguage()` lower-cases the
+ * input, so mixed-case spellings such as `JavaScript` are matched too.
  */
 const platforms = {};
 for (const [alias, canonical] of Object.entries(language)) {
@@ -452,6 +452,8 @@ module.exports.commandsDescription = function commandsDescription() {
 
 module.exports.canonicalLanguage = canonicalLanguage;
 
+module.exports.select = select;
+
 /**
  * Checks --clean option and clears the .eoc directory if true.
  * @param {*} str Str
@@ -491,29 +493,14 @@ function pipe() {
 
 /**
  * Resolve the entry registered for the requested language, matching the
- * name case-insensitively and accepting aliases (e.g. `js`, `java`). The
- * lookup and its validation live here, so callers never repeat the
- * "unknown platform" check.
- *
- * @todo #1065:30min Remove the duplicated "unknown platform" validation.
- *  This check is now unreachable from the CLI, since canonicalLanguage()
- *  already rejects an invalid --language value before it ever reaches
- *  select(). It is kept only as a defensive fallback for any future
- *  direct caller of select()/coms()/pipe() that bypasses the --language
- *  option. Once it is confirmed no such caller exists (or after adding
- *  one that needs it), either delete this duplicated check or extract a
- *  single shared validator that both canonicalLanguage() and select()
- *  call, so the "unknown platform" message and behavior can never drift
- *  apart.
+ * name case-insensitively and accepting aliases (e.g. `js`, `java`).
+ * Validation is delegated to canonicalLanguage(), so the "unknown
+ * platform" check is never duplicated.
  * @param {Object} registry - Map keyed by canonical platform name
  * @param {String} lang - Language name as provided on the command line
  * @return {*} The entry registered for the resolved platform
- * @throws {Error} If the language does not resolve to a known platform
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
  */
 function select(registry, lang) {
-  const found = registry[platforms[String(lang).toLowerCase()]];
-  if (found === undefined) {
-    throw new Error(`Unknown platform ${lang}`);
-  }
-  return found;
+  return registry[canonicalLanguage(lang)];
 }
