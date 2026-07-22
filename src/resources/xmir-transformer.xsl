@@ -21,10 +21,6 @@
             <h1 class="object-title">
               <xsl:value-of select="$fullname"/>
             </h1>
-            <!--
-            Explicit text nodes keep the template readable without adding
-            formatting whitespace to the generated object signature.
-            -->
             <p class="object-sign">
               <xsl:value-of select="$fullname"/>
               <xsl:text>(</xsl:text>
