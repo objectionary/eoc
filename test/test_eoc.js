@@ -95,6 +95,36 @@ describe('canonicalLanguage', () => {
 });
 
 describe('eoc', () => {
+  const {spawnSync} = require('child_process');
+  const path = require('path');
+  const eoc = function(...args) {
+    return spawnSync('node', [path.resolve('./src/eoc.js'), '--batch', ...args]);
+  };
+  it('reports a failing async command cleanly without leaking a stack trace', (done) => {
+    const result = eoc(
+      'generate_comments', '--provider=no-such-llm',
+      '--source=absent.eo', '--prompt_template=absent.txt'
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(stderr.includes('`no-such-llm` provider is not supported'), stderr);
+    assert(!/\.js:\d+/.test(stderr), stderr);
+    done();
+  });
+  it('reports a filesystem error from an async command without a stack trace', (done) => {
+    const result = eoc(
+      'generate_comments', '--provider=placeholder',
+      '--source=absent.eo', '--prompt_template=absent.txt'
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(stderr.includes('no such file or directory'), stderr);
+    assert(!/\.js:\d+/.test(stderr), stderr);
+    done();
+  });
+});
+
+describe('eoc', () => {
   const fs = require('fs');
   const os = require('os');
   const path = require('path');

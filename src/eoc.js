@@ -352,8 +352,8 @@ program.command('generate_comments')
   .requiredOption('--prompt_template <path>',
     'Path to prompt template file, ' +
     'where `{code}` placeholder will be replaced with the code given by the user')
-  .action((str, opts) => {
-    coms().generate_comments({...program.opts(), ...str});
+  .action(async (str, opts) => {
+    await coms().generate_comments({...program.opts(), ...str});
   });
 
 program.command('jeo:disassemble')
@@ -426,17 +426,6 @@ program.command('fmt')
 if (require.main === module) {
   (async () => {
     try {
-      // @todo #1065:30min Add a test that exercises this catch block through
-      //  a real async command action, not just through commander's own
-      //  InvalidArgumentError handling (the --language=Eiffel case never
-      //  reaches this catch, since commander intercepts it before the
-      //  action runs). Every action that awaits a command properly (parse,
-      //  assemble, transpile, etc.) needs java/mvn/phino to actually fail,
-      //  and the one action that fails without those (generate_comments)
-      //  does not await its own call, so its rejection never reaches here
-      //  either, that is a separate bug worth its own ticket. Fixing that
-      //  bug first (making the action await/return the call) would also
-      //  give this catch block a lightweight, dependency-free test case.
       await program.parseAsync(process.argv);
     } catch (err) {
       console.error(err && err.message ? err.message : err);
