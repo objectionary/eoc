@@ -89,6 +89,40 @@ describe('docs', () => {
     );
   });
   /**
+   * Tests exact object title and signature rendering in generated HTML.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('renders exact object titles and signatures', (done) => {
+    const sample = path.join(parsed, 'foo');
+    fs.mkdirSync(sample, {recursive: true});
+    const xmir = path.join(sample, 'test1.xmir');
+    fs.writeFileSync(
+      xmir,
+      fs.readFileSync(path.join(__dirname, '..', 'resources', 'test1.xmir')).toString()
+    );
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const html = path.join(docs, 'foo/test1.html');
+    const content = fs.readFileSync(html, 'utf-8');
+    const expected = [
+      '<h1 class="object-title">app</h1>',
+      '<p class="object-sign">app(args)</p>',
+      '<h1 class="object-title">app.test_obj</h1>',
+      '<p class="object-sign">app.test_obj()</p>',
+    ];
+    for (const fragment of expected) {
+      assert(
+        content.includes(fragment),
+        `Expected exact HTML fragment "${fragment}" in ${html}`
+      );
+    }
+    done();
+  });
+  /**
    * Tests that the 'docs' command generates expected comments from XMIR to HTML.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */

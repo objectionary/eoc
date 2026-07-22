@@ -21,7 +21,21 @@
             <h1 class="object-title">
               <xsl:value-of select="$fullname"/>
             </h1>
-            <p class="object-sign"><xsl:value-of select="$fullname"/>(<xsl:for-each select="current()/o[@base and @base = '∅']"><xsl:value-of select="@name"/><xsl:choose><xsl:when test="position() != last()">, </xsl:when></xsl:choose></xsl:for-each>)</p>
+            <!--
+            Explicit text nodes keep the template readable without adding
+            formatting whitespace to the generated object signature.
+            -->
+            <p class="object-sign">
+              <xsl:value-of select="$fullname"/>
+              <xsl:text>(</xsl:text>
+              <xsl:for-each select="current()/o[@base and @base = '∅']">
+                <xsl:value-of select="@name"/>
+                <xsl:if test="position() != last()">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+              </xsl:for-each>
+              <xsl:text>)</xsl:text>
+            </p>
             <div class="object-desc">
               <xsl:call-template name="break">
                 <xsl:with-param name="text" select="//comments/comment[@line = current()/@line]"/>
