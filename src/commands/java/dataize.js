@@ -5,6 +5,7 @@
 
 const path = require('path');
 const {spawn} = require('node:child_process');
+const verifyJavac = require('../../verify_javac'); // ← добавить
 
 /**
  * Runs the single executable binary.
@@ -13,6 +14,7 @@ const {spawn} = require('node:child_process');
  * @param {Object} opts - All options
  */
 module.exports = function(obj, args, opts) {
+  verifyJavac(); // ← добавить
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,
