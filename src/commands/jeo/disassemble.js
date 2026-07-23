@@ -27,9 +27,7 @@ module.exports = function(opts) {
         ),
       opts.target, opts.batch
     );
-    tracked.print(
-      `Bytecode .class files from ${rel(opts.classes)} disassembled to .xmir files in ${rel(opts.xmirs)}`
-    );
+    tracked.print(`Bytecode .class files from ${rel(path.resolve(opts.target, opts.classes))} disassembled to .xmir files in ${rel(path.resolve(opts.target, opts.xmirs))}`);
     return r;
   });
 };
