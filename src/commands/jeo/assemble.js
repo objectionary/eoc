@@ -27,9 +27,7 @@ module.exports = function(opts) {
         ),
       opts.target, opts.batch
     );
-    tracked.print(
-      `EO .xmir files from ${rel(opts.xmirs)} assembled to .class files in ${rel(opts.classes)}`
-    );
+    tracked.print(`EO .xmir files from ${rel(path.resolve(opts.target, opts.xmirs))} assembled to .class files in ${rel(path.resolve(opts.target, opts.classes))}`);
     return r;
   });
 };

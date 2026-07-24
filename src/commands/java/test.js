@@ -4,6 +4,7 @@
  */
 
 const {mvnw, flags} = require('../../mvnw');
+const {elapsed} = require('../../elapsed');
 const {verifyJavac} = require('../../jdk');
 
 /**
@@ -27,5 +28,13 @@ module.exports = function(opts, maven = mvnw) {
     const cls = `EO${obj}*Test`;
     args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`);
   }
-  return maven(args.concat(flags(opts)));
+  return elapsed(async (tracked) => {
+    const result = await maven(
+      args.concat(flags(opts)),
+      opts.target,
+      opts.batch
+    );
+    tracked.print('Java tests completed');
+    return result;
+  });
 };

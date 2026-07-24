@@ -5,7 +5,7 @@
  */
 
 const tinted = require('./tinted-console');
-const {program} = require('commander');
+const {program, InvalidArgumentError} = require('commander');
 
 /**
  * Target language option.
@@ -70,13 +70,29 @@ const pipelines = {
  * canonical platform key. Derived from `language` so the accepted names
  * and the platforms can never drift apart. For each `[alias, canonical]`
  * pair we accept the short alias (e.g. `js`) and the canonical name
- * lower-cased (e.g. `javascript`); `select()` lower-cases the input, so
- * mixed-case spellings such as `JavaScript` are matched too.
+ * lower-cased (e.g. `javascript`); `canonicalLanguage()` lower-cases the
+ * input, so mixed-case spellings such as `JavaScript` are matched too.
  */
 const platforms = {};
 for (const [alias, canonical] of Object.entries(language)) {
   platforms[alias] = canonical;
   platforms[canonical.toLowerCase()] = canonical;
+}
+
+/**
+ * Validate and canonicalize the value of the --language option, so an
+ * unknown platform is rejected right away with a clean commander error
+ * instead of surfacing later as an unhandled exception.
+ * @param {String} value - Raw value from the command line
+ * @return {String} The canonical platform name
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
+ */
+function canonicalLanguage(value) {
+  const canonical = platforms[String(value).toLowerCase()];
+  if (canonical === undefined) {
+    throw new InvalidArgumentError(`Unknown platform ${value}`);
+  }
+  return canonical;
 }
 
 if (process.argv.includes('--verbose')) {
@@ -121,7 +137,7 @@ program
   .option('--lints <version>', 'Set the version of EO lints to use')
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
-  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', language.java)
+  .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', canonicalLanguage, language.java)
   .option('-b, --batch', 'Run in batch mode, suppress interactive messages')
   .option('--no-color', 'Disable colorization of console messages')
   .option('--track-transformation-steps', 'Save intermediate XMIR files')
@@ -146,8 +162,8 @@ program.hook('preAction', (command) => {
 
 program.command('audit')
   .description('Inspect all packages and report their status')
-  .action((str, opts) => {
-    coms().audit(program.opts());
+  .action(async (str, opts) => {
+    await coms().audit(program.opts());
   });
 
 program.command('foreign')
@@ -167,9 +183,9 @@ program
 
 program.command('register')
   .description('Register all visible EO source files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().register(program.opts());
+    await coms().register(program.opts());
   });
 
 program.command('parse')
@@ -208,10 +224,10 @@ program.command('print')
     'Directory where translated EO files are stored (relative to --target)',
     'print'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    coms().print({...program.opts(), ...str});
+    await coms().print({...program.opts(), ...str});
   });
 
 program.command('lint')
@@ -311,9 +327,9 @@ program.command('test')
 
 program.command('docs')
   .description('Generate documentation from XMIR files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().docs(program.opts());
+    await coms().docs(program.opts());
   });
 
 program.command('generate_comments')
@@ -337,8 +353,8 @@ program.command('generate_comments')
   .requiredOption('--prompt_template <path>',
     'Path to prompt template file, ' +
     'where `{code}` placeholder will be replaced with the code given by the user')
-  .action((str, opts) => {
-    coms().generate_comments({...program.opts(), ...str});
+  .action(async (str, opts) => {
+    await coms().generate_comments({...program.opts(), ...str});
   });
 
 program.command('jeo:disassemble')
@@ -354,9 +370,9 @@ program.command('jeo:disassemble')
     'Directory with .xmir files (relative to --target)',
     'xmir'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_disassemble({...program.opts(), ...str});
+    await coms().jeo_disassemble({...program.opts(), ...str});
   });
 
 program.command('jeo:assemble')
@@ -372,9 +388,9 @@ program.command('jeo:assemble')
     'Directory with .class files (relative to --target)',
     'classes'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_assemble({...program.opts(), ...str});
+    await coms().jeo_assemble({...program.opts(), ...str});
   });
 
 program.command('latex')
@@ -409,13 +425,24 @@ program.command('fmt')
   });
 
 if (require.main === module) {
-  program.parseAsync(process.argv);
+  (async () => {
+    try {
+      await program.parseAsync(process.argv);
+    } catch (err) {
+      console.error(err && err.message ? err.message : err);
+      process.exit(1);
+    }
+  })();
 }
 
 module.exports.commandsDescription = function commandsDescription() {
   return program.commands
     .map(c => [c.name(),c.description()]);
 }
+
+module.exports.canonicalLanguage = canonicalLanguage;
+
+module.exports.select = select;
 
 /**
  * Checks --clean option and clears the .eoc directory if true.
@@ -456,19 +483,14 @@ function pipe() {
 
 /**
  * Resolve the entry registered for the requested language, matching the
- * name case-insensitively and accepting aliases (e.g. `js`, `java`). The
- * lookup and its validation live here, so callers never repeat the
- * "unknown platform" check.
- *
+ * name case-insensitively and accepting aliases (e.g. `js`, `java`).
+ * Validation is delegated to canonicalLanguage(), so the "unknown
+ * platform" check is never duplicated.
  * @param {Object} registry - Map keyed by canonical platform name
  * @param {String} lang - Language name as provided on the command line
  * @return {*} The entry registered for the resolved platform
- * @throws {Error} If the language does not resolve to a known platform
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
  */
 function select(registry, lang) {
-  const found = registry[platforms[String(lang).toLowerCase()]];
-  if (found === undefined) {
-    throw new Error(`Unknown platform ${lang}`);
-  }
-  return found;
+  return registry[canonicalLanguage(lang)];
 }
