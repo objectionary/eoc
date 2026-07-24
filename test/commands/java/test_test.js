@@ -9,8 +9,16 @@ describe('java/test', () => {
   it('builds -Dtest filter from --object with package', async () => {
     let captured;
     await test(
-      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'foo.app.works-fine'},
-      (args) => { captured = args; }
+      {
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        object: 'foo.app.works-fine',
+      },
+      (args) => {
+        captured = args;
+      }
     );
     assert.ok(
       captured.includes('-Dtest=org.eolang.EOfoo.EOapp*Test#works_fine'),
@@ -21,8 +29,16 @@ describe('java/test', () => {
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
     await test(
-      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app.works-fine'},
-      (args) => { captured = args; }
+      {
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        object: 'app.works-fine',
+      },
+      (args) => {
+        captured = args;
+      }
     );
     assert.ok(
       captured.includes('-Dtest=org.eolang.EOapp*Test#works_fine'),
@@ -33,8 +49,15 @@ describe('java/test', () => {
   it('omits -Dtest when --object is not provided', async () => {
     let captured;
     await test(
-      {stack: '64M', heap: '256M', sources: 'src', target: 'target'},
-      (args) => { captured = args; }
+      {
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+      },
+      (args) => {
+        captured = args;
+      }
     );
     assert.ok(
       !captured.some((a) => a.startsWith('-Dtest=')),
@@ -42,41 +65,62 @@ describe('java/test', () => {
     );
   });
 
-  it('throws on single-segment object', () => {
-    assert.throws(
-      () => test({
+  it('passes execution options to Maven', async () => {
+    let captured;
+    await test(
+      {
         stack: '64M',
         heap: '256M',
         sources: 'src',
         target: 'target',
-        object: 'app',
-      }),
+        batch: true,
+      },
+      (args, target, batch) => {
+        captured = {args, target, batch};
+      }
+    );
+    assert.strictEqual(captured.target, 'target');
+    assert.strictEqual(captured.batch, true);
+  });
+
+  it('throws on single-segment object', () => {
+    assert.throws(
+      () =>
+        test({
+          stack: '64M',
+          heap: '256M',
+          sources: 'src',
+          target: 'target',
+          object: 'app',
+        }),
       /Invalid --object format/
     );
   });
 
   it('throws on trailing dot', () => {
     assert.throws(
-      () => test({
-        stack: '64M',
-        heap: '256M',
-        sources: 'src',
-        target: 'target',
-        object: 'app.',
-      }),
+      () =>
+        test({
+          stack: '64M',
+          heap: '256M',
+          sources: 'src',
+          target: 'target',
+          object: 'app.',
+        }),
       /Invalid --object format/
     );
   });
 
   it('throws on leading dot', () => {
     assert.throws(
-      () => test({
-        stack: '64M',
-        heap: '256M',
-        sources: 'src',
-        target: 'target',
-        object: '.works-fine',
-      }),
+      () =>
+        test({
+          stack: '64M',
+          heap: '256M',
+          sources: 'src',
+          target: 'target',
+          object: '.works-fine',
+        }),
       /Invalid --object format/
     );
   });
