@@ -39,4 +39,21 @@ describe('java/test', () => {
       `expected no -Dtest arg, got: ${captured}`
     );
   });
+  it('passes execution options to Maven', async () => {
+    let captured;
+    await test(
+      {
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        batch: true,
+      },
+      (args, target, batch) => {
+        captured = {args, target, batch};
+      }
+    );
+    assert.strictEqual(captured.target, 'target');
+    assert.strictEqual(captured.batch, true);
+  });
 });
