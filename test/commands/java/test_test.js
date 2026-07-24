@@ -17,6 +17,7 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOfoo.EOapp*Test#works_fine, got: ${captured}`
     );
   });
+
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
     await test(
@@ -28,6 +29,7 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOapp*Test#works_fine, got: ${captured}`
     );
   });
+
   it('omits -Dtest when --object is not provided', async () => {
     let captured;
     await test(
@@ -37,6 +39,45 @@ describe('java/test', () => {
     assert.ok(
       !captured.some((a) => a.startsWith('-Dtest=')),
       `expected no -Dtest arg, got: ${captured}`
+    );
+  });
+
+  it('throws on single-segment object', () => {
+    assert.throws(
+      () => test({
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        object: 'app',
+      }),
+      /Invalid --object format/
+    );
+  });
+
+  it('throws on trailing dot', () => {
+    assert.throws(
+      () => test({
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        object: 'app.',
+      }),
+      /Invalid --object format/
+    );
+  });
+
+  it('throws on leading dot', () => {
+    assert.throws(
+      () => test({
+        stack: '64M',
+        heap: '256M',
+        sources: 'src',
+        target: 'target',
+        object: '.works-fine',
+      }),
+      /Invalid --object format/
     );
   });
 });
