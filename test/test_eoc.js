@@ -69,6 +69,10 @@ describe('eoc', () => {
     assert(!stderr.includes('eoc.js:'), stderr);
     done();
   });
+  it('accepts the --lints option', (done) => {
+    assert.strictEqual(eoc('--lints=0.0.42', 'clean').status, 0);
+    done();
+  });
   it('reports a clean error when generate_comments gets an unsupported provider, instead of a raw stack trace', (done) => {
     const result = eoc(
       'generate_comments',
