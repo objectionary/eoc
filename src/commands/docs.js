@@ -70,7 +70,7 @@ function createXmirHtmlBlock(filepath) {
     const xsl = fs.readFileSync(path.join(__dirname, '..', 'resources', 'xmir-transformer.xsl')).toString();
     return convertMarkdownToHtml(transformDocument(xmir, xsl));
   } catch(error) {
-    throw new Error(`Error while applying XSL to XMIR: ${error.message}`, error);
+    throw new Error(`Error while applying XSL to XMIR: ${error.message}`, {cause: error});
   }
 }
 
@@ -183,3 +183,5 @@ module.exports = function(opts) {
     }
   });
 };
+
+module.exports.createXmirHtmlBlock = createXmirHtmlBlock;
