@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
- * SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:output method="html"/>
   <xsl:template match="/">
     <article class="app-block">
@@ -18,14 +18,20 @@
                 </xsl:choose>
               </xsl:for-each>
             </xsl:variable>
-            <h1 class="object-title"><xsl:value-of select="$fullname"/></h1>
+            <h1 class="object-title">
+              <xsl:value-of select="$fullname"/>
+            </h1>
             <p class="object-sign">
-              <xsl:value-of select="$fullname"/>(<xsl:for-each select="current()/o[@base and @base = '∅']">
+              <xsl:value-of select="$fullname"/>
+              <xsl:text>(</xsl:text>
+              <xsl:for-each select="current()/o[@base and @base = '∅']">
                 <xsl:value-of select="@name"/>
-                <xsl:choose>
-                  <xsl:when test="position() != last()">, </xsl:when>
-                </xsl:choose>
-              </xsl:for-each>)</p>
+                <xsl:if test="position() != last()">
+                  <xsl:text>, </xsl:text>
+                </xsl:if>
+              </xsl:for-each>
+              <xsl:text>)</xsl:text>
+            </p>
             <div class="object-desc">
               <xsl:call-template name="break">
                 <xsl:with-param name="text" select="//comments/comment[@line = current()/@line]"/>
@@ -43,10 +49,7 @@
         <xsl:value-of select="substring-before($text, '\n')"/>
         <br/>
         <xsl:call-template name="break">
-          <xsl:with-param
-            name="text"
-            select="substring-after($text, '\n')"
-          />
+          <xsl:with-param name="text" select="substring-after($text, '\n')"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
