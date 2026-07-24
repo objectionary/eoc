@@ -11,9 +11,7 @@ describe('dataize', () => {
   it('calls verifyJavac', () => {
     jest.spyOn(require('child_process'), 'spawn')
       .mockImplementation(() => ({ on: jest.fn() }));
-
     dataize('foo', [], { target: '.', stack: '64M', heap: '256M' });
-
     expect(verifyJavac).toHaveBeenCalled();
   });
 });
