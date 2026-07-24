@@ -95,7 +95,10 @@ function canonicalLanguage(value) {
   return canonical;
 }
 
-if (process.argv.includes('--verbose')) {
+if (
+  process.argv.includes('--verbose') ||
+  process.argv.includes('--debug')
+) {
   tinted.enable('debug');
   console.debug('Debug output is turned ON');
 }
