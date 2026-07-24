@@ -25,7 +25,6 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOfoo.EOapp*Test#works_fine, got: ${captured}`
     );
   });
-
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
     await test(
@@ -45,7 +44,6 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOapp*Test#works_fine, got: ${captured}`
     );
   });
-
   it('omits -Dtest when --object is not provided', async () => {
     let captured;
     await test(
@@ -64,7 +62,6 @@ describe('java/test', () => {
       `expected no -Dtest arg, got: ${captured}`
     );
   });
-  
   it('passes execution options to Maven', async () => {
     let captured;
     await test(
@@ -82,7 +79,6 @@ describe('java/test', () => {
     assert.strictEqual(captured.target, 'target');
     assert.strictEqual(captured.batch, true);
   });
-
   it('throws on single-segment object', () => {
     assert.throws(
       () =>
@@ -96,7 +92,6 @@ describe('java/test', () => {
       /Invalid --object format/
     );
   });
-
   it('throws on trailing dot', () => {
     assert.throws(
       () =>
@@ -110,7 +105,6 @@ describe('java/test', () => {
       /Invalid --object format/
     );
   });
-
   it('throws on leading dot', () => {
     assert.throws(
       () =>
