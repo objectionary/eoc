@@ -141,6 +141,21 @@ describe('canonicalLanguage', () => {
   });
 });
 
+describe('select', () => {
+  const {select} = require('../src/eoc');
+  it('resolves an alias to the canonical registry entry', (done) => {
+    assert.strictEqual(select({Java: 'jvm', JavaScript: 'node'}, 'js'), 'node');
+    done();
+  });
+  it('throws for a platform that is not registered', (done) => {
+    assert.throws(
+      () => select({Java: 'jvm', JavaScript: 'node'}, 'Cobol'),
+      /Unknown platform Cobol/
+    );
+    done();
+  });
+});
+
 describe('eoc', () => {
   const {spawnSync} = require('child_process');
   const path = require('path');
