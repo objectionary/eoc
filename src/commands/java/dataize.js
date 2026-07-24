@@ -5,7 +5,7 @@
 
 const path = require('path');
 const {spawn} = require('node:child_process');
-const verifyJavac = require('../verify_javac');
+const verifyJavac = require('../../verify_javac');
 /**
  * Runs the single executable binary.
  * @param {String} obj - Name of object to dataize
