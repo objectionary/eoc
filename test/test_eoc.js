@@ -69,7 +69,54 @@ describe('eoc', () => {
     assert(!stderr.includes('eoc.js:'), stderr);
     done();
   });
+  it('reports a clean error when generate_comments gets an unsupported provider, instead of a raw stack trace', (done) => {
+    const result = eoc(
+      'generate_comments',
+      '--provider=bogus',
+      '--source', path.resolve('./src/eoc.js'),
+      '--prompt_template', path.resolve('./src/eoc.js')
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(!stderr.includes('Node.js v'), stderr);
+    assert(!stderr.includes('node:internal/process/promises'), stderr);
+    assert(!stderr.includes('at '), stderr);
+    assert.strictEqual(
+      lastLine(stderr),
+      '`bogus` provider is not supported. Currently supported providers are: `openai`, `placeholder`'
+    );
+    done();
+  });
+  it('reports a clean error when docs gets a --target that is a file, instead of an unhandled-rejection crash', (done) => {
+    const fs = require('fs'),
+      os = require('os'),
+      home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-docs-target-')),
+      target = path.join(home, 'notadir');
+    fs.writeFileSync(target, '');
+    const result = eoc('--target', target, 'docs');
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(!stderr.includes('Node.js v'), stderr);
+    assert(!stderr.includes('node:internal/process/promises'), stderr);
+    assert(/^ENOTDIR: not a directory, mkdir/.test(lastLine(stderr)), stderr);
+    done();
+  });
 });
+
+/**
+ * Extract the last non-empty line of a stderr string, stripped of ANSI
+ * color codes. This is where the top-level
+ * `program.parseAsync(...).catch(...)` block in eoc.js prints a rejected
+ * command's clean error message.
+ * @param {String} stderr - Raw stderr text
+ * @return {String} The last non-empty line
+ */
+function lastLine(stderr) {
+  const esc = String.fromCharCode(27),
+    ansi = new RegExp(`${esc}\\[[0-9;]*m`, 'g'),
+    lines = stderr.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  return lines[lines.length - 1].replace(ansi, '');
+}
 
 describe('canonicalLanguage', () => {
   const {canonicalLanguage} = require('../src/eoc');

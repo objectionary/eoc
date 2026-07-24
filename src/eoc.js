@@ -161,8 +161,8 @@ program.hook('preAction', (command) => {
 
 program.command('audit')
   .description('Inspect all packages and report their status')
-  .action((str, opts) => {
-    coms().audit(program.opts());
+  .action(async (str, opts) => {
+    await coms().audit(program.opts());
   });
 
 program.command('foreign')
@@ -182,9 +182,9 @@ program
 
 program.command('register')
   .description('Register all visible EO source files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().register(program.opts());
+    await coms().register(program.opts());
   });
 
 program.command('parse')
@@ -223,10 +223,10 @@ program.command('print')
     'Directory where translated EO files are stored (relative to --target)',
     'print'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    coms().print({...program.opts(), ...str});
+    await coms().print({...program.opts(), ...str});
   });
 
 program.command('lint')
@@ -326,9 +326,9 @@ program.command('test')
 
 program.command('docs')
   .description('Generate documentation from XMIR files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().docs(program.opts());
+    await coms().docs(program.opts());
   });
 
 program.command('generate_comments')
@@ -369,9 +369,9 @@ program.command('jeo:disassemble')
     'Directory with .xmir files (relative to --target)',
     'xmir'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_disassemble({...program.opts(), ...str});
+    await coms().jeo_disassemble({...program.opts(), ...str});
   });
 
 program.command('jeo:assemble')
@@ -387,9 +387,9 @@ program.command('jeo:assemble')
     'Directory with .class files (relative to --target)',
     'classes'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_assemble({...program.opts(), ...str});
+    await coms().jeo_assemble({...program.opts(), ...str});
   });
 
 program.command('latex')
