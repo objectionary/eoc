@@ -2,10 +2,10 @@
  * SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-const dataize = require('../src/commands/java/dataize');
-const verifyJavac = require('../../src/verify_javac');
+const dataize = require('../../../src/commands/java/dataize');
+const verifyJavac = require('../../../src/verify_javac');
 
-jest.mock('../../src/verify_javac');
+jest.mock('../../../src/verify_javac');
 
 describe('dataize', () => {
   it('calls verifyJavac', () => {
