@@ -134,6 +134,7 @@ program
   .option('--blind', 'Disable linting')
   .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', tag)
   .option('--parser <version>', 'Set the version of EO parser to use', parser)
+  .option('--lints <version>', 'Set the version of EO lints to use')
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
   .option('-l, --language <name>', 'Language of target execution platform (Java or JavaScript, case-insensitive)', canonicalLanguage, language.java)
