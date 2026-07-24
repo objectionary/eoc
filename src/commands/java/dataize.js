@@ -13,7 +13,7 @@ const verifyJavac = require('../../verify_javac');
  * @param {Object} opts - All options
  */
 module.exports = function(obj, args, opts) {
-  verifyJavac(); // ← добавить
+  verifyJavac();
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,
