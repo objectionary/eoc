@@ -20,7 +20,6 @@ module.exports = function(opts, maven = mvnw) {
     `-Dheap-size=${opts.heap}`,
   ];
   if (opts.object) {
-    // Проверка, что есть хотя бы одна точка
     if (!opts.object.includes('.')) {
       throw new Error(`Invalid --object format: expected object.method (or pkg.object.method), got "${opts.object}"`);
     }
