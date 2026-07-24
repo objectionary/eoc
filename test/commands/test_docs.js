@@ -48,6 +48,25 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that 'docs' does not crash for a package whose name is an
+   * inherited object property, such as 'constructor'.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('generates HTML for a package named after an object prototype member', (done) => {
+    const sample = path.join(parsed, 'constructor');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'foo.xmir'), '<program name="test" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const package_html = path.join(docs, 'package_constructor.html');
+    assert(fs.existsSync(package_html), `Expected file ${package_html} but it was not created`);
+    done();
+  });
+  /**
    * Tests that the 'docs' command generates a summary.xml with correct counts.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
