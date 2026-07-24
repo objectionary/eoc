@@ -69,7 +69,54 @@ describe('eoc', () => {
     assert(!stderr.includes('eoc.js:'), stderr);
     done();
   });
+  it('reports a clean error when generate_comments gets an unsupported provider, instead of a raw stack trace', (done) => {
+    const result = eoc(
+      'generate_comments',
+      '--provider=bogus',
+      '--source', path.resolve('./src/eoc.js'),
+      '--prompt_template', path.resolve('./src/eoc.js')
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(!stderr.includes('Node.js v'), stderr);
+    assert(!stderr.includes('node:internal/process/promises'), stderr);
+    assert(!stderr.includes('at '), stderr);
+    assert.strictEqual(
+      lastLine(stderr),
+      '`bogus` provider is not supported. Currently supported providers are: `openai`, `placeholder`'
+    );
+    done();
+  });
+  it('reports a clean error when docs gets a --target that is a file, instead of an unhandled-rejection crash', (done) => {
+    const fs = require('fs'),
+      os = require('os'),
+      home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-docs-target-')),
+      target = path.join(home, 'notadir');
+    fs.writeFileSync(target, '');
+    const result = eoc('--target', target, 'docs');
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(!stderr.includes('Node.js v'), stderr);
+    assert(!stderr.includes('node:internal/process/promises'), stderr);
+    assert(/^ENOTDIR: not a directory, mkdir/.test(lastLine(stderr)), stderr);
+    done();
+  });
 });
+
+/**
+ * Extract the last non-empty line of a stderr string, stripped of ANSI
+ * color codes. This is where the top-level
+ * `program.parseAsync(...).catch(...)` block in eoc.js prints a rejected
+ * command's clean error message.
+ * @param {String} stderr - Raw stderr text
+ * @return {String} The last non-empty line
+ */
+function lastLine(stderr) {
+  const esc = String.fromCharCode(27),
+    ansi = new RegExp(`${esc}\\[[0-9;]*m`, 'g'),
+    lines = stderr.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  return lines[lines.length - 1].replace(ansi, '');
+}
 
 describe('canonicalLanguage', () => {
   const {canonicalLanguage} = require('../src/eoc');
@@ -90,6 +137,51 @@ describe('canonicalLanguage', () => {
       () => canonicalLanguage('Eiffel'),
       /Unknown platform Eiffel/
     );
+    done();
+  });
+});
+
+describe('select', () => {
+  const {select} = require('../src/eoc');
+  it('resolves an alias to the canonical registry entry', (done) => {
+    assert.strictEqual(select({Java: 'jvm', JavaScript: 'node'}, 'js'), 'node');
+    done();
+  });
+  it('throws for a platform that is not registered', (done) => {
+    assert.throws(
+      () => select({Java: 'jvm', JavaScript: 'node'}, 'Cobol'),
+      /Unknown platform Cobol/
+    );
+    done();
+  });
+});
+
+describe('eoc', () => {
+  const {spawnSync} = require('child_process');
+  const path = require('path');
+  const eoc = function(...args) {
+    return spawnSync('node', [path.resolve('./src/eoc.js'), '--batch', ...args]);
+  };
+  it('reports a failing async command cleanly without leaking a stack trace', (done) => {
+    const result = eoc(
+      'generate_comments', '--provider=no-such-llm',
+      '--source=absent.eo', '--prompt_template=absent.txt'
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(stderr.includes('`no-such-llm` provider is not supported'), stderr);
+    assert(!/\.js:\d+/.test(stderr), stderr);
+    done();
+  });
+  it('reports a filesystem error from an async command without a stack trace', (done) => {
+    const result = eoc(
+      'generate_comments', '--provider=placeholder',
+      '--source=absent.eo', '--prompt_template=absent.txt'
+    );
+    const stderr = result.stderr.toString();
+    assert.notStrictEqual(result.status, 0);
+    assert(stderr.includes('no such file or directory'), stderr);
+    assert(!/\.js:\d+/.test(stderr), stderr);
     done();
   });
 });

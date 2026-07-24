@@ -70,8 +70,8 @@ const pipelines = {
  * canonical platform key. Derived from `language` so the accepted names
  * and the platforms can never drift apart. For each `[alias, canonical]`
  * pair we accept the short alias (e.g. `js`) and the canonical name
- * lower-cased (e.g. `javascript`); `select()` lower-cases the input, so
- * mixed-case spellings such as `JavaScript` are matched too.
+ * lower-cased (e.g. `javascript`); `canonicalLanguage()` lower-cases the
+ * input, so mixed-case spellings such as `JavaScript` are matched too.
  */
 const platforms = {};
 for (const [alias, canonical] of Object.entries(language)) {
@@ -161,8 +161,8 @@ program.hook('preAction', (command) => {
 
 program.command('audit')
   .description('Inspect all packages and report their status')
-  .action((str, opts) => {
-    coms().audit(program.opts());
+  .action(async (str, opts) => {
+    await coms().audit(program.opts());
   });
 
 program.command('foreign')
@@ -182,9 +182,9 @@ program
 
 program.command('register')
   .description('Register all visible EO source files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().register(program.opts());
+    await coms().register(program.opts());
   });
 
 program.command('parse')
@@ -223,10 +223,10 @@ program.command('print')
     'Directory where translated EO files are stored (relative to --target)',
     'print'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    coms().print({...program.opts(), ...str});
+    await coms().print({...program.opts(), ...str});
   });
 
 program.command('lint')
@@ -326,9 +326,9 @@ program.command('test')
 
 program.command('docs')
   .description('Generate documentation from XMIR files')
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().docs(program.opts());
+    await coms().docs(program.opts());
   });
 
 program.command('generate_comments')
@@ -352,8 +352,8 @@ program.command('generate_comments')
   .requiredOption('--prompt_template <path>',
     'Path to prompt template file, ' +
     'where `{code}` placeholder will be replaced with the code given by the user')
-  .action((str, opts) => {
-    coms().generate_comments({...program.opts(), ...str});
+  .action(async (str, opts) => {
+    await coms().generate_comments({...program.opts(), ...str});
   });
 
 program.command('jeo:disassemble')
@@ -369,9 +369,9 @@ program.command('jeo:disassemble')
     'Directory with .xmir files (relative to --target)',
     'xmir'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_disassemble({...program.opts(), ...str});
+    await coms().jeo_disassemble({...program.opts(), ...str});
   });
 
 program.command('jeo:assemble')
@@ -387,9 +387,9 @@ program.command('jeo:assemble')
     'Directory with .class files (relative to --target)',
     'classes'
   )
-  .action((str, opts) => {
+  .action(async (str, opts) => {
     pin(program.opts());
-    coms().jeo_assemble({...program.opts(), ...str});
+    await coms().jeo_assemble({...program.opts(), ...str});
   });
 
 program.command('latex')
@@ -426,17 +426,6 @@ program.command('fmt')
 if (require.main === module) {
   (async () => {
     try {
-      // @todo #1065:30min Add a test that exercises this catch block through
-      //  a real async command action, not just through commander's own
-      //  InvalidArgumentError handling (the --language=Eiffel case never
-      //  reaches this catch, since commander intercepts it before the
-      //  action runs). Every action that awaits a command properly (parse,
-      //  assemble, transpile, etc.) needs java/mvn/phino to actually fail,
-      //  and the one action that fails without those (generate_comments)
-      //  does not await its own call, so its rejection never reaches here
-      //  either, that is a separate bug worth its own ticket. Fixing that
-      //  bug first (making the action await/return the call) would also
-      //  give this catch block a lightweight, dependency-free test case.
       await program.parseAsync(process.argv);
     } catch (err) {
       console.error(err && err.message ? err.message : err);
@@ -451,6 +440,8 @@ module.exports.commandsDescription = function commandsDescription() {
 }
 
 module.exports.canonicalLanguage = canonicalLanguage;
+
+module.exports.select = select;
 
 /**
  * Checks --clean option and clears the .eoc directory if true.
@@ -491,29 +482,14 @@ function pipe() {
 
 /**
  * Resolve the entry registered for the requested language, matching the
- * name case-insensitively and accepting aliases (e.g. `js`, `java`). The
- * lookup and its validation live here, so callers never repeat the
- * "unknown platform" check.
- *
- * @todo #1065:30min Remove the duplicated "unknown platform" validation.
- *  This check is now unreachable from the CLI, since canonicalLanguage()
- *  already rejects an invalid --language value before it ever reaches
- *  select(). It is kept only as a defensive fallback for any future
- *  direct caller of select()/coms()/pipe() that bypasses the --language
- *  option. Once it is confirmed no such caller exists (or after adding
- *  one that needs it), either delete this duplicated check or extract a
- *  single shared validator that both canonicalLanguage() and select()
- *  call, so the "unknown platform" message and behavior can never drift
- *  apart.
+ * name case-insensitively and accepting aliases (e.g. `js`, `java`).
+ * Validation is delegated to canonicalLanguage(), so the "unknown
+ * platform" check is never duplicated.
  * @param {Object} registry - Map keyed by canonical platform name
  * @param {String} lang - Language name as provided on the command line
  * @return {*} The entry registered for the resolved platform
- * @throws {Error} If the language does not resolve to a known platform
+ * @throws {InvalidArgumentError} If the language does not resolve to a known platform
  */
 function select(registry, lang) {
-  const found = registry[platforms[String(lang).toLowerCase()]];
-  if (found === undefined) {
-    throw new Error(`Unknown platform ${lang}`);
-  }
-  return found;
+  return registry[canonicalLanguage(lang)];
 }

@@ -48,6 +48,25 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that 'docs' does not crash for a package whose name is an
+   * inherited object property, such as 'constructor'.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('generates HTML for a package named after an object prototype member', (done) => {
+    const sample = path.join(parsed, 'constructor');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'foo.xmir'), '<program name="test" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const package_html = path.join(docs, 'package_constructor.html');
+    assert(fs.existsSync(package_html), `Expected file ${package_html} but it was not created`);
+    done();
+  });
+  /**
    * Tests that the 'docs' command generates a summary.xml with correct counts.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
@@ -87,6 +106,40 @@ describe('docs', () => {
       message.includes(expected),
       `Expected "${message}" to contain "${expected}"`
     );
+  });
+  /**
+   * Tests exact object title and signature rendering in generated HTML.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('renders exact object titles and signatures', (done) => {
+    const sample = path.join(parsed, 'foo');
+    fs.mkdirSync(sample, {recursive: true});
+    const xmir = path.join(sample, 'test1.xmir');
+    fs.writeFileSync(
+      xmir,
+      fs.readFileSync(path.join(__dirname, '..', 'resources', 'test1.xmir')).toString()
+    );
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const html = path.join(docs, 'foo/test1.html');
+    const content = fs.readFileSync(html, 'utf-8');
+    const expected = [
+      '<h1 class="object-title">app</h1>',
+      '<p class="object-sign">app(args)</p>',
+      '<h1 class="object-title">app.test_obj</h1>',
+      '<p class="object-sign">app.test_obj()</p>',
+    ];
+    for (const fragment of expected) {
+      assert(
+        content.includes(fragment),
+        `Expected exact HTML fragment "${fragment}" in ${html}`
+      );
+    }
+    done();
   });
   /**
    * Tests that the 'docs' command generates expected comments from XMIR to HTML.

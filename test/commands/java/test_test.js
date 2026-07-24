@@ -64,7 +64,7 @@ describe('java/test', () => {
       `expected no -Dtest arg, got: ${captured}`
     );
   });
-
+  
   it('passes execution options to Maven', async () => {
     let captured;
     await test(

@@ -129,7 +129,7 @@ module.exports = function(opts) {
       fs.mkdirSync(output, {recursive: true});
       const css = path.join(output, 'styles.css');
       fs.writeFileSync(css, '');
-      const packages_info = {};
+      const packages_info = new Map();
       const all_xmir_htmls = [];
       const xmirs = findFiles(input, '.xmir');
       for (const xmir of xmirs) {
@@ -141,33 +141,32 @@ module.exports = function(opts) {
         fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
         const packages = path.dirname(relative).split(path.sep).join('.');
         const html_package = path.join(output, `package_${packages}.html`);
-        if (!(packages in packages_info)) {
-          packages_info[packages] = {
+        if (!packages_info.has(packages)) {
+          packages_info.set(packages, {
             xmir_htmls : [],
             names: [],
             path: html_package
-          };
+          });
         }
-        packages_info[packages].xmir_htmls.push(xmir_html);
-        packages_info[packages].names.push(name);
+        packages_info.get(packages).xmir_htmls.push(xmir_html);
+        packages_info.get(packages).names.push(name);
         all_xmir_htmls.push(xmir_html);
       }
-      for (const package_name of Object.keys(packages_info)) {
-        fs.mkdirSync(path.dirname(packages_info[package_name].path), {recursive: true});
-        fs.writeFileSync(packages_info[package_name].path,
-          generatePackageHtml(`${package_name} package`, packages_info[package_name].xmir_htmls, css));
+      for (const [package_name, info] of packages_info) {
+        fs.mkdirSync(path.dirname(info.path), {recursive: true});
+        fs.writeFileSync(info.path,
+          generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
       }
       const packages = path.join(output, 'packages.html');
       fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
       const summary = path.join(output, 'summary.xml');
-      const pkgNames = Object.keys(packages_info);
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        `<eodoc packages="${pkgNames.length}" objects="${xmirs.length}">`
+        `<eodoc packages="${packages_info.size}" objects="${xmirs.length}">`
       ];
-      for (const pkg of pkgNames) {
+      for (const [pkg, info] of packages_info) {
         lines.push(`  <package name="${xmlEscape(pkg)}">`);
-        for (const obj of packages_info[pkg].names) {
+        for (const obj of info.names) {
           lines.push(`    <object name="${xmlEscape(obj)}"/>`);
         }
         lines.push('  </package>');
