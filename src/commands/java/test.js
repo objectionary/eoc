@@ -20,9 +20,9 @@ module.exports = function(opts, maven = mvnw) {
     `-Dheap-size=${opts.heap}`,
   ];
   if (opts.object) {
-    if (!opts.object.includes('.')) {
-      throw new Error(`Invalid --object format: expected object.method (or pkg.object.method), got "${opts.object}"`);
-    }
+    if (opts.object.split('.').filter(Boolean).length < 2) {
+  throw new Error(`Invalid --object format: expected object.method (or pkg.object.method), got "${opts.object}"`);
+}
     const parts = opts.object.split('.');
     const method = parts.pop().replace(/-/g, '_');
     const obj = parts.pop().replace(/-/g, '_');
