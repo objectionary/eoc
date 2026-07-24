@@ -57,6 +57,10 @@ describe('eoc', () => {
     assert.strictEqual(eoc('--language=JAVA', 'clean').status, 0);
     done();
   });
+  it('accepts the --lints option', (done) => {
+    assert.strictEqual(eoc('--lints=0.0.42', 'clean').status, 0);
+    done();
+  });
   it('rejects an unknown --language value', (done) => {
     assert.notStrictEqual(eoc('--language=Eiffel', 'clean').status, 0);
     done();
