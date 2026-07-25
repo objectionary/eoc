@@ -20,6 +20,18 @@ describe('eoc', () => {
     assert(stdout.includes(version.when));
     done();
   });
+  it('enables internal debug logging with --debug', (done) => {
+    const stdout = runSync(['--debug', '--version']);
+    assert(
+      stdout.includes('Debug output is turned ON'),
+      stdout
+    );
+    assert(
+      stdout.includes('EO parser'),
+      stdout
+    );
+    done();
+  });
   it('can get commands description from eoc as a module', (done) => {
     const commandsDescriptionList = require('../src/eoc').commandsDescription();
     assert(commandsDescriptionList.length > 0,"commandsDescriptionList should have more then one element");
