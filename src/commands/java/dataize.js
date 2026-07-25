@@ -5,14 +5,17 @@
 
 const path = require('path');
 const {spawn} = require('node:child_process');
+const {verifyJavac} = require('../../jdk');
 
 /**
  * Runs the single executable binary.
  * @param {String} obj - Name of object to dataize
  * @param {Array} args - Arguments
  * @param {Object} opts - All options
+ * @param {Function} [exec] - Optional command runner for the JDK check
  */
-module.exports = function(obj, args, opts) {
+module.exports = function(obj, args, opts, exec) {
+  verifyJavac(exec);
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,

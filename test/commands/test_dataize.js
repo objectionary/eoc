@@ -6,6 +6,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const dataize = require('../../src/commands/java/dataize');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers'),
 
   options = [
@@ -81,5 +82,42 @@ describe('dataize', () => {
     ]);
     assert(stdout.includes('Hooray'), stdout);
     done();
+  });
+});
+
+describe('dataize/java', () => {
+  it('fails fast with a clear message when javac is not on the PATH', () => {
+    const missing = () => {
+      const cause = new Error('spawnSync javac ENOENT');
+      cause.code = 'ENOENT';
+      throw cause;
+    };
+    assert.throws(
+      () => dataize('main.foo', [], {target: '.', stack: '64M', heap: '256M'}, missing),
+      /javac/,
+      'dataize does not fail fast with a clear javac message when the JDK is missing'
+    );
+  });
+  it('fails fast and mentions the JDK when javac exits non-zero', () => {
+    const broken = () => {
+      const cause = new Error('Command failed: javac -version');
+      cause.status = 127;
+      throw cause;
+    };
+    assert.throws(
+      () => dataize('main.foo', [], {target: '.', stack: '64M', heap: '256M'}, broken),
+      /JDK/,
+      'dataize does not mention the JDK when javac exits non-zero'
+    );
+  });
+  it('surfaces the underlying failure when javac cannot be executed', () => {
+    const denied = () => {
+      throw new Error('permission denied while probing javac');
+    };
+    assert.throws(
+      () => dataize('main.foo', [], {target: '.', stack: '64M', heap: '256M'}, denied),
+      /permission denied while probing javac/,
+      'dataize hides the underlying reason why javac could not be executed'
+    );
   });
 });
