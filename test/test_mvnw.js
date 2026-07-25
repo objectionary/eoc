@@ -26,6 +26,18 @@ describe('mvnw', () => {
     assert.ok(args.includes('-Deo.tag=homeTag'));
     assert.ok(args.includes('-Deo.version=0.28.11'));
   });
+  it('sets lints version flag from options', () => {
+    const opts = {
+      sources: 'sources',
+      target: 'target',
+      lints: '0.0.42'
+    };
+    const result = flags(opts);
+    assert.ok(
+      result.includes('-Deo.lintsVersion=0.0.42'),
+      'Expected -Deo.lintsVersion=0.0.42 to be present in maven flags'
+    );
+  });
   it('includes slf4j-simple timestamp flags', () => {
     const opts = {
       sources: 'sources',

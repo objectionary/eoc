@@ -64,6 +64,7 @@ module.exports.flags = function(opts) {
   return [
     `-Deo.version=${opts.parser}`,
     `-Deo.tag=${opts.homeTag ? opts.homeTag : opts.parser}`,
+    opts.lints ? `-Deo.lintsVersion=${opts.lints}` : '',
     opts.verbose ? '--errors' : '',
     opts.verbose ? '' : '--quiet',
     opts.debug ? '--debug' : '',
