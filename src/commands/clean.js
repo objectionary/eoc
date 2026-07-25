@@ -9,18 +9,32 @@ const path = require('path');
 const os = require('os');
 
 /**
- * Refuses, by throwing, to delete a directory that is the current
+ * Resolves symbolic links in the parent part of a path.
+ * @param {String} target - Path to canonicalize
+ * @return {String} Path with its parent resolved
+ */
+function canonical(target) {
+  const parent = path.dirname(target);
+  return fs.existsSync(parent)
+    ? path.join(fs.realpathSync(parent), path.basename(target))
+    : target;
+}
+
+/**
+ * Refuses, by throwing, to delete a directory that resolves to the current
  * working directory, an ancestor of it, or the user's home directory;
- * otherwise returns it unchanged, so the guard cannot be skipped or
- * reordered away from the value it protects.
+ * otherwise returns the original target unchanged, so the guard cannot be
+ * skipped or reordered away from the value it protects.
  * @param {String} target - Resolved absolute path of the directory to delete
- * @return {String} The same target, once confirmed safe to delete
+ * @return {String} The original target, once confirmed safe to delete
  */
 function guarded(target) {
-  const cwd = process.cwd();
-  const route = path.relative(target, cwd);
+  const actual = canonical(target);
+  const cwd = fs.realpathSync(process.cwd());
+  const home = fs.realpathSync(os.homedir());
+  const route = path.relative(actual, cwd);
   const encloses = route === '' || (!route.startsWith('..') && !path.isAbsolute(route));
-  if (encloses || target === os.homedir()) {
+  if (encloses || actual === home) {
     throw new Error(
       `Refusing to delete ${rel(target)}: it is the current directory, an ancestor of it, or the home directory`
     );
