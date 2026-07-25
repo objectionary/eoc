@@ -166,6 +166,7 @@ program.hook('preAction', (command) => {
 program.command('audit')
   .description('Inspect all packages and report their status')
   .action(async (str, opts) => {
+    pin(program.opts());
     await coms().audit(program.opts());
   });
 

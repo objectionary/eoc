@@ -250,6 +250,13 @@ describe('eoc', () => {
 
 describe('eoc', () => {
   before(weAreOnline);
+  it('fails audit due to version mismatch if different --pin provided', (done) => {
+    assert.throws(
+      () => { runSync(['--pin=29.9.4', 'audit']); },
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
+    );
+    done();
+  });
   it('cleans successfully when if --pin not provided', (done) => {
     const stdout = runSync(['clean']);
     assert(stdout.includes("The directory .eoc does not exist, no need to delete it"));
