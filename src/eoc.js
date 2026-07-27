@@ -4,8 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
+const semver = require('semver');
 const tinted = require('./tinted-console');
 const {program, InvalidArgumentError} = require('commander');
+const {gte} = require('./demand');
+const {engines} = require('../package.json');
+
+gte('Node.js', process.version.replace(/^v/, ''), semver.minVersion(engines.node).version);
 
 /**
  * Target language option.
