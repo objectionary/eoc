@@ -21,6 +21,20 @@ describe('generate_comments', () => {
     (error) => error.message.includes('`nonexisting` provider is not supported.'));
     done();
   });
+  it('rejects an empty comment placeholder', () => {
+    const home = makeHome();
+    assert.throws(() =>
+      runSync([
+        'generate_comments',
+        '--provider=placeholder',
+        '--comment_placeholder',
+        '',
+        `--prompt_template=${makePromptFile(home, '')}`,
+        `--source=${makeInputFile(home, 'abc')}`]),
+    (error) => error.message.includes(
+      'Comment placeholder must not be empty'
+    ));
+  });
   it('fills output depending on the number of placeholders in the input code', (done) => {
     const home = makeHome();
     for (let placeholders = 0; placeholders < 3; ++placeholders) {

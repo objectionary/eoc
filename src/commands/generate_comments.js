@@ -116,9 +116,12 @@ function generateDocumentation(inputCode, commentPlaceholder, chain) {
  * @return {Promise} of documentation generation task
  */
 module.exports = async function(opts) {
+  const commentPlaceholder = opts.comment_placeholder;
+  if (!commentPlaceholder) {
+    throw new Error('Comment placeholder must not be empty');
+  }
   const chain = constructChain(opts);
   const inputCode = readFileSync(opts.source, 'utf-8');
-  const commentPlaceholder = opts.comment_placeholder;
   const results = await generateDocumentation(
     inputCode,
     commentPlaceholder,
