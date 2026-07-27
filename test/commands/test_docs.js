@@ -272,4 +272,58 @@ describe('docs', () => {
     assert(test_content.includes('<code>Code test</code>'), `Markdown not processed correctly in ${test_html}`);
     done();
   });
+  /**
+   * Tests that createXmirHtmlBlock keeps the original error as the cause
+   * when the XSL transform fails, instead of silently discarding it.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('preserves the original error as the cause when the XSL transform fails', (done) => {
+    const bad = path.join(parsed, 'bad.xmir');
+    fs.writeFileSync(bad, 'not valid xmir <<<');
+    let thrown;
+    try {
+      generateDocs.createXmirHtmlBlock(bad);
+    } catch (error) {
+      thrown = error;
+    }
+    assert.ok(thrown.cause instanceof Error, 'the wrapper must keep the original XSL error as its cause');
+    done();
+  });
+  /**
+   * Tests that the original error survives to the top of the docs command,
+   * rather than being dropped by the outer catch block.
+   * @return {Promise} of the docs command run against a broken XMIR
+   */
+  it('surfaces the original error as the cause when docs fails', async () => {
+    const sample = path.join(parsed, 'pkg');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'bad.xmir'), 'not valid xmir <<<');
+    let thrown;
+    try {
+      await generateDocs({target: home, sources: path.resolve(home, 'src')});
+    } catch (error) {
+      thrown = error;
+    }
+    assert.ok(thrown.cause instanceof Error, 'docs must surface the original XSL error as its cause');
+  });
+  /**
+   * Tests that the wrapper message is derived from the original error,
+   * so the failure text is not lost alongside the cause.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('embeds the original error text in the wrapper message', (done) => {
+    const bad = path.join(parsed, 'bad.xmir');
+    fs.writeFileSync(bad, 'not valid xmir <<<');
+    let thrown;
+    try {
+      generateDocs.createXmirHtmlBlock(bad);
+    } catch (error) {
+      thrown = error;
+    }
+    assert.ok(
+      thrown.message.includes(thrown.cause.message),
+      'the wrapper message must embed the original error text'
+    );
+    done();
+  });
 });
