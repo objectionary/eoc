@@ -15,6 +15,14 @@ describe('lint', () => {
     assert.deepEqual(lint.extras({easy: true}), ['-Deo.failOnWarning=false']);
     done();
   });
+  it('selects eo:verify before parser 0.45.0', () => {
+    assert.deepEqual(lint.goals({parser: '0.44.0'}), ['eo:verify']);
+  });
+  it('selects eo:lint for parser 0.45.0 and newer', () => {
+    assert.deepEqual(lint.goals({parser: '0.45.0'}), ['eo:lint']);
+    assert.deepEqual(lint.goals({parser: '0.45.1'}), ['eo:lint']);
+    assert.deepEqual(lint.goals({parser: '0.45.0-SNAPSHOT'}), ['eo:lint']);
+  });
   before(weAreOnline);
   it('lints a simple .EO program', (done) => {
     const home = path.resolve('temp/test-lint/simple');

@@ -7,7 +7,7 @@ const rel = require('relative');
 const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 const {elapsed} = require('../elapsed');
-const semver = require('semver');
+const {gte} = require('../demand');
 
 /**
  * Command to lint .XMIR files.
@@ -61,7 +61,7 @@ module.exports.goals = goals;
 module.exports.extras = extras;
 
 function goals(opts) {
-  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+  if (gte('EO parser', opts.parser, '0.45.0', false)) {
     return ['eo:lint'];
   }
   return ['eo:verify'];
