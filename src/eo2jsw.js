@@ -4,7 +4,7 @@
  */
 
 const path = require('path');
-const {execSync} = require('child_process'),
+const {execFileSync} = require('child_process'),
 
   /**
    * Convert eoc arguments to appropriate eo2js flags
@@ -33,8 +33,9 @@ const {execSync} = require('child_process'),
     const lib = path.resolve(__dirname, '../node_modules/eo2js/src'),
       bin = path.resolve(lib, 'eo2js.js');
     return new Promise((resolve, reject) => {
-      execSync(
-        `node ${bin} ${command} ${flags(args, lib).filter((flag) => flag !== '').join(' ')}`,
+      execFileSync(
+        'node',
+        [bin, command].concat(flags(args, lib).filter((flag) => flag !== '')),
         {
           timeout: 1200000,
           windowsHide: true,
