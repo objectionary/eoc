@@ -56,4 +56,13 @@ describe('java/test', () => {
     assert.strictEqual(captured.target, 'target');
     assert.strictEqual(captured.batch, true);
   });
+  it('rejects --object values without both object and test names', () => {
+    assert.throws(
+      () => test(
+        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'simple'},
+        () => {}
+      ),
+      /must include both object and test names/
+    );
+  });
 });

@@ -22,6 +22,12 @@ module.exports = function(opts, maven = mvnw) {
   ];
   if (opts.object) {
     const parts = opts.object.split('.');
+    if (parts.length < 2) {
+      throw new Error(
+        `The --object value "${opts.object}" must include both object and test names, ` +
+        'for example "app.works-correctly"'
+      );
+    }
     const method = parts.pop().replace(/-/g, '_');
     const obj = parts.pop().replace(/-/g, '_');
     const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');
