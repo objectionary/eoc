@@ -48,7 +48,16 @@ const request = require('sync-request'),
       if (ver && ver !== 'undefined') {
         try {
           const res = fetch('GET', version.url(ver), {timeout: 10000, socketTimeout: 10000});
-          result = res.statusCode === 200;
+          if (res.statusCode === 404) {
+            result = false;
+          } else {
+            if (res.statusCode !== 200) {
+              console.warn(colors.yellow(
+                `Cannot verify parser version ${ver} in Maven Central (HTTP ${res.statusCode}), proceeding anyway`
+              ));
+            }
+            result = true;
+          }
         } catch (e) {
           console.warn(colors.yellow(
             `Cannot verify parser version ${ver} in Maven Central (${e.message}), proceeding anyway`

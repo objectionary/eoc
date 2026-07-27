@@ -90,6 +90,42 @@ describe('parser-version', () => {
       const exists = parserVersion.exists('0.28.11', () => ({statusCode: 404}));
       assert.strictEqual(exists, false, 'a confirmed 404 must report the version as absent');
     });
+    it('assumes the version exists when Maven Central returns a transient 503', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 503}));
+      assert.strictEqual(exists, true, 'a transient 503 must not be reported as a missing version');
+    });
+    it('assumes the version exists when Maven Central returns 429 rate limited', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 429}));
+      assert.strictEqual(exists, true, 'a 429 rate limit must not be reported as a missing version');
+    });
+    it('assumes the version exists when Maven Central returns a 502 bad gateway', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 502}));
+      assert.strictEqual(exists, true, 'a 502 bad gateway must not be reported as a missing version');
+    });
+    it('assumes the version exists for any other non-404 server error', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 500}));
+      assert.strictEqual(exists, true, 'a 500 server error must not be reported as a missing version');
+    });
+    it('assumes the version exists when Maven Central answers with a 301 redirect', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 301}));
+      assert.strictEqual(exists, true, 'a 301 redirect must not be reported as a missing version');
+    });
+    it('assumes the version exists when Maven Central answers with a 403 forbidden', () => {
+      const exists = parserVersion.exists('0.28.11', () => ({statusCode: 403}));
+      assert.strictEqual(exists, true, 'a 403 forbidden must not be reported as a missing version');
+    });
+    it('queries the correct POM URL even when the response is a transient error', () => {
+      let queried;
+      parserVersion.exists('0.31.0', (method, url) => {
+        queried = url;
+        return {statusCode: 503};
+      });
+      assert.strictEqual(
+        queried,
+        'https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/0.31.0/eo-maven-plugin-0.31.0.pom',
+        'exists must query the POM URL even for a non-200 response'
+      );
+    });
     it('queries the Maven Central POM URL of the given version', () => {
       let queried;
       parserVersion.exists('0.30.0', (method, url) => {
