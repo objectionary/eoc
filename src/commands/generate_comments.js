@@ -101,6 +101,9 @@ function getTextFocusedOnSpecificPlaceholder(
  * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
  */
 function generateDocumentation(inputCode, commentPlaceholder, chain) {
+  if (commentPlaceholder.length === 0) {
+    return Promise.resolve([]);
+  }
   const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
   const allLocationsOfPlaceholderInInputCode = Array.from(inputCode.matchAll(commentPlaceholderRegex));
   return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) => {
