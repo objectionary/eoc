@@ -43,15 +43,17 @@ function saveFile(dir, name, content) {
  * @param {string} src - Source directory
  * @param {string} dst - Destination directory
  * @param {string} ext - File extension filter (e.g. '.eo'), or empty for all files
+ * @param {string} [excluded] - Directory to exclude from recursive traversal
  */
-function copyDir(src, dst, ext) {
+function copyDir(src, dst, ext, excluded) {
   if (!fs.existsSync(src)) {return;}
+  if (excluded && path.resolve(src) === path.resolve(excluded)) {return;}
   fs.mkdirSync(dst, {recursive: true});
   for (const entry of fs.readdirSync(src, {withFileTypes: true})) {
     const source = path.join(src, entry.name);
     const dest = path.join(dst, entry.name);
     if (entry.isDirectory()) {
-      copyDir(source, dest, ext);
+      copyDir(source, dest, ext, excluded);
     } else if (!ext || entry.name.endsWith(ext)) {
       fs.copyFileSync(source, dest);
     }
