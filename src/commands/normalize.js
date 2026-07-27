@@ -33,7 +33,7 @@ module.exports = function(opts) {
   const sources = path.resolve(opts.sources);
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
-    copyDir(sources, path.join(target, 'before-normalize'), '.eo');
+    copyDir(sources, path.join(target, 'before-normalize'), '.eo', target);
     const parsed = path.join(target, '1-parse');
     const normed = path.join(target, 'xmir-normalized');
     const xmirs = findFiles(parsed, '.xmir');
