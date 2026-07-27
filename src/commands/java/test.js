@@ -22,6 +22,11 @@ module.exports = function(opts, maven = mvnw) {
   ];
   if (opts.object) {
     const parts = opts.object.split('.');
+    if (parts.length < 2 || parts.some((part) => part === '')) {
+      throw new Error(
+        `Invalid --object format: "${opts.object}", expected object.method (or pkg.object.method)`
+      );
+    }
     const method = parts.pop().replace(/-/g, '_');
     const obj = parts.pop().replace(/-/g, '_');
     const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');

@@ -28,6 +28,57 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOapp*Test#works_fine, got: ${captured}`
     );
   });
+  it('cannot accept an object with a single segment', () => {
+    assert.throws(
+      () => test(
+        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app'},
+        (args) => args
+      ),
+      /Invalid --object format/,
+      'single-segment object should be rejected but was not'
+    );
+  });
+  it('cannot accept an object with a trailing empty segment', () => {
+    assert.throws(
+      () => test(
+        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app.'},
+        (args) => args
+      ),
+      /Invalid --object format/,
+      'trailing empty segment should be rejected but was not'
+    );
+  });
+  it('cannot accept an object with a leading empty segment', () => {
+    assert.throws(
+      () => test(
+        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: '.works-fine'},
+        (args) => args
+      ),
+      /Invalid --object format/,
+      'leading empty segment should be rejected but was not'
+    );
+  });
+  it('cannot accept an object made only of dots', () => {
+    assert.throws(
+      () => test(
+        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: '..'},
+        (args) => args
+      ),
+      /Invalid --object format/,
+      'dots-only object should be rejected but was not'
+    );
+  });
+  it('builds -Dtest filter from --object with a deep package', async () => {
+    let captured;
+    await test(
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'foo.bar.app.works-fine'},
+      (args) => { captured = args; }
+    );
+    assert.ok(
+      captured.includes('-Dtest=org.eolang.EOfoo.EObar.EOapp*Test#works_fine'),
+      `expected -Dtest=org.eolang.EOfoo.EObar.EOapp*Test#works_fine, got: ${captured}`
+    );
+  });
   it('omits -Dtest when --object is not provided', async () => {
     let captured;
     await test(
