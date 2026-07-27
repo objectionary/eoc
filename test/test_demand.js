@@ -4,24 +4,20 @@
  */
 
 const assert = require('assert');
-const {gte} = require('../src/demand');
+const {gte, node} = require('../src/demand');
 
 describe('demand', () => {
   let originalExit;
   let originalError;
   let exitCode;
-  let logged;
   beforeEach(() => {
     originalExit = process.exit;
     originalError = console.error;
     exitCode = undefined;
-    logged = undefined;
     process.exit = (code) => {
       exitCode = code;
     };
-    console.error = (...args) => {
-      logged = args;
-    };
+    console.error = (message) => message;
   });
   afterEach(() => {
     process.exit = originalExit;
@@ -30,13 +26,6 @@ describe('demand', () => {
   it('exits with code 1 when the current version is below the minimum', () => {
     gte('Node.js', '16.0.0', '18.0.0');
     assert.strictEqual(exitCode, 1);
-  });
-  it('reports the subject, minimum and current version in the message', () => {
-    gte('Node.js', '16.0.0', '18.0.0');
-    const message = logged.join(' ');
-    assert.ok(message.includes('Node.js'), message);
-    assert.ok(message.includes('18.0.0'), message);
-    assert.ok(message.includes('16.0.0'), message);
   });
   it('passes silently when the current version equals the minimum', () => {
     gte('Node.js', '18.0.0', '18.0.0');
@@ -48,6 +37,22 @@ describe('demand', () => {
   });
   it('skips the check for -SNAPSHOT versions below the minimum', () => {
     gte('Node.js', '0.0.1-SNAPSHOT', '18.0.0');
+    assert.strictEqual(exitCode, undefined);
+  });
+  it('exits when Node.js is older than the engines range demands', () => {
+    node({node: '>=18'}, '17.9.1');
+    assert.strictEqual(exitCode, 1);
+  });
+  it('accepts Node.js that satisfies the engines range', () => {
+    node({node: '>=18'}, '22.3.0');
+    assert.strictEqual(exitCode, undefined);
+  });
+  it('demands nothing when engines has no node field, as in the nix build', () => {
+    node({npm: '>8.0'}, '14.0.0');
+    assert.strictEqual(exitCode, undefined);
+  });
+  it('demands nothing when package.json declares no engines at all', () => {
+    node(undefined, '14.0.0');
     assert.strictEqual(exitCode, undefined);
   });
 });

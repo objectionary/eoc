@@ -4,15 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-const semver = require('semver');
 const tinted = require('./tinted-console');
 const {program, InvalidArgumentError} = require('commander');
-const {gte} = require('./demand');
+const demand = require('./demand');
 const {engines} = require('../package.json');
-
-if (engines && engines.node) {
-  gte('Node.js', process.version.replace(/^v/, ''), semver.minVersion(engines.node).version);
-}
 
 /**
  * Target language option.
@@ -436,6 +431,7 @@ program.command('fmt')
   });
 
 if (require.main === module) {
+  demand.node(engines, process.versions.node);
   (async () => {
     try {
       await program.parseAsync(process.argv);

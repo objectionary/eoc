@@ -4,8 +4,6 @@
  */
 
 const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
 const version = require('../src/version');
 const {runSync, weAreOnline} = require('./helpers');
 
@@ -14,19 +12,6 @@ describe('eoc', () => {
     const stdout = runSync(['--version']);
     assert.strictEqual(`${version.what}\n`, stdout);
     done();
-  });
-  it('boots when package.json has no engines field, as in the nix build', () => {
-    const pkg = path.resolve('./package.json');
-    const original = fs.readFileSync(pkg, 'utf8');
-    const stripped = JSON.parse(original);
-    delete stripped.engines;
-    fs.writeFileSync(pkg, JSON.stringify(stripped, null, 2));
-    try {
-      const stdout = runSync(['--version']);
-      assert.strictEqual(`${version.what}\n`, stdout);
-    } finally {
-      fs.writeFileSync(pkg, original);
-    }
   });
   it('prints help screen', (done) => {
     const stdout = runSync(['--help']);
