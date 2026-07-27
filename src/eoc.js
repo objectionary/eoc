@@ -10,7 +10,9 @@ const {program, InvalidArgumentError} = require('commander');
 const {gte} = require('./demand');
 const {engines} = require('../package.json');
 
-gte('Node.js', process.version.replace(/^v/, ''), semver.minVersion(engines.node).version);
+if (engines && engines.node) {
+  gte('Node.js', process.version.replace(/^v/, ''), semver.minVersion(engines.node).version);
+}
 
 /**
  * Target language option.
