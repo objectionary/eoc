@@ -65,6 +65,36 @@ describe('clean', () => {
     assert(fs.existsSync(home), 'the current directory must not be deleted');
     done();
   });
+  it('refuses to delete the current directory through a symbolic link', (done) => {
+    const {spawnSync} = require('child_process');
+    const home = path.resolve(testDir, 'refuses-symlink-cwd'),
+      real = path.resolve(home, 'real'),
+      link = path.resolve(home, 'link'),
+      type = process.platform === 'win32' ? 'junction' : 'dir';
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(real, {recursive: true});
+    fs.symlinkSync(home, link, type);
+    const s = spawnSync(
+      'node',
+      [
+        path.resolve('./src/eoc.js'),
+        '--target',
+        path.resolve(link, 'real'),
+        'clean'
+      ],
+      {cwd: real}
+    );
+    assert(s.status !== 0, `${s.stdout.toString()}\n${s.stderr.toString()}`);
+    assert(
+      s.stderr.toString().includes('Refusing to delete'),
+      s.stderr.toString()
+    );
+    assert(
+      fs.existsSync(real),
+      'the current directory must not be deleted through a symbolic link'
+    );
+    done();
+  });
   it('refuses to delete an ancestor of the current working directory', (done) => {
     const {spawnSync} = require('child_process');
     const home = path.resolve(testDir, 'refuses-ancestor'),
