@@ -28,14 +28,26 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.EOapp*Test#works_fine, got: ${captured}`
     );
   });
-  it('cannot accept an object with a single segment', () => {
-    assert.throws(
-      () => test(
-        {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app'},
-        (args) => args
-      ),
-      /Invalid --object format/,
-      'single-segment object should be rejected but was not'
+  it('runs every test of a single-segment --object, selecting no method', async () => {
+    let captured;
+    await test(
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'app'},
+      (args) => { captured = args; }
+    );
+    assert.ok(
+      captured.includes('-Dtest=org.eolang.EOapp*Test'),
+      `expected -Dtest=org.eolang.EOapp*Test with no method, got: ${captured}`
+    );
+  });
+  it('underscores the dashes of a single-segment --object', async () => {
+    let captured;
+    await test(
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target', object: 'works-fine'},
+      (args) => { captured = args; }
+    );
+    assert.ok(
+      captured.includes('-Dtest=org.eolang.EOworks_fine*Test'),
+      `expected -Dtest=org.eolang.EOworks_fine*Test, got: ${captured}`
     );
   });
   it('cannot accept an object with a trailing empty segment', () => {

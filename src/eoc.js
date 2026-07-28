@@ -317,7 +317,7 @@ program.command('test')
   .description('Run all visible unit tests')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
-  .option('--object <name>', 'Run a single test object by its full EO name, e.g. foo.app.works-fine')
+  .option('--object <name>', 'Run tests of a single EO object, e.g. app for all of them or foo.app.works-fine for one')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);

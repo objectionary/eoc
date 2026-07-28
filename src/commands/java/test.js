@@ -22,16 +22,15 @@ module.exports = function(opts, maven = mvnw) {
   ];
   if (opts.object) {
     const parts = opts.object.split('.');
-    if (parts.length < 2 || parts.some((part) => part === '')) {
+    if (parts.some((part) => part === '')) {
       throw new Error(
-        `Invalid --object format: "${opts.object}", expected object.method (or pkg.object.method)`
+        `Invalid --object format: "${opts.object}", expected object, object.method or pkg.object.method`
       );
     }
-    const method = parts.pop().replace(/-/g, '_');
-    const obj = parts.pop().replace(/-/g, '_');
+    const method = parts.length > 1 ? `#${parts.pop().replace(/-/g, '_')}` : '';
+    const cls = `EO${parts.pop().replace(/-/g, '_')}*Test`;
     const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');
-    const cls = `EO${obj}*Test`;
-    args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`);
+    args.push(`-Dtest=org.eolang.${pkg ? `${pkg}.` : ''}${cls}${method}`);
   }
   return elapsed(async (tracked) => {
     const result = await maven(
