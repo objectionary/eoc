@@ -6,6 +6,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const {spawnSync} = require('child_process');
 const dataize = require('../../src/commands/java/dataize');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers'),
 
@@ -54,6 +55,40 @@ describe('dataize', () => {
       }
       done();
     });
+  });
+  it('dataizes an object with no arguments, reporting the number it wraps', function(done) {
+    this.timeout(0);
+    const home = path.resolve('temp/test-dataize-plain');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(home, {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'app.eo'),
+      [
+        '# sample',
+        '[] > app',
+        '  42 > @',
+      ].join('\n')
+    );
+    const reported = spawnSync(
+      'node',
+      [
+        path.resolve('./src/eoc.js'), '--batch',
+        'dataize', 'app',
+        '--clean',
+        '--easy',
+        '--blind',
+        `--parser=${parserVersion}`,
+        `--home-tag=${homeTag}`,
+        '-s', home,
+        '-t', path.resolve(home, 'target')
+      ],
+      {timeout: 1200000, windowsHide: true}
+    ).stderr.toString();
+    assert(
+      /[=] 42/.test(reported),
+      `dataizing an object wrapping 42 does not report it: ${reported}`
+    );
+    done();
   });
   it(`dataizes with command-line argument`, function(done) {
     this.timeout(0);
