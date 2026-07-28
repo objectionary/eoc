@@ -6,6 +6,8 @@
 
 const tinted = require('./tinted-console');
 const {program, InvalidArgumentError} = require('commander');
+const demand = require('./demand');
+const {engines} = require('../package.json');
 
 /**
  * Target language option.
@@ -429,6 +431,7 @@ program.command('fmt')
   });
 
 if (require.main === module) {
+  demand.node(engines, process.versions.node);
   (async () => {
     try {
       await program.parseAsync(process.argv);
