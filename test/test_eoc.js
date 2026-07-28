@@ -265,6 +265,32 @@ describe('eoc', () => {
 });
 
 describe('eoc', () => {
+  it('fails foreign due to version mismatch if different --pin provided', (done) => {
+    assert.throws(
+      () => {
+        runSync(['--pin=29.9.4', 'foreign']);
+      },
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
+    );
+    done();
+  });
+  it('fails generate_comments due to version mismatch if different --pin provided', (done) => {
+    assert.throws(
+      () => {
+        runSync([
+          '--pin=29.9.4',
+          'generate_comments',
+          '--provider=placeholder',
+          '--source=absent.eo',
+          '--prompt_template=absent.txt'
+        ]);
+      },
+      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
+    );
+    done();
+  });
+});
+describe('eoc', () => {
   before(weAreOnline);
   it('fails link due to version mismatch if different --pin provided', (done) => {
     assert.throws(
