@@ -9,7 +9,7 @@
     "colors": "^1.4.0",
     "commander": "^12.1.0",
     "eo2js": "^0.0.8",
-    "fast-xml-parser": "^5.3.5",
+    "fast-xml-parser": "^5.10.1",
     "marked": "^4.3.0",
     "relative": "^3.0.2",
     "semver": "^7.7.2",
@@ -72,6 +72,11 @@
   "scripts": {
     "coverage": "nyc --reporter=lcov --reporter=text-summary mocha test/**/*.js --timeout 1200000",
     "test": "mocha 'test/**/*.js' --timeout 1200000"
+  },
+  "overrides": {
+    "eo2js": {
+      "fast-xml-parser": "^4.5.4"
+    }
   },
   "version": "0.0.0"
 }
