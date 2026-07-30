@@ -86,6 +86,27 @@ describe('dataize', () => {
 });
 
 describe('dataize/java', () => {
+  it('sets the maximum Java heap size', () => {
+    let params;
+    dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      (command, args) => {
+        params = args;
+        return {on: () => true};
+      }
+    );
+    assert(
+      params.includes('-Xmx256M'),
+      'dataize does not set the maximum Java heap size'
+    );
+    assert(
+      !params.some((param) => param.startsWith('-Xms')),
+      'dataize still sets the initial Java heap size'
+    );
+  });
   it('fails fast with a clear message when javac is not on the PATH', () => {
     const missing = () => {
       const cause = new Error('spawnSync javac ENOENT');
