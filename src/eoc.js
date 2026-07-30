@@ -175,6 +175,7 @@ program.command('audit')
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')
   .action((str, opts) => {
+    pin(program.opts());
     coms().foreign(program.opts());
   });
 
@@ -360,6 +361,7 @@ program.command('generate_comments')
     'Path to prompt template file, ' +
     'where `{code}` placeholder will be replaced with the code given by the user')
   .action(async (str, opts) => {
+    pin(program.opts());
     await coms().generate_comments({...program.opts(), ...str});
   });
 
