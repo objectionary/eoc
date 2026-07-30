@@ -35,6 +35,7 @@ const common = {
   jeo_assemble: require('./commands/jeo/assemble'),
   latex: require('./commands/latex'),
   normalize: require('./commands/normalize'),
+  format: require('./commands/format'),
 };
 
 const commands = {
@@ -419,17 +420,17 @@ program.command('normalize')
     await coms().normalize(program.opts());
   });
 
-program.command('fmt')
-  .description('Format EO files in the source directory')
+program.command('format')
+  .description('Fail if EO files in the source directory are not formatted')
+  .option('--fix', 'Overwrite EO files with their formatted versions')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    await pipe()(coms(), ['register', 'parse'], program.opts());
-    await coms().print({
-      printInput: '1-parse',
-      printOutput: path.resolve(program.opts().sources),
-      ...program.opts()
-    });
+    if (program.opts().alone === undefined) {
+      await pipe()(coms(), ['register', 'format'], {...program.opts(), ...str});
+    } else {
+      await coms().format({...program.opts(), ...str});
+    }
   });
 
 if (require.main === module) {
