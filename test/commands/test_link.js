@@ -23,9 +23,7 @@ describe('link', () => {
       path.resolve(home, 'src/foo/bar/link.eo'),
       [
         '+package foo.bar',
-        '+alias io.stdout',
         '',
-        '# sample object',
         '[args] > link',
         '  stdout "Hello, world!" > @',
       ].join('\n')
@@ -49,9 +47,9 @@ describe('link', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/org/eolang/EOfoo/EObar/EOlink.java',
+        'target/generated-sources/org/eolang/EO_foo/EO_bar/EOlink.java',
         'target/generated-sources/org/eolang/EObytes.java',
-        'target/classes/org/eolang/EOfoo/EObar/EOlink.class',
+        'target/classes/org/eolang/EO_foo/EO_bar/EOlink.class',
         'target/classes/org/eolang/EOnumber.class',
         'target/eoc.jar',
       ]

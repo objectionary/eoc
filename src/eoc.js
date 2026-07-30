@@ -367,7 +367,7 @@ program.command('generate_comments')
 
 program.command('jeo:disassemble')
   .description('Disassemble .class files to .xmir files')
-  .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
+  .option('--jeo-version <version>', 'Version of JEO to use', '0.15.3')
   .option(
     '--classes <dir>',
     'Directory with .class files (relative to --target)',
@@ -385,7 +385,7 @@ program.command('jeo:disassemble')
 
 program.command('jeo:assemble')
   .description('Assemble .xmir files to .class files')
-  .option('--jeo-version <version>', 'Version of JEO to use', '0.6.11')
+  .option('--jeo-version <version>', 'Version of JEO to use', '0.15.3')
   .option(
     '--xmirs <dir>',
     'Directory with .xmir files (relative to --target)',

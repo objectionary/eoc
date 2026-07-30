@@ -26,8 +26,8 @@ describe('test', () => {
       [
         '+any',
         '',
-        '# Just a simple example of a unit test.',
         '[] > simple',
+        '',
         '  [] +> works-correctly',
         '    gt. > @',
         '      10',

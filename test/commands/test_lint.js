@@ -20,7 +20,7 @@ describe('lint', () => {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     const stdout = runSync([
       'lint',
       '--verbose',
@@ -45,7 +45,7 @@ describe('lint', () => {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
     runSync([
       'lint',
       '--verbose',

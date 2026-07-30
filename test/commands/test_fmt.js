@@ -60,32 +60,25 @@ function fmt (source, target) {
  */
 const testCases = [
   {
-    name: 'removes redundant comments from a bare object',
-    before: [
-      '# EO file header',
-      '# Copyright notice for testing',
-      '# This is a comment for the app',
-      '[] > app',
-      ''
-    ].join('\n'),
+    name: 'adds the missing final newline to a bare object',
+    before: '[] > app',
     after: [
-      '# No comments.',
       '[] > app',
       ''
     ].join('\n')
   },
   {
-    name: 'expands a single alias to fully qualified form',
+    name: 'drops the redundant target of a self-named alias',
     before: [
       '+alias math math',
-      '# Calculator app',
+      '',
       'math.plus > app',
       '  5',
       '  10',
       ''
     ].join('\n'),
     after: [
-      '+alias math Q.math',
+      '+alias math',
       '',
       'math.plus > app',
       '  5',
@@ -94,17 +87,17 @@ const testCases = [
     ].join('\n')
   },
   {
-    name: 'expands stdout alias and qualifies its usage',
+    name: 'expands a single alias and qualifies its usage',
     before: [
-      '+alias stdout io.stdout',
-      '# Application entry point',
-      'stdout > app',
+      '+alias out stdout',
+      '',
+      'out > app',
       '  "Hello, world!"'
     ].join('\n'),
     after: [
-      '+alias stdout Q.io.stdout',
+      '+alias out Q.stdout',
       '',
-      'io.stdout > app',
+      'stdout > app',
       '  "Hello, world!"',
       ''
     ].join('\n')
@@ -112,20 +105,20 @@ const testCases = [
   {
     name: 'expands multiple aliases with nested arguments',
     before: [
-      '+alias stdout io.stdout',
-      '+alias sprintf tt.sprintf',
-      '# Application entry point',
-      'stdout > app',
-      '  sprintf',
+      '+alias out stdout',
+      '+alias printf string.printf',
+      '',
+      'out > app',
+      '  printf',
       '    "Hello, %s"',
       '    "Jeff"'
     ].join('\n'),
     after: [
-      '+alias stdout Q.io.stdout',
-      '+alias sprintf Q.tt.sprintf',
+      '+alias out Q.stdout',
+      '+alias string.printf',
       '',
-      'io.stdout > app',
-      '  tt.sprintf',
+      'stdout > app',
+      '  string.printf',
       '    "Hello, %s"',
       '    "Jeff"',
       ''

@@ -9,7 +9,7 @@ const path = require('path');
 const {execSync} = require('child_process');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-const eo = '# sample\n[] > simple\n';
+const eo = '[] > simple\n';
 
 function setup(name, content = eo) {
   const home = path.resolve('temp/test-normalize', name);
@@ -55,7 +55,7 @@ describe('normalize', () => {
   it('normalized output matches expected content', done => {
     const {source} = setup('content');
     const actual = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
-    const expected = '# No comments.\n[] > simple\n';
+    const expected = '[] > simple\n';
     assert.strictEqual(
       actual, expected,
       `Normalized output must equal expected.\nExpected:\n${expected}\nActual:\n${actual}`
@@ -66,7 +66,7 @@ describe('normalize', () => {
     const {source} = setup('with spaces');
     assert.strictEqual(
       fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
-      '# No comments.\n[] > simple\n',
+      '[] > simple\n',
       'Normalized output must be produced even when the project path contains spaces'
     );
     done();
@@ -75,7 +75,7 @@ describe('normalize', () => {
     const {source} = setup('weird (dir) & name');
     assert.strictEqual(
       fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
-      '# No comments.\n[] > simple\n',
+      '[] > simple\n',
       'Normalized output must be produced even when the project path contains shell metacharacters'
     );
     done();
@@ -84,7 +84,7 @@ describe('normalize', () => {
     const {source} = setup('with; semicolon');
     assert.strictEqual(
       fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8'),
-      '# No comments.\n[] > simple\n',
+      '[] > simple\n',
       'Normalized output must be produced even when the project path contains a semicolon'
     );
     done();
