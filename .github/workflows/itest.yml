@@ -44,9 +44,6 @@ jobs:
             "--blind"
           )
           node "${opts[@]}" link
-          # Dataizing "program" would print through "stdout", which terminates
-          # in eo-runtime 0.62.0, see objectionary/eo#6169; until that is
-          # released, we dataize "story" instead, which prints nothing.
-          node "${opts[@]}" --alone dataize story
+          node "${opts[@]}" --alone dataize program
           node "${opts[@]}" clean
           node "${opts[@]}" test

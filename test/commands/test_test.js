@@ -73,6 +73,47 @@ describe('test', () => {
     );
     done();
   });
+  it('executes a unit test that allocates memory', function(done) {
+    this.timeout(0);
+    const home = path.resolve('temp/test-test/malloc');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(
+      path.resolve(home, 'src/allocates.eo'),
+      [
+        '+any',
+        '',
+        '[] > allocates',
+        '',
+        '  [] +> keeps-a-number',
+        '    eq. > @',
+        '      malloc.of',
+        '        8',
+        '        [m]',
+        '          seq > @',
+        '            *',
+        '              m.put 42',
+        '              m.get',
+        '      42',
+      ].join('\n')
+    );
+    assert.ok(
+      runSync([
+        'test',
+        '--verbose',
+        '--easy',
+        '--blind',
+        `--parser=${parserVersion}`,
+        `--home-tag=${homeTag}`,
+        '--stack=16M',
+        '--heap=128M',
+        '-s', path.resolve(home, 'src'),
+        '-t', path.resolve(home, 'target'),
+      ]).includes('Tests run: 1, Failures: 0, Errors: 0, Skipped: 0'),
+      'malloc cannot be dataized by the pinned EO version'
+    );
+    done();
+  });
   it('runs only the specified test when --object is provided', (done) => {
     const home = path.resolve('temp/test-test/object-filter'),
       stdout = test(home, 'Java', parserVersion, homeTag, ['--object', 'simple.works-correctly']);
