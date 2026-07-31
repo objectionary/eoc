@@ -20,7 +20,6 @@ describe('dataize', () => {
   before(weAreOnline);
   options.forEach(({lang, version, tag}) => {
     it(`dataizes: lang ${lang}, version ${version}, tag ${tag}`, function(done) {
-      this.skip(); // stdout is dead in 0.62.0, see objectionary/eo#6169
       this.timeout(0);
       const home = path.resolve(`temp/test-dataize/${version}/${lang}`);
       fs.rmSync(home, {recursive: true, force: true});
@@ -55,7 +54,6 @@ describe('dataize', () => {
     });
   });
   it(`dataizes with command-line argument`, function(done) {
-    this.skip(); // stdout is dead in 0.62.0, see objectionary/eo#6169
     this.timeout(0);
     const home = path.resolve('temp/test-dataize-with-arg');
     fs.rmSync(home, {recursive: true, force: true});
