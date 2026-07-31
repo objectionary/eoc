@@ -5,7 +5,7 @@
 
 const assert = require('assert');
 const version = require('../src/version');
-const {runSync, weAreOnline} = require('./helpers');
+const {runSync, jeoVersion, weAreOnline} = require('./helpers');
 
 describe('eoc', () => {
   it('prints its own version', (done) => {
@@ -305,5 +305,17 @@ describe('eoc', () => {
       /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
     );
     done();
+  });
+});
+
+describe('eoc', () => {
+  ['jeo:disassemble', 'jeo:assemble'].forEach((command) => {
+    it(`takes the default JEO version of ${command} from jeo-version.txt`, (done) => {
+      assert(
+        runSync([command, '--help']).includes(`(default: "${jeoVersion}")`),
+        `${command} doesnt default to the JEO version stored in jeo-version.txt`
+      );
+      done();
+    });
   });
 });

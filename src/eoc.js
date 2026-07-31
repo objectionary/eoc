@@ -108,7 +108,8 @@ if (
 
 const fs = require('fs');
 const path = require('path'),
-  tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim();
+  tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim(),
+  jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
 let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
 if (process.argv.includes('--latest')) {
   parser = require('./parser-version').get();
@@ -368,7 +369,7 @@ program.command('generate_comments')
 
 program.command('jeo:disassemble')
   .description('Disassemble .class files to .xmir files')
-  .option('--jeo-version <version>', 'Version of JEO to use', '0.15.3')
+  .option('--jeo-version <version>', 'Version of JEO to use', jeo)
   .option(
     '--classes <dir>',
     'Directory with .class files (relative to --target)',
@@ -386,7 +387,7 @@ program.command('jeo:disassemble')
 
 program.command('jeo:assemble')
   .description('Assemble .xmir files to .class files')
-  .option('--jeo-version <version>', 'Version of JEO to use', '0.15.3')
+  .option('--jeo-version <version>', 'Version of JEO to use', jeo)
   .option(
     '--xmirs <dir>',
     'Directory with .xmir files (relative to --target)',

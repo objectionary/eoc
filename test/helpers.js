@@ -14,6 +14,10 @@ module.exports.homeTag = fs.readFileSync(
   path.join(__dirname, '../home-tag.txt'),
   'utf8'
 ).trim();
+module.exports.jeoVersion = fs.readFileSync(
+  path.join(__dirname, '../jeo-version.txt'),
+  'utf8'
+).trim();
 
 /**
  * Helper to run EOC command line tool.
