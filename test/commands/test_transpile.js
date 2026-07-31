@@ -15,10 +15,7 @@ describe('transpile', () => {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'src/transpile.eo'),
-      [
-        '# Sample.',
-        '[] > transpile'
-      ].join('\n')
+      '[] > transpile\n'
     );
     const transpiled = path.resolve(home, 'target/8-transpile');
     if (fs.existsSync(transpiled)) {

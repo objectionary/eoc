@@ -27,9 +27,9 @@ describe('compile', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/org/eolang/EOfoo/EObar/EOcompile.java',
+        'target/generated-sources/org/eolang/EO_foo/EO_bar/EOcompile.java',
         'target/generated-sources/org/eolang/EObytes.java',
-        'target/classes/org/eolang/EOfoo/EObar/EOcompile.class',
+        'target/classes/org/eolang/EO_foo/EO_bar/EOcompile.class',
         'target/classes/org/eolang/EOnumber.class',
       ]
     );
@@ -46,7 +46,6 @@ describe('compile', () => {
         '+package foo.bar',
         '+tests',
         '',
-        '# This is a sample object',
         '[] > simple-test-compile',
         '  true > tests',
       ].join('\n')
@@ -64,8 +63,8 @@ describe('compile', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/generated-sources/org/eolang/EOfoo/EObar/EOsimple_test_compileTest.java',
-        'target/classes/org/eolang/EOfoo/EObar/EOsimple_test_compileTest.class',
+        'target/generated-sources/org/eolang/EO_foo/EO_bar/EOsimple_test_compileTest.java',
+        'target/classes/org/eolang/EO_foo/EO_bar/EOsimple_test_compileTest.class',
       ]
     );
     done();
@@ -125,9 +124,7 @@ describe('compile', () => {
 function simple(name) {
   return [
     '+package foo.bar',
-    '+alias io.stdout',
     '',
-    '# This is a simple object',
     `[args] > ${name}`,
     '  stdout "Hello, world!" > @',
   ].join('\n');

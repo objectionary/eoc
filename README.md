@@ -136,7 +136,7 @@ You can also do many other things with `eoc` commands
 * `jeo:assemble` Assemble .xmir files to .class files
 * `latex` Generate LaTeX files from EO sources
 * `normalize` Normalize EO files using phi-calculus normalization via phino
-* `fmt` Format EO files in the source directory
+* `format` Fail if EO files in the source directory are not formatted
 <!-- END COMMANDS SECTION -->
 
 This command line toolkit simply integrates other tools available in
@@ -179,7 +179,7 @@ npm test -- --grep="formats EO files according to expected patterns"
 You can also run a specific test file using `npx grunt`:
 
 ```bash
-npx grunt --file=test/commands/test_fmt.js
+npx grunt --file=test/commands/test_format.js
 ```
 
 ## How to Contribute

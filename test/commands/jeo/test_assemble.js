@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path'),
   {execSync} = require('child_process');
 const {runSync, assertFilesExist, weAreOnline} = require('../../helpers'),
-  version = '0.6.11';
+  version = '0.15.3';
 
 describe('jeo:assemble', () => {
   before(weAreOnline);
@@ -16,7 +16,7 @@ describe('jeo:assemble', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(home, {recursive: true});
     fs.writeFileSync(path.resolve(home, 'Foo.java'), 'package bar; class Foo {}');
-    execSync(`javac ${path.resolve(home, 'Foo.java')}`);
+    execSync(`javac -d ${home} ${path.resolve(home, 'Foo.java')}`);
     runSync([
       'jeo:disassemble',
       '--verbose',
@@ -24,7 +24,7 @@ describe('jeo:assemble', () => {
       '--classes', home,
       '--xmirs', home,
     ]);
-    fs.rmSync(path.resolve(home, 'Foo.class'), {recursive: true, force: true});
+    fs.rmSync(path.resolve(home, 'bar/Foo.class'), {recursive: true, force: true});
     fs.rmSync(path.resolve(home, 'Foo.java'), {recursive: true, force: true});
     const stdout = runSync([
       'jeo:assemble',

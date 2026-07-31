@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path'),
   {execSync} = require('child_process');
 const {runSync, assertFilesExist, weAreOnline} = require('../../helpers'),
-  version = '0.6.11';
+  version = '0.15.3';
 
 describe('jeo:disassemble', () => {
   before(weAreOnline);
