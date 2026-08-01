@@ -1,4 +1,4 @@
-/*
+  /*
  * SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
@@ -121,6 +121,16 @@ function wrapHtml(name, html, css) {
  * @param {Hash} opts - All options
  * @return {Promise<String>} Resolves to the message reporting the summary path
  */
+/**
+ * Build a browser-safe relative href from an HTML file's directory to the
+ * shared stylesheet, always using forward slashes regardless of OS.
+ * @param {String} fromDir - Directory of the HTML file that will use it
+ * @param {String} cssPath - Absolute path of styles.css
+ * @return {String} Relative href
+ */
++function cssHref(fromDir, cssPath) {
++  return path.relative(fromDir, cssPath).split(path.sep).join('/');
++}
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
     try {
@@ -138,7 +148,10 @@ module.exports = function(opts) {
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
-        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
+        fs.writeFileSync(
+          html_app,
+          wrapHtml(name, xmir_html, cssHref(path.dirname(html_app), css))
+        );
         const packages = path.dirname(relative).split(path.sep).join('.');
         const html_package = path.join(output, `package_${packages}.html`);
         if (!packages_info.has(packages)) {
@@ -155,10 +168,15 @@ module.exports = function(opts) {
       for (const [package_name, info] of packages_info) {
         fs.mkdirSync(path.dirname(info.path), {recursive: true});
         fs.writeFileSync(info.path,
-          generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
+          generatePackageHtml(
+            `${package_name} package`,
+            info.xmir_htmls,
+            cssHref(path.dirname(info.path), css)
+          ));
       }
       const packages = path.join(output, 'packages.html');
-      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      fs.writeFileSync(packages,
+        generatePackageHtml('overall package', all_xmir_htmls, cssHref(output, css)));
       const summary = path.join(output, 'summary.xml');
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
