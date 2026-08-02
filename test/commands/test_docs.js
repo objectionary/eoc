@@ -48,6 +48,50 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that a root-level XMIR is not assigned the "." filesystem
+   * marker as its package name.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('does not expose "." as a package for root-level XMIR', (done) => {
+    fs.writeFileSync(
+      path.join(parsed, 'app.xmir'),
+      '<program name="app" />'
+    );
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const app_html = path.join(docs, 'app.html');
+    assert(
+      fs.existsSync(app_html),
+      `Expected root object page ${app_html} but it was not created`
+    );
+    const invalid_package = path.join(docs, 'package_..html');
+    assert(
+      !fs.existsSync(invalid_package),
+      `Unexpected package page ${invalid_package}`
+    );
+    const summary = fs.readFileSync(
+      path.join(docs, 'summary.xml'),
+      'utf-8'
+    );
+    assert(
+      summary.includes('packages="0"'),
+      'Expected no package for a root-level XMIR'
+    );
+    assert(
+      summary.includes('objects="1"'),
+      'Expected the root-level object to remain in the object count'
+    );
+    assert(
+      !summary.includes('<package name=".">'),
+      'The filesystem marker "." must not be exposed as a package name'
+    );
+    done();
+  });
+  /**
    * Tests that 'docs' does not crash for a package whose name is an
    * inherited object property, such as 'constructor'.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion

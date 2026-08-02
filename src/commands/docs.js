@@ -139,17 +139,23 @@ module.exports = function(opts) {
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
         fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
-        const packages = path.dirname(relative).split(path.sep).join('.');
-        const html_package = path.join(output, `package_${packages}.html`);
-        if (!packages_info.has(packages)) {
-          packages_info.set(packages, {
-            xmir_htmls : [],
-            names: [],
-            path: html_package
-          });
+        const package_dir = path.dirname(relative);
+        if (package_dir !== '.') {
+          const package_name = package_dir.split(path.sep).join('.');
+          const html_package = path.join(
+            output,
+            `package_${package_name}.html`
+          );
+          if (!packages_info.has(package_name)) {
+            packages_info.set(package_name, {
+              xmir_htmls : [],
+              names: [],
+              path: html_package
+            });
+          }
+          packages_info.get(package_name).xmir_htmls.push(xmir_html);
+          packages_info.get(package_name).names.push(name);
         }
-        packages_info.get(packages).xmir_htmls.push(xmir_html);
-        packages_info.get(packages).names.push(name);
         all_xmir_htmls.push(xmir_html);
       }
       for (const [package_name, info] of packages_info) {
