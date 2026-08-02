@@ -370,4 +370,13 @@ describe('docs', () => {
     );
     done();
   });
+  /**
+   * Tests that 'saxon-js', required directly by this module, is declared
+   * as its own dependency instead of relying on it being pulled in
+   * transitively through 'eo2js'.
+   */
+  it('declares saxon-js as a direct dependency', () => {
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'));
+    assert.ok(pkg.dependencies['saxon-js'], 'saxon-js must be listed in package.json dependencies');
+  });
 });
