@@ -6,8 +6,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {spawnSync} = require('child_process');
-const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {runSync, runOutput, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const messy = '[] > app';
 const tidy = ['[] > app', ''].join('\n');
@@ -47,11 +46,7 @@ function args(home, sources) {
  * @return {Number} Exit code
  */
 function attempt(argv) {
-  return spawnSync(
-    'node',
-    [path.resolve('./src/eoc.js'), '--batch'].concat(argv),
-    {timeout: 1200000, windowsHide: true}
-  ).status;
+  return runOutput(argv).status;
 }
 
 const cases = [
