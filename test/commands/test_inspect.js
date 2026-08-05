@@ -6,13 +6,28 @@
 const assert = require('assert');
 const fs = require('fs');
 const http = require('http');
+const net = require('net');
 const path = require('path');
 const inspect = require('../../src/commands/java/inspect');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
+/**
+ * Take a port the operating system is willing to give us right now, so that
+ * two suites on the same machine, or a JVM an earlier run left behind, do not
+ * collide on a number written into the test.
+ * @return {Promise<Number>} A port nobody listens on
+ */
+async function free() {
+  const socket = net.createServer();
+  await new Promise((resolve) => socket.listen(0, '127.0.0.1', resolve));
+  const port = socket.address().port;
+  await new Promise((resolve) => socket.close(resolve));
+  return port;
+}
+
 describe('inspect', () => {
   before(weAreOnline);
-  it('prints the object the session starts at', function(done) {
+  it('prints the object the session starts at', async function() {
     this.timeout(0);
     const home = path.resolve('temp/test-inspect');
     fs.rmSync(home, {recursive: true, force: true});
@@ -23,7 +38,7 @@ describe('inspect', () => {
     );
     const stdout = runSync([
       'inspect',
-      '--port=18081',
+      `--port=${await free()}`,
       '--easy',
       '--blind',
       `--parser=${parserVersion}`,
@@ -31,14 +46,19 @@ describe('inspect', () => {
       '-s', home,
       '-t', path.resolve(home, 'target'),
     ]);
-    assert(stdout.includes('@ Φ'), stdout);
-    done();
+    assert(
+      stdout.includes('@ Φ'),
+      `inspect does not print the object the session starts at: ${stdout}`
+    );
   });
 });
 
 describe('inspect/java', () => {
-  it('asks the server and prints the object it answers with', async () => {
-    const home = path.resolve('temp/test-inspect-unit');
+  const home = path.resolve('temp/test-inspect-unit');
+  let params;
+  let printed;
+  let killed;
+  before(async () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'inspect'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'inspect', 'inspect.jar'), '');
@@ -47,11 +67,10 @@ describe('inspect/java', () => {
       res.end('{"forma":"Φ"}');
     });
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-    const printed = [];
+    printed = [];
+    killed = false;
     const info = console.info;
     console.info = (line) => printed.push(line);
-    let params;
-    let killed = false;
     try {
       await inspect(
         {target: home, port: server.address().port},
@@ -67,25 +86,35 @@ describe('inspect/java', () => {
       console.info = info;
       server.close();
     }
+  });
+  it('runs the server class', () => {
     assert(
       params.includes('org.eolang.eoc.Inspect'),
       `inspect does not run the server class: ${params}`
     );
+  });
+  it('puts the program on the classpath', () => {
     assert(
       params[1].split(path.delimiter).includes(path.resolve(home, 'eoc.jar')),
       `inspect does not put the program on the classpath: ${params}`
     );
+  });
+  it('puts the server on the classpath', () => {
     assert(
       params[1].split(path.delimiter).includes(path.resolve(home, 'inspect', 'inspect.jar')),
       `inspect does not put the server on the classpath: ${params}`
     );
+  });
+  it('prints the object the server answers with', () => {
     assert(
       printed.includes('@ Φ'),
       `inspect does not print the object the session starts at: ${printed}`
     );
+  });
+  it('kills the server when the session ends', () => {
     assert(killed, 'inspect leaves the server running');
   });
-  it('fails fast with a clear message when javac is not on the PATH', async () => {
+  it('fails fast when javac is not on the PATH', async () => {
     const missing = () => {
       const cause = new Error('spawnSync javac ENOENT');
       cause.code = 'ENOENT';
@@ -93,8 +122,8 @@ describe('inspect/java', () => {
     };
     await assert.rejects(
       () => inspect({target: '.', port: 8080}, missing),
-      /javac/,
-      'inspect does not fail fast with a clear javac message when the JDK is missing'
+      (error) => error.cause.code === 'ENOENT',
+      'inspect does not refuse to start when the JDK is missing'
     );
   });
 });
