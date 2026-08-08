@@ -76,7 +76,8 @@
   "overrides": {
     "eo2js": {
       "fast-xml-parser": "^4.5.4"
-    }
+    },
+    "axios": "1.15.1"
   },
   "version": "0.0.0"
 }
