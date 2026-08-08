@@ -6,7 +6,9 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {
+  runSync, runOutput, assertFilesExist, parserVersion, homeTag, weAreOnline
+} = require('../helpers');
 
 describe('transpile', () => {
   before(weAreOnline);
@@ -54,12 +56,9 @@ describe('transpile', () => {
     done();
   });
   it('attempts to transpile a simple .EO program to wrong platform', (done) => {
-    const {spawnSync} = require('child_process'),
-      s = spawnSync(
-        'node', [path.resolve('./src/eoc.js'), 'transpile', '--language=Eiffel']
-      );
-    assert(s.status != 0);
-    assert(s.stderr.includes('Unknown platform Eiffel'), s.stderr);
+    const outcome = runOutput(['transpile', '--language=Eiffel']);
+    assert(outcome.status != 0);
+    assert(outcome.stderr.includes('Unknown platform Eiffel'), outcome.stderr);
     done();
   });
 });
