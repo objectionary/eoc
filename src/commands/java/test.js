@@ -21,6 +21,11 @@ module.exports = function(opts, maven = mvnw) {
     `-Dheap-size=${opts.heap}`,
   ];
   if (opts.object) {
+    if (opts.object.split('.').filter(Boolean).length < 2) {
+      throw new Error(
+        `Invalid --object format: expected object.method (or pkg.object.method), got "${opts.object}"`
+      );
+    }
     const parts = opts.object.split('.');
     if (parts.length < 2 || parts.some((part) => part === '')) {
       throw new Error(
@@ -31,7 +36,9 @@ module.exports = function(opts, maven = mvnw) {
     const obj = parts.pop().replace(/-/g, '_');
     const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');
     const cls = `EO${obj}*Test`;
-    args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`);
+    args.push(
+      `-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`
+    );
   }
   return elapsed(async (tracked) => {
     const result = await maven(
