@@ -129,6 +129,7 @@ You can also do many other things with `eoc` commands
 * `compile` Compile target language sources into binaries
 * `link` Link together all binaries into a single executable binary
 * `dataize` Run the single executable binary and dataize an object
+* `inspect` Traverse the tree of objects of a compiled program
 * `test` Run all visible unit tests
 * `docs` Generate documentation from XMIR files
 * `generate_comments` Generate documentation with LLM
