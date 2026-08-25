@@ -25,7 +25,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "grunt": "^1.6.1",
     "grunt-contrib-clean": "^2.0.1",
-    "grunt-eslint": "^26.0.0",
+    "grunt-eslint": "^27.0.0",
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.5",
     "mocha": "^11.5.0",
