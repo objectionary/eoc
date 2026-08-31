@@ -64,7 +64,7 @@ describe('inspect/java', () => {
     fs.writeFileSync(path.resolve(home, 'inspect', 'inspect.jar'), '');
     const server = http.createServer((req, res) => {
       res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end('{"forma":"Φ"}');
+      res.end('{"forma":"Φ","loaded":56}');
     });
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
     printed = [];
@@ -113,6 +113,12 @@ describe('inspect/java', () => {
   });
   it('kills the server when the session ends', () => {
     assert(killed, 'inspect leaves the server running');
+  });
+  it('prints how many objects were loaded', () => {
+    assert(
+      printed.includes('Loaded 56 objects'),
+      `inspect does not print how many objects were loaded: ${printed}`
+    );
   });
   it('fails fast when javac is not on the PATH', async () => {
     const missing = () => {

@@ -89,6 +89,7 @@ module.exports = async function(opts, exec, runner = spawn) {
   const server = runner('java', params, {stdio: 'inherit'});
   try {
     const answer = await ask(port, Date.now() + 60000);
+    console.info(`Loaded ${answer.loaded} objects`);
     console.info('Ready to traverse the Universe');
     console.info(`@ ${answer.forma}`);
   } finally {
