@@ -121,6 +121,7 @@ if (process.argv.includes('--latest')) {
   console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
 }
 
+const semver = require('semver');
 const version = require('./version');
 program
   .name('eoc')
@@ -141,7 +142,17 @@ program
   .option('--easy', 'Ignore "warnings" and only fail if there are "errors" or "critical" errors')
   .option('--blind', 'Disable linting')
   .option('--home-tag <version>', 'Git tag in objectionary/home to compile against', tag)
-  .option('--parser <version>', 'Set the version of EO parser to use', parser)
+  .option(
+    '--parser <version>',
+    'Set the version of EO parser to use',
+    (value) => {
+      if (!value.endsWith('-SNAPSHOT') && semver.valid(value) === null) {
+        throw new InvalidArgumentError(`${value} is not a version`);
+      }
+      return value;
+    },
+    parser
+  )
   .option('--lints <version>', 'Set the version of EO lints to use')
   .option('--latest', 'Use the latest parser version from Maven Central')
   .option('--alone', 'Just run a single command without dependencies')
