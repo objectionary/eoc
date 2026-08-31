@@ -370,4 +370,23 @@ describe('docs', () => {
     );
     done();
   });
+  /**
+   * Tests that every package 'docs.js' requires is declared by 'eoc' itself
+   * and resolves, instead of being reached transitively through 'eo2js'.
+   */
+  it('declares every package it requires', () => {
+    const source = path.join(__dirname, '..', '..', 'src', 'commands', 'docs.js');
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'));
+    const required = [...fs.readFileSync(source, 'utf-8').matchAll(/require\('(?<name>[^.'][^']*)'\)/g)]
+      .map((match) => match.groups.name)
+      .filter((name) => !require('module').builtinModules.includes(name));
+    assert.notStrictEqual(required.length, 0, 'no external requires were found in docs.js');
+    required.forEach((name) => {
+      assert.ok(pkg.dependencies[name], `${name} is required by docs.js but not in package.json dependencies`);
+      assert.doesNotThrow(
+        () => require.resolve(name, {paths: [path.dirname(source)]}),
+        `${name} is declared but does not resolve`
+      );
+    });
+  });
 });
