@@ -44,6 +44,31 @@ module.exports.runSync = function runSync(args) {
 };
 
 /**
+ * Helper to run EOC command line tool and capture everything it produces.
+ *
+ * @param {Array} args - Array of args
+ * @param {Object} options - Extra options for the child process
+ * @return {Object} Stdout, stderr and exit status
+ */
+module.exports.runOutput = function runOutput(args, options = {}) {
+  const {spawnSync} = require('child_process');
+  const outcome = spawnSync(
+    'node',
+    [path.resolve('./src/eoc.js'), '--batch'].concat(args),
+    {
+      'timeout': 1200000,
+      'windowsHide': true,
+      ...options,
+    }
+  );
+  return {
+    'stdout': outcome.stdout.toString(),
+    'stderr': outcome.stderr.toString(),
+    'status': outcome.status,
+  };
+};
+
+/**
  * Assert that all files exist.
  *
  * @param {String} stdout - The stdout printed

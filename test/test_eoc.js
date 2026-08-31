@@ -5,7 +5,7 @@
 
 const assert = require('assert');
 const version = require('../src/version');
-const {runSync, jeoVersion, weAreOnline} = require('./helpers');
+const {runSync, runOutput, jeoVersion, weAreOnline} = require('./helpers');
 
 describe('eoc', () => {
   it('prints its own version', (done) => {
@@ -52,26 +52,22 @@ describe('eoc', () => {
 });
 
 describe('eoc', () => {
-  const {spawnSync} = require('child_process'),
-    path = require('path'),
-    eoc = function(...args) {
-      return spawnSync('node', [path.resolve('./src/eoc.js'), '--batch', ...args]);
-    };
+  const path = require('path');
   it('accepts the "js" alias for the --language option', (done) => {
-    assert.strictEqual(eoc('--language=js', 'clean').status, 0);
+    assert.strictEqual(runOutput(['--language=js', 'clean']).status, 0);
     done();
   });
   it('accepts the full "javascript" name for the --language option', (done) => {
-    assert.strictEqual(eoc('--language=javascript', 'clean').status, 0);
+    assert.strictEqual(runOutput(['--language=javascript', 'clean']).status, 0);
     done();
   });
   it('accepts a mixed-case value for the --language option', (done) => {
-    assert.strictEqual(eoc('--language=JAVA', 'clean').status, 0);
+    assert.strictEqual(runOutput(['--language=JAVA', 'clean']).status, 0);
     done();
   });
   it('rejects an unknown --language value', (done) => {
-    const result = eoc('--language=Eiffel', 'clean');
-    const stderr = result.stderr.toString();
+    const result = runOutput(['--language=Eiffel', 'clean']);
+    const stderr = result.stderr;
     assert.notStrictEqual(result.status, 0);
     assert(
       /^error: option '-l, --language <name>' argument 'Eiffel' is invalid\. Unknown platform Eiffel/.test(stderr),
@@ -82,17 +78,17 @@ describe('eoc', () => {
     done();
   });
   it('accepts the --lints option', (done) => {
-    assert.strictEqual(eoc('--lints=0.0.42', 'clean').status, 0);
+    assert.strictEqual(runOutput(['--lints=0.0.42', 'clean']).status, 0);
     done();
   });
   it('reports a clean error when generate_comments gets an unsupported provider, instead of a raw stack trace', (done) => {
-    const result = eoc(
+    const result = runOutput([
       'generate_comments',
       '--provider=bogus',
       '--source', path.resolve('./src/eoc.js'),
       '--prompt_template', path.resolve('./src/eoc.js')
-    );
-    const stderr = result.stderr.toString();
+    ]);
+    const stderr = result.stderr;
     assert.notStrictEqual(result.status, 0);
     assert(!stderr.includes('Node.js v'), stderr);
     assert(!stderr.includes('node:internal/process/promises'), stderr);
@@ -109,8 +105,8 @@ describe('eoc', () => {
       home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-docs-target-')),
       target = path.join(home, 'notadir');
     fs.writeFileSync(target, '');
-    const result = eoc('--target', target, 'docs');
-    const stderr = result.stderr.toString();
+    const result = runOutput(['--target', target, 'docs']);
+    const stderr = result.stderr;
     assert.notStrictEqual(result.status, 0);
     assert(!stderr.includes('Node.js v'), stderr);
     assert(!stderr.includes('node:internal/process/promises'), stderr);
@@ -173,28 +169,23 @@ describe('select', () => {
 });
 
 describe('eoc', () => {
-  const {spawnSync} = require('child_process');
-  const path = require('path');
-  const eoc = function(...args) {
-    return spawnSync('node', [path.resolve('./src/eoc.js'), '--batch', ...args]);
-  };
   it('reports a failing async command cleanly without leaking a stack trace', (done) => {
-    const result = eoc(
+    const result = runOutput([
       'generate_comments', '--provider=no-such-llm',
       '--source=absent.eo', '--prompt_template=absent.txt'
-    );
-    const stderr = result.stderr.toString();
+    ]);
+    const stderr = result.stderr;
     assert.notStrictEqual(result.status, 0);
     assert(stderr.includes('`no-such-llm` provider is not supported'), stderr);
     assert(!/\.js:\d+/.test(stderr), stderr);
     done();
   });
   it('reports a filesystem error from an async command without a stack trace', (done) => {
-    const result = eoc(
+    const result = runOutput([
       'generate_comments', '--provider=placeholder',
       '--source=absent.eo', '--prompt_template=absent.txt'
-    );
-    const stderr = result.stderr.toString();
+    ]);
+    const stderr = result.stderr;
     assert.notStrictEqual(result.status, 0);
     assert(stderr.includes('no such file or directory'), stderr);
     assert(!/\.js:\d+/.test(stderr), stderr);
