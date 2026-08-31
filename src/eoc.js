@@ -302,21 +302,17 @@ program.command('link')
 
 program.command('dataize')
   .description('Run the single executable binary and dataize an object')
+  .argument('<object>', 'Full EO name of the object to dataize')
+  .argument('[args...]', 'Arguments to give to the program being dataized')
   .option('--stack <size>', 'Set stack size for the virtual machine', '64M')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
-  .action(async (str, opts) => {
+  .action(async (object, args, str) => {
     pin(program.opts());
     clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
-      await coms().dataize(
-        program.args[1], program.args.slice(2), {...program.opts(), ...str}
-      );
-    } else {
-      await coms().dataize(
-        program.args[1], program.args.slice(2), {...program.opts(), ...str}
-      );
     }
+    await coms().dataize(object, args, {...program.opts(), ...str});
   });
 
 program.command('inspect')
