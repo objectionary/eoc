@@ -7,6 +7,7 @@ const assert = require('assert');
 const fs = require('fs');
 const http = require('http');
 const net = require('net');
+const {Readable} = require('stream');
 const path = require('path');
 const inspect = require('../../src/commands/java/inspect');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
@@ -127,6 +128,37 @@ describe('inspect/java', () => {
       () => inspect({target: '.', port: 8080}, missing),
       (error) => error.cause.code === 'ENOENT',
       'inspect does not refuse to start when the JDK is missing'
+    );
+  });
+  it('reads verbs from the terminal until the user leaves', async () => {
+    const talker = http.createServer((req, res) => {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      if (req.url.startsWith('/do')) {
+        res.end('{"out":"nothing yet"}');
+      } else {
+        res.end('{"forma":"Φ"}');
+      }
+    });
+    await new Promise((resolve) => talker.listen(0, '127.0.0.1', resolve));
+    const said = [];
+    const info = console.info;
+    console.info = (line) => said.push(line);
+    const lines = Readable.from(['ls\n', 'quit\n']);
+    lines.isTTY = true;
+    try {
+      await inspect(
+        {target: home, port: talker.address().port},
+        () => true,
+        () => ({kill: () => undefined, on: () => undefined}),
+        lines
+      );
+    } finally {
+      console.info = info;
+      talker.close();
+    }
+    assert(
+      said.includes('nothing yet'),
+      `inspect does not print what the server answers to a verb: ${said}`
     );
   });
   it('names the port when the server exits without opening it', async () => {
