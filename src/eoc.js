@@ -48,6 +48,7 @@ const commands = {
       compile: require('./commands/java/compile'),
       dataize: require('./commands/java/dataize'),
       test: require('./commands/java/test'),
+      inspect: require('./commands/java/inspect'),
     }
   },
   [language.js]: {
@@ -316,6 +317,22 @@ program.command('dataize')
         program.args[1], program.args.slice(2), {...program.opts(), ...str}
       );
     }
+  });
+
+program.command('inspect')
+  .description('Traverse the tree of objects of a compiled program')
+  .option('--port <number>', 'TCP port for the inspection server', '8080')
+  .action(async (str, opts) => {
+    pin(program.opts());
+    clear(str);
+    const inspect = coms().inspect;
+    if (inspect === undefined) {
+      throw new Error(`The "inspect" command only works for ${language.java}`);
+    }
+    if (program.opts().alone === undefined) {
+      await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
+    }
+    await inspect({...program.opts(), ...str});
   });
 
 program.command('test')

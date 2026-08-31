@@ -12,6 +12,7 @@
     "fast-xml-parser": "^5.10.1",
     "marked": "^4.3.0",
     "relative": "^3.0.2",
+    "saxon-js": "^2.7.0",
     "semver": "^7.7.2",
     "sync-request": "^6.1.0",
     "xmlhttprequest": "^1.8.0"
@@ -21,11 +22,11 @@
     "@eslint/js": "^9.27.0",
     "eslint": "^9.28.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-jsdoc": "^63.0.12",
+    "eslint-plugin-jsdoc": "^64.0.0",
     "eslint-plugin-promise": "^7.2.1",
     "grunt": "^1.6.1",
     "grunt-contrib-clean": "^2.0.1",
-    "grunt-eslint": "^26.0.0",
+    "grunt-eslint": "^27.0.0",
     "grunt-mocha-test": "^0.13.3",
     "istanbul": "^0.4.5",
     "mocha": "^11.5.0",
@@ -77,7 +78,7 @@
     "eo2js": {
       "fast-xml-parser": "^4.5.4"
     },
-    "axios": "1.13.5"
+    "axios": "1.15.1"
   },
   "version": "0.0.0"
 }

@@ -7,7 +7,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {runSync} = require('../helpers');
+const {runSync, runOutput} = require('../helpers');
 
 describe('clean', () => {
   const testDir = 'temp/test-clean',
@@ -52,21 +52,16 @@ describe('clean', () => {
     done();
   });
   it('refuses to delete the current working directory', (done) => {
-    const {spawnSync} = require('child_process');
     const home = path.resolve(testDir, 'refuses-cwd');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(home, {recursive: true});
-    const s = spawnSync(
-      'node', [path.resolve('./src/eoc.js'), '--target', '.', 'clean'],
-      {cwd: home}
-    );
-    assert(s.status !== 0, s.stderr.toString());
-    assert(s.stderr.toString().includes('Refusing to delete'), s.stderr.toString());
+    const outcome = runOutput(['--target', '.', 'clean'], {cwd: home});
+    assert(outcome.status !== 0, outcome.stderr);
+    assert(outcome.stderr.includes('Refusing to delete'), outcome.stderr);
     assert(fs.existsSync(home), 'the current directory must not be deleted');
     done();
   });
   it('refuses to delete the current directory through a symbolic link', (done) => {
-    const {spawnSync} = require('child_process');
     const home = path.resolve(testDir, 'refuses-symlink-cwd'),
       real = path.resolve(home, 'real'),
       link = path.resolve(home, 'link'),
@@ -74,20 +69,14 @@ describe('clean', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(real, {recursive: true});
     fs.symlinkSync(home, link, type);
-    const s = spawnSync(
-      'node',
-      [
-        path.resolve('./src/eoc.js'),
-        '--target',
-        path.resolve(link, 'real'),
-        'clean'
-      ],
+    const outcome = runOutput(
+      ['--target', path.resolve(link, 'real'), 'clean'],
       {cwd: real}
     );
-    assert(s.status !== 0, `${s.stdout.toString()}\n${s.stderr.toString()}`);
+    assert(outcome.status !== 0, `${outcome.stdout}\n${outcome.stderr}`);
     assert(
-      s.stderr.toString().includes('Refusing to delete'),
-      s.stderr.toString()
+      outcome.stderr.includes('Refusing to delete'),
+      outcome.stderr
     );
     assert(
       fs.existsSync(real),
@@ -96,29 +85,24 @@ describe('clean', () => {
     done();
   });
   it('refuses to delete an ancestor of the current working directory', (done) => {
-    const {spawnSync} = require('child_process');
     const home = path.resolve(testDir, 'refuses-ancestor'),
       nested = path.resolve(home, 'nested');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(nested, {recursive: true});
-    const s = spawnSync(
-      'node', [path.resolve('./src/eoc.js'), '--target', '..', 'clean'],
-      {cwd: nested}
-    );
-    assert(s.status !== 0, s.stderr.toString());
+    const outcome = runOutput(['--target', '..', 'clean'], {cwd: nested});
+    assert(outcome.status !== 0, outcome.stderr);
     assert(fs.existsSync(home), 'the ancestor directory must not be deleted');
     done();
   });
   it('refuses to delete the home directory', (done) => {
-    const {spawnSync} = require('child_process');
     const fakeHome = path.resolve(testDir, 'fake-home');
     fs.rmSync(fakeHome, {recursive: true, force: true});
     fs.mkdirSync(fakeHome, {recursive: true});
-    const s = spawnSync(
-      'node', [path.resolve('./src/eoc.js'), '--target', fakeHome, 'clean'],
+    const outcome = runOutput(
+      ['--target', fakeHome, 'clean'],
       {env: {...process.env, HOME: fakeHome, USERPROFILE: fakeHome}}
     );
-    assert(s.status !== 0, s.stderr.toString());
+    assert(outcome.status !== 0, outcome.stderr);
     assert(fs.existsSync(fakeHome), 'the home directory must not be deleted');
     done();
   });
