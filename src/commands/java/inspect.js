@@ -32,13 +32,20 @@ async function jar(opts) {
  * "localhost" resolves to ::1 first on some machines and is refused there.
  * @param {Number} port - TCP port the server listens on
  * @param {Number} deadline - Moment in time after which we give up, in millis
+ * @param {Function} gone - Tells whether the server has already exited
  * @return {Promise<Object>} The answer, parsed from JSON
  */
-async function ask(port, deadline) {
+async function ask(port, deadline, gone) {
   let answer;
   try {
     answer = await (await fetch(`http://127.0.0.1:${port}/`)).json();
   } catch (error) {
+    if (gone()) {
+      throw new Error(
+        `The inspection server exited without opening port ${port}, which is most probably taken by something else`,
+        {cause: error}
+      );
+    }
     if (Date.now() > deadline) {
       throw new Error(
         `The inspection server has not opened port ${port} in a minute`,
@@ -46,7 +53,7 @@ async function ask(port, deadline) {
       );
     }
     await new Promise((resolve) => setTimeout(resolve, 200));
-    answer = await ask(port, deadline);
+    answer = await ask(port, deadline, gone);
   }
   return answer;
 }
@@ -64,12 +71,6 @@ async function ask(port, deadline) {
  *  the loop, and keep the printing here, since the server is the only one
  *  that knows the objects and this side is the only one that knows the
  *  terminal.
- * @todo #500:30min Do not leave the JVM behind when this process dies.
- *  The server is killed in the "finally" below, which covers a failure of
- *  our own code, but not a user pressing Ctrl-C and not a crash of the
- *  Node process itself. In both cases the JVM keeps the port open and the
- *  next run of the command fails to bind it. Kill the child on the
- *  signals too, and report a port that is already taken by naming it.
  * @param {Object} opts - All options
  * @param {Function} [exec] - Optional command runner for the JDK check
  * @param {Function} [runner] - Optional Java process runner
@@ -87,11 +88,28 @@ module.exports = async function(opts, exec, runner = spawn) {
   ];
   console.debug(`+ java ${params.join(' ')}`);
   const server = runner('java', params, {stdio: 'inherit'});
+  let gone = false;
+  server.on('exit', () => {
+    gone = true;
+  });
+  const halt = (code) => () => {
+    server.kill();
+    process.exit(code);
+  };
+  const onint = halt(130);
+  const onterm = halt(143);
+  const onexit = () => server.kill();
+  process.on('SIGINT', onint);
+  process.on('SIGTERM', onterm);
+  process.on('exit', onexit);
   try {
-    const answer = await ask(port, Date.now() + 60000);
+    const answer = await ask(port, Date.now() + 60000, () => gone);
     console.info('Ready to traverse the Universe');
     console.info(`@ ${answer.forma}`);
   } finally {
+    process.off('SIGINT', onint);
+    process.off('SIGTERM', onterm);
+    process.off('exit', onexit);
     server.kill();
   }
 };
