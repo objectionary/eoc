@@ -104,6 +104,7 @@ module.exports = async function(opts, exec, runner = spawn) {
   });
   try {
     const answer = await Promise.race([ask(port, Date.now() + 60000), lifecycle]);
+    console.info(`Loaded ${answer.loaded} objects`);
     console.info('Ready to traverse the Universe');
     console.info(`@ ${answer.forma}`);
   } finally {
