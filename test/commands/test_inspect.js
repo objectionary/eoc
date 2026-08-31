@@ -77,9 +77,12 @@ describe('inspect/java', () => {
         () => true,
         (command, args) => {
           params = args;
-          return {kill: () => {
-            killed = true;
-          }};
+          return {
+            kill: () => {
+              killed = true;
+            },
+            on: () => undefined,
+          };
         }
       );
     } finally {
@@ -124,6 +127,24 @@ describe('inspect/java', () => {
       () => inspect({target: '.', port: 8080}, missing),
       (error) => error.cause.code === 'ENOENT',
       'inspect does not refuse to start when the JDK is missing'
+    );
+  });
+  it('names the port when the server exits without opening it', async () => {
+    await assert.rejects(
+      () => inspect(
+        {target: home, port: 1},
+        () => true,
+        () => ({
+          kill: () => undefined,
+          on: (event, todo) => {
+            if (event === 'exit') {
+              todo();
+            }
+          },
+        })
+      ),
+      (error) => error.message.includes('port 1'),
+      'inspect does not name the port that could not be opened'
     );
   });
 });
