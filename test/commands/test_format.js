@@ -58,21 +58,20 @@ const cases = [
   {
     name: 'drops the redundant target of a self-named alias',
     before: ['+alias math math', '', 'math.plus > app', '  5', '  10', ''].join('\n'),
-    after: ['+alias math', '', 'math.plus > app', '  5', '  10', ''].join('\n')
+    after: ['+alias math', '', 'Q.math.plus > app', '  5', '  10', ''].join('\n')
   },
   {
-    name: 'expands a single alias and qualifies its usage',
+    name: 'drops a single-use alias and qualifies its usage',
     before: ['+alias out stdout', '', 'out > app', '  "Hello, world!"', ''].join('\n'),
-    after: ['+alias out Q.stdout', '', 'stdout > app', '  "Hello, world!"', ''].join('\n')
+    after: ['stdout > app', '  "Hello, world!"', ''].join('\n')
   },
   {
-    name: 'expands multiple aliases with nested arguments',
+    name: 'drops single-use aliases with nested arguments',
     before: [
       '+alias out stdout', '+alias printf string.printf', '',
       'out > app', '  printf', '    "Hello, %s"', '    "Jeff"', ''
     ].join('\n'),
     after: [
-      '+alias out Q.stdout', '+alias string.printf', '',
       'stdout > app', '  string.printf', '    "Hello, %s"', '    "Jeff"', ''
     ].join('\n')
   }
