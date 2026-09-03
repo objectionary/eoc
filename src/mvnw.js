@@ -119,30 +119,50 @@ module.exports.mvnw = function(args, tgt, batch) {
         shell: shell(),
       }
     );
-    if (tgt !== undefined && args.includes('--quiet')) {
-      if (!batch) {
-        start();
-      }
-      result.on('close', (code) => {
-        if (!batch) {
-          stop();
-        }
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
-    } else {
-      result.on('close', (code) => {
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
+    const ticking = tgt !== undefined && args.includes('--quiet') && !batch;
+    if (ticking) {
+      start();
     }
+    result.on('error', (error) => {
+      if (ticking) {
+        stop();
+      }
+      reject(new Error(module.exports.missing(bin, error), {cause: error}));
+    });
+    result.on('close', (code) => {
+      if (ticking) {
+        stop();
+      }
+      if (code !== 0) {
+        reject(new Error(`The command "${cmd}" exited with #${code} code`));
+        return;
+      }
+      resolve(args);
+    });
   });
+};
+
+/**
+ * The diagnostic for a Maven binary that could not be started at all,
+ * which usually means Maven is not installed or the package is broken.
+ * @param {String} bin - The binary that could not be started
+ * @param {Error} cause - The error the spawn reported
+ * @return {String} The user-facing diagnostic
+ */
+module.exports.missing = function(bin, cause) {
+  const lines = [
+    `The Maven binary "${bin}" could not be started.`,
+    'EO needs Maven 3.9 or newer to build EO programs.',
+    'Either install it and make sure "mvn" is on your PATH,',
+    'or reinstall "eolang" so that its bundled wrapper is restored.',
+    '  Debian/Ubuntu: sudo apt-get install maven',
+    '  macOS:         brew install maven',
+    '  Windows:       https://maven.apache.org/download.cgi'
+  ];
+  if (cause && cause.message) {
+    lines.push(`Underlying error: ${cause.message.toString().trim()}`);
+  }
+  return lines.join('\n');
 };
 
 /**
