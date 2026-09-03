@@ -91,6 +91,24 @@ describe('generate_comments', () => {
     verifyGeneratedOutput(stdout, home, outputFilePath, []);
     done();
   });
+  it('ties every comment to the placeholder it replaces', () => {
+    const home = makeHome();
+    const outputFilePath = path.resolve(home, 'out.json');
+    const source = '# <COMMENT-TO-BE-ADDED>\n[] > a\n# <COMMENT-TO-BE-ADDED>\n[] > b\n';
+    runSync([
+      'generate_comments',
+      '--provider=placeholder',
+      `--prompt_template=${makePromptFile(home, '')}`,
+      `--source=${makeInputFile(home, source)}`,
+      `--output=${outputFilePath}`]);
+    const written = JSON.parse(fs.readFileSync(outputFilePath));
+    assert.deepStrictEqual(
+      written.map((r) => r.offset),
+      [source.indexOf('<COMMENT-TO-BE-ADDED>'), source.lastIndexOf('<COMMENT-TO-BE-ADDED>')],
+      JSON.stringify(written)
+    );
+    written.forEach((r) => assert.strictEqual(r.placeholder, '<COMMENT-TO-BE-ADDED>'));
+  });
   it('does not leak the placeholders counter into the global scope', () => {
     assert.strictEqual(globalThis.placeholders, undefined, 'placeholders leaked onto the global object');
   });
@@ -106,7 +124,7 @@ describe('generate_comments', () => {
  */
 function verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents) {
   assertFilesExist(stdout, home, [outputFilePath]);
-  const fileContents = JSON.parse(fs.readFileSync(outputFilePath));
+  const fileContents = JSON.parse(fs.readFileSync(outputFilePath)).map((r) => r.comment);
   assert.deepStrictEqual(
     fileContents,
     expectedContents,
