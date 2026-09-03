@@ -169,7 +169,7 @@ program.hook('preAction', (command) => {
 });
 
 program.command('audit')
-  .description('Inspect all packages and report their status')
+  .description('Print the versions of the packages the build depends on')
   .action(async (str, opts) => {
     pin(program.opts());
     await coms().audit(program.opts());
