@@ -155,7 +155,7 @@ program
   .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what)
   .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
 
-program.hook('preAction', (command) => {
+program.hook('preAction', (command, action) => {
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
     try {
@@ -165,6 +165,9 @@ program.hook('preAction', (command) => {
       process.exit(1);
     }
     console.debug(`Working directory changed to ${process.cwd()}`);
+  }
+  if (command.opts().clean) {
+    coms().clean({...command.opts(), ...action.opts()});
   }
 });
 
@@ -202,7 +205,6 @@ program.command('parse')
   .description('Parse EO files into XMIR')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'parse'], program.opts());
     } else {
@@ -214,7 +216,6 @@ program.command('assemble')
   .description('Parse EO files into XMIR and join them with required dependencies')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble'], program.opts());
     } else {
@@ -236,7 +237,6 @@ program.command('print')
   )
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     await coms().print({...program.opts(), ...str});
   });
 
@@ -244,7 +244,6 @@ program.command('lint')
   .description('Lint XMIR files and fail if any issues inside')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint'], program.opts());
     } else {
@@ -256,7 +255,6 @@ program.command('resolve')
   .description('Resolve all the dependencies required for compilation')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve'], program.opts());
     } else {
@@ -268,7 +266,6 @@ program.command('transpile')
   .description('Convert EO files into target language')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile'], program.opts());
     } else {
@@ -280,7 +277,6 @@ program.command('compile')
   .description('Compile target language sources into binaries')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile'], program.opts());
     } else {
@@ -292,7 +288,6 @@ program.command('link')
   .description('Link together all binaries into a single executable binary')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
     } else {
@@ -306,7 +301,6 @@ program.command('dataize')
   .option('--heap <size>', 'Set the heap size for the VM', '256M')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
       await coms().dataize(
@@ -324,7 +318,6 @@ program.command('inspect')
   .option('--port <number>', 'TCP port for the inspection server', '8080')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     const inspect = coms().inspect;
     if (inspect === undefined) {
       throw new Error(`The "inspect" command only works for ${language.java}`);
@@ -342,7 +335,6 @@ program.command('test')
   .option('--object <name>', 'Run a single test object by its full EO name, e.g. foo.app.works-fine')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'assemble', 'lint', 'resolve', 'transpile', 'compile', 'link'], program.opts());
       await coms().test({...program.opts(), ...str});
@@ -424,7 +416,6 @@ program.command('latex')
   .description('Generate LaTeX files from EO sources')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().latex(program.opts());
   });
@@ -433,7 +424,6 @@ program.command('normalize')
   .description('Normalize EO files using phi-calculus normalization via phino')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     await pipe()(coms(), ['register', 'parse'], program.opts());
     await coms().normalize(program.opts());
   });
@@ -443,7 +433,6 @@ program.command('format')
   .option('--fix', 'Overwrite EO files with their formatted versions')
   .action(async (str, opts) => {
     pin(program.opts());
-    clear(str);
     if (program.opts().alone === undefined) {
       await pipe()(coms(), ['register', 'format'], {...program.opts(), ...str});
     } else {
@@ -471,16 +460,6 @@ module.exports.commandsDescription = function commandsDescription() {
 module.exports.canonicalLanguage = canonicalLanguage;
 
 module.exports.select = select;
-
-/**
- * Checks --clean option and clears the .eoc directory if true.
- * @param {*} str Str
- */
-function clear(str) {
-  if (program.opts().clean) {
-    coms().clean({...program.opts(), ...str});
-  }
-}
 
 /** Checks --pin option and fails if version mismatch.
  * @param {*} opts Options
