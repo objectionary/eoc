@@ -15,35 +15,20 @@ const semver = require('semver');
  * @return {Promise} of assemble task
  */
 module.exports = function(opts) {
-  const extra = extras(opts);
+  const linting = goals(opts)[0] === 'eo:lint';
   return elapsed(async (tracked) => {
-    if (goals(opts)[0] === 'eo:lint') {
-      try {
-        const r = await mvnw(
-          goals(opts).concat(flags(opts)).concat(extra),
-          opts.target, opts.batch
-        );
-        tracked.print(`EO program linted in ${rel(path.resolve(opts.target))}`);
-        return r;
-      } catch (error) {
-        throw new Error(
-          'There are errors and/or warnings; you may disable warnings via the --easy option',
-          {cause: error}
-        );
-      }
-    }
     try {
       const r = await mvnw(
-        goals(opts).concat(flags(opts)).concat(extra),
+        goals(opts).concat(flags(opts)).concat(extras(opts)),
         opts.target, opts.batch
       );
-      tracked.print(`EO program verified in ${rel(path.resolve(opts.target))}`);
+      tracked.print(
+        `EO program ${linting ? 'linted' : 'verified'} in ${rel(path.resolve(opts.target))}`
+      );
       return r;
     } catch (error) {
-      throw new Error(
-        'You may disable warnings via the --easy option',
-        {cause: error}
-      );
+      const hint = opts.easy ? '' : '; you may disable warnings via the --easy option';
+      throw new Error(`${error.message}${hint}`, {cause: error});
     }
   });
 };
