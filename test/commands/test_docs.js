@@ -21,6 +21,17 @@ describe('docs', () => {
    * Tests that the 'docs' command generates HTML files in the docs directory.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
+  it('refuses to work when nothing was parsed', async () => {
+    fs.rmSync(parsed, {recursive: true, force: true});
+    await assert.rejects(
+      Promise.resolve().then(() => generateDocs({target: home})),
+      (err) => {
+        assert.ok(err.message.includes('run "eoc parse" first'), err.message);
+        return true;
+      }
+    );
+    assert.ok(!fs.existsSync(docs), 'the docs directory must not be written');
+  });
   it('generates HTML files for files and packages', (done) => {
     const sample = path.join(parsed, 'foo', 'bar');
     fs.mkdirSync(sample, {recursive: true});
