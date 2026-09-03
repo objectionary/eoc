@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, missing} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -159,5 +159,29 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('rejects instead of crashing when Maven cannot be started', async () => {
+    const bin = path.resolve(__dirname, '../mvnw/mvnw');
+    const away = `${bin}.away`;
+    const was = process.env.PATH;
+    fs.renameSync(bin, away);
+    process.env.PATH = path.resolve(os.tmpdir(), 'eoc-no-such-directory');
+    try {
+      await assert.rejects(
+        mvnw(['--version'], undefined, true),
+        (err) => {
+          assert.ok(err.message.includes('could not be started'), err.message);
+          return true;
+        }
+      );
+    } finally {
+      process.env.PATH = was;
+      fs.renameSync(away, bin);
+    }
+  });
+  it('names the binary in the diagnostic', () => {
+    const text = missing('mvn', new Error('spawn mvn ENOENT'));
+    assert.ok(text.includes('"mvn"'), text);
+    assert.ok(text.includes('spawn mvn ENOENT'), text);
   });
 });
