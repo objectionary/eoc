@@ -83,6 +83,24 @@ describe('dataize', () => {
 });
 
 describe('dataize/java', () => {
+  it('passes an argument that starts with a dash to the object', () => {
+    let params;
+    dataize(
+      'main.foo',
+      ['-5', '', 'x'],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      (command, args) => {
+        params = args;
+        return {on: () => true};
+      }
+    );
+    assert.deepStrictEqual(
+      params.slice(params.indexOf('main.foo')),
+      ['main.foo', '-5', '', 'x'],
+      'the arguments of the object must reach it as they were written'
+    );
+  });
   it('sets the maximum Java heap size', () => {
     let params;
     dataize(
@@ -136,6 +154,21 @@ describe('dataize/java', () => {
       () => dataize('main.foo', [], {target: '.', stack: '64M', heap: '256M'}, denied),
       /permission denied while probing javac/,
       'dataize hides the underlying reason why javac could not be executed'
+    );
+  });
+});
+
+describe('dataize/js', () => {
+  const dataizeJs = require('../../src/commands/js/dataize');
+  it('passes an argument that starts with a dash to the object', () => {
+    let params;
+    dataizeJs('main.foo', ['-5', 'x'], {}, (args) => {
+      params = args;
+    });
+    assert.deepStrictEqual(
+      params,
+      ['dataize', 'main.foo', '-5', 'x'],
+      'the arguments of the object must reach it as they were written'
     );
   });
 });

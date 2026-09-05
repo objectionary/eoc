@@ -22,10 +22,7 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
     `-Xss${opts.stack}`,
     `-Xmx${opts.heap}`,
     '-jar', path.resolve(opts.target, 'eoc.jar'),
-    opts.verbose ? '--verbose' : '',
-    obj,
-    ...args,
-  ].filter((i) => i);
+  ].concat(opts.verbose ? ['--verbose'] : []).concat([obj]).concat(args);
   console.debug(`+ java ${params.join(' ')}`);
   runner('java', params, {stdio: 'inherit'}).on('close', (code) => {
     if (code !== 0) {
