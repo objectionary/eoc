@@ -310,3 +310,21 @@ describe('eoc', () => {
     });
   });
 });
+
+describe('tcpPort', () => {
+  const {tcpPort} = require('../src/eoc');
+  it('accepts a port', () => {
+    assert.strictEqual(tcpPort('8080'), 8080);
+    assert.strictEqual(tcpPort('1'), 1);
+    assert.strictEqual(tcpPort('65535'), 65535);
+  });
+  it('rejects what is not a port', () => {
+    for (const value of ['abc', '8080abc', '99999', '-1', '', '80.5']) {
+      assert.throws(
+        () => tcpPort(value),
+        /must be a TCP port between 1 and 65535/,
+        `Expected --port ${value} to be rejected`
+      );
+    }
+  });
+});
