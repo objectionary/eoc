@@ -124,3 +124,36 @@ describe('test', () => {
     done();
   });
 });
+
+describe('test/java', () => {
+  const javaTest = require('../../src/commands/java/test');
+  /**
+   * Run the command with Maven replaced by a spy.
+   * @param {String} object - Value of the --object option
+   * @return {Promise<Array.<String>>} The arguments Maven was called with
+   */
+  async function selector(object) {
+    let seen;
+    await javaTest(
+      {object, stack: '64M', heap: '256M', target: 'temp/none', sources: 'temp/none'},
+      (args) => {
+        seen = args;
+        return Promise.resolve(args);
+      }
+    );
+    return seen.filter((arg) => arg.startsWith('-Dtest='));
+  }
+  it('folds a package path into the class name', async () => {
+    assert.deepStrictEqual(
+      await selector('string.regex.compile.some-method'),
+      ['-Dtest=org.eolang.EOstringEOregexEOcompile*Test#some_method'],
+      'the transpiler puts every generated test class directly in org.eolang'
+    );
+  });
+  it('keeps working for a top-level object', async () => {
+    assert.deepStrictEqual(
+      await selector('number.plus'),
+      ['-Dtest=org.eolang.EOnumber*Test#plus']
+    );
+  });
+});
