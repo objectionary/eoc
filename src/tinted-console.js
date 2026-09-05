@@ -7,7 +7,6 @@ const safe = require('colors/safe');
 const util = require('node:util'),
 
   levels = {
-    'trace': false,
     'debug': false,
     'info': true,
     'warn': true,
@@ -15,7 +14,6 @@ const util = require('node:util'),
   },
 
   colors = {
-    'trace': 'gray',
     'debug': 'gray',
     'info': 'white',
     'warn': 'yellow',
