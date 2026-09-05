@@ -25,7 +25,7 @@ jobs:
       - uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
-          branch: version-up
+          branch: version-up-eo
           commit-message: 'new version of eo maven plugin'
           delete-branch: true
           title: 'New version of EO Maven Plugin'
