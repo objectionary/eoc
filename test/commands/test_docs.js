@@ -48,6 +48,28 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that an ampersand in a name reaches the page as an entity.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('escapes an ampersand in a name', (done) => {
+    fs.writeFileSync(
+      path.join(parsed, 'a&b.xmir'),
+      '<program name="a&amp;b" />'
+    );
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const page = fs.readFileSync(path.join(docs, 'a&b.html'), 'utf-8');
+    assert(
+      page.includes('<h1>a&amp;b documentation</h1>'),
+      `Expected the name escaped in the heading, got: ${page.slice(0, 400)}`
+    );
+    done();
+  });
+  /**
    * Tests that a root-level XMIR is not assigned the "." filesystem
    * marker as its package name.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
