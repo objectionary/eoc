@@ -24,10 +24,16 @@ module.exports = function(opts) {
 
 /**
  * Command to get Maven goals for transpile command.
+ *
+ * `eo:merge` runs first: it puts every member of a package inside the object
+ * the package names, the way `eo-runtime` builds itself. Without it a member
+ * such as `string/regex.eo` stays in an `EO_string` package of its own and
+ * the generated Java names classes the runtime jar does not carry.
+ *
  * @return {Array.<String>} of Maven goals to run for transpile command
  */
 module.exports.goals = goals;
 
 function goals() {
-  return ['eo:transpile'];
+  return ['eo:merge', 'eo:transpile'];
 }

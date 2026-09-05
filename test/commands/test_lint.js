@@ -9,6 +9,8 @@ const path = require('path');
 const lint = require('../../src/commands/lint');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
+const simple = ['+architect yegor256@gmail.com', '', '[] > simple', ''].join('\n');
+
 describe('lint', () => {
   it('extras returns failOnWarning flag', (done) => {
     assert.deepEqual(lint.extras({easy: false}), ['-Deo.failOnWarning=true']);
@@ -20,7 +22,7 @@ describe('lint', () => {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple);
     const stdout = runSync([
       'lint',
       '--verbose',
@@ -45,7 +47,7 @@ describe('lint', () => {
     const home = path.resolve('temp/test-lint/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple);
     runSync([
       'lint',
       '--verbose',
