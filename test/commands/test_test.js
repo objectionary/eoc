@@ -56,9 +56,9 @@ describe('test', () => {
       stdout, home,
       [
         'target/generated-sources/org/eolang/EOsimple.java',
-        'target/generated-test-sources/org/eolang/EOsimpleTest.java',
+        'target/generated-test-sources/org/eolang/TestEOsimple.java',
         'target/classes/org/eolang/EOsimple.class',
-        'target/test-classes/org/eolang/EOsimpleTest.class'
+        'target/test-classes/org/eolang/TestEOsimple.class'
       ]
     );
     done();
