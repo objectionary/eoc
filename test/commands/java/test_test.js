@@ -13,8 +13,8 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.EOfoo.EOapp*Test#works_fine'),
-      `expected -Dtest=org.eolang.EOfoo.EOapp*Test#works_fine, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.EOfoo.TestEOapp*#works_fine'),
+      `expected -Dtest=org.eolang.EOfoo.TestEOapp*#works_fine, got: ${captured}`
     );
   });
   it('builds -Dtest filter from --object without package', async () => {
@@ -24,8 +24,8 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.EOapp*Test#works_fine'),
-      `expected -Dtest=org.eolang.EOapp*Test#works_fine, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.TestEOapp*#works_fine'),
+      `expected -Dtest=org.eolang.TestEOapp*#works_fine, got: ${captured}`
     );
   });
   it('cannot accept an object with a single segment', () => {
@@ -75,8 +75,8 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.EOfoo.EObar.EOapp*Test#works_fine'),
-      `expected -Dtest=org.eolang.EOfoo.EObar.EOapp*Test#works_fine, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.EOfoo.EObar.TestEOapp*#works_fine'),
+      `expected -Dtest=org.eolang.EOfoo.EObar.TestEOapp*#works_fine, got: ${captured}`
     );
   });
   it('omits -Dtest when --object is not provided', async () => {
