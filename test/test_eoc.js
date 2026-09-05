@@ -310,3 +310,23 @@ describe('eoc', () => {
     });
   });
 });
+
+describe('eoc', () => {
+  it('does not ask Maven Central for a version when only help was requested', () => {
+    const out = runOutput(['--latest', '--help']);
+    assert.strictEqual(out.status, 0, out.stderr);
+    assert.ok(out.stdout.includes('EO command-line toolkit'), out.stdout);
+    assert.ok(
+      !out.stdout.includes('The latest version of'),
+      `--help must not fetch a version, got: ${out.stdout}`
+    );
+  });
+  it('does not ask Maven Central for a version when only the version was requested', () => {
+    const out = runOutput(['--latest', '--version']);
+    assert.strictEqual(out.status, 0, out.stderr);
+    assert.ok(
+      !out.stdout.includes('The latest version of'),
+      `--version must not fetch a version, got: ${out.stdout}`
+    );
+  });
+});
