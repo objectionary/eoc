@@ -9,6 +9,7 @@ const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
 const {findFiles} = require('../files');
+const rel = require('relative');
 
 /**
  * Escape special XML characters.
@@ -122,9 +123,12 @@ function wrapHtml(name, html, css) {
  * @return {Promise<String>} Resolves to the message reporting the summary path
  */
 module.exports = function(opts) {
+  const input = path.resolve(opts.target, '1-parse');
+  if (findFiles(input, '.xmir').length === 0) {
+    throw new Error(`There are no .xmir files in ${rel(input)}, run "eoc parse" first`);
+  }
   return elapsed(async (tracked) => {
     try {
-      const input = path.resolve(opts.target, '1-parse');
       const output = path.resolve(opts.target, 'docs');
       fs.mkdirSync(output, {recursive: true});
       const css = path.join(output, 'styles.css');
