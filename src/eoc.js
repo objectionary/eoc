@@ -94,7 +94,7 @@ for (const [alias, canonical] of Object.entries(language)) {
 /**
  * Turn the raw --port value into a TCP port, rejecting anything that is not
  * one. Without this a value such as "abc" reaches the inspection client as
- * NaN, makes the request URL unparseable, and is then waited on for a minute
+ * NaN, makes the request URL unparsable, and is then waited on for a minute
  * as if the server were slow to start.
  * @param {String} value - Raw value from the command line
  * @return {Number} The port
