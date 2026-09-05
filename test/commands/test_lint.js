@@ -12,6 +12,23 @@ const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require
 const simple = ['+architect yegor256@gmail.com', '', '[] > simple', ''].join('\n');
 
 describe('lint', () => {
+  it('picks a goal for a version semver cannot parse', () => {
+    for (const parser of ['0.57', '1.0-rc1', '0.57.3.1', 'latest', '']) {
+      assert.deepEqual(
+        lint.goals({parser}),
+        ['eo:verify'],
+        `Expected a goal rather than a TypeError for --parser ${parser}`
+      );
+    }
+  });
+  it('picks the linting goal for a modern parser', () => {
+    assert.deepEqual(lint.goals({parser: '0.57.3'}), ['eo:lint']);
+    assert.deepEqual(lint.goals({parser: '0.45.0'}), ['eo:lint']);
+    assert.deepEqual(lint.goals({parser: '0.57-SNAPSHOT'}), ['eo:lint']);
+  });
+  it('picks the verifying goal for an older parser', () => {
+    assert.deepEqual(lint.goals({parser: '0.44.0'}), ['eo:verify']);
+  });
   it('extras returns failOnWarning flag', (done) => {
     assert.deepEqual(lint.extras({easy: false}), ['-Deo.failOnWarning=true']);
     assert.deepEqual(lint.extras({easy: true}), ['-Deo.failOnWarning=false']);
