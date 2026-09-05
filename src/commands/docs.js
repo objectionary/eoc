@@ -95,7 +95,7 @@ function generatePackageHtml(name, htmls, css) {
         <section>
           <header>
             <nav>
-              <h1>${name} documentation</h1>
+              <h1>${xmlEscape(name)} documentation</h1>
               <p>Creation date: ${date.toUTCString()}</p>
             </nav>
           </header>
