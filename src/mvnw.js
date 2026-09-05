@@ -23,14 +23,21 @@ module.exports.summary = function(args) {
 };
 
 /**
- * The shell to use (depending on operating system).
+ * The shell to use (depending on operating system). On Windows the location
+ * comes from %SystemRoot%, because Windows is not always installed in
+ * "C:\Windows", and the shell is the native one under System32. When that
+ * file is not there, the bare name is left for PATH to resolve.
  * @return {String} Path to shell or "undefined" if default one should be used
  */
-function shell() {
+module.exports.shell = function() {
   if (process.platform === 'win32') {
-    return 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe';
+    const own = path.join(
+      process.env.SystemRoot || 'C:\\Windows',
+      'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe'
+    );
+    return fs.existsSync(own) ? own : 'powershell.exe';
   }
-}
+};
 
 let beginning,
   phase = 'unknown',
@@ -116,7 +123,7 @@ module.exports.mvnw = function(args, tgt, batch) {
       {
         cwd: home,
         stdio: 'inherit',
-        shell: shell(),
+        shell: module.exports.shell(),
       }
     );
     if (tgt !== undefined && args.includes('--quiet')) {
