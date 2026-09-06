@@ -164,7 +164,10 @@ describe('mvnw', () => {
     const bin = path.resolve(__dirname, '../mvnw/mvnw');
     const away = `${bin}.away`;
     const was = process.env.PATH;
-    fs.renameSync(bin, away);
+    const bundled = fs.existsSync(bin);
+    if (bundled) {
+      fs.renameSync(bin, away);
+    }
     process.env.PATH = path.resolve(os.tmpdir(), 'eoc-no-such-directory');
     try {
       await assert.rejects(
@@ -176,7 +179,9 @@ describe('mvnw', () => {
       );
     } finally {
       process.env.PATH = was;
-      fs.renameSync(away, bin);
+      if (bundled) {
+        fs.renameSync(away, bin);
+      }
     }
   });
   it('names the binary in the diagnostic', () => {
