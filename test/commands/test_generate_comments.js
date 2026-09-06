@@ -54,29 +54,27 @@ describe('generate_comments', () => {
   });
   it('fills output as expected when encountering valid EO code', (done) => {
     const home = makeHome();
-    for (let placeholders = 0; placeholders < 3; ++placeholders) {
-      const exampleInput = [
-        '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
-        '[args] > simple',
-        '  io.stdout (args.at 0) > @',
-        '  # <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
-        '  [] > current-time',
-        '    output. > @',
-        '      sys.posix',
-        '        "gettimeofday"',
-        '        * sys.posix.timeval'
-      ].join('\n');
-      const outputFilePath = path.resolve(home, 'out.json');
-      const stdout = runSync([
-        'generate_comments',
-        '--provider=placeholder',
-        '--comment_placeholder=<STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
-        `--prompt_template=${makePromptFile(home, '')}`,
-        `--source=${makeInputFile(home, exampleInput)}`,
-        `--output=${outputFilePath}`]);
-      const expectedContents = ['<PLACEHOLDER_RESPONSE>', '<PLACEHOLDER_RESPONSE>'];
-      verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
-    }
+    const exampleInput = [
+      '# <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
+      '[args] > simple',
+      '  io.stdout (args.at 0) > @',
+      '  # <STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
+      '  [] > current-time',
+      '    output. > @',
+      '      sys.posix',
+      '        "gettimeofday"',
+      '        * sys.posix.timeval'
+    ].join('\n');
+    const outputFilePath = path.resolve(home, 'out.json');
+    const stdout = runSync([
+      'generate_comments',
+      '--provider=placeholder',
+      '--comment_placeholder=<STRUCTURE-BELOW-IS-TO-BE-DOCUMENTED>',
+      `--prompt_template=${makePromptFile(home, '')}`,
+      `--source=${makeInputFile(home, exampleInput)}`,
+      `--output=${outputFilePath}`]);
+    const expectedContents = ['<PLACEHOLDER_RESPONSE>', '<PLACEHOLDER_RESPONSE>'];
+    verifyGeneratedOutput(stdout, home, outputFilePath, expectedContents);
     done();
   });
   it('produces empty output when the source carries no placeholder', (done) => {
