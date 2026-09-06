@@ -17,7 +17,7 @@ const runFailing = function(args) {
     execFileSync(
       'node',
       [
-        '-r', path.resolve(__dirname, '../stubs/failing-mvnw.js'),
+        '-r', path.resolve(__dirname, '../stubs/failing-mvnw.cjs'),
         path.resolve(__dirname, '../../src/eoc.js'), '--batch', '--alone'
       ].concat(args).concat(['lint']),
       {timeout: 1200000, windowsHide: true, stdio: 'pipe'}
