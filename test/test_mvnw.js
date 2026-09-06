@@ -161,7 +161,8 @@ describe('mvnw', () => {
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
   });
   it('rejects instead of crashing when Maven cannot be started', async () => {
-    const bin = path.resolve(__dirname, '../mvnw/mvnw');
+    const bin = path.resolve(__dirname, '../mvnw/mvnw') +
+      (process.platform === 'win32' ? '.cmd' : '');
     const away = `${bin}.away`;
     const was = process.env.PATH;
     const bundled = fs.existsSync(bin);
