@@ -17,7 +17,7 @@ const runStubbed = function(args) {
     return execFileSync(
       'node',
       [
-        '-r', path.resolve(__dirname, 'stubs/mvnw.js'),
+        '-r', path.resolve(__dirname, 'stubs/mvnw.cjs'),
         path.resolve(__dirname, '../src/eoc.js'), '--batch'
       ].concat(args),
       {timeout: 1200000, windowsHide: true}
