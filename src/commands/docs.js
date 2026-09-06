@@ -124,7 +124,8 @@ function wrapHtml(name, html, css) {
  */
 module.exports = function(opts) {
   const input = path.resolve(opts.target, '1-parse');
-  if (findFiles(input, '.xmir').length === 0) {
+  const usable = !fs.existsSync(opts.target) || fs.statSync(opts.target).isDirectory();
+  if (usable && findFiles(input, '.xmir').length === 0) {
     throw new Error(`There are no .xmir files in ${rel(input)}, run "eoc parse" first`);
   }
   return elapsed(async (tracked) => {
