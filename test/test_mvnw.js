@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, missing} = require('../src/mvnw');
+const {mvnw, flags, summary, missing, reachable} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -184,6 +184,24 @@ describe('mvnw', () => {
         fs.renameSync(away, bin);
       }
     }
+  });
+  it('refuses a binary that is nowhere on the PATH', () => {
+    const was = process.env.PATH;
+    process.env.PATH = path.resolve(os.tmpdir(), 'eoc-no-such-directory');
+    try {
+      assert.throws(
+        () => reachable('mvn'),
+        (err) => {
+          assert.ok(err.message.includes('could not be started'), err.message);
+          return true;
+        }
+      );
+    } finally {
+      process.env.PATH = was;
+    }
+  });
+  it('gives back a binary that is on the PATH', () => {
+    assert.strictEqual(reachable('node'), 'node');
   });
   it('names the binary in the diagnostic', () => {
     const text = missing('mvn', new Error('spawn mvn ENOENT'));

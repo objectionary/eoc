@@ -83,6 +83,39 @@ module.exports.flags = function(opts) {
 };
 
 /**
+ * The given binary, once it is known to be reachable.
+ *
+ * A shell reports an unknown command as a non-zero exit rather than as a
+ * spawn error, so on Windows the "error" event never arrives and a missing
+ * Maven looks like a build that failed. Looking the binary up before starting
+ * it gives the same answer on every platform, and returning it here means the
+ * caller cannot get a name to run without the lookup having happened.
+ * @param {String} bin - The binary to look for
+ * @return {String} The same binary
+ * @throws {Error} If the binary is nowhere on the PATH
+ */
+module.exports.reachable = function(bin) {
+  if (path.isAbsolute(bin)) {
+    if (!fs.existsSync(bin)) {
+      throw new Error(module.exports.missing(bin, new Error(`"${bin}" does not exist`)));
+    }
+    return bin;
+  }
+  const exts = process.platform === 'win32' ?
+    (process.env.PATHEXT || '.COM;.EXE;.BAT;.CMD').split(';') :
+    [''];
+  const dirs = (process.env.PATH || '').split(path.delimiter).filter((d) => d !== '');
+  for (const dir of dirs) {
+    for (const ext of exts) {
+      if (fs.existsSync(path.join(dir, bin + ext))) {
+        return bin;
+      }
+    }
+  }
+  throw new Error(module.exports.missing(bin, new Error(`"${bin}" is not on the PATH`)));
+};
+
+/**
  * Run mvnw with provided commands.
  * @param {Array.<String>} args - All arguments to pass to it
  * @param {String} [tgt] - Path to the target directory
@@ -99,6 +132,12 @@ module.exports.mvnw = function(args, tgt, batch) {
     if (!fs.existsSync(bin)) {
       console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
       bin = 'mvn';
+    }
+    try {
+      bin = module.exports.reachable(bin);
+    } catch (error) {
+      reject(error);
+      return;
     }
     const params = args.filter((t) => t !== '').concat([
       '--batch-mode',
