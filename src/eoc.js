@@ -77,7 +77,7 @@ const pipelines = {
  * lower-cased (e.g. `javascript`); `canonicalLanguage()` lower-cases the
  * input, so mixed-case spellings such as `JavaScript` are matched too.
  */
-const platforms = {};
+const platforms = Object.create(null);
 for (const [alias, canonical] of Object.entries(language)) {
   platforms[alias] = canonical;
   platforms[canonical.toLowerCase()] = canonical;
