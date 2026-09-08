@@ -116,7 +116,6 @@ You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
 <!-- BEGIN COMMANDS SECTION -->
-* `audit` Inspect all packages and report their status
 * `foreign` Inspect and print the list of foreign objects
 * `clean` Delete all temporary files
 * `register` Register all visible EO source files
