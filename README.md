@@ -116,7 +116,6 @@ You can also do many other things with `eoc` commands
 (the flow is explained in [this blog post][blog]):
 
 <!-- BEGIN COMMANDS SECTION -->
-* `audit` Inspect all packages and report their status
 * `foreign` Inspect and print the list of foreign objects
 * `clean` Delete all temporary files
 * `register` Register all visible EO source files
@@ -156,8 +155,8 @@ To execute the project tests, use the following command:
 npx grunt
 ```
 
-This command runs the Mocha test suite. To run the other checks locally, use
-`npx eslint .` for linting and `npm run coverage` for the coverage report.
+This command will run all the testing steps, including tests, linting,
+coverage, and more.
 If you only need to run the tests, use:
 
 ```bash
