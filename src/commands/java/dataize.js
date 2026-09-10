@@ -14,6 +14,7 @@ const {verifyJavac} = require('../../jdk');
  * @param {Object} opts - All options
  * @param {Function} [exec] - Optional command runner for the JDK check
  * @param {Function} [runner] - Optional Java process runner
+ * @return {Promise} Resolves when the JVM exits successfully
  */
 module.exports = function(obj, args, opts, exec, runner = spawn) {
   verifyJavac(exec);
@@ -27,10 +28,15 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
     ...args,
   ].filter((i) => i);
   console.debug(`+ java ${params.join(' ')}`);
-  runner('java', params, {stdio: 'inherit'}).on('close', (code) => {
-    if (code !== 0) {
-      console.error(`JVM failed with exit code ${code}`);
-      process.exit(1);
-    }
+  const child = runner('java', params, {stdio: 'inherit'});
+  return new Promise((resolve, reject) => {
+    child.on('error', reject);
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`JVM failed with exit code ${code}`));
+      }
+    });
   });
 };
