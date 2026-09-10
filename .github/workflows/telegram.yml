@@ -28,7 +28,7 @@ jobs:
             printf 'It is advised to use this tool for all interactions with '
             printf 'EO compiler(s) and optimizers.'
           ) > message.md
-      - uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@214f06cfa3d3a588c1472116889437e7c6fd29b1 # v1.1.1
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}
