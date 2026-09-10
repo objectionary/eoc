@@ -9,11 +9,16 @@ name: readme-automation
   push:
     paths:
       - "src/eoc.js"
+permissions:
+  contents: read
 concurrency:
   group: readmeautomation-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   build:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-24.04
 
     steps:

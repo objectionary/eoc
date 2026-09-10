@@ -12,6 +12,8 @@ name: grunt
       - master
   schedule:
     - cron: '0 4 * * *'
+permissions:
+  contents: read
 concurrency:
   group: grunt-${{ github.ref }}
   cancel-in-progress: true

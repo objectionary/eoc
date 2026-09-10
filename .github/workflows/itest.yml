@@ -12,6 +12,8 @@ name: itest
       - master
   schedule:
     - cron: '0 4 * * *'
+permissions:
+  contents: read
 concurrency:
   group: itest-${{ github.ref }}
   cancel-in-progress: true

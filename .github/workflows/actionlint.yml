@@ -10,6 +10,8 @@ name: actionlint
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 jobs:
   actionlint:
     timeout-minutes: 15
