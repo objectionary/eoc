@@ -111,6 +111,32 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that object and package names are escaped before HTML interpolation.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('escapes object and package names in generated HTML', (done) => {
+    const sample = path.join(parsed, 'foo&bar');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'a&b.xmir'), '<program name="test" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const object = fs.readFileSync(path.join(docs, 'foo&bar/a&b.html'), 'utf-8');
+    assert(
+      object.includes('<h1>a&amp;b documentation</h1>'),
+      'object name was interpolated into HTML without escaping'
+    );
+    const pkg = fs.readFileSync(path.join(docs, 'package_foo&bar.html'), 'utf-8');
+    assert(
+      pkg.includes('<h1>foo&amp;bar package documentation</h1>'),
+      'package name was interpolated into HTML without escaping'
+    );
+    done();
+  });
+  /**
    * Tests that the 'docs' command generates a summary.xml with correct counts.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
