@@ -45,6 +45,18 @@ describe('docs', () => {
     assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
     const css_html = path.join(docs, 'styles.css');
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
+    assert(
+      fs.readFileSync(test1_html, 'utf-8').includes('href="../../styles.css"'),
+      'Nested object page must link the stylesheet relative to its own directory'
+    );
+    assert(
+      fs.readFileSync(package_foo_bar_html, 'utf-8').includes('href="styles.css"'),
+      'Root package page must link the stylesheet without an absolute filesystem path'
+    );
+    assert(
+      fs.readFileSync(packages_html, 'utf-8').includes('href="styles.css"'),
+      'Package index must link the stylesheet relatively'
+    );
     done();
   });
   /**
