@@ -98,14 +98,19 @@ function getTextFocusedOnSpecificPlaceholder(
  * @param {String} inputCode - Code to replace placeholders in
  * @param {String} commentPlaceholder - Placeholder to replace
  * @param {RunnableSequence} chain - Langchain LLM pipeline
- * @return {Promise<Array.<String>>} of ordered LLM outputs (one for each placeholder in the input)
+ * @return {Promise<Array.<Object>>} of replacements, each carrying the offset of
+ *  the placeholder it replaces and the comment generated for it
  */
 function generateDocumentation(inputCode, commentPlaceholder, chain) {
   const commentPlaceholderRegex = new RegExp(escapeRegExp(commentPlaceholder), 'g');
   const allLocationsOfPlaceholderInInputCode = Array.from(inputCode.matchAll(commentPlaceholderRegex));
-  return Promise.all(allLocationsOfPlaceholderInInputCode.map((location) => {
+  return Promise.all(allLocationsOfPlaceholderInInputCode.map(async (location) => {
     const focusedInputCode = getTextFocusedOnSpecificPlaceholder(inputCode, location, commentPlaceholder, commentPlaceholderRegex);
-    return chain.invoke({ code: focusedInputCode });
+    return {
+      offset: location.index,
+      placeholder: commentPlaceholder,
+      comment: await chain.invoke({ code: focusedInputCode })
+    };
   }));
 }
 
