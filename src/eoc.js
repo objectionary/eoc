@@ -33,7 +33,6 @@ const common = {
   generate_comments: require('./commands/generate_comments'),
   jeo_disassemble: require('./commands/jeo/disassemble'),
   jeo_assemble: require('./commands/jeo/assemble'),
-  latex: require('./commands/latex'),
   normalize: require('./commands/normalize'),
   format: require('./commands/format'),
 };
@@ -418,15 +417,6 @@ program.command('jeo:assemble')
   .action(async (str, opts) => {
     pin(program.opts());
     await coms().jeo_assemble({...program.opts(), ...str});
-  });
-
-program.command('latex')
-  .description('Generate LaTeX files from EO sources')
-  .action(async (str, opts) => {
-    pin(program.opts());
-    clear(str);
-    await pipe()(coms(), ['register', 'parse'], program.opts());
-    await coms().latex(program.opts());
   });
 
 program.command('normalize')

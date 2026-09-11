@@ -135,7 +135,6 @@ You can also do many other things with `eoc` commands
 * `generate_comments` Generate documentation with LLM
 * `jeo:disassemble` Disassemble .class files to .xmir files
 * `jeo:assemble` Assemble .xmir files to .class files
-* `latex` Generate LaTeX files from EO sources
 * `normalize` Normalize EO files using phi-calculus normalization via phino
 * `format` Fail if EO files in the source directory are not formatted
 <!-- END COMMANDS SECTION -->
