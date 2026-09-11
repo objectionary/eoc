@@ -61,7 +61,10 @@ module.exports.goals = goals;
 module.exports.extras = extras;
 
 function goals(opts) {
-  if (opts.parser.endsWith('-SNAPSHOT') || semver.gte(opts.parser, '0.45.0')) {
+  if (
+    opts.parser.endsWith('-SNAPSHOT')
+    || (semver.valid(opts.parser) !== null && semver.gte(opts.parser, '0.45.0'))
+  ) {
     return ['eo:lint'];
   }
   return ['eo:verify'];
