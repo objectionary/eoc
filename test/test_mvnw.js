@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, missing, reachable} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -159,5 +159,53 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('rejects instead of crashing when Maven cannot be started', async () => {
+    const bin = path.resolve(__dirname, '../mvnw/mvnw') +
+      (process.platform === 'win32' ? '.cmd' : '');
+    const away = `${bin}.away`;
+    const was = process.env.PATH;
+    const bundled = fs.existsSync(bin);
+    if (bundled) {
+      fs.renameSync(bin, away);
+    }
+    process.env.PATH = path.resolve(os.tmpdir(), 'eoc-no-such-directory');
+    try {
+      await assert.rejects(
+        mvnw(['--version'], undefined, true),
+        (err) => {
+          assert.ok(err.message.includes('could not be started'), err.message);
+          return true;
+        }
+      );
+    } finally {
+      process.env.PATH = was;
+      if (bundled) {
+        fs.renameSync(away, bin);
+      }
+    }
+  });
+  it('refuses a binary that is nowhere on the PATH', () => {
+    const was = process.env.PATH;
+    process.env.PATH = path.resolve(os.tmpdir(), 'eoc-no-such-directory');
+    try {
+      assert.throws(
+        () => reachable('mvn'),
+        (err) => {
+          assert.ok(err.message.includes('could not be started'), err.message);
+          return true;
+        }
+      );
+    } finally {
+      process.env.PATH = was;
+    }
+  });
+  it('gives back a binary that is on the PATH', () => {
+    assert.strictEqual(reachable('node'), 'node');
+  });
+  it('names the binary in the diagnostic', () => {
+    const text = missing('mvn', new Error('spawn mvn ENOENT'));
+    assert.ok(text.includes('"mvn"'), text);
+    assert.ok(text.includes('spawn mvn ENOENT'), text);
   });
 });
