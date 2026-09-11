@@ -8,6 +8,7 @@ package org.eolang.eoc;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.eolang.Phi;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -25,14 +26,6 @@ import org.takes.rs.RsWithType;
  * the tree of objects that lives in its own memory. Nothing is read from
  * the classpath or from XMIR: the objects are asked directly.</p>
  *
- * @todo #500:60min Load the whole tree of objects at startup.
- *  Right now the only object this server can reach is the root, and it
- *  reaches it lazily through {@link Phi}. A package object learns that a
- *  child exists only when that child is taken by name, so listing
- *  everything under the root is impossible until every object is loaded
- *  into memory once, at startup, the way the session in this issue shows
- *  with its "Loaded 56 objects" line. Load them here and keep them, so
- *  that the verbs below walk a tree that is already there.
  * @since 0.0.0
  */
 public final class Inspect {
@@ -89,12 +82,19 @@ public final class Inspect {
      * @throws IOException If fails
      */
     public void start() throws IOException {
+        final Map<String, Phi> objects =
+            new Universe(System.getProperty("java.class.path")).objects();
         new FtBasic(
             new TkFork(
                 new FkRegex(
                     "/",
                     (Take) req -> new RsWithType.Json(
-                        new RsText(String.format("{\"forma\":\"%s\"}", Phi.Φ.forma()))
+                        new RsText(
+                            String.format(
+                                "{\"forma\":\"%s\",\"loaded\":%d}",
+                                Phi.Φ.forma(), objects.size()
+                            )
+                        )
                     )
                 )
             ),
