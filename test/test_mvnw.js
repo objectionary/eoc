@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, shell} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -159,5 +159,39 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('takes the shell from the system root', function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    const root = process.env.SystemRoot;
+    try {
+      process.env.SystemRoot = root;
+      assert.strictEqual(
+        shell(),
+        path.join(root, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe')
+      );
+      assert.ok(fs.existsSync(shell()));
+    } finally {
+      process.env.SystemRoot = root;
+    }
+  });
+  it('falls back to the name on PATH when the system root is wrong', function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    const root = process.env.SystemRoot;
+    try {
+      process.env.SystemRoot = path.join(os.tmpdir(), 'no-such-windows');
+      assert.strictEqual(shell(), 'powershell.exe');
+    } finally {
+      process.env.SystemRoot = root;
+    }
+  });
+  it('leaves the shell undefined outside Windows', function () {
+    if (process.platform === 'win32') {
+      this.skip();
+    }
+    assert.strictEqual(shell(), undefined);
   });
 });
