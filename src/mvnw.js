@@ -23,6 +23,16 @@ module.exports.summary = function(args) {
 };
 
 /**
+ * Quote a parameter for PowerShell, where single quotes are the literal
+ * form and an embedded quote is doubled.
+ * @param {String} param The parameter to put into the command line
+ * @return {String} The parameter, quoted so that nothing in it expands
+ */
+module.exports.quoted = function(param) {
+  return `'${param.replace(/'/g, `''`)}'`;
+};
+
+/**
  * The shell to use (depending on operating system).
  * @return {String} Path to shell or "undefined" if default one should be used
  */
@@ -112,7 +122,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
-      process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
+      process.platform === 'win32' ? params.map(module.exports.quoted) : params,
       {
         cwd: home,
         stdio: 'inherit',
