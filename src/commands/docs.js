@@ -117,6 +117,16 @@ function wrapHtml(name, html, css) {
 }
 
 /**
+ * Create a browser-safe relative link from one generated file to another.
+ * @param {String} source - Generated HTML file path
+ * @param {String} target - Linked asset path
+ * @return {String} Relative URL using forward slashes
+ */
+function relativeHref(source, target) {
+  return path.relative(path.dirname(source), target).split(path.sep).join('/');
+}
+
+/**
  * Command to generate documentation.
  * @param {Hash} opts - All options
  * @return {Promise<String>} Resolves to the message reporting the summary path
@@ -138,7 +148,10 @@ module.exports = function(opts) {
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
-        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
+        fs.writeFileSync(
+          html_app,
+          wrapHtml(name, xmir_html, relativeHref(html_app, css))
+        );
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
@@ -161,10 +174,15 @@ module.exports = function(opts) {
       for (const [package_name, info] of packages_info) {
         fs.mkdirSync(path.dirname(info.path), {recursive: true});
         fs.writeFileSync(info.path,
-          generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
+          generatePackageHtml(
+            `${package_name} package`, info.xmir_htmls, relativeHref(info.path, css)
+          ));
       }
       const packages = path.join(output, 'packages.html');
-      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      fs.writeFileSync(
+        packages,
+        generatePackageHtml('overall package', all_xmir_htmls, relativeHref(packages, css))
+      );
       const summary = path.join(output, 'summary.xml');
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
