@@ -127,3 +127,15 @@ describe('inspect/java', () => {
     );
   });
 });
+
+describe('inspect', () => {
+  it('refuses a port that is not a TCP port', async () => {
+    await Promise.all(['abc', '99999', '-1'].map((port) => assert.rejects(
+      () => inspect({port, target: 'temp/none'}, () => 'javac 21', () => {
+        throw new Error('no JVM must be started for a bad port');
+      }),
+      /is not a TCP port between 1 and 65535/,
+      `Expected --port ${port} to be refused before the JVM starts`
+    )));
+  });
+});

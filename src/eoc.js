@@ -91,6 +91,23 @@ for (const [alias, canonical] of Object.entries(language)) {
  * @return {String} The canonical platform name
  * @throws {InvalidArgumentError} If the language does not resolve to a known platform
  */
+/**
+ * Turn the raw --port value into a TCP port, rejecting anything that is not
+ * one. Without this a value such as "abc" reaches the inspection client as
+ * NaN, makes the request URL unparsable, and is then waited on for a minute
+ * as if the server were slow to start.
+ * @param {String} value - Raw value from the command line
+ * @return {Number} The port
+ * @throws {InvalidArgumentError} If the value is not a TCP port
+ */
+function tcpPort(value) {
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new InvalidArgumentError(`must be a TCP port between 1 and 65535, not "${value}"`);
+  }
+  return port;
+}
+
 function canonicalLanguage(value) {
   const canonical = platforms[String(value).toLowerCase()];
   if (canonical === undefined) {
@@ -321,7 +338,7 @@ program.command('dataize')
 
 program.command('inspect')
   .description('Traverse the tree of objects of a compiled program')
-  .option('--port <number>', 'TCP port for the inspection server', '8080')
+  .option('--port <number>', 'TCP port for the inspection server', tcpPort, 8080)
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
@@ -469,6 +486,8 @@ module.exports.commandsDescription = function commandsDescription() {
 }
 
 module.exports.canonicalLanguage = canonicalLanguage;
+
+module.exports.tcpPort = tcpPort;
 
 module.exports.select = select;
 
