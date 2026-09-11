@@ -14,7 +14,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <eo.version>undefined</eo.version>
     <eo.targetDir>${project.basedir}/target</eo.targetDir>
-    <takes.version>1.24.6</takes.version>
+    <takes.version>1.26.0</takes.version>
   </properties>
   <dependencies>
     <dependency>
