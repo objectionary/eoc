@@ -12,13 +12,24 @@ const path = require('path');
  * @param {string} ext - File extension including dot (e.g. '.xmir')
  * @return {Array.<string>} List of absolute file paths
  */
-function findFiles(dir, ext) {
+function findFiles(dir, ext, visited = new Set()) {
   if (!fs.existsSync(dir)) {return [];}
+  const real = fs.realpathSync(dir);
+  if (visited.has(real)) {return [];}
+  visited.add(real);
   const result = [];
   for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      result.push(...findFiles(full, ext));
+    let directory = entry.isDirectory();
+    if (!directory && entry.isSymbolicLink()) {
+      try {
+        directory = fs.statSync(full).isDirectory();
+      } catch (error) {
+        directory = false;
+      }
+    }
+    if (directory) {
+      result.push(...findFiles(full, ext, visited));
     } else if (entry.name.endsWith(ext)) {
       result.push(full);
     }
@@ -45,15 +56,26 @@ function saveFile(dir, name, content) {
  * @param {string} ext - File extension filter (e.g. '.eo'), or empty for all files
  * @param {string} [excluded] - Directory to exclude from recursive traversal
  */
-function copyDir(src, dst, ext, excluded) {
+function copyDir(src, dst, ext, excluded, visited = new Set()) {
   if (!fs.existsSync(src)) {return;}
   if (excluded && path.resolve(src) === path.resolve(excluded)) {return;}
+  const real = fs.realpathSync(src);
+  if (visited.has(real)) {return;}
+  visited.add(real);
   fs.mkdirSync(dst, {recursive: true});
   for (const entry of fs.readdirSync(src, {withFileTypes: true})) {
     const source = path.join(src, entry.name);
     const dest = path.join(dst, entry.name);
-    if (entry.isDirectory()) {
-      copyDir(source, dest, ext, excluded);
+    let directory = entry.isDirectory();
+    if (!directory && entry.isSymbolicLink()) {
+      try {
+        directory = fs.statSync(source).isDirectory();
+      } catch (error) {
+        directory = false;
+      }
+    }
+    if (directory) {
+      copyDir(source, dest, ext, excluded, visited);
     } else if (!ext || entry.name.endsWith(ext)) {
       fs.copyFileSync(source, dest);
     }
