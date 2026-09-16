@@ -34,6 +34,7 @@ function findFiles(dir, ext, visited = new Set()) {
       result.push(full);
     }
   }
+  visited.delete(real);
   return result;
 }
 
@@ -80,6 +81,7 @@ function copyDir(src, dst, ext, excluded, visited = new Set()) {
       fs.copyFileSync(source, dest);
     }
   }
+  visited.delete(real);
 }
 
 module.exports = {findFiles, saveFile, copyDir};
