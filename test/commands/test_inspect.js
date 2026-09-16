@@ -123,7 +123,7 @@ describe('inspect/java', () => {
         () => true,
         () => {
           const server = new EventEmitter();
-          server.kill = () => {};
+          server.kill = () => undefined;
           process.nextTick(() => server.emit('close', 7));
           return server;
         }
