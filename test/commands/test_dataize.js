@@ -104,6 +104,20 @@ describe('dataize/java', () => {
       'dataize still sets the initial Java heap size'
     );
   });
+  it('preserves empty positional arguments for Java', () => {
+    let params;
+    dataize(
+      'main.foo',
+      [''],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      (command, args) => {
+        params = args;
+        return {on: () => true};
+      }
+    );
+    assert.strictEqual(params.at(-1), '', 'empty positional argument was dropped');
+  });
   it('fails fast with a clear message when javac is not on the PATH', () => {
     const missing = () => {
       const cause = new Error('spawnSync javac ENOENT');
