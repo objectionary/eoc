@@ -32,11 +32,6 @@ function shell() {
   }
 }
 
-let beginning,
-  phase = 'unknown',
-  running = false,
-  target;
-
 /**
  * Prepare options for Maven.
  * @param {Object} opts - Opts provided to the "eoc"
@@ -87,13 +82,18 @@ module.exports.flags = function(opts) {
  * @param {Array.<String>} args - All arguments to pass to it
  * @param {String} [tgt] - Path to the target directory
  * @param {Boolean} [batch] - Is it batch mode (TRUE) or interactive (FALSE)?
+ * @param {Function} [runner] - Optional Maven process runner
  * @return {Promise} of maven execution task
  */
-module.exports.mvnw = function(args, tgt, batch) {
+module.exports.mvnw = function(args, tgt, batch, runner = spawn) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
-    target = tgt;
-    phase = module.exports.summary(args);
+    const progress = {
+      beginning: 0,
+      phase: module.exports.summary(args),
+      running: false,
+      target: tgt,
+    };
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
@@ -110,7 +110,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     ]);
     const cmd = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmd);
-    const result = spawn(
+    const result = runner(
       bin,
       process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
       {
@@ -121,11 +121,11 @@ module.exports.mvnw = function(args, tgt, batch) {
     );
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
-        start();
+        start(progress);
       }
       result.on('close', (code) => {
         if (!batch) {
-          stop();
+          stop(progress);
         }
         if (code !== 0) {
           reject(new Error(`The command "${cmd}" exited with #${code} code`));
@@ -148,12 +148,12 @@ module.exports.mvnw = function(args, tgt, batch) {
 /**
  * Starts mvnw execution status detection.
  */
-function start() {
-  running = true;
-  beginning = Date.now();
+function start(progress) {
+  progress.running = true;
+  progress.beginning = Date.now();
   const check = function() {
-    if (running) {
-      print();
+    if (progress.running) {
+      print(progress);
       setTimeout(check, 1000);
     }
   };
@@ -163,16 +163,16 @@ function start() {
 /**
  * Stops mvnw execution status detection.
  */
-function stop() {
-  running = false;
+function stop(progress) {
+  progress.running = false;
   readline.clearLine(process.stdout);
 }
 
 /**
  * Prints mvnw execution status.
  */
-function print() {
-  const duration = Date.now() - beginning;
+function print(progress) {
+  const duration = Date.now() - progress.beginning;
   /**
    * Recursively calculates number of files under a directory.
    * @param {String} dir - Directory where to count.
@@ -219,7 +219,9 @@ function print() {
     elapsed = `${Math.ceil(duration / (60 * 1000))}min`;
   }
   process.stdout.write(
-    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated so far...`)
+    colors.yellow(
+      `[${progress.phase}] ${elapsed}; ${count(progress.target, 0)} files generated so far...`
+    )
   );
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);

@@ -9,6 +9,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const {execSync} = require('child_process');
+const {EventEmitter} = require('events');
 
 describe('mvnw', () => {
   it('prints Maven own version', async () => {
@@ -110,6 +111,51 @@ describe('mvnw', () => {
     await assert.rejects(mvnw(['--unrecognized-eoc-flag', '--quiet'], null, true));
     const args = await mvnw(['--version', '--quiet'], null, true);
     assert.ok(args.includes('--version'), 'mvnw cannot run again, the process did not survive a failed run');
+  });
+  it('keeps concurrent progress state independent', async function () {
+    this.timeout(5000);
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-concurrent-'));
+    const first = path.join(home, 'first');
+    const second = path.join(home, 'second');
+    fs.mkdirSync(first);
+    fs.mkdirSync(second);
+    fs.writeFileSync(path.join(first, 'one'), '1');
+    fs.writeFileSync(path.join(second, 'one'), '1');
+    fs.writeFileSync(path.join(second, 'two'), '2');
+    const children = [];
+    const runner = () => {
+      const child = new EventEmitter();
+      children.push(child);
+      return child;
+    };
+    const output = [];
+    const before = process.stdout.write;
+    process.stdout.write = (chunk) => {
+      output.push(String(chunk));
+      return true;
+    };
+    try {
+      const initial = mvnw(['first-goal', '--quiet'], first, false, runner);
+      const latter = mvnw(['second-goal', '--quiet'], second, false, runner);
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      const firstTicks = output.filter((line) => line.includes('[first-goal]')).length;
+      const secondTicks = output.filter((line) => line.includes('[second-goal]')).length;
+      assert(firstTicks >= 2, 'first Maven invocation lost its own progress state');
+      assert(secondTicks >= 2, 'second Maven invocation lost its own progress state');
+      children[0].emit('close', 0);
+      await initial;
+      const ticks = output.filter((line) => line.includes('[second-goal]')).length;
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+      assert(
+        output.filter((line) => line.includes('[second-goal]')).length > ticks,
+        'finishing one Maven invocation stopped another progress ticker'
+      );
+      children[1].emit('close', 0);
+      await latter;
+    } finally {
+      process.stdout.write = before;
+      fs.rmSync(home, {recursive: true, force: true});
+    }
   });
   it('collapses several Maven goals into a count', () => {
     assert.strictEqual(
