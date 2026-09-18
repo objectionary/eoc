@@ -78,6 +78,9 @@ async function ask(port, deadline) {
 module.exports = async function(opts, exec, runner = spawn) {
   verifyJavac(exec);
   const port = Number(opts.port);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`Port "${opts.port}" is not a TCP port between 1 and 65535`);
+  }
   const params = [
     '-cp',
     [path.resolve(opts.target, 'eoc.jar'), await jar(opts)].join(path.delimiter),
