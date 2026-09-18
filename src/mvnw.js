@@ -83,6 +83,39 @@ module.exports.flags = function(opts) {
 };
 
 /**
+ * The given binary, once it is known to be reachable.
+ *
+ * A shell reports an unknown command as a non-zero exit rather than as a
+ * spawn error, so on Windows the "error" event never arrives and a missing
+ * Maven looks like a build that failed. Looking the binary up before starting
+ * it gives the same answer on every platform, and returning it here means the
+ * caller cannot get a name to run without the lookup having happened.
+ * @param {String} bin - The binary to look for
+ * @return {String} The same binary
+ * @throws {Error} If the binary is nowhere on the PATH
+ */
+module.exports.reachable = function(bin) {
+  if (path.isAbsolute(bin)) {
+    if (!fs.existsSync(bin)) {
+      throw new Error(module.exports.missing(bin, new Error(`"${bin}" does not exist`)));
+    }
+    return bin;
+  }
+  const exts = process.platform === 'win32' ?
+    (process.env.PATHEXT || '.COM;.EXE;.BAT;.CMD').split(';') :
+    [''];
+  const dirs = (process.env.PATH || '').split(path.delimiter).filter((d) => d !== '');
+  for (const dir of dirs) {
+    for (const ext of exts) {
+      if (fs.existsSync(path.join(dir, bin + ext))) {
+        return bin;
+      }
+    }
+  }
+  throw new Error(module.exports.missing(bin, new Error(`"${bin}" is not on the PATH`)));
+};
+
+/**
  * Run mvnw with provided commands.
  * @param {Array.<String>} args - All arguments to pass to it
  * @param {String} [tgt] - Path to the target directory
@@ -99,6 +132,12 @@ module.exports.mvnw = function(args, tgt, batch) {
     if (!fs.existsSync(bin)) {
       console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
       bin = 'mvn';
+    }
+    try {
+      bin = module.exports.reachable(bin);
+    } catch (error) {
+      reject(error);
+      return;
     }
     const params = args.filter((t) => t !== '').concat([
       '--batch-mode',
@@ -119,30 +158,50 @@ module.exports.mvnw = function(args, tgt, batch) {
         shell: shell(),
       }
     );
-    if (tgt !== undefined && args.includes('--quiet')) {
-      if (!batch) {
-        start();
-      }
-      result.on('close', (code) => {
-        if (!batch) {
-          stop();
-        }
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
-    } else {
-      result.on('close', (code) => {
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
+    const ticking = tgt !== undefined && args.includes('--quiet') && !batch;
+    if (ticking) {
+      start();
     }
+    result.on('error', (error) => {
+      if (ticking) {
+        stop();
+      }
+      reject(new Error(module.exports.missing(bin, error), {cause: error}));
+    });
+    result.on('close', (code) => {
+      if (ticking) {
+        stop();
+      }
+      if (code !== 0) {
+        reject(new Error(`The command "${cmd}" exited with #${code} code`));
+        return;
+      }
+      resolve(args);
+    });
   });
+};
+
+/**
+ * The diagnostic for a Maven binary that could not be started at all,
+ * which usually means Maven is not installed or the package is broken.
+ * @param {String} bin - The binary that could not be started
+ * @param {Error} cause - The error the spawn reported
+ * @return {String} The user-facing diagnostic
+ */
+module.exports.missing = function(bin, cause) {
+  const lines = [
+    `The Maven binary "${bin}" could not be started.`,
+    'EO needs Maven 3.9 or newer to build EO programs.',
+    'Either install it and make sure "mvn" is on your PATH,',
+    'or reinstall "eolang" so that its bundled wrapper is restored.',
+    '  Debian/Ubuntu: sudo apt-get install maven',
+    '  macOS:         brew install maven',
+    '  Windows:       https://maven.apache.org/download.cgi'
+  ];
+  if (cause && cause.message) {
+    lines.push(`Underlying error: ${cause.message.toString().trim()}`);
+  }
+  return lines.join('\n');
 };
 
 /**
