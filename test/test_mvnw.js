@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, ticking} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -159,5 +159,17 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('does not tick when stdout is not a terminal', () => {
+    const was = process.stdout.isTTY;
+    try {
+      process.stdout.isTTY = false;
+      assert.ok(!ticking(['eo:parse', '--quiet'], 'target', false));
+      process.stdout.isTTY = true;
+      assert.ok(ticking(['eo:parse', '--quiet'], 'target', false));
+      assert.ok(!ticking(['eo:parse', '--quiet'], 'target', true));
+    } finally {
+      process.stdout.isTTY = was;
+    }
   });
 });
