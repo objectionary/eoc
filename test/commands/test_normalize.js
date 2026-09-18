@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const {execSync} = require('child_process');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {normalized} = require('../../src/commands/normalize');
 
 const eo = '[] > simple\n';
 
@@ -104,5 +105,41 @@ describe('normalize', () => {
     const normalized = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
     assert(normalized.length > 0, 'Normalized .eo file must not be empty');
     done();
+  });
+});
+
+describe('normalized', () => {
+  it('gives the child room beyond the default one megabyte', () => {
+    let opts;
+    normalized('/tmp/foo.xmir', 'foo.xmir', (bin, args, options) => {
+      opts = options;
+      return Buffer.alloc(0);
+    });
+    assert.ok(
+      opts.maxBuffer > 1024 * 1024,
+      `Expected a cap above the 1 MiB default, got ${opts.maxBuffer}`
+    );
+  });
+  it('names the file it was normalizing when the child fails', () => {
+    assert.throws(
+      () => normalized('/tmp/foo.xmir', 'org/eolang/directory.xmir', () => {
+        const error = new Error('stdout maxBuffer length exceeded');
+        error.code = 'ENOBUFS';
+        throw error;
+      }),
+      /Failed to normalize org\/eolang\/directory\.xmir: stdout maxBuffer length exceeded/,
+      'the failure must name the XMIR that caused it'
+    );
+  });
+  it('keeps the original failure as the cause', () => {
+    const original = new Error('phino died');
+    try {
+      normalized('/tmp/foo.xmir', 'foo.xmir', () => {
+        throw original;
+      });
+      assert.fail('expected a failure');
+    } catch (e) {
+      assert.strictEqual(e.cause, original);
+    }
   });
 });
