@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, quoted} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -159,5 +159,25 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('keeps a dollar sign in a quoted parameter', () => {
+    assert.strictEqual(quoted('-Deo.sourcesDir=/proj/a$b/src'), "'-Deo.sourcesDir=/proj/a$b/src'");
+  });
+  it('keeps a backtick in a quoted parameter', () => {
+    assert.strictEqual(quoted('-Deo.targetDir=/proj/a`n/t'), "'-Deo.targetDir=/proj/a`n/t'");
+  });
+  it('doubles a single quote inside a quoted parameter', () => {
+    assert.strictEqual(quoted("a'b"), "'a''b'");
+  });
+  it('passes a dollar sign through the shell untouched', function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    this.timeout(60000);
+    const arg = `-Deo.sourcesDir=C:${String.fromCharCode(92)}a$b`;
+    const out = execSync(
+      `powershell.exe -NoProfile -Command Write-Output ${quoted(arg)}`
+    ).toString().trim();
+    assert.strictEqual(out, arg);
   });
 });
