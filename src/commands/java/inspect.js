@@ -87,11 +87,30 @@ module.exports = async function(opts, exec, runner = spawn) {
   ];
   console.debug(`+ java ${params.join(' ')}`);
   const server = runner('java', params, {stdio: 'inherit'});
+  let on_error;
+  let on_close;
+  const lifecycle = new Promise((resolve, reject) => {
+    on_error = (error) => reject(new Error(
+      `Inspection server could not be started: ${error.message}`,
+      {cause: error}
+    ));
+    on_close = (code) => reject(new Error(
+      `Inspection server exited before opening port ${port} with exit code ${code}`
+    ));
+    if (typeof server.on === 'function') {
+      server.on('error', on_error);
+      server.on('close', on_close);
+    }
+  });
   try {
-    const answer = await ask(port, Date.now() + 60000);
+    const answer = await Promise.race([ask(port, Date.now() + 60000), lifecycle]);
     console.info('Ready to traverse the Universe');
     console.info(`@ ${answer.forma}`);
   } finally {
+    if (typeof server.removeListener === 'function') {
+      server.removeListener('error', on_error);
+      server.removeListener('close', on_close);
+    }
     server.kill();
   }
 };
