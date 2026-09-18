@@ -113,7 +113,7 @@ const path = require('path'),
   jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
 let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
 if (process.argv.includes('--latest')) {
-  parser = require('./parser-version').get();
+  parser = require('./parser-version').get() || parser;
   // Maybe here we should also go to GITHUB, find out what is the
   // latest hash of the objectionary/home repository, and then
   // set it to the "hash" variable?
