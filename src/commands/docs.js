@@ -128,7 +128,9 @@ module.exports = function(opts) {
       const output = path.resolve(opts.target, 'docs');
       fs.mkdirSync(output, {recursive: true});
       const css = path.join(output, 'styles.css');
-      fs.writeFileSync(css, '');
+      if (!fs.existsSync(css)) {
+        fs.writeFileSync(css, '');
+      }
       const packages_info = new Map();
       const all_xmir_htmls = [];
       const xmirs = findFiles(input, '.xmir');

@@ -48,6 +48,34 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that a second documentation build preserves custom styles.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('preserves custom styles on repeated builds', (done) => {
+    fs.writeFileSync(path.join(parsed, 'app.xmir'), '<program name="app" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const css = path.join(docs, 'styles.css');
+    const custom = 'body { color: rebeccapurple; }\n';
+    fs.writeFileSync(css, custom);
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    assert.strictEqual(
+      fs.readFileSync(css, 'utf-8'),
+      custom,
+      'Expected a repeated build to preserve the existing stylesheet'
+    );
+    done();
+  });
+  /**
    * Tests that a root-level XMIR is not assigned the "." filesystem
    * marker as its package name.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
