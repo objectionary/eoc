@@ -111,13 +111,8 @@ const fs = require('fs');
 const path = require('path'),
   tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim(),
   jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
-let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
-if (process.argv.includes('--latest')) {
-  parser = require('./parser-version').get();
-  // Maybe here we should also go to GITHUB, find out what is the
-  // latest hash of the objectionary/home repository, and then
-  // set it to the "hash" variable?
-} else {
+const parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
+if (!process.argv.includes('--latest')) {
   console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
 }
 
@@ -154,6 +149,15 @@ program
   .option('--verbose', 'Print debug messages and full output of child processes')
   .option('--pin <version>', 'Fail if eoc version doesn\'t match exactly', version.what)
   .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
+
+program.hook('preAction', (command) => {
+  if (command.opts().latest) {
+    // Maybe here we should also go to GITHUB, find out what is the
+    // latest hash of the objectionary/home repository, and then
+    // set it to the "hash" variable?
+    command.setOptionValue('parser', require('./parser-version').get());
+  }
+});
 
 program.hook('preAction', (command) => {
   const dir = command.opts().dir;
