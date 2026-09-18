@@ -425,7 +425,9 @@ program.command('latex')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    await pipe()(coms(), ['register', 'parse'], program.opts());
+    if (program.opts().alone === undefined) {
+      await pipe()(coms(), ['register', 'parse'], program.opts());
+    }
     await coms().latex(program.opts());
   });
 
@@ -434,7 +436,9 @@ program.command('normalize')
   .action(async (str, opts) => {
     pin(program.opts());
     clear(str);
-    await pipe()(coms(), ['register', 'parse'], program.opts());
+    if (program.opts().alone === undefined) {
+      await pipe()(coms(), ['register', 'parse'], program.opts());
+    }
     await coms().normalize(program.opts());
   });
 
