@@ -227,7 +227,7 @@ program.command('print')
   .option(
     '--print-input <dir>',
     'Directory where XMIR files for translation to EO are taken (relative to --target)',
-    '2-optimize'
+    '1-parse'
   )
   .option(
     '--print-output <dir>',
