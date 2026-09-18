@@ -39,16 +39,13 @@ for (const level in levels) {
 }
 
 /**
- * Enable this particular logging level.
+ * Enable this particular logging level (and only this one).
  * @param {String} level - The level to enable
+ * @throws {Error} If the level name is not one of the known levels
  */
 module.exports.enable = function enable(level) {
-  for (const key in levels) {
-    if (levels.hasOwnProperty(level)) {
-      levels[key] = true;
-      if (key === level) {
-        break;
-      }
-    }
+   if (!levels.hasOwnProperty(level)) {
+    throw new Error(`Unknown log level: "${level}"`);
   }
+  levels[level] = true;
 };
