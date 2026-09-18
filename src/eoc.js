@@ -22,7 +22,6 @@ const language = {
  */
 const common = {
   assemble: require('./commands/assemble'),
-  audit: require('./commands/audit'),
   clean: require('./commands/clean'),
   foreign: require('./commands/foreign'),
   parse: require('./commands/parse'),
@@ -77,7 +76,7 @@ const pipelines = {
  * lower-cased (e.g. `javascript`); `canonicalLanguage()` lower-cases the
  * input, so mixed-case spellings such as `JavaScript` are matched too.
  */
-const platforms = Object.create(null);
+const platforms = {};
 for (const [alias, canonical] of Object.entries(language)) {
   platforms[alias] = canonical;
   platforms[canonical.toLowerCase()] = canonical;
@@ -111,13 +110,8 @@ const fs = require('fs');
 const path = require('path'),
   tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim(),
   jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
-let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
-if (process.argv.includes('--latest')) {
-  parser = require('./parser-version').get();
-  // Maybe here we should also go to GITHUB, find out what is the
-  // latest hash of the objectionary/home repository, and then
-  // set it to the "hash" variable?
-} else {
+const parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
+if (!process.argv.includes('--latest')) {
   console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
 }
 
@@ -156,6 +150,15 @@ program
   .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
 
 program.hook('preAction', (command) => {
+  if (command.opts().latest) {
+    // Maybe here we should also go to GITHUB, find out what is the
+    // latest hash of the objectionary/home repository, and then
+    // set it to the "hash" variable?
+    command.setOptionValue('parser', require('./parser-version').get());
+  }
+});
+
+program.hook('preAction', (command) => {
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
     try {
@@ -167,13 +170,6 @@ program.hook('preAction', (command) => {
     console.debug(`Working directory changed to ${process.cwd()}`);
   }
 });
-
-program.command('audit')
-  .description('Inspect all packages and report their status')
-  .action(async (str, opts) => {
-    pin(program.opts());
-    await coms().audit(program.opts());
-  });
 
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')

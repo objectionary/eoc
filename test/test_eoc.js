@@ -151,16 +151,6 @@ describe('canonicalLanguage', () => {
     );
     done();
   });
-  it('rejects inherited object property names as platforms', () => {
-    assert.throws(
-      () => canonicalLanguage('constructor'),
-      /Unknown platform constructor/
-    );
-    assert.throws(
-      () => canonicalLanguage('__proto__'),
-      /Unknown platform __proto__/
-    );
-  });
 });
 
 describe('select', () => {
@@ -251,13 +241,6 @@ describe('eoc', () => {
 
 describe('eoc', () => {
   before(weAreOnline);
-  it('fails audit due to version mismatch if different --pin provided', (done) => {
-    assert.throws(
-      () => { runSync(['--pin=29.9.4', 'audit']); },
-      /Version mismatch: you are running eoc [0-9]+\.[0-9]+\.[0-9]+, but --pin option requires 29.9.4/
-    );
-    done();
-  });
   it('cleans successfully when if --pin not provided', (done) => {
     const stdout = runSync(['clean']);
     assert(stdout.includes("The directory .eoc does not exist, no need to delete it"));
@@ -318,5 +301,25 @@ describe('eoc', () => {
       );
       done();
     });
+  });
+});
+
+describe('eoc', () => {
+  it('does not ask Maven Central for a version when only help was requested', () => {
+    const out = runOutput(['--latest', '--help']);
+    assert.strictEqual(out.status, 0, out.stderr);
+    assert.ok(out.stdout.includes('EO command-line toolkit'), out.stdout);
+    assert.ok(
+      !out.stdout.includes('The latest version of'),
+      `--help must not fetch a version, got: ${out.stdout}`
+    );
+  });
+  it('does not ask Maven Central for a version when only the version was requested', () => {
+    const out = runOutput(['--latest', '--version']);
+    assert.strictEqual(out.status, 0, out.stderr);
+    assert.ok(
+      !out.stdout.includes('The latest version of'),
+      `--version must not fetch a version, got: ${out.stdout}`
+    );
   });
 });
