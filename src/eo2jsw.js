@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+const colors = require('colors');
 const path = require('path');
 const {execFileSync} = require('child_process'),
 
@@ -31,6 +32,14 @@ const {execFileSync} = require('child_process'),
    * @return {Promise<Array.<String>>}
    */
   eo2jsw = function(command, args) {
+    const dropped = ['object', 'stack', 'heap'].filter(
+      (name) => process.argv.includes(`--${name}`)
+    );
+    if (dropped.length > 0) {
+      console.warn(colors.yellow(
+        `The JavaScript platform has no ${dropped.map((name) => `--${name}`).join(' and no ')}, ignoring`
+      ));
+    }
     const lib = path.resolve(__dirname, '../node_modules/eo2js/src'),
       bin = path.resolve(lib, 'eo2js.js'),
       cmd = Array.isArray(command) ? command : [command];
