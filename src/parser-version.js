@@ -22,7 +22,11 @@ const request = require('sync-request'),
           throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
         }
         const xml = new XMLParser().parse(res.body);
-        version.value = xml.metadata.versioning.release;
+        const release = xml?.metadata?.versioning?.release;
+        if (release === undefined || release === null || release === '') {
+          throw new Error(`Invalid Maven metadata from ${url}: release is missing`);
+        }
+        version.value = String(release);
         console.info('The latest version of %s at %s is %s', repo, url, version.value);
       }
       return version.value;
