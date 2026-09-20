@@ -140,7 +140,8 @@ module.exports = function(opts) {
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
-        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
+        const link = path.relative(path.dirname(html_app), css).split(path.sep).join('/');
+        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, link));
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
@@ -162,11 +163,13 @@ module.exports = function(opts) {
       }
       for (const [package_name, info] of packages_info) {
         fs.mkdirSync(path.dirname(info.path), {recursive: true});
+        const link = path.relative(path.dirname(info.path), css).split(path.sep).join('/');
         fs.writeFileSync(info.path,
-          generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
+          generatePackageHtml(`${package_name} package`, info.xmir_htmls, link));
       }
       const packages = path.join(output, 'packages.html');
-      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      const link = path.relative(path.dirname(packages), css).split(path.sep).join('/');
+      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, link));
       const summary = path.join(output, 'summary.xml');
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
