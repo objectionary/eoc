@@ -112,7 +112,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
-      process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
+      process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
       {
         cwd: home,
         stdio: 'inherit',
