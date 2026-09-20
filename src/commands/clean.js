@@ -34,7 +34,9 @@ function guarded(target) {
   const home = fs.realpathSync(os.homedir());
   const route = path.relative(actual, cwd);
   const encloses = route === '' || (!route.startsWith('..') && !path.isAbsolute(route));
-  if (encloses || actual === home) {
+  const home_route = path.relative(actual, home);
+  const encloses_home = home_route === '' || (!home_route.startsWith('..') && !path.isAbsolute(home_route));
+  if (encloses || encloses_home) {
     throw new Error(
       `Refusing to delete ${rel(target)}: it is the current directory, an ancestor of it, or the home directory`
     );
