@@ -50,6 +50,9 @@ module.exports.flags = function(opts) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
   const sources = path.resolve(opts.sources);
+  if (!fs.existsSync(sources) || !fs.statSync(sources).isDirectory()) {
+    throw new Error(`Sources directory does not exist: ${rel(sources)}`);
+  }
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
