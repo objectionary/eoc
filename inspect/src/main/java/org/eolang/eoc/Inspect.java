@@ -8,7 +8,7 @@ package org.eolang.eoc;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import org.eolang.Dataize;
+import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -112,7 +112,7 @@ public final class Inspect {
      */
     private static RsWithType.Json dataize() {
         try {
-            final byte[] data = new Dataize(Phi.Φ).take();
+            final byte[] data = new Dataized(Phi.Φ).take();
             final StringBuilder hex = new StringBuilder(
                 data.length * 2
             );
