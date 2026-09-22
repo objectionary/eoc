@@ -8,6 +8,7 @@ package org.eolang.eoc;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.eolang.Dataize;
 import org.eolang.Phi;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
@@ -80,12 +81,6 @@ public final class Inspect {
      *  attaches the result the same way. Both need somewhere to keep
      *  those names, since a name like the one in the session is invented
      *  by the user and belongs to no object of the program.
-     * @todo #500:30min Answer the dataize verb.
-     *  Here dataize (or run) dataizes the object the session is at and
-     *  answers with its bytes, which the JavaScript side prints the way
-     *  the session in the issue shows. A program that fails to dataize is
-     *  the reason this tool exists, so answer with the failure instead of
-     *  letting the server die on it.
      * @throws IOException If fails
      */
     public void start() throws IOException {
@@ -94,12 +89,63 @@ public final class Inspect {
                 new FkRegex(
                     "/",
                     (Take) req -> new RsWithType.Json(
-                        new RsText(String.format("{\"forma\":\"%s\"}", Phi.Φ.forma()))
+                        new RsText(
+                            String.format(
+                                "{\"forma\":\"%s\"}",
+                                Phi.Φ.forma()
+                            )
+                        )
                     )
+                ),
+                new FkRegex(
+                    "/dataize",
+                    (Take) req -> Inspect.dataize()
                 )
             ),
             this.port()
         ).start(Exit.NEVER);
+    }
+
+    /**
+     * Dataize the root object and return the result as JSON.
+     * @return The response
+     */
+    private static RsWithType.Json dataize() {
+        try {
+            final byte[] data = new Dataize(Phi.Φ).take();
+            final StringBuilder hex = new StringBuilder(
+                data.length * 2
+            );
+            for (final byte bite : data) {
+                hex.append(
+                    String.format("%02x", bite)
+                );
+            }
+            return new RsWithType.Json(
+                new RsText(
+                    String.format(
+                        "{\"bytes\":\"%s\"}", hex
+                    )
+                )
+            );
+            // @checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception ex) {
+            final String msg;
+            if (ex.getMessage() == null) {
+                msg = ex.getClass().getName();
+            } else {
+                msg = ex.getMessage()
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"");
+            }
+            return new RsWithType.Json(
+                new RsText(
+                    String.format(
+                        "{\"error\":\"%s\"}", msg
+                    )
+                )
+            );
+        }
     }
 
     /**
