@@ -17,7 +17,7 @@ describe('mvnw', () => {
   });
   it('sets right flags from options', async () => {
     const opts = {
-      sources: 'sources',
+      sources: '.',
       target: 'target',
       parser: '0.28.11',
       homeTag: 'homeTag'
@@ -26,9 +26,16 @@ describe('mvnw', () => {
     assert.ok(args.includes('-Deo.tag=homeTag'));
     assert.ok(args.includes('-Deo.version=0.28.11'));
   });
+  it('rejects a source path that does not exist', () => {
+    const missing = path.join(os.tmpdir(), `eoc-missing-sources-${Date.now()}`);
+    assert.throws(
+      () => flags({sources: missing, target: 'target'}),
+      /Sources directory .* does not exist\./
+    );
+  });
   it('sets lints version flag from options', () => {
     const opts = {
-      sources: 'sources',
+      sources: '.',
       target: 'target',
       lints: '0.0.42'
     };
@@ -40,7 +47,7 @@ describe('mvnw', () => {
   });
   it('includes slf4j-simple timestamp flags', () => {
     const opts = {
-      sources: 'sources',
+      sources: '.',
       target: 'target',
     };
     const result = flags(opts);
@@ -73,7 +80,7 @@ describe('mvnw', () => {
   });
   it('skips the Maven Central check for SNAPSHOT parser versions', () => {
     const opts = {
-      sources: 'sources',
+      sources: '.',
       target: 'target',
       parser: '1.0-SNAPSHOT',
       homeTag: 'homeTag'
