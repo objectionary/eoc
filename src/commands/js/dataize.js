@@ -10,11 +10,12 @@ const eo2jsw = require('../../eo2jsw');
  * @param {String} obj - Name of object to dataize
  * @param {Array} args - Arguments
  * @param {Object} opts - All options
+ * @param {Function} [run] - Optional runner, defaults to eo2jsw
  * @return {Promise} of executed command
  */
-module.exports = function(obj, args, opts) {
-  return eo2jsw(
-    ['dataize', obj, ...args.filter((arg) => !arg.startsWith('-'))],
+module.exports = function(obj, args, opts, run = eo2jsw) {
+  return run(
+    ['dataize', obj, ...args],
     {...opts, alone: true, project: 'project'}
   );
 };
