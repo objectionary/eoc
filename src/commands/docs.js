@@ -140,7 +140,9 @@ module.exports = function(opts) {
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
-        fs.writeFileSync(html_app, wrapHtml(name, xmir_html, css));
+        const page = name === 'packages' && path.dirname(relative) === '.'
+          ? path.join(output, 'packages-object.html') : html_app;
+        fs.writeFileSync(page, wrapHtml(name, xmir_html, css));
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
