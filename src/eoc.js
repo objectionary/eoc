@@ -111,15 +111,8 @@ const fs = require('fs');
 const path = require('path'),
   tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim(),
   jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
-let parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
-if (process.argv.includes('--latest')) {
-  parser = require('./parser-version').get();
-  // Maybe here we should also go to GITHUB, find out what is the
-  // latest hash of the objectionary/home repository, and then
-  // set it to the "hash" variable?
-} else {
-  console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
-}
+const parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
+console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
 
 const version = require('./version');
 program
@@ -156,6 +149,9 @@ program
   .option('--update-snapshots', 'Update snapshots in the local repository if they are outdated');
 
 program.hook('preAction', (command) => {
+  if (command.opts().latest) {
+    command.setOptionValue('parser', require('./parser-version').get());
+  }
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
     try {
