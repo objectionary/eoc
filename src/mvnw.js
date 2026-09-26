@@ -86,6 +86,22 @@ module.exports.flags = function(opts) {
 };
 
 /**
+ * Resolve Maven executable and its working directory.
+ * @param {String} home - Directory containing the bundled wrapper
+ * @return {Object} Maven binary and working directory
+ */
+module.exports.maven = function(home) {
+  let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
+  let cwd = home;
+  if (!fs.existsSync(bin)) {
+    console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
+    bin = 'mvn';
+    cwd = process.cwd();
+  }
+  return {bin, cwd};
+};
+
+/**
  * Run mvnw with provided commands.
  * @param {Array.<String>} args - All arguments to pass to it
  * @param {String} [tgt] - Path to the target directory
@@ -98,11 +114,8 @@ module.exports.mvnw = function(args, tgt, batch) {
     target = tgt;
     phase = module.exports.summary(args);
     const home = path.resolve(__dirname, '../mvnw');
-    let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
-    if (!fs.existsSync(bin)) {
-      console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
-      bin = 'mvn';
-    }
+    const maven = module.exports.maven(home);
+    const bin = maven.bin;
     const params = args.filter((t) => t !== '').concat([
       '--batch-mode',
       '--color=never',
@@ -117,7 +130,7 @@ module.exports.mvnw = function(args, tgt, batch) {
       bin,
       process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
       {
-        cwd: home,
+        cwd: maven.cwd,
         stdio: 'inherit',
         shell: shell(),
       }
