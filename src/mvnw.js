@@ -28,7 +28,7 @@ module.exports.summary = function(args) {
  */
 function shell() {
   if (process.platform === 'win32') {
-    return 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe';
+    return process.env.ComSpec || 'powershell.exe';
   }
 }
 
