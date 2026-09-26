@@ -16,6 +16,15 @@ describe('parser-version', () => {
       assert(typeof version === 'string');
       assert(/^\d+\.\d+\.\d+$/.test(version), `Version ${version} should match semver pattern`);
     });
+    it('keeps the pinned version when Maven Central is unreachable', () => {
+      parserVersion.value = '';
+      const answered = parserVersion.get(() => {
+        const error = new Error('connect ENETUNREACH');
+        error.code = 'ENETUNREACH';
+        throw error;
+      });
+      assert.strictEqual(answered, '', 'get() must answer with nothing, not throw');
+    });
     it('caches the version after first fetch', () => {
       const first = parserVersion.get();
       const second = parserVersion.get();
