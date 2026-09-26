@@ -64,12 +64,6 @@ async function ask(port, deadline) {
  *  the loop, and keep the printing here, since the server is the only one
  *  that knows the objects and this side is the only one that knows the
  *  terminal.
- * @todo #500:30min Do not leave the JVM behind when this process dies.
- *  The server is killed in the "finally" below, which covers a failure of
- *  our own code, but not a user pressing Ctrl-C and not a crash of the
- *  Node process itself. In both cases the JVM keeps the port open and the
- *  next run of the command fails to bind it. Kill the child on the
- *  signals too, and report a port that is already taken by naming it.
  * @param {Object} opts - All options
  * @param {Function} [exec] - Optional command runner for the JDK check
  * @param {Function} [runner] - Optional Java process runner
@@ -89,6 +83,7 @@ module.exports = async function(opts, exec, runner = spawn) {
   const server = runner('java', params, {stdio: 'inherit'});
   let on_error;
   let on_close;
+  let on_exit;
   const lifecycle = new Promise((resolve, reject) => {
     on_error = (error) => reject(new Error(
       `Inspection server could not be started: ${error.message}`,
@@ -97,11 +92,26 @@ module.exports = async function(opts, exec, runner = spawn) {
     on_close = (code) => reject(new Error(
       `Inspection server exited before opening port ${port} with exit code ${code}`
     ));
+    // "close" waits for stdio streams to end too, which "stdio: inherit"
+    // below gives the child none of, so "exit" is the one that reliably
+    // fires the moment the process itself is gone.
+    on_exit = on_close;
     if (typeof server.on === 'function') {
       server.on('error', on_error);
       server.on('close', on_close);
+      server.on('exit', on_exit);
     }
   });
+  const halt = (code) => () => {
+    server.kill();
+    process.exit(code);
+  };
+  const onint = halt(130);
+  const onterm = halt(143);
+  const onexit = () => server.kill();
+  process.on('SIGINT', onint);
+  process.on('SIGTERM', onterm);
+  process.on('exit', onexit);
   try {
     const answer = await Promise.race([ask(port, Date.now() + 60000), lifecycle]);
     console.info('Ready to traverse the Universe');
@@ -110,7 +120,11 @@ module.exports = async function(opts, exec, runner = spawn) {
     if (typeof server.removeListener === 'function') {
       server.removeListener('error', on_error);
       server.removeListener('close', on_close);
+      server.removeListener('exit', on_exit);
     }
+    process.off('SIGINT', onint);
+    process.off('SIGTERM', onterm);
+    process.off('exit', onexit);
     server.kill();
   }
 };
