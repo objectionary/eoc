@@ -122,6 +122,12 @@ module.exports.mvnw = function(args, tgt, batch) {
         shell: shell(),
       }
     );
+    result.on('error', (error) => {
+      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+        stop();
+      }
+      reject(error);
+    });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();
