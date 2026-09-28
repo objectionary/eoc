@@ -28,10 +28,9 @@ module.exports = function(opts, maven = mvnw) {
       );
     }
     const method = parts.pop().replace(/-/g, '_');
-    const obj = parts.pop().replace(/-/g, '_');
-    const pkg = parts.map((p) => `EO${p.replace(/-/g, '_')}`).join('.');
-    const cls = `TestEO${obj}*`;
-    args.push(`-Dtest=${pkg ? `org.eolang.${pkg}.${cls}` : `org.eolang.${cls}`}#${method}`);
+    const object = parts.pop().replace(/-/g, '_');
+    const pkg = parts.map((part) => part.replace(/-/g, '_'));
+    args.push(`-Dtest=${['org.eolang', ...pkg, `TestEO${object}*`].join('.')}#${method}`);
   }
   return elapsed(async (tracked) => {
     const result = await maven(

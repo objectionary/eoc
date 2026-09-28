@@ -7,7 +7,8 @@ const {FakeListChatModel} = require('@langchain/core/utils/testing');
 const {PromptTemplate} = require('@langchain/core/prompts');
 const {RunnableSequence} = require('@langchain/core/runnables');
 const {StringOutputParser} = require('@langchain/core/output_parsers');
-const {readFileSync, writeFileSync} = require('fs');
+const {readFileSync, writeFileSync, mkdirSync} = require('fs');
+const {dirname} = require('path');
 const {BaseChatModel} = require('@langchain/core/language_models/chat_models');
 const {ChatOpenAI} = require('@langchain/openai');
 
@@ -127,5 +128,6 @@ module.exports = async function(opts) {
     commentPlaceholder,
     chain
   );
+  mkdirSync(dirname(opts.output), {recursive: true});
   writeFileSync(opts.output, JSON.stringify(results));
 };

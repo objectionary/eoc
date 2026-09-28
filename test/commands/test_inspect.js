@@ -4,6 +4,7 @@
  */
 
 const assert = require('assert');
+const {EventEmitter} = require('node:events');
 const fs = require('fs');
 const http = require('http');
 const net = require('net');
@@ -113,6 +114,22 @@ describe('inspect/java', () => {
   });
   it('kills the server when the session ends', () => {
     assert(killed, 'inspect leaves the server running');
+  });
+  it('fails immediately when the inspection server exits early', async () => {
+    const port = await free();
+    await assert.rejects(
+      () => inspect(
+        {target: home, port},
+        () => true,
+        () => {
+          const server = new EventEmitter();
+          server.kill = () => undefined;
+          process.nextTick(() => server.emit('close', 7));
+          return server;
+        }
+      ),
+      /Inspection server exited before opening port .* exit code 7/
+    );
   });
   it('fails fast when javac is not on the PATH', async () => {
     const missing = () => {
