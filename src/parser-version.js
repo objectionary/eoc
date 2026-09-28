@@ -22,7 +22,9 @@ const request = require('sync-request'),
           throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
         }
         const xml = new XMLParser().parse(res.body);
-        const release = xml?.metadata?.versioning?.release;
+        const metadata = xml && xml.metadata,
+          versioning = metadata && metadata.versioning,
+          release = versioning && versioning.release;
         if (release === undefined || release === null || release === '') {
           throw new Error(`Invalid Maven metadata from ${url}: release is missing`);
         }
