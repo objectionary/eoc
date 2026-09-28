@@ -57,6 +57,9 @@ module.exports.flags = function(opts) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
   const sources = path.resolve(opts.sources);
+  if (!fs.existsSync(sources)) {
+    throw new Error(`Sources directory ${rel(sources)} does not exist.`);
+  }
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
@@ -119,13 +122,19 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
-      process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
+      process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
       {
         cwd: home,
         stdio: 'inherit',
         shell: module.exports.shell(),
       }
     );
+    result.on('error', (error) => {
+      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+        stop();
+      }
+      reject(error);
+    });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();

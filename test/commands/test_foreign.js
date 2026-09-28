@@ -7,9 +7,17 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const foreign = require('../../src/commands/foreign');
 
 describe('foreign', () => {
   before(weAreOnline);
+  it('explains how to create a missing foreign catalog', () => {
+    const target = path.join('temp', `test-foreign-missing-${Date.now()}`);
+    assert.throws(
+      () => foreign({target}),
+      /There is no .*eo-foreign\.json yet, run "eoc register" first to create it/
+    );
+  });
   it('inspects foreign objects and prints a report', (done) => {
     const home = path.resolve('temp/test-foreign/simple');
     fs.rmSync(home, {recursive: true, force: true});

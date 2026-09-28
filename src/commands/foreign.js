@@ -53,6 +53,11 @@ function firstJsonArray(text) {
  */
 module.exports = function(opts) {
   const file = path.resolve(opts.target, 'eo-foreign.json');
+  if (!fs.existsSync(file)) {
+    throw new Error(
+      `There is no ${rel(file)} yet, run "eoc register" first to create it`
+    );
+  }
   const all = JSON.parse(firstJsonArray(fs.readFileSync(file, 'utf8')));
   console.info('There are %d objects in %s:', all.length, rel(file));
   all.forEach((obj) => {

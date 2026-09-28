@@ -42,11 +42,16 @@ module.exports = function(opts) {
       const rel = path.relative(parsed, xmir);
       console.debug('Normalizing %s', rel);
       const ts = Date.now();
-      const out = execFileSync(
-        'phino',
-        ['rewrite', '--input=xmir', '--output=xmir', '--normalize', xmir],
-        {stdio: ['pipe', 'pipe', 'pipe']}
-      );
+      let out;
+      try {
+        out = execFileSync(
+          'phino',
+          ['rewrite', '--input=xmir', '--output=xmir', '--normalize', xmir],
+          {stdio: ['pipe', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024}
+        );
+      } catch (error) {
+        throw new Error(`Failed to normalize ${relative(xmir)}: ${error.message}`, {cause: error});
+      }
       console.debug('Normalized in %dms', Date.now() - ts);
       saveFile(normed, rel, out);
     }
