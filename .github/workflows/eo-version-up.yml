@@ -21,7 +21,8 @@ jobs:
       - run: sudo apt-get install --yes jq
       - run: |
           curl https://api.github.com/repos/objectionary/eo/releases/latest \
-            --silent | jq -r .tag_name > eo-version.txt
+            --fail --silent --show-error | \
+            jq -er '.tag_name | select(type == "string" and length > 0)' > eo-version.txt
       - uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true

@@ -156,8 +156,8 @@ To execute the project tests, use the following command:
 npx grunt
 ```
 
-This command will run all the testing steps, including tests, linting,
-coverage, and more.
+This command runs the Mocha test suite. To run the other checks locally, use
+`npx eslint .` for linting and `npm run coverage` for the coverage report.
 If you only need to run the tests, use:
 
 ```bash

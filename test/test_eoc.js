@@ -151,6 +151,16 @@ describe('canonicalLanguage', () => {
     );
     done();
   });
+  it('rejects inherited object property names as platforms', () => {
+    assert.throws(
+      () => canonicalLanguage('constructor'),
+      /Unknown platform constructor/
+    );
+    assert.throws(
+      () => canonicalLanguage('__proto__'),
+      /Unknown platform __proto__/
+    );
+  });
 });
 
 describe('select', () => {
