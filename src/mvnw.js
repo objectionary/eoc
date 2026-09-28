@@ -28,7 +28,7 @@ module.exports.summary = function(args) {
  */
 function shell() {
   if (process.platform === 'win32') {
-    return 'C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell.exe';
+    return process.env.ComSpec || 'powershell.exe';
   }
 }
 
@@ -115,13 +115,19 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmd);
     const result = spawn(
       bin,
-      process.platform === 'win32' ? params.map((p) => `"${p}"`) : params,
+      process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
       {
         cwd: home,
         stdio: 'inherit',
         shell: shell(),
       }
     );
+    result.on('error', (error) => {
+      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+        stop();
+      }
+      reject(error);
+    });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
         start();

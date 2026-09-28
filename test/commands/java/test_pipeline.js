@@ -16,7 +16,7 @@ describe('java/pipeline', () => {
     const maven = function maven(command) {
       calls.push(command);
     }
-    const opts = {sources: 'sources-dir', target: 'target-dir'};
+    const opts = {sources: '.', target: 'target-dir'};
     await pipeline(coms, ['register', 'assemble'], opts, maven)
     assert.deepStrictEqual(
       calls[0],
@@ -50,7 +50,7 @@ describe('java/pipeline', () => {
       calls.push(command);
     }
     const opts = {
-      sources: 'lint-sources-dir',
+      sources: '.',
       target: 'lint-target-dir',
       newParser: true,
       easy: true,
@@ -67,7 +67,7 @@ describe('java/pipeline', () => {
     const maven = function maven(command) {
       calls.push(command);
     }
-    await pipeline(coms, ['resolve'], {sources: 'srs', target: 'tgt'}, maven)
+    await pipeline(coms, ['resolve'], {sources: '.', target: 'tgt'}, maven)
     assert(calls[0].includes('eo:resolve'));
     assert(calls[0].includes('eo:place'));
   });
@@ -85,7 +85,7 @@ describe('java/pipeline', () => {
     const maven = function maven(command) {
       calls.push(command);
     }
-    await pipeline(coms, ['register'], {sources: 'iso-srs', target: 'iso-tgt'}, maven)
+    await pipeline(coms, ['register'], {sources: '.', target: 'iso-tgt'}, maven)
     assert.strictEqual(calls.length, 1, 'accumulator carried commands from another run');
   });
 });
