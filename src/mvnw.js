@@ -23,6 +23,19 @@ module.exports.summary = function(args) {
 };
 
 /**
+ * Whether the progress ticker should run: it writes cursor-control
+ * escapes, so it only makes sense on an interactive terminal.
+ * @param {Array} args The arguments passed to Maven
+ * @param {String} tgt The target directory, or undefined
+ * @param {Boolean} batch Whether the run is non-interactive
+ * @return {Boolean} TRUE if the ticker should run
+ */
+module.exports.ticking = function(args, tgt, batch) {
+  return tgt !== undefined && args.includes('--quiet') &&
+    !batch && Boolean(process.stdout.isTTY);
+};
+
+/**
  * The shell to use (depending on operating system).
  * @return {String} Path to shell or "undefined" if default one should be used
  */
@@ -122,35 +135,26 @@ module.exports.mvnw = function(args, tgt, batch) {
         shell: shell(),
       }
     );
+    const ticking = module.exports.ticking(args, tgt, batch);
+    if (ticking) {
+      start();
+    }
     result.on('error', (error) => {
-      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+      if (ticking) {
         stop();
       }
       reject(error);
     });
-    if (tgt !== undefined && args.includes('--quiet')) {
-      if (!batch) {
-        start();
+    result.on('close', (code) => {
+      if (ticking) {
+        stop();
       }
-      result.on('close', (code) => {
-        if (!batch) {
-          stop();
-        }
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
-    } else {
-      result.on('close', (code) => {
-        if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
-    }
+      if (code !== 0) {
+        reject(new Error(`The command "${cmd}" exited with #${code} code`));
+        return;
+      }
+      resolve(args);
+    });
   });
 };
 
