@@ -4,6 +4,7 @@
  */
 
 const assert = require('assert');
+const {EventEmitter} = require('events');
 const fs = require('fs');
 const path = require('path');
 const dataize = require('../../src/commands/java/dataize');
