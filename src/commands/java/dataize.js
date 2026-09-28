@@ -14,6 +14,7 @@ const {verifyJavac} = require('../../jdk');
  * @param {Object} opts - All options
  * @param {Function} [exec] - Optional command runner for the JDK check
  * @param {Function} [runner] - Optional Java process runner
+ * @return {Promise} Resolves when the JVM exits successfully
  */
 module.exports = function(obj, args, opts, exec, runner = spawn) {
   verifyJavac(exec);
@@ -22,10 +23,10 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
     `-Xss${opts.stack}`,
     `-Xmx${opts.heap}`,
     '-jar', path.resolve(opts.target, 'eoc.jar'),
-    opts.verbose ? '--verbose' : '',
+    ...(opts.verbose ? ['--verbose'] : []),
     obj,
     ...args,
-  ].filter((i) => i);
+  ];
   console.debug(`+ java ${params.join(' ')}`);
   const child = runner('java', params, {stdio: 'inherit'});
   child.on('error', (error) => {

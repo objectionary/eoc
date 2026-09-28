@@ -105,6 +105,47 @@ describe('dataize/java', () => {
       'dataize still sets the initial Java heap size'
     );
   });
+  it('waits until the Java process closes successfully', async () => {
+    const child = new EventEmitter();
+    const result = dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      () => child
+    );
+    assert.strictEqual(
+      await Promise.race([result, Promise.resolve('pending')]),
+      'pending',
+      'dataize completed before the JVM closed'
+    );
+    child.emit('close', 0);
+    await result;
+  });
+  it('rejects when the Java process exits with an error', async () => {
+    const child = new EventEmitter();
+    const result = dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      () => child
+    );
+    child.emit('close', 7);
+    await assert.rejects(result, /JVM failed with exit code 7/);
+  });
+  it('rejects when the Java process cannot be started', async () => {
+    const child = new EventEmitter();
+    const result = dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      () => child
+    );
+    child.emit('error', new Error('spawn java denied'));
+    await assert.rejects(result, /spawn java denied/);
+  });
   it('fails fast with a clear message when javac is not on the PATH', () => {
     const missing = () => {
       const cause = new Error('spawnSync javac ENOENT');
