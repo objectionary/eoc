@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, maven} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -11,6 +11,18 @@ const path = require('path');
 const {execSync} = require('child_process');
 
 describe('mvnw', () => {
+  it('runs system Maven from the caller working directory when wrapper is absent', () => {
+    const home = path.join(os.tmpdir(), 'eoc-missing-mvnw');
+    const selected = maven(home);
+    assert.strictEqual(selected.bin, 'mvn', 'system Maven was not selected without the wrapper');
+    assert.strictEqual(selected.cwd, process.cwd(), 'system Maven did not keep the caller working directory');
+  });
+  it('runs bundled Maven wrapper from its own directory', () => {
+    const home = path.resolve(__dirname, '../mvnw');
+    const selected = maven(home);
+    assert.notStrictEqual(selected.bin, 'mvn', 'bundled Maven wrapper was not selected');
+    assert.strictEqual(selected.cwd, home, 'bundled wrapper did not run from its own directory');
+  });
   it('prints Maven own version', async () => {
     const opts = {batch: true};
     await mvnw(['--version', '--quiet'], null, opts.batch);
