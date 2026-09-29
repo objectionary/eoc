@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, quote} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -137,6 +137,34 @@ describe('mvnw', () => {
       summary(['register', 'assemble', '--quiet', '--batch-mode']),
       '2 steps',
       'flags cannot be excluded from the goal count'
+    );
+  });
+  it('does not leak a literal quote into an argument passed through cmd.exe', () => {
+    assert.strictEqual(
+      quote('jeo:assemble', 'C:\\Windows\\system32\\cmd.exe'),
+      '"jeo:assemble"',
+      'a goal quoted for cmd.exe cannot come wrapped in single quotes'
+    );
+  });
+  it('doubles an embedded double quote when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('a"b', 'C:\\Windows\\system32\\cmd.exe'),
+      '"a""b"',
+      'an embedded double quote cannot survive unescaped in a cmd.exe argument'
+    );
+  });
+  it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote('-Deo.sourcesDir=C:\\proj\\a$b\\src', 'powershell.exe'),
+      "'-Deo.sourcesDir=C:\\proj\\a$b\\src'",
+      'a "$" cannot survive quoting meant to keep PowerShell from expanding it'
+    );
+  });
+  it('doubles an embedded single quote when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote("a'b", 'powershell.exe'),
+      "'a''b'",
+      'an embedded single quote cannot survive unescaped in a PowerShell argument'
     );
   });
   it('should handle ENOENT race condition in count function', function () {
