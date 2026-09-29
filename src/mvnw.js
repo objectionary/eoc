@@ -32,6 +32,32 @@ function shell() {
   }
 }
 
+/**
+ * Whether the given shell is cmd.exe.
+ * @param {String} sh - Shell path, as returned by shell()
+ * @return {Boolean} TRUE if it is cmd.exe
+ */
+function cmd(sh) {
+  return /^(?:.*\\)?cmd(?:\.exe)?$/i.test(sh);
+}
+
+/**
+ * Quote a single argument for the Windows shell that will run it.
+ *
+ * cmd.exe does not understand single quotes; they are passed through
+ * literally instead of being stripped, which corrupts the argument.
+ * PowerShell, on the other hand, expands "$" and backtick inside double
+ * quotes. Each shell needs its own literal quoting style.
+ * @param {String} value - Argument to quote
+ * @param {String} sh - Shell chosen by shell()
+ * @return {String} Quoted argument
+ */
+module.exports.quote = function(value, sh) {
+  return cmd(sh) ?
+    `"${value.replace(/"/g, '""')}"` :
+    `'${value.replace(/'/g, "''")}'`;
+};
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -111,15 +137,16 @@ module.exports.mvnw = function(args, tgt, batch) {
       '-Dorg.slf4j.simpleLogger.showDateTime=true',
       '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
     ]);
-    const cmd = `${bin} ${params.join(' ')}`;
-    console.debug('+ %s', cmd);
+    const cmdline = `${bin} ${params.join(' ')}`;
+    console.debug('+ %s', cmdline);
+    const sh = shell();
     const result = spawn(
       bin,
-      process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
+      process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
       {
         cwd: home,
         stdio: 'inherit',
-        shell: shell(),
+        shell: sh,
       }
     );
     result.on('error', (error) => {
@@ -137,7 +164,7 @@ module.exports.mvnw = function(args, tgt, batch) {
           stop();
         }
         if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
           return;
         }
         resolve(args);
@@ -145,7 +172,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     } else {
       result.on('close', (code) => {
         if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
           return;
         }
         resolve(args);
