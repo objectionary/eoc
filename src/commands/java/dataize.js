@@ -29,14 +29,16 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
   ];
   console.debug(`+ java ${params.join(' ')}`);
   const child = runner('java', params, {stdio: 'inherit'});
-  child.on('error', (error) => {
-    console.error(`JVM could not be started: ${error.message}`);
-    process.exit(1);
-  });
-  child.on('close', (code) => {
-    if (code !== 0) {
-      console.error(`JVM failed with exit code ${code}`);
-      process.exit(1);
-    }
+  return new Promise((resolve, reject) => {
+    child.on('error', (error) => {
+      reject(new Error(`JVM could not be started: ${error.message}`, {cause: error}));
+    });
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`JVM failed with exit code ${code}`));
+      }
+    });
   });
 };

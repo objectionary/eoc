@@ -181,34 +181,15 @@ describe('dataize/java', () => {
     );
   });
   it('handles Java spawn errors without an unhandled event', async () => {
-    const original_exit = process.exit;
-    const original_error = console.error;
-    let exit_code;
-    let message;
-    process.exit = (code) => {
-      exit_code = code;
-    };
-    console.error = (error) => {
-      message = error;
-    };
-    try {
-      dataize(
-        'main.foo',
-        [],
-        {target: '.', stack: '64M', heap: '256M'},
-        () => true,
-        () => {
-          const child = new EventEmitter();
-          process.nextTick(() => child.emit('error', new Error('spawn java ENOENT')));
-          return child;
-        }
-      );
-      await new Promise(resolve => setImmediate(resolve));
-      assert.strictEqual(exit_code, 1, 'spawn failure did not use the controlled exit path');
-      assert.match(message, /JVM could not be started: spawn java ENOENT/);
-    } finally {
-      process.exit = original_exit;
-      console.error = original_error;
-    }
+    const child = new EventEmitter();
+    const result = dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      () => child
+    );
+    child.emit('error', new Error('spawn java ENOENT'));
+    await assert.rejects(result, /JVM could not be started: spawn java ENOENT/);
   });
 });
