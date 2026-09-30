@@ -51,7 +51,7 @@ module.exports.flags = function(opts) {
   }
   const sources = path.resolve(opts.sources);
   if (!fs.existsSync(sources) || !fs.statSync(sources).isDirectory()) {
-    throw new Error(`Sources directory does not exist: ${rel(sources)}`);
+    throw new Error(`Sources directory ${rel(sources)} does not exist.`);
   }
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
