@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quoted} = require('../src/mvnw');
+const {mvnw, flags, summary, quote} = require('../src/mvnw');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -139,6 +139,34 @@ describe('mvnw', () => {
       'flags cannot be excluded from the goal count'
     );
   });
+  it('does not leak a literal quote into an argument passed through cmd.exe', () => {
+    assert.strictEqual(
+      quote('jeo:assemble', 'C:\\Windows\\system32\\cmd.exe'),
+      '"jeo:assemble"',
+      'a goal quoted for cmd.exe cannot come wrapped in single quotes'
+    );
+  });
+  it('doubles an embedded double quote when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('a"b', 'C:\\Windows\\system32\\cmd.exe'),
+      '"a""b"',
+      'an embedded double quote cannot survive unescaped in a cmd.exe argument'
+    );
+  });
+  it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote('-Deo.sourcesDir=C:\\proj\\a$b\\src', 'powershell.exe'),
+      "'-Deo.sourcesDir=C:\\proj\\a$b\\src'",
+      'a "$" cannot survive quoting meant to keep PowerShell from expanding it'
+    );
+  });
+  it('doubles an embedded single quote when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote("a'b", 'powershell.exe'),
+      "'a''b'",
+      'an embedded single quote cannot survive unescaped in a PowerShell argument'
+    );
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));
@@ -167,15 +195,6 @@ describe('mvnw', () => {
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
   });
-  it('keeps a dollar sign in a quoted parameter', () => {
-    assert.strictEqual(quoted('-Deo.sourcesDir=/proj/a$b/src'), "'-Deo.sourcesDir=/proj/a$b/src'");
-  });
-  it('keeps a backtick in a quoted parameter', () => {
-    assert.strictEqual(quoted('-Deo.targetDir=/proj/a`n/t'), "'-Deo.targetDir=/proj/a`n/t'");
-  });
-  it('doubles a single quote inside a quoted parameter', () => {
-    assert.strictEqual(quoted("a'b"), "'a''b'");
-  });
   it('passes a dollar sign through the shell untouched', function () {
     if (process.platform !== 'win32') {
       this.skip();
@@ -183,7 +202,7 @@ describe('mvnw', () => {
     this.timeout(60000);
     const arg = `-Deo.sourcesDir=C:${String.fromCharCode(92)}a$b`;
     const out = execSync(
-      `powershell.exe -NoProfile -Command Write-Output ${quoted(arg)}`
+      `powershell.exe -NoProfile -Command Write-Output ${quote(arg, 'powershell.exe')}`
     ).toString().trim();
     assert.strictEqual(out, arg);
   });
