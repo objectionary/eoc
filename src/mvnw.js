@@ -83,12 +83,11 @@ module.exports.flags = function(opts) {
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
   if (opts.parser && !opts.parser.endsWith('-SNAPSHOT') && !parserVersion.exists(opts.parser)) {
-    console.error(colors.red(
+    throw new Error(
       `Parser version ${opts.parser} is not available in Maven Central.\n` +
       `Please check available versions at: https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/\n` +
       `Or use --latest flag to get the most recent version.`
-    ));
-    process.exit(1);
+    );
   }
   return [
     `-Deo.version=${opts.parser}`,
