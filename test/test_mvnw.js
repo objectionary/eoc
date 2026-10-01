@@ -4,6 +4,7 @@
  */
 
 const {mvnw, flags, summary, shell, quote} = require('../src/mvnw');
+const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -87,6 +88,18 @@ describe('mvnw', () => {
     };
     const result = flags(opts);
     assert.ok(result.includes('-Deo.version=1.0-SNAPSHOT'));
+  });
+  it('throws when the requested parser version is unavailable', () => {
+    const exists = parserVersion.exists;
+    parserVersion.exists = () => false;
+    try {
+      assert.throws(
+        () => flags({sources: '.', target: 'target', parser: '9.9.9'}),
+        /Parser version 9\.9\.9 is not available in Maven Central/
+      );
+    } finally {
+      parserVersion.exists = exists;
+    }
   });
   it('rejects when a quiet Maven run exits with a non-zero code', async function () {
     this.timeout(60000);
