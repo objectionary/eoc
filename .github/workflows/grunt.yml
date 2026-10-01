@@ -62,4 +62,4 @@ jobs:
       - uses: yegor256/terald-action@master
         with:
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          chat: -1004371404002
+          chat: ${{ secrets.TELEGRAM_CHAT }}
