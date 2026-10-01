@@ -17,7 +17,11 @@ const {verifyJavac} = require('../../jdk');
  * @return {Promise} Resolves when the JVM exits successfully
  */
 module.exports = function(obj, args, opts, exec, runner = spawn) {
-  verifyJavac(exec);
+  try {
+    verifyJavac(exec);
+  } catch (error) {
+    return Promise.reject(error);
+  }
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,
