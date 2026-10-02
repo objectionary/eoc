@@ -16,6 +16,47 @@ describe('parser-version', () => {
       assert(typeof version === 'string');
       assert(/^\d+\.\d+\.\d+$/.test(version), `Version ${version} should match semver pattern`);
     });
+    it('complains about a 200 that is not the metadata', () => {
+      const cached = parserVersion.value;
+      parserVersion.value = '';
+      try {
+        assert.throws(
+          () => parserVersion.get(() => ({statusCode: 200, body: '<html>proxy notice</html>'})),
+          /No <release> in the metadata at https:/,
+          'a body without metadata must be reported, not dereferenced'
+        );
+      } finally {
+        parserVersion.value = cached;
+      }
+    });
+    it('complains about metadata without a release element', () => {
+      const cached = parserVersion.value;
+      parserVersion.value = '';
+      try {
+        assert.throws(
+          () => parserVersion.get(
+            () => ({statusCode: 200, body: '<metadata><versioning/></metadata>'})
+          ),
+          /No <release> in the metadata/,
+          'metadata without a release must be reported'
+        );
+      } finally {
+        parserVersion.value = cached;
+      }
+    });
+    it('keeps a two-part release as a string', () => {
+      const cached = parserVersion.value;
+      parserVersion.value = '';
+      try {
+        const got = parserVersion.get(() => ({
+          statusCode: 200,
+          body: '<metadata><versioning><release>1.0</release></versioning></metadata>'
+        }));
+        assert.strictEqual(got, '1.0', 'a numeric-looking release must stay a string');
+      } finally {
+        parserVersion.value = cached;
+      }
+    });
     it('caches the version after first fetch', () => {
       const first = parserVersion.get();
       const second = parserVersion.get();
