@@ -18,6 +18,32 @@ const relative = require('relative');
  * @param {Object} opts - All options
  * @return {Promise} of normalize task
  */
+/**
+ * The largest output a single XMIR may produce, in bytes. Node caps the
+ * stdout of a synchronous child at 1 MiB by default, and the parsed XMIR of
+ * the runtime is already halfway there before normalization.
+ */
+const MAX_OUTPUT = 64 * 1024 * 1024;
+
+/**
+ * Rewrite one XMIR through phino.
+ * @param {String} xmir - Path of the XMIR to rewrite
+ * @param {String} rel - Path of that XMIR relative to the parsed directory
+ * @param {function} run - Child process call, defaults to execFileSync
+ * @return {Buffer} The normalized XMIR
+ */
+function normalized(xmir, rel, run = execFileSync) {
+  try {
+    return run(
+      'phino',
+      ['rewrite', '--input=xmir', '--output=xmir', '--normalize', xmir],
+      {stdio: ['pipe', 'pipe', 'pipe'], maxBuffer: MAX_OUTPUT}
+    );
+  } catch (e) {
+    throw new Error(`Failed to normalize ${rel}: ${e.message}`, {cause: e});
+  }
+}
+
 module.exports = function(opts) {
   if (opts.sources === undefined) {
     throw new Error('Sources directory is not specified. Please provide it with --sources option.');
@@ -42,16 +68,7 @@ module.exports = function(opts) {
       const rel = path.relative(parsed, xmir);
       console.debug('Normalizing %s', rel);
       const ts = Date.now();
-      let out;
-      try {
-        out = execFileSync(
-          'phino',
-          ['rewrite', '--input=xmir', '--output=xmir', '--normalize', xmir],
-          {stdio: ['pipe', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024}
-        );
-      } catch (error) {
-        throw new Error(`Failed to normalize ${relative(xmir)}: ${error.message}`, {cause: error});
-      }
+      const out = normalized(xmir, rel);
       console.debug('Normalized in %dms', Date.now() - ts);
       saveFile(normed, rel, out);
     }
@@ -68,3 +85,5 @@ module.exports = function(opts) {
     return r;
   });
 };
+
+module.exports.normalized = normalized;
