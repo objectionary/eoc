@@ -45,6 +45,23 @@ describe('docs', () => {
     assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
     const css_html = path.join(docs, 'styles.css');
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
+    const nested = fs.readFileSync(test1_html, 'utf-8');
+    assert(
+      nested.includes('<link href="../../styles.css"'),
+      `Expected a relative stylesheet link in ${test1_html}, got: ${nested.slice(0, 200)}`
+    );
+    const top = fs.readFileSync(packages_html, 'utf-8');
+    assert(
+      top.includes('<link href="styles.css"'),
+      `Expected a relative stylesheet link in ${packages_html}, got: ${top.slice(0, 200)}`
+    );
+    for (const page of [test1_html, test2_html, package_foo_bar_html, packages_html]) {
+      const body = fs.readFileSync(page, 'utf-8');
+      assert(
+        !/<link href="[^"]*[\\:]/.test(body),
+        `Stylesheet link in ${page} is a filesystem path, not a URL: ${body.slice(0, 200)}`
+      );
+    }
     done();
   });
   /**
