@@ -22,7 +22,6 @@ const language = {
  */
 const common = {
   assemble: require('./commands/assemble'),
-  audit: require('./commands/audit'),
   clean: require('./commands/clean'),
   foreign: require('./commands/foreign'),
   parse: require('./commands/parse'),
@@ -163,13 +162,6 @@ program.hook('preAction', (command) => {
     console.debug(`Working directory changed to ${process.cwd()}`);
   }
 });
-
-program.command('audit')
-  .description('Inspect all packages and report their status')
-  .action(async (str, opts) => {
-    pin(program.opts());
-    await coms().audit(program.opts());
-  });
 
 program.command('foreign')
   .description('Inspect and print the list of foreign objects')
