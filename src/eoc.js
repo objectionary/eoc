@@ -112,7 +112,9 @@ const path = require('path'),
   tag = fs.readFileSync(path.join(__dirname, '../home-tag.txt'), 'utf8').trim(),
   jeo = fs.readFileSync(path.join(__dirname, '../jeo-version.txt'), 'utf8').trim();
 const parser = fs.readFileSync(path.join(__dirname, '../eo-version.txt'), 'utf8').trim();
-console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
+if (!process.argv.includes('--latest')) {
+  console.debug(`EO parser ${parser}; use the --latest flag if you need a fresher one`);
+}
 
 const version = require('./version');
 program
@@ -150,8 +152,14 @@ program
 
 program.hook('preAction', (command) => {
   if (command.opts().latest) {
+    // Maybe here we should also go to GITHUB, find out what is the
+    // latest hash of the objectionary/home repository, and then
+    // set it to the "hash" variable?
     command.setOptionValue('parser', require('./parser-version').get());
   }
+});
+
+program.hook('preAction', (command) => {
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
     try {
