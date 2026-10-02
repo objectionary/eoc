@@ -208,4 +208,15 @@ describe('mvnw', () => {
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
   });
+  it('passes a dollar sign through the shell untouched', function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    this.timeout(60000);
+    const arg = `-Deo.sourcesDir=C:${String.fromCharCode(92)}a$b`;
+    const out = execSync(
+      `powershell.exe -NoProfile -Command Write-Output ${quote(arg, 'powershell.exe')}`
+    ).toString().trim();
+    assert.strictEqual(out, arg);
+  });
 });

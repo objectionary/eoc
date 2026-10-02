@@ -23,12 +23,22 @@ module.exports.summary = function(args) {
 };
 
 /**
+ * Quote a parameter for PowerShell, where single quotes are the literal
+ * form and an embedded quote is doubled.
+ * @param {String} param The parameter to put into the command line
+ * @return {String} The parameter, quoted so that nothing in it expands
+ */
+module.exports.quoted = function(param) {
+  return `'${param.replace(/'/g, `''`)}'`;
+};
+
+/**
  * The shell to use (depending on operating system).
  * @return {String} Path to shell or "undefined" if default one should be used
  */
 function shell() {
   if (process.platform === 'win32') {
-    return process.env.ComSpec || 'powershell.exe';
+    return 'powershell.exe';
   }
 }
 
