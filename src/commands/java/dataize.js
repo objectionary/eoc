@@ -29,7 +29,7 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
     '-jar', path.resolve(opts.target, 'eoc.jar'),
     ...(opts.verbose ? ['--verbose'] : []),
     obj,
-    ...args,
+    ...args
   ];
   console.debug(`+ java ${params.join(' ')}`);
   const child = runner('java', params, {stdio: 'inherit'});
