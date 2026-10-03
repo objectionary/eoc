@@ -64,4 +64,33 @@ describe('files', () => {
     }
     done();
   });
+  it('excludes the target when a source symlink points to it', done => {
+    if (process.platform === 'win32') {
+      done();
+      return;
+    }
+    const home = path.resolve('temp/test-files/source-target-link');
+    const source = path.join(home, 'sources');
+    const target = path.join(home, 'target');
+    const backup = path.join(target, 'before-normalize');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(source, {recursive: true});
+    fs.mkdirSync(target, {recursive: true});
+    fs.writeFileSync(path.join(source, 'main.eo'), '# sample\n[] > main\n');
+    fs.symlinkSync(target, path.join(source, 'through-target'), 'dir');
+    try {
+      copyDir(source, backup, '.eo', target);
+      assert(
+        fs.existsSync(path.join(backup, 'main.eo')),
+        'source files must still be copied into before-normalize'
+      );
+      assert(
+        !fs.existsSync(path.join(backup, 'through-target')),
+        'the target must not be copied back through a source symlink'
+      );
+    } finally {
+      fs.rmSync(home, {recursive: true, force: true});
+    }
+    done();
+  });
 });
