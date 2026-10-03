@@ -58,6 +58,29 @@ module.exports.quote = function(value, sh) {
     `'${value.replace(/'/g, "''")}'`;
 };
 
+/**
+ * Prepare a cmd.exe invocation with each argument stored in the environment.
+ * This keeps percent signs in argument values out of cmd.exe's command text.
+ * @param {String} bin - Command to execute
+ * @param {String[]} params - Arguments to pass to the command
+ * @param {String} sh - Path to cmd.exe
+ * @return {Object} Command, arguments, and environment for spawn()
+ */
+function cmdLine(bin, params, sh) {
+  const env = {EOC_MVN_BIN: module.exports.quote(bin, sh)};
+  const args = params.map((param, index) => {
+    const variable = `EOC_MVN_ARG_${index}`;
+    env[variable] = module.exports.quote(param, sh);
+    return `%${variable}%`;
+  });
+  return {
+    command: sh,
+    args: ['/d', '/s', '/c', `"%EOC_MVN_BIN% ${args.join(' ')}"`],
+    env,
+    windowsVerbatimArguments: true,
+  };
+}
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -139,15 +162,21 @@ module.exports.mvnw = function(args, tgt, batch) {
     const cmdline = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmdline);
     const sh = shell();
-    const result = spawn(
-      bin,
-      process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
-      {
+    let executable = bin;
+    let argumentsList = process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params;
+    let options = {cwd: home, stdio: 'inherit', shell: sh};
+    if (process.platform === 'win32' && cmd(sh)) {
+      const invocation = cmdLine(bin, params, sh);
+      executable = invocation.command;
+      argumentsList = invocation.args;
+      options = {
         cwd: home,
         stdio: 'inherit',
-        shell: sh,
-      }
-    );
+        env: {...process.env, ...invocation.env},
+        windowsVerbatimArguments: invocation.windowsVerbatimArguments,
+      };
+    }
+    const result = spawn(executable, argumentsList, options);
     result.on('error', (error) => {
       if (tgt !== undefined && args.includes('--quiet') && !batch) {
         stop();
@@ -179,6 +208,8 @@ module.exports.mvnw = function(args, tgt, batch) {
     }
   });
 };
+
+module.exports.cmdLine = cmdLine;
 
 /**
  * Starts mvnw execution status detection.
