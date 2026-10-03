@@ -48,7 +48,7 @@ async function ask(port, deadline) {
     await new Promise((resolve) => setTimeout(resolve, 200));
     answer = await ask(port, deadline);
   }
-  if (typeof answer?.forma !== 'string') {
+  if (!answer || typeof answer.forma !== 'string') {
     throw new Error(`Inspection server on port ${port} returned an invalid response`);
   }
   return answer;
