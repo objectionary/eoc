@@ -60,6 +60,22 @@ function convertMarkdownToHtml(html) {
 }
 
 /**
+ * Removes generated pages that were not written during this docs build.
+ * @param {String} directory - Docs output directory
+ * @param {Set} generated - HTML files produced during the build
+ */
+function removeStaleHtml(directory, generated) {
+  for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+    const file = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      removeStaleHtml(file, generated);
+    } else if (entry.isFile() && path.extname(entry.name) === '.html' && !generated.has(file)) {
+      fs.rmSync(file);
+    }
+  }
+}
+
+/**
  * Creates documentation block from given XMIR
  * @param {String} filepath - path of XMIR
  * @return {String} HTML block
@@ -133,6 +149,7 @@ module.exports = function(opts) {
       }
       const packages_info = new Map();
       const all_xmir_htmls = [];
+      const generated_html = new Set();
       const xmirs = findFiles(input, '.xmir');
       for (const xmir of xmirs) {
         const relative = path.relative(input, xmir);
@@ -143,6 +160,7 @@ module.exports = function(opts) {
         const page = name === 'packages' && path.dirname(relative) === '.'
           ? path.join(output, 'packages-object.html') : html_app;
         fs.writeFileSync(page, wrapHtml(name, xmir_html, css));
+        generated_html.add(page);
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
@@ -166,9 +184,11 @@ module.exports = function(opts) {
         fs.mkdirSync(path.dirname(info.path), {recursive: true});
         fs.writeFileSync(info.path,
           generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
+        generated_html.add(info.path);
       }
       const packages = path.join(output, 'packages.html');
       fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      generated_html.add(packages);
       const summary = path.join(output, 'summary.xml');
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -183,6 +203,7 @@ module.exports = function(opts) {
       }
       lines.push('</eodoc>');
       fs.writeFileSync(summary, lines.join('\n'));
+      removeStaleHtml(output, generated_html);
       const located = tracked.print(`Summary XML generated at ${path.relative(process.cwd(), summary)}`);
       tracked.print(`Documentation generation completed in the ${output} directory`);
       return located;

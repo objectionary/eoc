@@ -76,6 +76,36 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that repeated docs builds remove pages for deleted XMIR files.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('removes pages for deleted XMIR files and keeps custom styles', (done) => {
+    const sample = path.join(parsed, 'pkg');
+    fs.mkdirSync(sample, {recursive: true});
+    const stale = path.join(sample, 'stale.xmir');
+    fs.writeFileSync(stale, '<program name="stale" />');
+    fs.writeFileSync(path.join(sample, 'current.xmir'), '<program name="current" />');
+    const run = () => runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    run();
+    const stale_page = path.join(docs, 'pkg', 'stale.html');
+    const current_page = path.join(docs, 'pkg', 'current.html');
+    assert(fs.existsSync(stale_page), 'Expected the first build to create the stale object page');
+    const css = path.join(docs, 'styles.css');
+    const custom = 'body { color: rebeccapurple; }\n';
+    fs.writeFileSync(css, custom);
+    fs.unlinkSync(stale);
+    run();
+    assert(!fs.existsSync(stale_page), 'A deleted XMIR file must not leave an old object page');
+    assert(fs.existsSync(current_page), 'The current object page must still be generated');
+    assert.strictEqual(fs.readFileSync(css, 'utf-8'), custom);
+    done();
+  });
+  /**
    * Tests that a root-level XMIR is not assigned the "." filesystem
    * marker as its package name.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
