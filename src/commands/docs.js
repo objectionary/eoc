@@ -29,7 +29,7 @@ function xmlEscape(str) {
  * @return {String} Safe HTML filename without extension
  */
 function htmlName(name, platform = process.platform) {
-  const device = /^(con|prn|aux|nul|conin\$|conout\$|clock\$|com[1-9¹²³]|lpt[1-9¹²³])$/i;
+  const device = /^(?:con|prn|aux|nul|conin\$|conout\$|clock\$|com[1-9¹²³]|lpt[1-9¹²³])$/i;
   return platform === 'win32' && device.test(name) ? `_${name}` : name;
 }
 
