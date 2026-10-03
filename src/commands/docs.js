@@ -57,9 +57,9 @@ function safeMarkdownUrl(href) {
   let normalized;
   try {
     const decoded = href.replace(
-      /&(#(?:\d+)|(?:#x[0-9a-f]+)|(?:\w+));?/gi,
-      (_, entity) => {
-        const value = entity.toLowerCase();
+      /&(?:#(?:\d+)|#x[0-9a-f]+|\w+);?/gi,
+      entity => {
+        const value = entity.slice(1).replace(/;$/, '').toLowerCase();
         if (value === 'colon') {
           return ':';
         }
