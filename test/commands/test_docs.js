@@ -345,6 +345,35 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that unsafe URL schemes in Markdown are rendered as plain text.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('does not generate links with unsafe URL schemes', (done) => {
+    const fixture = fs.readFileSync(
+      path.join(__dirname, '..', 'resources', 'test6.xmir'), 'utf-8'
+    );
+    const marker = '**Strong test**\\n`Code test`';
+    assert(fixture.includes(marker), 'Expected Markdown fixture to contain the replacement marker');
+    const xmir = fixture.replace(
+      marker,
+      '[safe](https://example.com)\\n[unsafe](javascript:alert(1))\\n' +
+        '[encoded](javascript&#58;alert(1))\\n[escaped](java%73cript:alert(1))'
+    );
+    const filename = path.join(parsed, 'unsafe-link.xmir');
+    fs.writeFileSync(filename, xmir);
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const page = fs.readFileSync(path.join(docs, 'unsafe-link.html'), 'utf-8');
+    assert(page.includes('<a href="https://example.com">safe</a>'), page);
+    assert(!/href="[^"]*(?:javascript|vbscript|data)/i.test(page), page);
+    assert(page.includes('unsafe') && page.includes('encoded') && page.includes('escaped'), page);
+    done();
+  });
+  /**
    * Tests that createXmirHtmlBlock keeps the original error as the cause
    * when the XSL transform fails, instead of silently discarding it.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
