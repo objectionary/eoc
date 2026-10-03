@@ -23,6 +23,17 @@ function xmlEscape(str) {
 }
 
 /**
+ * Make an object page name safe for Windows device basenames.
+ * @param {String} name - EO object name
+ * @param {String} platform - Operating system platform
+ * @return {String} Safe HTML filename without extension
+ */
+function htmlName(name, platform = process.platform) {
+  const device = /^(con|prn|aux|nul|conin\$|conout\$|clock\$|com[1-9¹²³]|lpt[1-9¹²³])$/i;
+  return platform === 'win32' && device.test(name) ? `_${name}` : name;
+}
+
+/**
  * Applies XSLT to XMIR
  * @param {String} xmir - Text of XMIR file
  * @param {String} xsl - Text of XSL file
@@ -138,7 +149,7 @@ module.exports = function(opts) {
         const relative = path.relative(input, xmir);
         const name = path.parse(xmir).name;
         const xmir_html = createXmirHtmlBlock(xmir);
-        const html_app = path.join(output, path.dirname(relative),`${name}.html`);
+        const html_app = path.join(output, path.dirname(relative),`${htmlName(name)}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
         const page = name === 'packages' && path.dirname(relative) === '.'
           ? path.join(output, 'packages-object.html') : html_app;
@@ -194,3 +205,4 @@ module.exports = function(opts) {
 };
 
 module.exports.createXmirHtmlBlock = createXmirHtmlBlock;
+module.exports.htmlName = htmlName;
