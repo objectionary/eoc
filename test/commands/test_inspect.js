@@ -139,7 +139,6 @@ describe('inspect/java', () => {
       original,
       'a source change must invalidate the build fingerprint'
     );
-
     const target = path.resolve('temp/test-inspect-cache');
     fs.rmSync(target, {recursive: true, force: true});
     const sources = path.join(target, 'sources');
