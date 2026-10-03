@@ -17,6 +17,14 @@ describe('java/test', () => {
       `expected -Dtest=org.eolang.foo.TestEOapp*#works_fine, got: ${captured}`
     );
   });
+  it('compiles test sources before running them', async () => {
+    let captured;
+    await test(
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target'},
+      (args) => { captured = args; }
+    );
+    assert.deepStrictEqual(captured.slice(0, 2), ['test-compile', 'surefire:test']);
+  });
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
     await test(
