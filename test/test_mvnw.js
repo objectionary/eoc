@@ -166,7 +166,7 @@ describe('mvnw', () => {
       'an embedded double quote cannot survive unescaped in a cmd.exe argument'
     );
   });
-  it('passes cmd.exe arguments through the environment to preserve percent signs', function() {
+  it('passes cmd.exe arguments through the environment to preserve percent signs', () => {
     const shell = 'C:\\Windows\\System32\\cmd.exe';
     const value = 'C:\\work\\%TEMP%\\sources';
     const prepared = cmdLine('mvnw.cmd', [value], shell);
