@@ -16,6 +16,17 @@ const {findFiles} = require('../files');
  * @return {String} XML-safe string
  */
 function xmlEscape(str) {
+  for (const character of str) {
+    const code = character.codePointAt(0);
+    const valid = code === 0x09 || code === 0x0A || code === 0x0D ||
+      (code >= 0x20 && code <= 0xD7FF) ||
+      (code >= 0xE000 && code <= 0xFFFD) ||
+      (code >= 0x10000 && code <= 0x10FFFF);
+    if (!valid) {
+      const hex = code.toString(16).toUpperCase().padStart(4, '0');
+      throw new Error(`Character U+${hex} is not allowed in XML 1.0`);
+    }
+  }
   return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

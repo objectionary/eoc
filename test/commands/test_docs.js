@@ -163,6 +163,15 @@ describe('docs', () => {
     assert(content.includes('<object name="test2"/>'), 'Expected object test2 in summary.xml');
     done();
   });
+  it('rejects filenames with characters forbidden by XML 1.0', async () => {
+    const sample = path.join(parsed, 'pkg');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'bad\u0001.xmir'), '<program name="test" />');
+    await assert.rejects(
+      generateDocs({target: home, sources: path.resolve(home, 'src')}),
+      /Character U\+0001 is not allowed in XML 1\.0/
+    );
+  });
   /**
    * Tests that the 'docs' command reports the real summary path, rather
    * than the literal "%s" left over by a printf-style call.
