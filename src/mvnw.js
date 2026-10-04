@@ -58,6 +58,22 @@ module.exports.quote = function(value, sh) {
     `'${value.replace(/'/g, "''")}'`;
 };
 
+/**
+ * Make the path to the Maven executable safe for the Windows shell.
+ *
+ * The shell splits an unquoted path at its first space, so a path like
+ * "C:\Users\John Smith\mvnw.cmd" is never found. PowerShell, unlike
+ * cmd.exe, treats a quoted string as a value rather than a command, so
+ * it needs the call operator in front of it.
+ * @param {String} bin - Path to the executable
+ * @param {String} sh - Shell chosen by shell()
+ * @return {String} Executable ready for the shell command line
+ */
+module.exports.executable = function(bin, sh) {
+  const quoted = module.exports.quote(bin, sh);
+  return cmd(sh) ? quoted : `& ${quoted}`;
+};
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -140,7 +156,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmdline);
     const sh = shell();
     const result = spawn(
-      bin,
+      process.platform === 'win32' ? module.exports.executable(bin, sh) : bin,
       process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
       {
         cwd: home,
