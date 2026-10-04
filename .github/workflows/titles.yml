@@ -6,8 +6,6 @@ name: titles
 'on':
   schedule:
     - cron: '0 * * * *'
-  issues:
-    types: [opened]
 concurrency:
   group: titles-${{ github.ref }}
   cancel-in-progress: true
