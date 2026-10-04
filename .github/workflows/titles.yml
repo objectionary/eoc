@@ -11,6 +11,8 @@ name: titles
 concurrency:
   group: titles-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  issues: write
 jobs:
   titles:
     timeout-minutes: 15
