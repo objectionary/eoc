@@ -16,6 +16,8 @@ name: yamllint
     paths:
       - '**.yml'
       - '**.yaml'
+permissions:
+  contents: read
 jobs:
   yamllint:
     timeout-minutes: 15

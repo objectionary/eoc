@@ -12,6 +12,9 @@ name: eo-version-up
 concurrency:
   group: eo-version-up-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   eo-version-up:
     timeout-minutes: 15
