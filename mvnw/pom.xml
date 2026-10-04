@@ -58,6 +58,16 @@
           <excludeSources>**/.eoc/**</excludeSources>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
+          <skipSourceLints>
+            <!--
+            @todo #1430:30min Stop skipping 'direct-phi' here. The lint reports
+            errors in objects pulled from eo-runtime, like 'number.is-nan' and
+            'i64', not in the user's code, so every program failed to dataize.
+            Once objectionary/eo#9130 is released and 'eo-version.txt' is bumped
+            to it, remove this skip and check that 'eoc dataize' still works.
+            -->
+            <lint>direct-phi</lint>
+          </skipSourceLints>
         </configuration>
       </plugin>
       <plugin>
