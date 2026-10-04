@@ -97,8 +97,13 @@ in the current directory:
 
 ```eo
 # My first object in EO!
+
++architect you@example.com
++home https://github.com/you/hello
++version 0.0.1
+
 [args] > hello
-  io.stdout > @
+  Q.stdout > @
     "Hello, world!\n"
 ```
 
