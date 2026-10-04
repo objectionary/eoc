@@ -7,7 +7,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const lint = require('../../src/commands/lint');
-const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
+const {runSync, runOutput, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const simple = ['+architect yegor256@gmail.com', '', '[] > simple', ''].join('\n');
 
@@ -61,6 +61,28 @@ describe('lint', () => {
     assert(
       !fs.existsSync(path.resolve(home, 'target/3-lint/simple.xmir')),
       'Linting should be skipped with --blind option');
+    done();
+  });
+  it('fails when --lints asks for a version of lints that does not exist', (done) => {
+    const home = path.resolve('temp/test-lint/lints');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), simple);
+    const result = runOutput([
+      'lint',
+      '--verbose',
+      '--easy',
+      '--lints=99.99.99',
+      `--parser=${parserVersion}`,
+      `--home-tag=${homeTag}`,
+      '-s', path.resolve(home, 'src'),
+      '-t', path.resolve(home, 'target'),
+    ]);
+    assert.notEqual(result.status, 0, 'a missing lints version must not pass');
+    assert(
+      result.stdout.includes('lints:jar:99.99.99'),
+      'Maven must try to resolve the lints version given with --lints'
+    );
     done();
   });
 });
