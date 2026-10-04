@@ -163,7 +163,10 @@ describe('docs', () => {
     assert(content.includes('<object name="test2"/>'), 'Expected object test2 in summary.xml');
     done();
   });
-  it('rejects filenames with characters forbidden by XML 1.0', async () => {
+  it('rejects filenames with characters forbidden by XML 1.0', async function () {
+    if (process.platform === 'win32') {
+      this.skip();
+    }
     const sample = path.join(parsed, 'pkg');
     fs.mkdirSync(sample, {recursive: true});
     fs.writeFileSync(path.join(sample, 'bad\u0001.xmir'), '<program name="test" />');
