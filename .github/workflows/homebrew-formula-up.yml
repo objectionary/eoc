@@ -9,6 +9,9 @@ name: homebrew-formulas-update
 concurrency:
   group: homebrew-formula-up-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   update-formula:
     timeout-minutes: 15

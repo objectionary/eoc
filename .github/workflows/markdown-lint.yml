@@ -21,6 +21,8 @@ name: markdown-lint
 concurrency:
   group: markdown-lint-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   markdown-lint:
     timeout-minutes: 15

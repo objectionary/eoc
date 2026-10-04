@@ -14,6 +14,9 @@ name: actionlint
       - master
     paths:
       - '.github/**'
+permissions:
+  contents: read
+  checks: write
 jobs:
   actionlint:
     timeout-minutes: 15
