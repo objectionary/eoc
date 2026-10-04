@@ -58,6 +58,16 @@ module.exports.quote = function(value, sh) {
     `'${value.replace(/'/g, "''")}'`;
 };
 
+/**
+ * Name of the Maven goal that a line of Maven output starts, if any.
+ * @param {String} line - One line printed by Maven
+ * @return {String} Goal like "eo:lint", or empty string if the line starts none
+ */
+module.exports.goal = function(line) {
+  const match = line.match(/\[INFO\] --- (?<plugin>[\w.-]+):[\w.-]+:(?<name>[\w.-]+) /);
+  return match ? `${match.groups.plugin}:${match.groups.name}` : '';
+};
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -121,14 +131,16 @@ module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
     target = tgt;
-    phase = module.exports.summary(args);
+    const steps = module.exports.summary(args);
+    phase = steps;
+    const ticking = tgt !== undefined && args.includes('--quiet') && !batch;
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
       console.warn(colors.yellow(`Warning: mvnw not found at ${bin}, falling back to system "mvn"`));
       bin = 'mvn';
     }
-    const params = args.filter((t) => t !== '').concat([
+    const params = args.filter((t) => t !== '' && !(ticking && t === '--quiet')).concat([
       '--batch-mode',
       '--color=never',
       '--fail-fast',
@@ -144,12 +156,24 @@ module.exports.mvnw = function(args, tgt, batch) {
       process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
       {
         cwd: home,
-        stdio: 'inherit',
+        stdio: ticking ? ['inherit', 'pipe', 'inherit'] : 'inherit',
         shell: sh,
       }
     );
+    if (ticking) {
+      readline.createInterface({input: result.stdout}).on('line', (line) => {
+        const name = module.exports.goal(line);
+        if (name) {
+          phase = `${steps}: ${name}`;
+        } else if (!/\[(?:INFO|WARNING|DEBUG)\]/.test(line)) {
+          readline.clearLine(process.stdout);
+          readline.cursorTo(process.stdout, 0);
+          console.log(line);
+        }
+      });
+    }
     result.on('error', (error) => {
-      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+      if (ticking) {
         stop();
       }
       reject(error);
