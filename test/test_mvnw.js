@@ -11,6 +11,28 @@ const os = require('os');
 const path = require('path');
 const {execSync, spawn} = require('child_process');
 
+/**
+ * Wait until a process writes a marker file.
+ * @param {String} file - Marker path
+ * @param {Number} timeout - Maximum wait time in milliseconds
+ * @return {Promise} Resolves when the marker exists
+ */
+function waitForFile(file, timeout) {
+  return new Promise((resolve, reject) => {
+    const deadline = Date.now() + timeout;
+    const check = () => {
+      if (fs.existsSync(file)) {
+        resolve();
+      } else if (Date.now() >= deadline) {
+        reject(new Error(`Timed out waiting for ${file}`));
+      } else {
+        setTimeout(check, 10);
+      }
+    };
+    check();
+  });
+}
+
 describe('mvnw', () => {
   it('prints Maven own version', async () => {
     const opts = {batch: true};
@@ -153,17 +175,12 @@ describe('mvnw', () => {
     const child = spawn(process.execPath, ['-e', script], {detached: true, stdio: 'ignore'});
     const closed = new Promise((resolve) => child.once('close', (code, signal) => resolve([code, signal])));
     try {
-      const deadline = Date.now() + 2000;
-      while (!fs.existsSync(ready) && Date.now() < deadline) {
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+      await waitForFile(ready, 2000);
       assert.ok(fs.existsSync(ready), 'the descendant did not start');
       killTree(child.pid, 'SIGTERM', child);
       const [, signal] = await closed;
       assert.strictEqual(signal, 'SIGTERM');
-      while (!fs.existsSync(stopped) && Date.now() < deadline + 2000) {
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+      await waitForFile(stopped, 2000);
       assert.ok(fs.existsSync(stopped), 'the descendant did not receive SIGTERM');
     } finally {
       if (child.exitCode === null && child.signalCode === null) {

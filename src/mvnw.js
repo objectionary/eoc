@@ -178,9 +178,9 @@ module.exports.mvnw = function(args, tgt, batch) {
         stop();
       }
     };
-    for (const signal of ['SIGINT', 'SIGTERM']) {
+    const handleSignal = (signal) => {
       const handler = () => {
-        interrupted = interrupted || signal;
+        interrupted ||= signal;
         clearTimeout(escalation);
         try {
           module.exports.killTree(result.pid, signal, result);
@@ -195,6 +195,9 @@ module.exports.mvnw = function(args, tgt, batch) {
       };
       handlers.set(signal, handler);
       process.on(signal, handler);
+    };
+    for (const signal of ['SIGINT', 'SIGTERM']) {
+      handleSignal(signal);
     }
     result.on('error', (error) => {
       cleanup();
@@ -208,10 +211,10 @@ module.exports.mvnw = function(args, tgt, batch) {
       if (interrupted) {
         process.exitCode = interrupted === 'SIGINT' ? 130 : 143;
         reject(new Error(`The command "${cmdline}" was interrupted by ${interrupted}`));
-      } else if (code !== 0) {
-        reject(new Error(`The command "${cmdline}" exited with #${code} code`));
-      } else {
+      } else if (code === 0) {
         resolve(args);
+      } else {
+        reject(new Error(`The command "${cmdline}" exited with #${code} code`));
       }
     });
   });
