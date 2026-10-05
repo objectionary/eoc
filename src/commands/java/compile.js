@@ -7,6 +7,7 @@ const {mvnw, flags} = require('../../mvnw');
 const {elapsed} = require('../../elapsed');
 const {verifyJavac} = require('../../jdk');
 const path = require('path');
+const {filled} = require('../../stages');
 
 /**
  * Command to compile target language into binaries.
@@ -17,6 +18,7 @@ module.exports = function(opts) {
   verifyJavac();
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
+    filled(path.resolve(opts.target, 'generated-sources'), '.java', 'transpile');
     const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);
     tracked.print(`Java .class files compiled in ${rel(target)}`);
     return r;
