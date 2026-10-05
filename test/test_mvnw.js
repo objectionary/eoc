@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, goal} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
@@ -178,6 +178,20 @@ describe('mvnw', () => {
       quote("a'b", 'powershell.exe'),
       "'a''b'",
       'an embedded single quote cannot survive unescaped in a PowerShell argument'
+    );
+  });
+  it('finds the goal that Maven starts in its output', () => {
+    assert.equal(
+      goal('2026-10-04 12:40:36 [INFO] --- eo:0.63.1:lint (default-cli) @ eoc ---'),
+      'eo:lint',
+      'the goal banner must give the plugin prefix and the goal name'
+    );
+  });
+  it('finds no goal in an ordinary line of Maven output', () => {
+    assert.equal(
+      goal('2026-10-04 12:40:36 [INFO] Linted 1 out of 1 XMIR program(s)'),
+      '',
+      'a line that starts no goal must give an empty name'
     );
   });
   it('should handle ENOENT race condition in count function', function () {
