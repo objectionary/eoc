@@ -8,7 +8,7 @@ const path = require('path');
 const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
-const {findFiles} = require('../files');
+const {findFiles, assertNoSymlinkPath, safeWriteFile} = require('../files');
 
 /**
  * Escape special XML characters.
@@ -126,10 +126,13 @@ module.exports = function(opts) {
     try {
       const input = path.resolve(opts.target, '1-parse');
       const output = path.resolve(opts.target, 'docs');
+      assertNoSymlinkPath(opts.target, output);
       fs.mkdirSync(output, {recursive: true});
       const css = path.join(output, 'styles.css');
       if (!fs.existsSync(css)) {
-        fs.writeFileSync(css, '');
+        safeWriteFile(opts.target, css, '');
+      } else {
+        assertNoSymlinkPath(opts.target, css);
       }
       const packages_info = new Map();
       const all_xmir_htmls = [];
@@ -139,10 +142,9 @@ module.exports = function(opts) {
         const name = path.parse(xmir).name;
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${name}.html`);
-        fs.mkdirSync(path.dirname(html_app), {recursive: true});
         const page = name === 'packages' && path.dirname(relative) === '.'
           ? path.join(output, 'packages-object.html') : html_app;
-        fs.writeFileSync(page, wrapHtml(name, xmir_html, css));
+        safeWriteFile(opts.target, page, wrapHtml(name, xmir_html, css));
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
@@ -163,12 +165,13 @@ module.exports = function(opts) {
         all_xmir_htmls.push(xmir_html);
       }
       for (const [package_name, info] of packages_info) {
-        fs.mkdirSync(path.dirname(info.path), {recursive: true});
-        fs.writeFileSync(info.path,
+        safeWriteFile(opts.target, info.path,
           generatePackageHtml(`${package_name} package`, info.xmir_htmls, css));
       }
       const packages = path.join(output, 'packages.html');
-      fs.writeFileSync(packages, generatePackageHtml('overall package', all_xmir_htmls, css));
+      safeWriteFile(
+        opts.target, packages, generatePackageHtml('overall package', all_xmir_htmls, css)
+      );
       const summary = path.join(output, 'summary.xml');
       const lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -182,7 +185,7 @@ module.exports = function(opts) {
         lines.push('  </package>');
       }
       lines.push('</eodoc>');
-      fs.writeFileSync(summary, lines.join('\n'));
+      safeWriteFile(opts.target, summary, lines.join('\n'));
       const located = tracked.print(`Summary XML generated at ${path.relative(process.cwd(), summary)}`);
       tracked.print(`Documentation generation completed in the ${output} directory`);
       return located;

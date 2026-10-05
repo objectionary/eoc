@@ -75,6 +75,18 @@ describe('docs', () => {
     );
     done();
   });
+  it('refuses to overwrite a file through a documentation symlink', async function() {
+    if (process.platform === 'win32') {
+      this.skip();
+    }
+    fs.writeFileSync(path.join(parsed, 'sample.xmir'), '<program name="sample" />');
+    fs.mkdirSync(docs, {recursive: true});
+    const outside = path.join(home, 'outside.html');
+    fs.writeFileSync(outside, 'keep this content');
+    fs.symlinkSync(outside, path.join(docs, 'sample.html'), 'file');
+    await assert.rejects(generateDocs({target: home}), /symbolic link/);
+    assert.strictEqual(fs.readFileSync(outside, 'utf-8'), 'keep this content');
+  });
   /**
    * Tests that a root-level XMIR is not assigned the "." filesystem
    * marker as its package name.
