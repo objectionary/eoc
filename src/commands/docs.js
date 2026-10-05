@@ -179,10 +179,10 @@ module.exports = function(opts) {
       assertNoSymlinkPath(opts.target, output);
       fs.mkdirSync(output, {recursive: true});
       const css = path.join(output, 'styles.css');
-      if (!fs.existsSync(css)) {
-        safeWriteFile(opts.target, css, '');
-      } else {
+      if (fs.existsSync(css)) {
         assertNoSymlinkPath(opts.target, css);
+      } else {
+        safeWriteFile(opts.target, css, '');
       }
       const packages_info = new Map();
       const all_xmir_htmls = [];
