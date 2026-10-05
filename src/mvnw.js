@@ -164,7 +164,9 @@ module.exports.mvnw = function(args, tgt, batch) {
     };
     const handleSignal = (signal) => {
       const handler = () => {
-        interrupted ||= signal;
+        if (interrupted === undefined) {
+          interrupted = signal;
+        }
         clearTimeout(escalation);
         try {
           module.exports.killTree(result.pid, signal, result);
