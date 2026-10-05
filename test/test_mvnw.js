@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, executable} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
@@ -178,6 +178,20 @@ describe('mvnw', () => {
       quote("a'b", 'powershell.exe'),
       "'a''b'",
       'an embedded single quote cannot survive unescaped in a PowerShell argument'
+    );
+  });
+  it('quotes a path with a space to the executable for cmd.exe', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'C:\\Windows\\system32\\cmd.exe'),
+      '"C:\\Users\\John Smith\\mvnw.cmd"',
+      'a path with a space must reach cmd.exe as one quoted token'
+    );
+  });
+  it('calls a quoted path to the executable through the call operator in PowerShell', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'powershell.exe'),
+      "& 'C:\\Users\\John Smith\\mvnw.cmd'",
+      'PowerShell runs a quoted path only behind the call operator'
     );
   });
   it('should handle ENOENT race condition in count function', function () {
