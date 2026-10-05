@@ -47,6 +47,32 @@ describe('docs', () => {
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
     done();
   });
+  it('keeps object pages separate from package summaries', (done) => {
+    const package_dir = path.join(parsed, 'foo');
+    fs.mkdirSync(package_dir, {recursive: true});
+    for (const name of ['package_foo', 'packages', 'packages-object']) {
+      fs.writeFileSync(path.join(parsed, `${name}.xmir`), `<program name="${name}" />`);
+    }
+    fs.writeFileSync(path.join(package_dir, 'nested.xmir'), '<program name="nested" />');
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const pages = [
+      path.join(docs, 'package_foo.html'),
+      path.join(docs, 'packages-object.html'),
+      path.join(docs, '_eoc-conflicts/objects/packages.html'),
+      path.join(docs, '_eoc-conflicts/packages/foo.html'),
+      path.join(docs, 'packages.html')
+    ];
+    assert.strictEqual(new Set(pages).size, pages.length, 'Generated paths must be unique');
+    for (const page of pages) {
+      assert(fs.existsSync(page), `Expected generated page ${page}`);
+    }
+    done();
+  });
   /**
    * Tests that a second documentation build preserves custom styles.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion

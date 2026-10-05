@@ -117,6 +117,56 @@ function wrapHtml(name, html, css) {
 }
 
 /**
+ * Make a normalized key for comparing output paths on case-insensitive filesystems.
+ * @param {string} file - Path to normalize
+ * @return {string} Normalized output key
+ */
+function outputKey(file) {
+  return path.resolve(file).toLowerCase();
+}
+
+/**
+ * Select a unique fallback path for an output that collides with another page.
+ * @param {string} output - Documentation output directory
+ * @param {string} kind - Output kind
+ * @param {string} relative - Relative page path
+ * @param {Set} reserved - Original output paths
+ * @param {Set} used - Paths already assigned
+ * @return {string} Unique fallback path
+ */
+function fallbackPath(output, kind, relative, reserved, used) {
+  const parsed = path.parse(relative);
+  let suffix = '';
+  let index = 0;
+  let candidate;
+  do {
+    const name = path.join(parsed.dir, `${parsed.name}${suffix}${parsed.ext}`);
+    candidate = path.join(output, '_eoc-conflicts', kind, name);
+    suffix = `-${++index}`;
+  } while (reserved.has(outputKey(candidate)) || used.has(outputKey(candidate)));
+  return candidate;
+}
+
+/**
+ * Assign the requested path or a unique fallback when it is already taken.
+ * @param {string} requested - Requested output path
+ * @param {string} output - Documentation output directory
+ * @param {string} kind - Output kind
+ * @param {string} relative - Relative page path
+ * @param {Set} reserved - Original output paths
+ * @param {Set} used - Paths already assigned
+ * @return {string} Assigned output path
+ */
+function assignOutputPath(requested, output, kind, relative, reserved, used) {
+  let selected = requested;
+  if (used.has(outputKey(selected))) {
+    selected = fallbackPath(output, kind, relative, reserved, used);
+  }
+  used.add(outputKey(selected));
+  return selected;
+}
+
+/**
  * Command to generate documentation.
  * @param {Hash} opts - All options
  * @return {Promise<String>} Resolves to the message reporting the summary path
@@ -136,22 +186,59 @@ module.exports = function(opts) {
       }
       const packages_info = new Map();
       const all_xmir_htmls = [];
-      const xmirs = findFiles(input, '.xmir');
+      const xmirs = findFiles(input, '.xmir').sort();
+      const object_pages = new Map();
+      const object_candidates = [];
+      const package_names = new Set();
+      for (const xmir of xmirs) {
+        const relative = path.relative(input, xmir);
+        const name = path.parse(xmir).name;
+        const html = path.join(path.dirname(relative), `${name}.html`);
+        const requested = name === 'packages' && path.dirname(relative) === '.'
+          ? path.join(output, 'packages-object.html') : path.join(output, html);
+        object_candidates.push({xmir, requested, relative: html});
+        const package_dir = path.dirname(relative);
+        if (package_dir !== '.') {
+          package_names.add(package_dir.split(path.sep).join('.'));
+        }
+      }
+      const package_candidates = [...package_names].sort().map((name) => ({
+        name,
+        requested: path.join(output, `package_${name}.html`),
+        relative: `${name}.html`
+      }));
+      const static_paths = [
+        css,
+        path.join(output, 'packages.html'),
+        path.join(output, 'summary.xml')
+      ];
+      const reserved = new Set([
+        ...static_paths,
+        ...object_candidates.map(item => item.requested),
+        ...package_candidates.map(item => item.requested)
+      ].map(outputKey));
+      const used = new Set(static_paths.map(outputKey));
+      for (const page of object_candidates) {
+        object_pages.set(page.xmir, assignOutputPath(
+          page.requested, output, 'objects', page.relative, reserved, used
+        ));
+      }
+      const package_pages = new Map();
+      for (const page of package_candidates) {
+        package_pages.set(page.name, assignOutputPath(
+          page.requested, output, 'packages', page.relative, reserved, used
+        ));
+      }
       for (const xmir of xmirs) {
         const relative = path.relative(input, xmir);
         const name = path.parse(xmir).name;
         const xmir_html = createXmirHtmlBlock(xmir);
-        const html_app = path.join(output, path.dirname(relative),`${name}.html`);
-        const page = name === 'packages' && path.dirname(relative) === '.'
-          ? path.join(output, 'packages-object.html') : html_app;
+        const page = object_pages.get(xmir);
         safeWriteFile(opts.target, page, wrapHtml(name, xmir_html, css));
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
           const package_name = package_dir.split(path.sep).join('.');
-          const html_package = path.join(
-            output,
-            `package_${package_name}.html`
-          );
+          const html_package = package_pages.get(package_name);
           if (!packages_info.has(package_name)) {
             packages_info.set(package_name, {
               xmir_htmls : [],
