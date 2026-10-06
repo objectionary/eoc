@@ -9,22 +9,22 @@ const assert = require('assert');
 describe('elapsed', () => {
   const snooze = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   /**
-   * Stub Date.now so the first invocation returns 0 and the next returns
+   * Stub the monotonic clock so the first invocation returns 0 and the next returns
    * the given duration in milliseconds. This lets us simulate long
    * elapsed times without actually waiting.
    * @param {Number} duration - Pretended elapsed time in ms.
-   * @return {Function} Restore function that puts back the original Date.now.
+   * @return {Function} Restore function that puts back the original monotonic clock.
    */
-  const stubNow = (duration) => {
-    const original = Date.now;
+  const stubMonotonic = (duration) => {
+    const original = process.hrtime.bigint;
     let calls = 0;
-    Date.now = () => {
+    process.hrtime.bigint = () => {
       const value = calls === 0 ? 0 : duration;
       calls += 1;
-      return value;
+      return BigInt(value * 1e6);
     };
     return () => {
-      Date.now = original;
+      process.hrtime.bigint = original;
     };
   };
   it('measures time correctly', async () => {
@@ -58,7 +58,7 @@ describe('elapsed', () => {
     );
   });
   it('reports a 5-minute task in minutes, not in fractional hours', () => {
-    const restore = stubNow(5 * 60 * 1000);
+    const restore = stubMonotonic(5 * 60 * 1000);
     try {
       const actual = elapsed((tracked) => tracked.print('long task'));
       assert.strictEqual(actual, 'long task in 5min');
@@ -67,7 +67,7 @@ describe('elapsed', () => {
     }
   });
   it('rounds a sub-minute-multiple duration up to the next minute', () => {
-    const restore = stubNow(3 * 60 * 1000 + 12 * 1000);
+    const restore = stubMonotonic(3 * 60 * 1000 + 12 * 1000);
     try {
       const actual = elapsed((tracked) => tracked.print('odd task'));
       assert.strictEqual(actual, 'odd task in 4min');
@@ -76,11 +76,27 @@ describe('elapsed', () => {
     }
   });
   it('reports exactly 1 minute when the duration is 60s', () => {
-    const restore = stubNow(60 * 1000);
+    const restore = stubMonotonic(60 * 1000);
     try {
       const actual = elapsed((tracked) => tracked.print('boundary task'));
       assert.strictEqual(actual, 'boundary task in 1min');
     } finally {
+      restore();
+    }
+  });
+  it('does not report a negative duration after the wall clock moves backwards', () => {
+    const restore = stubMonotonic(10 * 1000);
+    const original = Date.now;
+    let calls = 0;
+    Date.now = () => {
+      calls += 1;
+      return calls === 1 ? 2000 : 1000;
+    };
+    try {
+      const actual = elapsed((tracked) => tracked.print('task'));
+      assert.strictEqual(actual, 'task in 10s');
+    } finally {
+      Date.now = original;
       restore();
     }
   });
