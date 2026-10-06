@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs');
+const crypto = require('crypto');
 const path = require('path');
 const {spawn} = require('node:child_process');
 const {mvnw, flags} = require('../../mvnw');
@@ -12,18 +13,47 @@ const {verifyJavac} = require('../../jdk');
 /**
  * The jar with the inspection server, built on demand.
  * @param {Object} opts - All options
+ * @param {Function} [build] - Optional Maven builder
  * @return {Promise<String>} Path to the jar
  */
-async function jar(opts) {
+async function jar(opts, build = mvnw) {
   const built = path.resolve(opts.target, 'inspect', 'inspect.jar');
-  if (!fs.existsSync(built)) {
-    await mvnw(
-      ['package', '-f', path.resolve(__dirname, '../../../inspect/pom.xml')].concat(flags(opts)),
-      opts.target,
-      opts.batch
-    );
+  const stamp = path.resolve(opts.target, 'inspect', '.inspect-source.sha256');
+  const project = path.resolve(__dirname, '../../../inspect');
+  const args = ['package', '-f', path.join(project, 'pom.xml')].concat(flags(opts));
+  const current = fingerprint(project, args);
+  const stored = fs.existsSync(stamp) ? fs.readFileSync(stamp, 'utf-8') : '';
+  if (!fs.existsSync(built) || stored !== current) {
+    await build(args, opts.target, opts.batch);
+    fs.writeFileSync(stamp, current);
   }
   return built;
+}
+
+/**
+ * Fingerprint the inspection server source and its Maven build arguments.
+ * @param {String} project - Inspection server project directory
+ * @param {String[]} args - Maven arguments used for the build
+ * @return {String} SHA-256 digest for the build inputs
+ */
+function fingerprint(project, args) {
+  const digest = crypto.createHash('sha256');
+  function append(file) {
+    const stat = fs.statSync(file);
+    if (stat.isDirectory()) {
+      for (const name of fs.readdirSync(file).sort()) {
+        append(path.join(file, name));
+      }
+    } else {
+      digest.update(path.relative(project, file));
+      digest.update('\0');
+      digest.update(fs.readFileSync(file));
+    }
+  }
+  append(path.join(project, 'pom.xml'));
+  append(path.join(project, 'src'));
+  digest.update(args.join('\0'));
+  return digest.digest('hex');
 }
 
 /**
@@ -117,3 +147,6 @@ module.exports = async function(opts, exec, runner = spawn) {
     server.kill();
   }
 };
+
+module.exports.jar = jar;
+module.exports.fingerprint = fingerprint;

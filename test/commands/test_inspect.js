@@ -10,6 +10,7 @@ const http = require('http');
 const net = require('net');
 const path = require('path');
 const inspect = require('../../src/commands/java/inspect');
+const {flags} = require('../../src/mvnw');
 const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 /**
@@ -63,6 +64,15 @@ describe('inspect/java', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'inspect'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'inspect', 'inspect.jar'), '');
+    const sources = path.resolve(home, 'sources');
+    fs.mkdirSync(sources, {recursive: true});
+    const opts = {target: home, sources, port: 0, batch: true};
+    const project = path.resolve(__dirname, '../../inspect');
+    const args = ['package', '-f', path.join(project, 'pom.xml')].concat(flags(opts));
+    fs.writeFileSync(
+      path.resolve(home, 'inspect', '.inspect-source.sha256'),
+      inspect.fingerprint(project, args)
+    );
     const server = http.createServer((req, res) => {
       res.writeHead(200, {'Content-Type': 'application/json'});
       res.end('{"forma":"Φ"}');
@@ -74,7 +84,7 @@ describe('inspect/java', () => {
     console.info = (line) => printed.push(line);
     try {
       await inspect(
-        {target: home, port: server.address().port},
+        {...opts, port: server.address().port},
         () => true,
         (command, args) => {
           params = args;
@@ -115,11 +125,48 @@ describe('inspect/java', () => {
   it('kills the server when the session ends', () => {
     assert(killed, 'inspect leaves the server running');
   });
+  it('rebuilds the server jar when its sources or Maven arguments change', async () => {
+    const project = path.resolve('temp/test-inspect-fingerprint');
+    fs.rmSync(project, {recursive: true, force: true});
+    const source = path.join(project, 'src/main/java/Inspect.java');
+    fs.mkdirSync(path.dirname(source), {recursive: true});
+    fs.writeFileSync(path.join(project, 'pom.xml'), '<project/>');
+    fs.writeFileSync(source, 'class Inspect {}');
+    const original = inspect.fingerprint(project, ['package']);
+    fs.writeFileSync(source, 'class Inspect { void changed() {} }');
+    assert.notStrictEqual(
+      inspect.fingerprint(project, ['package']),
+      original,
+      'a source change must invalidate the build fingerprint'
+    );
+    const target = path.resolve('temp/test-inspect-cache');
+    fs.rmSync(target, {recursive: true, force: true});
+    const sources = path.join(target, 'sources');
+    fs.mkdirSync(sources, {recursive: true});
+    const opts = {target, sources, homeTag: 'first', batch: true};
+    let builds = 0;
+    const build = async () => {
+      builds += 1;
+      const output = path.join(target, 'inspect');
+      fs.mkdirSync(output, {recursive: true});
+      fs.writeFileSync(path.join(output, 'inspect.jar'), 'jar');
+    };
+    try {
+      await inspect.jar(opts, build);
+      await inspect.jar(opts, build);
+      assert.strictEqual(builds, 1, 'an unchanged server jar should be reused');
+      await inspect.jar({...opts, homeTag: 'second'}, build);
+      assert.strictEqual(builds, 2, 'changed Maven arguments must rebuild the server jar');
+    } finally {
+      fs.rmSync(project, {recursive: true, force: true});
+      fs.rmSync(target, {recursive: true, force: true});
+    }
+  });
   it('fails immediately when the inspection server exits early', async () => {
     const port = await free();
     await assert.rejects(
       () => inspect(
-        {target: home, port},
+        {target: home, sources: path.resolve(home, 'sources'), port},
         () => true,
         () => {
           const server = new EventEmitter();
