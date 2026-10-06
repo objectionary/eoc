@@ -36,16 +36,21 @@ async function jar(opts) {
  */
 async function ask(port, deadline) {
   let answer;
+  const remaining = Math.max(1, deadline - Date.now());
+  const timeout = AbortSignal.timeout(remaining);
   try {
-    answer = await (await fetch(`http://127.0.0.1:${port}/`)).json();
+    answer = await (await fetch(
+      `http://127.0.0.1:${port}/`,
+      {signal: timeout}
+    )).json();
   } catch (error) {
-    if (Date.now() > deadline) {
+    if (Date.now() >= deadline || timeout.aborted) {
       throw new Error(
         `The inspection server has not opened port ${port} in a minute`,
         {cause: error}
       );
     }
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, Math.max(1, Math.min(200, deadline - Date.now()))));
     answer = await ask(port, deadline);
   }
   if (!answer || typeof answer.forma !== 'string') {
@@ -117,3 +122,5 @@ module.exports = async function(opts, exec, runner = spawn) {
     server.kill();
   }
 };
+
+module.exports.ask = ask;
