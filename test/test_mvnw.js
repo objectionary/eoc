@@ -3,13 +3,35 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote, count} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, killTree, count} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {execSync} = require('child_process');
+const {execSync, spawn} = require('child_process');
+
+/**
+ * Wait until a process writes a marker file.
+ * @param {String} file - Marker path
+ * @param {Number} timeout - Maximum wait time in milliseconds
+ * @return {Promise} Resolves when the marker exists
+ */
+function waitForFile(file, timeout) {
+  return new Promise((resolve, reject) => {
+    const deadline = Date.now() + timeout;
+    const check = () => {
+      if (fs.existsSync(file)) {
+        resolve();
+      } else if (Date.now() >= deadline) {
+        reject(new Error(`Timed out waiting for ${file}`));
+      } else {
+        setTimeout(check, 10);
+      }
+    };
+    check();
+  });
+}
 
 describe('mvnw', () => {
   it('prints Maven own version', async () => {
@@ -130,6 +152,46 @@ describe('mvnw', () => {
     await assert.rejects(mvnw(['--unrecognized-eoc-flag', '--quiet'], null, true));
     const args = await mvnw(['--version', '--quiet'], null, true);
     assert.ok(args.includes('--version'), 'mvnw cannot run again, the process did not survive a failed run');
+  });
+  it('sends a termination signal to the Maven process tree', async function () {
+    if (process.platform === 'win32') {
+      this.skip();
+    }
+    this.timeout(5000);
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-signal-'));
+    const ready = path.join(dir, 'ready');
+    const stopped = path.join(dir, 'stopped');
+    const nested = [
+      "const fs = require('fs');",
+      `process.on('SIGTERM', () => { fs.writeFileSync(${JSON.stringify(stopped)}, 'term'); process.exit(0); });`,
+      `fs.writeFileSync(${JSON.stringify(ready)}, 'ready');`,
+      'setInterval(() => {}, 1000);'
+    ].join('\n');
+    const script = [
+      "const {spawn} = require('child_process');",
+      `spawn(process.execPath, ['-e', ${JSON.stringify(nested)}], {stdio: 'ignore'});`,
+      'setInterval(() => {}, 1000);'
+    ].join('\n');
+    const child = spawn(process.execPath, ['-e', script], {detached: true, stdio: 'ignore'});
+    const closed = new Promise((resolve) => child.once('close', (code, signal) => resolve([code, signal])));
+    try {
+      await waitForFile(ready, 2000);
+      assert.ok(fs.existsSync(ready), 'the descendant did not start');
+      killTree(child.pid, 'SIGTERM', child);
+      const [, signal] = await closed;
+      assert.strictEqual(signal, 'SIGTERM');
+      await waitForFile(stopped, 2000);
+      assert.ok(fs.existsSync(stopped), 'the descendant did not receive SIGTERM');
+    } finally {
+      if (child.exitCode === null && child.signalCode === null) {
+        try {
+          killTree(child.pid, 'SIGKILL', child);
+        } catch (error) {
+          child.kill('SIGKILL');
+        }
+      }
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
   });
   it('collapses several Maven goals into a count', () => {
     assert.strictEqual(

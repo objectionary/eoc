@@ -146,38 +146,97 @@ module.exports.mvnw = function(args, tgt, batch) {
         cwd: home,
         stdio: 'inherit',
         shell: sh,
+        detached: process.platform !== 'win32',
       }
     );
-    result.on('error', (error) => {
-      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+    const progress = tgt !== undefined && args.includes('--quiet') && !batch;
+    const handlers = new Map();
+    let interrupted;
+    let escalation;
+    const cleanup = () => {
+      for (const [signal, handler] of handlers) {
+        process.off(signal, handler);
+      }
+      clearTimeout(escalation);
+      if (progress) {
         stop();
       }
+    };
+    const handleSignal = (signal) => {
+      const handler = () => {
+        if (interrupted === undefined) {
+          interrupted = signal;
+        }
+        clearTimeout(escalation);
+        try {
+          module.exports.killTree(result.pid, signal, result);
+        } catch {
+          result.kill(signal);
+        }
+        escalation = setTimeout(
+          () => module.exports.killTree(result.pid, 'SIGKILL', result),
+          5000
+        );
+        escalation.unref();
+      };
+      handlers.set(signal, handler);
+      process.on(signal, handler);
+    };
+    for (const signal of ['SIGINT', 'SIGTERM']) {
+      handleSignal(signal);
+    }
+    result.on('error', (error) => {
+      cleanup();
       reject(error);
     });
-    if (tgt !== undefined && args.includes('--quiet')) {
-      if (!batch) {
-        start();
-      }
-      result.on('close', (code) => {
-        if (!batch) {
-          stop();
-        }
-        if (code !== 0) {
-          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
-    } else {
-      result.on('close', (code) => {
-        if (code !== 0) {
-          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
-          return;
-        }
-        resolve(args);
-      });
+    if (progress) {
+      start();
     }
+    result.on('close', (code) => {
+      cleanup();
+      if (interrupted) {
+        process.exitCode = interrupted === 'SIGINT' ? 130 : 143;
+        reject(new Error(`The command "${cmdline}" was interrupted by ${interrupted}`));
+      } else if (code === 0) {
+        resolve(args);
+      } else {
+        reject(new Error(`The command "${cmdline}" exited with #${code} code`));
+      }
+    });
   });
+};
+
+/**
+ * Send a signal to the complete Maven process tree.
+ * @param {Number} pid - The process ID returned by spawn
+ * @param {String} signal - The signal to send
+ * @param {Object} child - The spawned Maven process
+ */
+module.exports.killTree = function killTree(pid, signal, child) {
+  if (!pid) {
+    return;
+  }
+  if (process.platform === 'win32') {
+    const killer = spawn(
+      'taskkill', ['/PID', String(pid), '/T', '/F'],
+      {stdio: 'ignore', windowsHide: true}
+    );
+    killer.on('error', () => child.kill(signal));
+    killer.on('close', (code) => {
+      if (code !== 0) {
+        child.kill(signal);
+      }
+    });
+    return;
+  }
+  try {
+    process.kill(-pid, signal);
+  } catch (error) {
+    if (error.code !== 'ESRCH') {
+      throw error;
+    }
+    child.kill(signal);
+  }
 };
 
 /**
