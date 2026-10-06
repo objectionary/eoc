@@ -76,4 +76,33 @@ describe('files', () => {
     }
     done();
   });
+  it('refuses to copy into a destination directory symlink', done => {
+    if (process.platform === 'win32') {
+      done();
+      return;
+    }
+    const home = path.resolve('temp/test-files/symlink-destination');
+    const source = path.join(home, 'sources');
+    const target = path.join(home, 'target');
+    const outside = path.join(home, 'outside');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(source, {recursive: true});
+    fs.mkdirSync(target, {recursive: true});
+    fs.mkdirSync(outside, {recursive: true});
+    fs.writeFileSync(path.join(source, 'sample.eo'), 'replacement');
+    fs.writeFileSync(path.join(outside, 'sample.eo'), 'original');
+    fs.symlinkSync(outside, path.join(target, 'before-normalize'), 'dir');
+    try {
+      assert.throws(
+        () => copyDir(
+          source, path.join(target, 'before-normalize'), '.eo', undefined, new Set(), target
+        ),
+        /symbolic link/
+      );
+      assert.strictEqual(fs.readFileSync(path.join(outside, 'sample.eo'), 'utf-8'), 'original');
+    } finally {
+      fs.rmSync(home, {recursive: true, force: true});
+    }
+    done();
+  });
 });

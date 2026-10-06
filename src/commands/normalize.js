@@ -33,7 +33,9 @@ module.exports = function(opts) {
   const sources = path.resolve(opts.sources);
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
-    copyDir(sources, path.join(target, 'before-normalize'), '.eo', target);
+    copyDir(
+      sources, path.join(target, 'before-normalize'), '.eo', target, new Set(), target
+    );
     const parsed = path.join(target, '1-parse');
     const normed = path.join(target, 'xmir-normalized');
     const xmirs = findFiles(parsed, '.xmir');
@@ -53,7 +55,7 @@ module.exports = function(opts) {
         throw new Error(`Failed to normalize ${relative(xmir)}: ${error.message}`, {cause: error});
       }
       console.debug('Normalized in %dms', Date.now() - ts);
-      saveFile(normed, rel, out);
+      saveFile(normed, rel, out, target);
     }
     const r = await mvnw(
       ['eo:print']
