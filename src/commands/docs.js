@@ -49,13 +49,55 @@ function transformDocument(xmir, xsl) {
 }
 
 /**
+ * Whether a URL used by a Markdown link can load active content.
+ * @param {String} href - Link URL from the Markdown renderer
+ * @return {Boolean} True if the URL does not use an active-content scheme
+ */
+function safeMarkdownUrl(href) {
+  let normalized;
+  try {
+    const decoded = href.replace(
+      /&(?:#(?:\d+)|#x[0-9a-f]+|\w+);?/gi,
+      entity => {
+        const value = entity.slice(1).replace(/;$/, '').toLowerCase();
+        if (value === 'colon') {
+          return ':';
+        }
+        if (value.charAt(0) !== '#') {
+          return '';
+        }
+        return String.fromCharCode(
+          value.charAt(1) === 'x' ? parseInt(value.substring(2), 16) : Number(value.substring(1))
+        );
+      }
+    );
+    normalized = decodeURIComponent(decoded).replace(/[^\w:]/g, '').toLowerCase();
+  } catch {
+    return false;
+  }
+  return !/^(?:javascript|vbscript|data):/.test(normalized);
+}
+
+/**
  * Converts Markdown blocks in documentation to HTML
  * @param {String} html - text of HTML file
  * @return {String} HTML document
  */
 function convertMarkdownToHtml(html) {
   const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
-  const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
+  const renderer = new marked.Renderer();
+  const link = renderer.link.bind(renderer);
+  renderer.link = (href, title, text) => {
+    if (!safeMarkdownUrl(href)) {
+      return text;
+    }
+    return link(href, title, text);
+  };
+  const converted_html = html.replace(
+    regex,
+    (match, opening_tag, content, closing_tag) =>
+      `${opening_tag}${marked.parse(content, {renderer})}${closing_tag}`
+  );
   return converted_html;
 }
 
