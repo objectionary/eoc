@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const rel = require('relative');
 
 /**
  * Recursively find all files with given extension in a directory.
@@ -84,4 +85,16 @@ function copyDir(src, dst, ext, excluded, visited = new Set()) {
   visited.delete(real);
 }
 
-module.exports = {findFiles, saveFile, copyDir};
+/**
+ * Return the directory, failing when it does not exist.
+ * @param {string} dir - Directory that must exist
+ * @return {string} The same directory
+ */
+function existing(dir) {
+  if (!fs.existsSync(dir)) {
+    throw new Error(`Directory ${rel(dir)} does not exist`);
+  }
+  return dir;
+}
+
+module.exports = {findFiles, saveFile, copyDir, existing};
