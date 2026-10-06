@@ -30,5 +30,5 @@ module.exports = function(opts) {
 module.exports.goals = goals;
 
 function goals() {
-  return ['test-compile'];
+  return ['compile'];
 }
