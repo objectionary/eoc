@@ -14,7 +14,7 @@ const eo2jsw = require('../../eo2jsw');
  */
 module.exports = function(obj, args, opts) {
   return eo2jsw(
-    ['dataize', obj, ...args.filter((arg) => !arg.startsWith('-'))],
+    ['dataize', obj, ...args],
     {...opts, alone: true, project: 'project'}
   );
 };
