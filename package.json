@@ -47,7 +47,6 @@
     "oop"
   ],
   "license": "MIT",
-  "main": "eoc",
   "name": "eolang",
   "nyc": {
     "all": true,
