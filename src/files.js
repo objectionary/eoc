@@ -27,7 +27,7 @@ function assertNoSymlinkPath(root, destination) {
     try {
       stat = fs.lstatSync(current);
     } catch (error) {
-      if (error.code === 'ENOENT') {
+      if (error.code === 'ENOENT' || error.code === 'ENOTDIR') {
         return;
       }
       throw error;
