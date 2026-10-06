@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const rel = require('relative');
 
 /**
  * Refuse a destination that escapes its root or traverses a symbolic link.
@@ -137,4 +138,16 @@ function safeWriteFile(root, file, content) {
   fs.writeFileSync(file, content);
 }
 
-module.exports = {findFiles, saveFile, copyDir, assertNoSymlinkPath, safeWriteFile};
+/**
+ * Return the directory, failing when it does not exist.
+ * @param {string} dir - Directory that must exist
+ * @return {string} The same directory
+ */
+function existing(dir) {
+  if (!fs.existsSync(dir)) {
+    throw new Error(`Directory ${rel(dir)} does not exist`);
+  }
+  return dir;
+}
+
+module.exports = {findFiles, saveFile, copyDir, assertNoSymlinkPath, safeWriteFile, existing};

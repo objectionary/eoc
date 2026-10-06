@@ -6,9 +6,21 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {copyDir, findFiles} = require('../src/files');
+const {copyDir, findFiles, existing} = require('../src/files');
 
 describe('files', () => {
+  it('returns a directory that exists', () => {
+    const home = path.resolve('temp/test-files/existing');
+    fs.mkdirSync(home, {recursive: true});
+    assert.equal(existing(home), home, 'an existing directory must come back unchanged');
+  });
+  it('rejects a directory that does not exist', () => {
+    assert.throws(
+      () => existing(path.resolve('temp/test-files/absent')),
+      /absent does not exist/,
+      'a missing directory must be reported with its path'
+    );
+  });
   it('excludes a nested target from recursive copying', done => {
     const home = path.resolve('temp/test-files/nested-target'),
       target = path.resolve(home, '.eoc'),
