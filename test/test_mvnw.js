@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote, count} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, count, cmdLine} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {execSync} = require('child_process');
+const {execSync, spawnSync} = require('child_process');
 
 describe('mvnw', () => {
   it('prints Maven own version', async () => {
@@ -165,6 +165,33 @@ describe('mvnw', () => {
       '"a""b"',
       'an embedded double quote cannot survive unescaped in a cmd.exe argument'
     );
+  });
+  it('passes cmd.exe arguments through the environment to preserve percent signs', () => {
+    const shell = 'C:\\Windows\\System32\\cmd.exe';
+    const value = 'C:\\work\\%TEMP%\\sources';
+    const prepared = cmdLine('mvnw.cmd', [value], shell);
+    assert.strictEqual(
+      prepared.args[3],
+      '"%EOC_MVN_BIN% %EOC_MVN_ARG_0%"',
+      'cmd.exe should receive placeholders instead of user argument text'
+    );
+    assert.strictEqual(prepared.env.EOC_MVN_ARG_0, `"${value}"`);
+    assert(!prepared.args[3].includes('%TEMP%'));
+    if (process.platform === 'win32') {
+      const actual = cmdLine(
+        process.execPath,
+        ['-e', 'process.stdout.write(process.argv[1])', value],
+        process.env.ComSpec || 'cmd.exe'
+      );
+      const result = spawnSync(actual.command, actual.args, {
+        env: {...process.env, ...actual.env},
+        windowsVerbatimArguments: actual.windowsVerbatimArguments,
+        encoding: 'utf-8',
+      });
+      assert.ifError(result.error);
+      assert.strictEqual(result.status, 0, result.stderr);
+      assert.strictEqual(result.stdout, value);
+    }
   });
   it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
     assert.strictEqual(
