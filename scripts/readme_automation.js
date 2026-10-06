@@ -18,6 +18,21 @@ function updateSection(sectionName, newContent, readMeContent) {
     `(${escapeRegex(start)})([\\s\\S]*?)(${escapeRegex(end)})`,
     "g"
   );
+  assert.strictEqual(
+    readMeContent.split(start).length - 1,
+    1,
+    `Expected exactly one ${start} marker`
+  );
+  assert.strictEqual(
+    readMeContent.split(end).length - 1,
+    1,
+    `Expected exactly one ${end} marker`
+  );
+  assert.strictEqual(
+    [...readMeContent.matchAll(regex)].length,
+    1,
+    `Expected ${start} before ${end}`
+  );
   return readMeContent.replace(regex, `$1\n${newContent}$3`);
 }
 

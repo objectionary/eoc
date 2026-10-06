@@ -24,6 +24,9 @@ name: xcop
       - '**.html'
       - '**.xsd'
       - '.github/workflows/xcop.yml'
+concurrency:
+  group: xcop-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   xcop:
     timeout-minutes: 15
