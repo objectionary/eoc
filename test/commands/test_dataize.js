@@ -4,7 +4,7 @@
  */
 
 const assert = require('assert');
-const {EventEmitter} = require('events');
+const {EventEmitter} = require('node:events');
 const fs = require('fs');
 const path = require('path');
 const dataize = require('../../src/commands/java/dataize');
@@ -179,5 +179,17 @@ describe('dataize/java', () => {
       /permission denied while probing javac/,
       'dataize hides the underlying reason why javac could not be executed'
     );
+  });
+  it('handles Java spawn errors without an unhandled event', async () => {
+    const child = new EventEmitter();
+    const result = dataize(
+      'main.foo',
+      [],
+      {target: '.', stack: '64M', heap: '256M'},
+      () => true,
+      () => child
+    );
+    child.emit('error', new Error('spawn java ENOENT'));
+    await assert.rejects(result, /JVM could not be started: spawn java ENOENT/);
   });
 });
