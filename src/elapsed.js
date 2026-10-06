@@ -19,10 +19,10 @@
  *             `task` callback will be returned unchanged.
  */
 module.exports.elapsed = function elapsed(task) {
-  const startTime = Date.now();
+  const startTime = process.hrtime.bigint();
   return task({
     print: (message) => {
-      const duration = Date.now() - startTime;
+      const duration = Math.floor(Number(process.hrtime.bigint() - startTime) / 1e6);
       let extended;
       if (duration < 1000) {
         extended = `${duration}ms`;

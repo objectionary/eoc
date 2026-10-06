@@ -10,6 +10,9 @@ name: eslint
   pull_request:
     branches:
       - master
+concurrency:
+  group: eslint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   eslint:
     timeout-minutes: 15

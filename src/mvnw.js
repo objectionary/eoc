@@ -235,47 +235,43 @@ function stop() {
 }
 
 /**
+ * Recursively calculates the number of regular files under a directory.
+ * Symbolic links are skipped so a directory cycle cannot stop Maven progress.
+ * @param {String} dir - Directory where to count
+ * @param {Integer} curr - Current counter
+ * @return {Integer} Total number of files
+ */
+function count(dir, curr) {
+  let files;
+  try {
+    files = fs.readdirSync(dir);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return curr;
+    }
+    throw error;
+  }
+  for (const file of files) {
+    const next = path.join(dir, file);
+    try {
+      const stat = fs.lstatSync(next);
+      if (!stat.isSymbolicLink()) {
+        curr = stat.isDirectory() ? count(next, curr) : curr + 1;
+      }
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        throw error;
+      }
+    }
+  }
+  return curr;
+}
+
+/**
  * Prints mvnw execution status.
  */
 function print() {
   const duration = Date.now() - beginning;
-  /**
-   * Recursively calculates number of files under a directory.
-   * @param {String} dir - Directory where to count.
-   * @param {Integer} curr - Current counter.
-   * @return {Integer} Total number files.
-   */
-  function count(dir, curr) {
-    if (!fs.existsSync(dir)) {
-      return curr;
-    }
-    try {
-      const files = fs.readdirSync(dir);
-      for (const f of files) {
-        curr = processFile(path.join(dir, f), curr);
-      }
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return curr;
-      }
-      throw error;
-    }
-    return curr;
-  }
-  function processFile(filePath, curr) {
-    try {
-      const stat = fs.statSync(filePath);
-      if (stat.isDirectory()) {
-        return count(filePath, curr);
-      }
-      return curr + 1;
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return curr;
-      }
-      throw error;
-    }
-  }
   let elapsed;
   if (duration < 1000) {
     elapsed = `${duration}ms`;
@@ -290,3 +286,5 @@ function print() {
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);
 }
+
+module.exports.count = count;

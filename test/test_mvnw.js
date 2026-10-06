@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote, cmdLine} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, count, cmdLine} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
@@ -234,5 +234,22 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('skips a directory symlink cycle while counting progress files', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-cycle-'));
+    fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
+    try {
+      fs.symlinkSync('.', path.join(dir, 'loop'), 'dir');
+    } catch (error) {
+      if (['EACCES', 'EPERM', 'ENOTSUP'].includes(error.code)) {
+        this.skip();
+      }
+      throw error;
+    }
+    try {
+      assert.strictEqual(count(dir, 0), 1, 'count should not follow the directory symlink');
+    } finally {
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
   });
 });

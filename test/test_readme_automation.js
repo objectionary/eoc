@@ -20,6 +20,19 @@ describe("readme_automation scripts", () => {
     assert.ok(keywords.every(sub => readmeUpdated.includes(sub)),"Update README should have all keywords");
     assert.ok(readmeUpdated.includes("new content"),"Update README should have `new content`");
   });
+  it("refuses missing or duplicate section markers", () => {
+    const malformed = [
+      readme.replace("<!-- BEGIN COMMANDS SECTION -->", ""),
+      readme.replace("<!-- END COMMANDS SECTION -->", ""),
+      `${readme}\n${readme}`
+    ];
+    malformed.forEach((content) => {
+      assert.throws(
+        () => updateSection("commands", "new content", content),
+        /Expected exactly one/
+      );
+    });
+  });
   it("bulletListTemplate renders a list", async () => {
     const bulletListMarkdown = bulletListTemplate(commandsList);
     assert.strictEqual(bulletListMarkdown, "* `one` a\n* `two` b\n* `three` c\n");
