@@ -6,7 +6,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync} = require('./helpers');
+const {runSync, parserVersion, homeTag, weAreOnline} = require('./helpers');
 
 describe('README.md', () => {
   it('mentions every command exposed by eoc --help', (done) => {
@@ -32,5 +32,33 @@ describe('README.md', () => {
       `Commands section so the README stays in sync with the CLI.`
     );
     done();
+  });
+  describe('quick start', () => {
+    before(weAreOnline);
+    it('parses the quick start program without errors', (done) => {
+      const readme = fs.readFileSync(
+        path.resolve(__dirname, '../README.md'), 'utf8'
+      );
+      const program = readme.match(/```eo\n(?<code>[\s\S]*?)```/).groups.code;
+      const home = path.resolve('temp/test-readme/quick-start');
+      fs.rmSync(home, {recursive: true, force: true});
+      fs.mkdirSync(home, {recursive: true});
+      fs.writeFileSync(path.resolve(home, 'hello.eo'), program);
+      runSync([
+        'parse',
+        `--parser=${parserVersion}`,
+        `--home-tag=${homeTag}`,
+        '-s', home,
+        '-t', path.resolve(home, 'target'),
+      ]);
+      const xmir = fs.readFileSync(
+        path.resolve(home, 'target/1-parse/hello.xmir'), 'utf8'
+      );
+      assert(
+        !xmir.includes('<error'),
+        `The quick start program in README.md does not parse:\n${xmir}`
+      );
+      done();
+    });
   });
 });
