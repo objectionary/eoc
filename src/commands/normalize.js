@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+const fs = require('fs');
 const path = require('path');
 const {execSync, execFileSync} = require('child_process');
 const {mvnw, flags} = require('../mvnw');
@@ -36,7 +37,12 @@ module.exports = function(opts) {
     copyDir(sources, path.join(target, 'before-normalize'), '.eo', target);
     const parsed = path.join(target, '1-parse');
     const normed = path.join(target, 'xmir-normalized');
-    const xmirs = findFiles(parsed, '.xmir');
+    fs.rmSync(normed, {recursive: true, force: true});
+    const xmirs = findFiles(parsed, '.xmir').filter(
+      (xmir) => fs.existsSync(
+        path.join(sources, path.relative(parsed, xmir).replace(/\.xmir$/, '.eo'))
+      )
+    );
     console.debug('Found %d XMIR file(s) to normalize', xmirs.length);
     for (const xmir of xmirs) {
       const rel = path.relative(parsed, xmir);
