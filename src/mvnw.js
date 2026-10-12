@@ -221,7 +221,9 @@ function stop() {
 
 /**
  * Recursively calculates the number of regular files under a directory.
- * Symbolic links are skipped so a directory cycle cannot stop Maven progress.
+ * Symbolic links are skipped so a directory cycle cannot stop Maven progress,
+ * and entries that vanished or can't be read are skipped too, since the count
+ * is only shown to the user.
  * @param {String} dir - Directory where to count
  * @param {Integer} curr - Current counter
  * @return {Integer} Total number of files
@@ -231,7 +233,7 @@ function count(dir, curr) {
   try {
     files = fs.readdirSync(dir);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
       return curr;
     }
     throw error;
@@ -244,7 +246,7 @@ function count(dir, curr) {
         curr = stat.isDirectory() ? count(next, curr) : curr + 1;
       }
     } catch (error) {
-      if (error.code !== 'ENOENT') {
+      if (!['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
         throw error;
       }
     }
