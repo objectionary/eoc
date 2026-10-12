@@ -13,6 +13,12 @@ describe('docs', () => {
   const home = path.resolve('temp/test-docs');
   const parsed = path.resolve(home, '1-parse');
   const docs = path.join(home, 'docs');
+  it('maps Windows device names to safe HTML filenames', () => {
+    assert.strictEqual(generateDocs.htmlName('CON', 'win32'), '_CON');
+    assert.strictEqual(generateDocs.htmlName('COM1', 'win32'), '_COM1');
+    assert.strictEqual(generateDocs.htmlName('normal', 'win32'), 'normal');
+    assert.strictEqual(generateDocs.htmlName('CON', 'linux'), 'CON');
+  });
   beforeEach(() => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(parsed, {recursive: true});
