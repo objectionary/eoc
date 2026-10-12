@@ -118,4 +118,18 @@ describe('clean', () => {
     assert(fs.existsSync(fakeHome), 'the home directory must not be deleted');
     done();
   });
+  it('refuses to delete the global directory with the current directory inside', (done) => {
+    const fakeHome = path.resolve(testDir, 'global-home');
+    const work = path.join(fakeHome, '.eo', 'worktree', 'project');
+    fs.rmSync(fakeHome, {recursive: true, force: true});
+    fs.mkdirSync(work, {recursive: true});
+    fs.writeFileSync(path.join(work, 'keep.eo'), '# sample\n[] > keep\n');
+    const outcome = runOutput(
+      ['clean', '--global'],
+      {env: {...process.env, HOME: fakeHome, USERPROFILE: fakeHome}, cwd: work}
+    );
+    assert(outcome.status !== 0, outcome.stderr);
+    assert(fs.existsSync(path.join(work, 'keep.eo')), 'the working tree must not be deleted');
+    done();
+  });
 });

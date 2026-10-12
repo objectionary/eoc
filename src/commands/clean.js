@@ -61,14 +61,14 @@ function guarded(target) {
  */
 module.exports = function(opts) {
   const home = guarded(path.resolve(opts.target));
+  const eo = opts.global ? guarded(path.join(os.homedir(), '.eo')) : null;
   if (fs.existsSync(home)) {
     fs.rmSync(home, {recursive: true, force: true});
     console.info('The directory %s was deleted', rel(home));
   } else {
     console.info('The directory %s does not exist, no need to delete it', rel(home));
   }
-  if (opts.global) {
-    const eo = path.join(os.homedir(), '.eo');
+  if (eo !== null) {
     if (fs.existsSync(eo)) {
       fs.rmSync(eo, {recursive: true});
       console.info('The directory %s was deleted', eo);
