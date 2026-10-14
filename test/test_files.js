@@ -6,9 +6,21 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {copyDir, findFiles} = require('../src/files');
+const {copyDir, findFiles, existing} = require('../src/files');
 
 describe('files', () => {
+  it('returns a directory that exists', () => {
+    const home = path.resolve('temp/test-files/existing');
+    fs.mkdirSync(home, {recursive: true});
+    assert.equal(existing(home), home, 'an existing directory must come back unchanged');
+  });
+  it('rejects a directory that does not exist', () => {
+    assert.throws(
+      () => existing(path.resolve('temp/test-files/absent')),
+      /absent does not exist/,
+      'a missing directory must be reported with its path'
+    );
+  });
   it('excludes a nested target from recursive copying', done => {
     const home = path.resolve('temp/test-files/nested-target'),
       target = path.resolve(home, '.eoc'),
@@ -61,6 +73,35 @@ describe('files', () => {
       );
     } finally {
       fs.rmSync(path.resolve('temp/test-files'), {recursive: true, force: true});
+    }
+    done();
+  });
+  it('excludes the target when a source symlink points to it', done => {
+    if (process.platform === 'win32') {
+      done();
+      return;
+    }
+    const home = path.resolve('temp/test-files/source-target-link');
+    const source = path.join(home, 'sources');
+    const target = path.join(home, 'target');
+    const backup = path.join(target, 'before-normalize');
+    fs.rmSync(home, {recursive: true, force: true});
+    fs.mkdirSync(source, {recursive: true});
+    fs.mkdirSync(target, {recursive: true});
+    fs.writeFileSync(path.join(source, 'main.eo'), '# sample\n[] > main\n');
+    fs.symlinkSync(target, path.join(source, 'through-target'), 'dir');
+    try {
+      copyDir(source, backup, '.eo', target);
+      assert(
+        fs.existsSync(path.join(backup, 'main.eo')),
+        'source files must still be copied into before-normalize'
+      );
+      assert(
+        !fs.existsSync(path.join(backup, 'through-target')),
+        'the target must not be copied back through a source symlink'
+      );
+    } finally {
+      fs.rmSync(home, {recursive: true, force: true});
     }
     done();
   });
