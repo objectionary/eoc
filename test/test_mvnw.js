@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary, quote, count} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, count, executable} = require('../src/mvnw');
 const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
@@ -180,6 +180,20 @@ describe('mvnw', () => {
       'an embedded single quote cannot survive unescaped in a PowerShell argument'
     );
   });
+  it('quotes a path with a space to the executable for cmd.exe', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'C:\\Windows\\system32\\cmd.exe'),
+      '"C:\\Users\\John Smith\\mvnw.cmd"',
+      'a path with a space must reach cmd.exe as one quoted token'
+    );
+  });
+  it('calls a quoted path to the executable through the call operator in PowerShell', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'powershell.exe'),
+      "& 'C:\\Users\\John Smith\\mvnw.cmd'",
+      'PowerShell runs a quoted path only behind the call operator'
+    );
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));
@@ -207,6 +221,26 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('skips an unreadable subdirectory while counting progress files', function() {
+    if (process.platform === 'win32' || (process.getuid && process.getuid() === 0)) {
+      this.skip();
+    }
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-denied-'));
+    fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
+    const hidden = path.join(dir, 'hidden');
+    fs.mkdirSync(hidden);
+    fs.writeFileSync(path.join(hidden, 'secret.class'), 'class');
+    fs.chmodSync(hidden, 0);
+    try {
+      assert.strictEqual(
+        count(dir, 0), 1,
+        'an unreadable directory must be skipped without stopping the progress'
+      );
+    } finally {
+      fs.chmodSync(hidden, 0o700);
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
   });
   it('skips a directory symlink cycle while counting progress files', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-cycle-'));

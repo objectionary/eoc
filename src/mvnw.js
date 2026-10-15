@@ -58,6 +58,22 @@ module.exports.quote = function(value, sh) {
     `'${value.replace(/'/g, "''")}'`;
 };
 
+/**
+ * Make the path to the Maven executable safe for the Windows shell.
+ *
+ * The shell splits an unquoted path at its first space, so a path like
+ * "C:\Users\John Smith\mvnw.cmd" is never found. PowerShell, unlike
+ * cmd.exe, treats a quoted string as a value rather than a command, so
+ * it needs the call operator in front of it.
+ * @param {String} bin - Path to the executable
+ * @param {String} sh - Shell chosen by shell()
+ * @return {String} Executable ready for the shell command line
+ */
+module.exports.executable = function(bin, sh) {
+  const quoted = module.exports.quote(bin, sh);
+  return cmd(sh) ? quoted : `& ${quoted}`;
+};
+
 let beginning,
   phase = 'unknown',
   running = false,
@@ -76,7 +92,7 @@ module.exports.flags = function(opts) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
   const sources = path.resolve(opts.sources);
-  if (!fs.existsSync(sources)) {
+  if (!fs.existsSync(sources) || !fs.statSync(sources).isDirectory()) {
     throw new Error(`Sources directory ${rel(sources)} does not exist.`);
   }
   console.debug('Sources in %s', rel(sources));
@@ -140,7 +156,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     console.debug('+ %s', cmdline);
     const sh = shell();
     const result = spawn(
-      bin,
+      process.platform === 'win32' ? module.exports.executable(bin, sh) : bin,
       process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
       {
         cwd: home,
@@ -205,7 +221,9 @@ function stop() {
 
 /**
  * Recursively calculates the number of regular files under a directory.
- * Symbolic links are skipped so a directory cycle cannot stop Maven progress.
+ * Symbolic links are skipped so a directory cycle cannot stop Maven progress,
+ * and entries that vanished or can't be read are skipped too, since the count
+ * is only shown to the user.
  * @param {String} dir - Directory where to count
  * @param {Integer} curr - Current counter
  * @return {Integer} Total number of files
@@ -215,7 +233,7 @@ function count(dir, curr) {
   try {
     files = fs.readdirSync(dir);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
       return curr;
     }
     throw error;
@@ -228,7 +246,7 @@ function count(dir, curr) {
         curr = stat.isDirectory() ? count(next, curr) : curr + 1;
       }
     } catch (error) {
-      if (error.code !== 'ENOENT') {
+      if (!['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
         throw error;
       }
     }

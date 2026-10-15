@@ -3,12 +3,36 @@
  * SPDX-License-Identifier: MIT
  */
 
+const fs = require('fs');
 const path = require('path');
-const {execSync, execFileSync} = require('child_process');
+const {execFileSync} = require('child_process');
 const {mvnw, flags} = require('../mvnw');
 const {elapsed} = require('../elapsed');
 const {findFiles, saveFile, copyDir} = require('../files');
 const relative = require('relative');
+const PHINO_TIMEOUT_MS = 3000;
+
+/**
+ * Checks whether phino is installed and responds to its version request.
+ * @param {Function} execute - Process executor
+ */
+function verifyPhino(execute = execFileSync) {
+  try {
+    execute(
+      'phino',
+      ['--version'],
+      {stdio: 'pipe', timeout: PHINO_TIMEOUT_MS, killSignal: 'SIGKILL'}
+    );
+  } catch (error) {
+    if (error.code === 'ETIMEDOUT') {
+      throw new Error(
+        `phino --version check timed out after ${PHINO_TIMEOUT_MS / 1000} seconds`,
+        {cause: error}
+      );
+    }
+    throw new Error('phino is not installed, see https://github.com/objectionary/phino', {cause: error});
+  }
+}
 
 /**
  * Command to normalize .EO files via phi-calculus using phino.
@@ -25,11 +49,7 @@ module.exports = function(opts) {
   if (opts.target === undefined) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
-  try {
-    execSync('phino --version', {stdio: 'pipe'});
-  } catch (e) {
-    throw new Error('phino is not installed, see https://github.com/objectionary/phino', {cause: e});
-  }
+  verifyPhino();
   const sources = path.resolve(opts.sources);
   const target = path.resolve(opts.target);
   return elapsed(async (tracked) => {
@@ -38,7 +58,12 @@ module.exports = function(opts) {
     );
     const parsed = path.join(target, '1-parse');
     const normed = path.join(target, 'xmir-normalized');
-    const xmirs = findFiles(parsed, '.xmir');
+    fs.rmSync(normed, {recursive: true, force: true});
+    const xmirs = findFiles(parsed, '.xmir').filter(
+      (xmir) => fs.existsSync(
+        path.join(sources, path.relative(parsed, xmir).replace(/\.xmir$/, '.eo'))
+      )
+    );
     console.debug('Found %d XMIR file(s) to normalize', xmirs.length);
     for (const xmir of xmirs) {
       const rel = path.relative(parsed, xmir);
@@ -70,3 +95,5 @@ module.exports = function(opts) {
     return r;
   });
 };
+
+module.exports.verifyPhino = verifyPhino;

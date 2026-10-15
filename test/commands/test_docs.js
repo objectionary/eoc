@@ -13,6 +13,12 @@ describe('docs', () => {
   const home = path.resolve('temp/test-docs');
   const parsed = path.resolve(home, '1-parse');
   const docs = path.join(home, 'docs');
+  it('maps Windows device names to safe HTML filenames', () => {
+    assert.strictEqual(generateDocs.htmlName('CON', 'win32'), '_CON');
+    assert.strictEqual(generateDocs.htmlName('COM1', 'win32'), '_COM1');
+    assert.strictEqual(generateDocs.htmlName('normal', 'win32'), 'normal');
+    assert.strictEqual(generateDocs.htmlName('CON', 'linux'), 'CON');
+  });
   beforeEach(() => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(parsed, {recursive: true});
@@ -201,6 +207,18 @@ describe('docs', () => {
     assert(content.includes('<object name="test2"/>'), 'Expected object test2 in summary.xml');
     done();
   });
+  it('rejects filenames with characters forbidden by XML 1.0', async function () {
+    if (process.platform === 'win32') {
+      this.skip();
+    }
+    const sample = path.join(parsed, 'pkg');
+    fs.mkdirSync(sample, {recursive: true});
+    fs.writeFileSync(path.join(sample, 'bad\u0001.xmir'), '<program name="test" />');
+    await assert.rejects(
+      generateDocs({target: home, sources: path.resolve(home, 'src')}),
+      /Character U\+0001 is not allowed in XML 1\.0/
+    );
+  });
   /**
    * Tests that the 'docs' command reports the real summary path, rather
    * than the literal "%s" left over by a printf-style call.
@@ -380,6 +398,35 @@ describe('docs', () => {
     const test_content = fs.readFileSync(test_html);
     assert(test_content.includes('<strong>Strong test</strong>'), `Markdown not processed correctly in ${test_html}`);
     assert(test_content.includes('<code>Code test</code>'), `Markdown not processed correctly in ${test_html}`);
+    done();
+  });
+  /**
+   * Tests that unsafe URL schemes in Markdown are rendered as plain text.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('does not generate links with unsafe URL schemes', (done) => {
+    const fixture = fs.readFileSync(
+      path.join(__dirname, '..', 'resources', 'test6.xmir'), 'utf-8'
+    );
+    const marker = '**Strong test**\\n`Code test`';
+    assert(fixture.includes(marker), 'Expected Markdown fixture to contain the replacement marker');
+    const xmir = fixture.replace(
+      marker,
+      '[safe](https://example.com)\\n[unsafe](javascript:alert(1))\\n' +
+        '[encoded](javascript&#58;alert(1))\\n[escaped](java%73cript:alert(1))'
+    );
+    const filename = path.join(parsed, 'unsafe-link.xmir');
+    fs.writeFileSync(filename, xmir);
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const page = fs.readFileSync(path.join(docs, 'unsafe-link.html'), 'utf-8');
+    assert(page.includes('<a href="https://example.com">safe</a>'), page);
+    assert(!/href="[^"]*(?:javascript|vbscript|data)/i.test(page), page);
+    assert(page.includes('unsafe') && page.includes('encoded') && page.includes('escaped'), page);
     done();
   });
   /**

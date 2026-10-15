@@ -131,6 +131,22 @@ describe('inspect/java', () => {
       /Inspection server exited before opening port .* exit code 7/
     );
   });
+  it('times out when the inspection server accepts a request but never sends JSON', async () => {
+    const previous = global.fetch;
+    global.fetch = async (url, opts) => ({
+      json: () => new Promise((resolve, reject) => {
+        opts.signal.addEventListener('abort', () => reject(opts.signal.reason), {once: true});
+      }),
+    });
+    try {
+      await assert.rejects(
+        () => inspect.ask(8080, Date.now() + 50),
+        /The inspection server has not opened port 8080 in a minute/
+      );
+    } finally {
+      global.fetch = previous;
+    }
+  });
   it('rejects an unrelated server that returns JSON without a forma', async () => {
     const server = http.createServer((request, response) => {
       response.writeHead(200, {'Content-Type': 'application/json'});

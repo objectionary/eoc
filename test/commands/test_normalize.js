@@ -11,13 +11,16 @@ const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
 const eo = '[] > simple\n';
 
-function setup(name, content = eo) {
+function setup(name, content = eo, stray = []) {
   const home = path.resolve('temp/test-normalize', name);
   const source = path.resolve(home, 'src');
   const target = path.resolve(home, 'target');
   fs.rmSync(home, {recursive: true, force: true});
   fs.mkdirSync(source, {recursive: true});
-  fs.mkdirSync(target, {recursive: true});
+  fs.mkdirSync(path.resolve(target, '1-parse'), {recursive: true});
+  for (const xmir of stray) {
+    fs.writeFileSync(path.resolve(target, '1-parse', xmir), '<object/>');
+  }
   fs.writeFileSync(path.resolve(source, 'simple.eo'), content);
   runSync([
     'normalize',
@@ -103,6 +106,14 @@ describe('normalize', () => {
     assert(fs.readFileSync(xmir).length > 0, 'Normalized XMIR file must not be empty');
     const normalized = fs.readFileSync(path.resolve(source, 'simple.eo'), 'utf8');
     assert(normalized.length > 0, 'Normalized .eo file must not be empty');
+    done();
+  });
+  it('does not print objects that have no source into the sources', done => {
+    const {source} = setup('pulled', eo, ['bytes.xmir']);
+    assert.deepStrictEqual(
+      fs.readdirSync(source), ['simple.eo'],
+      'An XMIR left in 1-parse by a previous build must not land in the sources'
+    );
     done();
   });
 });
