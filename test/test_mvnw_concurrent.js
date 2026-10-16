@@ -49,7 +49,7 @@ function wrapper() {
     }),
     console,
     setTimeout: callback => timers.push(callback),
-    clearTimeout: () => {},
+    clearTimeout: () => true,
     Date: {now: () => now}
   }, {filename: source});
   return {
