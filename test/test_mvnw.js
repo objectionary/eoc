@@ -222,6 +222,26 @@ describe('mvnw', () => {
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
   });
+  it('skips an unreadable subdirectory while counting progress files', function() {
+    if (process.platform === 'win32' || (process.getuid && process.getuid() === 0)) {
+      this.skip();
+    }
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-denied-'));
+    fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
+    const hidden = path.join(dir, 'hidden');
+    fs.mkdirSync(hidden);
+    fs.writeFileSync(path.join(hidden, 'secret.class'), 'class');
+    fs.chmodSync(hidden, 0);
+    try {
+      assert.strictEqual(
+        count(dir, 0), 1,
+        'an unreadable directory must be skipped without stopping the progress'
+      );
+    } finally {
+      fs.chmodSync(hidden, 0o700);
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
+  });
   it('skips a directory symlink cycle while counting progress files', function() {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-cycle-'));
     fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
