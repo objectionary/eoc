@@ -14,6 +14,9 @@ name: actionlint
       - master
     paths:
       - '.github/**'
+concurrency:
+  group: actionlint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   actionlint:
     timeout-minutes: 15

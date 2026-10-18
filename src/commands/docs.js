@@ -9,6 +9,7 @@ const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
 const {findFiles} = require('../files');
+const generatedPageMarker = '<!-- eoc docs page -->';
 
 /**
  * Escape special XML characters.
@@ -16,10 +17,32 @@ const {findFiles} = require('../files');
  * @return {String} XML-safe string
  */
 function xmlEscape(str) {
+  for (const character of str) {
+    const code = character.codePointAt(0);
+    const valid = code === 0x09 || code === 0x0A || code === 0x0D ||
+      (code >= 0x20 && code <= 0xD7FF) ||
+      (code >= 0xE000 && code <= 0xFFFD) ||
+      (code >= 0x10000 && code <= 0x10FFFF);
+    if (!valid) {
+      const hex = code.toString(16).toUpperCase().padStart(4, '0');
+      throw new Error(`Character U+${hex} is not allowed in XML 1.0`);
+    }
+  }
   return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Make an object page name safe for Windows device basenames.
+ * @param {String} name - EO object name
+ * @param {String} platform - Operating system platform
+ * @return {String} Safe HTML filename without extension
+ */
+function htmlName(name, platform = process.platform) {
+  const device = /^(?:con|prn|aux|nul|conin\$|conout\$|clock\$|com[1-9¹²³]|lpt[1-9¹²³])$/i;
+  return platform === 'win32' && device.test(name) ? `_${name}` : name;
 }
 
 /**
@@ -49,13 +72,55 @@ function transformDocument(xmir, xsl) {
 }
 
 /**
+ * Whether a URL used by a Markdown link can load active content.
+ * @param {String} href - Link URL from the Markdown renderer
+ * @return {Boolean} True if the URL does not use an active-content scheme
+ */
+function safeMarkdownUrl(href) {
+  let normalized;
+  try {
+    const decoded = href.replace(
+      /&(?:#(?:\d+)|#x[0-9a-f]+|\w+);?/gi,
+      entity => {
+        const value = entity.slice(1).replace(/;$/, '').toLowerCase();
+        if (value === 'colon') {
+          return ':';
+        }
+        if (value.charAt(0) !== '#') {
+          return '';
+        }
+        return String.fromCharCode(
+          value.charAt(1) === 'x' ? parseInt(value.substring(2), 16) : Number(value.substring(1))
+        );
+      }
+    );
+    normalized = decodeURIComponent(decoded).replace(/[^\w:]/g, '').toLowerCase();
+  } catch {
+    return false;
+  }
+  return !/^(?:javascript|vbscript|data):/.test(normalized);
+}
+
+/**
  * Converts Markdown blocks in documentation to HTML
  * @param {String} html - text of HTML file
  * @return {String} HTML document
  */
 function convertMarkdownToHtml(html) {
   const regex = /(?<opening_tag><div\s+class\s*=\s*["']object-desc["'][^>]*>)(?<content>[\s\S]*?)(?<closing_tag><\/div>)/gi;
-  const converted_html = html.replace(regex, (match, opening_tag, content, closing_tag) => `${opening_tag}${marked.parse(content)}${closing_tag}`);
+  const renderer = new marked.Renderer();
+  const link = renderer.link.bind(renderer);
+  renderer.link = (href, title, text) => {
+    if (!safeMarkdownUrl(href)) {
+      return text;
+    }
+    return link(href, title, text);
+  };
+  const converted_html = html.replace(
+    regex,
+    (match, opening_tag, content, closing_tag) =>
+      `${opening_tag}${marked.parse(content, {renderer})}${closing_tag}`
+  );
   return converted_html;
 }
 
@@ -69,7 +134,8 @@ function removeStaleHtml(directory, generated) {
     const file = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       removeStaleHtml(file, generated);
-    } else if (entry.isFile() && path.extname(entry.name) === '.html' && !generated.has(file)) {
+    } else if (entry.isFile() && path.extname(entry.name) === '.html' && !generated.has(file)
+      && fs.readFileSync(file, 'utf-8').includes(generatedPageMarker)) {
       fs.rmSync(file);
     }
   }
@@ -101,6 +167,7 @@ function generatePackageHtml(name, htmls, css) {
   htmls = htmls.filter(item => item !== '<article class="app-block"></article>');
   const date = new Date();
   return `<!DOCTYPE html>
+    ${generatedPageMarker}
     <html>
       <head>
         <link href="${css}" rel="stylesheet" type="text/css">
@@ -155,7 +222,7 @@ module.exports = function(opts) {
         const relative = path.relative(input, xmir);
         const name = path.parse(xmir).name;
         const xmir_html = createXmirHtmlBlock(xmir);
-        const html_app = path.join(output, path.dirname(relative),`${name}.html`);
+        const html_app = path.join(output, path.dirname(relative),`${htmlName(name)}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
         const page = name === 'packages' && path.dirname(relative) === '.'
           ? path.join(output, 'packages-object.html') : html_app;
@@ -215,3 +282,4 @@ module.exports = function(opts) {
 };
 
 module.exports.createXmirHtmlBlock = createXmirHtmlBlock;
+module.exports.htmlName = htmlName;

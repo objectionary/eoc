@@ -16,6 +16,7 @@ const {verifyJavac} = require('../../jdk');
 module.exports = function(opts, maven = mvnw) {
   verifyJavac();
   const args = [
+    'test-compile',
     'surefire:test',
     `-Dstack-size=${opts.stack}`,
     `-Dheap-size=${opts.heap}`,

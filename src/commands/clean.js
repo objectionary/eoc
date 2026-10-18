@@ -21,6 +21,19 @@ function canonical(target) {
 }
 
 /**
+ * Whether base is the same as or an ancestor of candidate.
+ * @param {String} base - Directory that may contain candidate
+ * @param {String} candidate - Path to check
+ * @return {Boolean} True when candidate is inside base or equals it
+ */
+function containsPath(base, candidate) {
+  const route = path.relative(base, candidate);
+  return route === '' || (
+    route !== '..' && !route.startsWith(`..${path.sep}`) && !path.isAbsolute(route)
+  );
+}
+
+/**
  * Refuses, by throwing, to delete a directory that resolves to the current
  * working directory, an ancestor of it, or the user's home directory;
  * otherwise returns the original target unchanged, so the guard cannot be
@@ -32,10 +45,8 @@ function guarded(target) {
   const actual = canonical(target);
   const cwd = fs.realpathSync(process.cwd());
   const home = fs.realpathSync(os.homedir());
-  const route = path.relative(actual, cwd);
-  const encloses = route === '' || (!route.startsWith('..') && !path.isAbsolute(route));
-  const home_route = path.relative(actual, home);
-  const encloses_home = home_route === '' || (!home_route.startsWith('..') && !path.isAbsolute(home_route));
+  const encloses = containsPath(actual, cwd);
+  const encloses_home = containsPath(actual, home);
   if (encloses || encloses_home) {
     throw new Error(
       `Refusing to delete ${rel(target)}: it is the current directory, an ancestor of it, or the home directory`
@@ -50,14 +61,14 @@ function guarded(target) {
  */
 module.exports = function(opts) {
   const home = guarded(path.resolve(opts.target));
+  const eo = opts.global ? guarded(path.join(os.homedir(), '.eo')) : null;
   if (fs.existsSync(home)) {
     fs.rmSync(home, {recursive: true, force: true});
     console.info('The directory %s was deleted', rel(home));
   } else {
     console.info('The directory %s does not exist, no need to delete it', rel(home));
   }
-  if (opts.global) {
-    const eo = path.join(os.homedir(), '.eo');
+  if (eo !== null) {
     if (fs.existsSync(eo)) {
       fs.rmSync(eo, {recursive: true});
       console.info('The directory %s was deleted', eo);

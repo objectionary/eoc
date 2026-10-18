@@ -8,6 +8,7 @@ const path = require('path');
 const {mvnw, flags} = require('../mvnw');
 const {elapsed} = require('../elapsed');
 const semver = require('semver');
+const {filled} = require('../stages');
 
 /**
  * Command to lint .XMIR files.
@@ -17,6 +18,7 @@ const semver = require('semver');
 module.exports = function(opts) {
   const extra = extras(opts);
   return elapsed(async (tracked) => {
+    filled(path.resolve(opts.target, '1-parse'), '.xmir', 'parse');
     if (goals(opts)[0] === 'eo:lint') {
       try {
         const r = await mvnw(
