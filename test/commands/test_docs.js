@@ -99,7 +99,7 @@ describe('docs', () => {
     ]);
     fs.mkdirSync(docs, {recursive: true});
     const custom_page = path.join(docs, 'manual.html');
-    const custom_html = '<!DOCTYPE html><html><body>Manual page</body></html>';
+    const custom_html = '<!DOCTYPE html><html><body><!-- eoc docs page -->Manual page</body></html>';
     fs.writeFileSync(custom_page, custom_html);
     run();
     assert.strictEqual(fs.readFileSync(custom_page, 'utf-8'), custom_html);

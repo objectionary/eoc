@@ -9,7 +9,7 @@ const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
 const {findFiles} = require('../files');
-const generatedPageMarker = '<!-- eoc docs page -->';
+const generatedPageHeader = '<!DOCTYPE html>\n<!-- eoc docs page -->';
 
 /**
  * Escape special XML characters.
@@ -135,7 +135,7 @@ function removeStaleHtml(directory, generated) {
     if (entry.isDirectory()) {
       removeStaleHtml(file, generated);
     } else if (entry.isFile() && path.extname(entry.name) === '.html' && !generated.has(file)
-      && fs.readFileSync(file, 'utf-8').includes(generatedPageMarker)) {
+      && fs.readFileSync(file, 'utf-8').startsWith(generatedPageHeader)) {
       fs.rmSync(file);
     }
   }
@@ -166,8 +166,7 @@ function createXmirHtmlBlock(filepath) {
 function generatePackageHtml(name, htmls, css) {
   htmls = htmls.filter(item => item !== '<article class="app-block"></article>');
   const date = new Date();
-  return `<!DOCTYPE html>
-    ${generatedPageMarker}
+  return `${generatedPageHeader}
     <html>
       <head>
         <link href="${css}" rel="stylesheet" type="text/css">
