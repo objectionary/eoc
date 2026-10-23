@@ -109,7 +109,7 @@ function safeMarkdownUrl(href) {
  */
 function unescapeCodeEntities(html) {
   return html.replace(
-    /(<code\\b[^>]*>)([\\s\\S]*?)(<\\/code>)/gi,
+    /(<code\b[^>]*>)([\s\S]*?)(<\/code>)/gi,
     (match, opening, content, closing) =>
       `${opening}${content.replace(/&amp;(lt|gt|amp);/g, '&$1;')}${closing}`
   );
