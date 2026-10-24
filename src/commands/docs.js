@@ -111,7 +111,7 @@ function unescapeCodeEntities(html) {
   return html.replace(
     /(?<opening><code\b[^>]*>)(?<content>[\s\S]*?)(?<closing><\/code>)/gi,
     (match, opening, content, closing) =>
-      `${opening}${content.replace(/&amp;(?<entity>lt|gt|amp);/g, (entityMatch, entity) => `&${entity};')}${closing}`
+      `${opening}${content.replace(/&amp;(?<entity>lt|gt|amp);/g, (entityMatch, entity) => `&${entity};`)}${closing}`
   );
 }
 
