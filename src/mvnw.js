@@ -48,13 +48,17 @@ function cmd(sh) {
  * literally instead of being stripped, which corrupts the argument.
  * PowerShell, on the other hand, expands "$" and backtick inside double
  * quotes. Each shell needs its own literal quoting style.
+ *
+ * Backslashes at the very end of a value for cmd.exe are doubled, since
+ * otherwise the last one escapes the closing quote, as happens to a path
+ * to a drive root like "E:\".
  * @param {String} value - Argument to quote
  * @param {String} sh - Shell chosen by shell()
  * @return {String} Quoted argument
  */
 module.exports.quote = function(value, sh) {
   return cmd(sh) ?
-    `"${value.replace(/"/g, '""')}"` :
+    `"${value.replace(/"/g, '""').replace(/(?<slashes>\\+)$/u, '$<slashes>$<slashes>')}"` :
     `'${value.replace(/'/g, "''")}'`;
 };
 

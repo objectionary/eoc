@@ -166,6 +166,40 @@ describe('mvnw', () => {
       'an embedded double quote cannot survive unescaped in a cmd.exe argument'
     );
   });
+  it('doubles trailing backslashes when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('-Deo.sourcesDir=E:\\', 'C:\\Windows\\system32\\cmd.exe'),
+      '"-Deo.sourcesDir=E:\\\\"',
+      'a trailing backslash cannot be left to escape the closing quote'
+    );
+  });
+  it('keeps inner backslashes and spaces when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('-Dx=C:\\a b\\c', 'C:\\Windows\\system32\\cmd.exe'),
+      '"-Dx=C:\\a b\\c"',
+      'a value that does not end with a backslash must stay as it was'
+    );
+  });
+  it('keeps a trailing backslash as is when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote('E:\\', 'powershell.exe'),
+      "'E:\\'",
+      'single quotes in PowerShell do not treat a backslash as an escape'
+    );
+  });
+  it('passes a drive root sources directory to Maven through cmd.exe', async function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    this.timeout(60000);
+    const root = path.parse(process.cwd()).root;
+    const args = await mvnw(
+      [...flags({sources: root, target: 'target', parser: '1.0-SNAPSHOT'}), '--version'],
+      null,
+      true
+    );
+    assert.ok(args.includes(`-Deo.sourcesDir=${root}`));
+  });
   it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
     assert.strictEqual(
       quote('-Deo.sourcesDir=C:\\proj\\a$b\\src', 'powershell.exe'),
