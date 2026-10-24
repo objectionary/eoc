@@ -6,7 +6,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const {runSync} = require('../helpers');
+const {runSync, parserVersion, homeTag, weAreOnline} = require('../helpers');
 const generateDocs = require('../../src/commands/docs');
 
 describe('docs', () => {
@@ -444,6 +444,36 @@ describe('docs', () => {
       'the wrapper message must embed the original error text'
     );
     done();
+  });
+  /**
+   * Tests that comments are attached to objects by the default parser, which
+   * puts a comment on its own line, not on the line of the object.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('documents an object parsed by the default parser', function(done) {
+    weAreOnline.call(this, () => {
+      const root = path.resolve('temp/test-docs-default-parser');
+      fs.rmSync(root, {recursive: true, force: true});
+      fs.mkdirSync(path.resolve(root, 'src'), {recursive: true});
+      fs.writeFileSync(
+        path.resolve(root, 'src/hello.eo'),
+        [
+          '# My first object in EO!', '',
+          '+architect you@example.com', '+home https://github.com/you/hello', '+version 0.0.1', '',
+          '[args] > hello', '  [] > inner', '    42 > @', '  [] > bare', '    43 > @',
+          '  Q.stdout > @', '    "Hello, world!\\n"', '',
+        ].join('\n')
+      );
+      runSync(['parse', `--parser=${parserVersion}`, `--home-tag=${homeTag}`,
+        '-s', path.resolve(root, 'src'), '-t', path.resolve(root, 'target')]);
+      runSync(['docs', '-s', path.resolve(root, 'src'), '-t', path.resolve(root, 'target')]);
+      const page = fs.readFileSync(path.resolve(root, 'target/docs/hello.html'), 'utf-8');
+      assert(page.includes('My first object in EO!'), page);
+      assert(page.includes('hello(args)'), page);
+      assert(!page.includes('hello.inner('), page);
+      assert(!page.includes('hello.bare('), page);
+      done();
+    });
   });
   /**
    * Tests that every package 'docs.js' requires is declared by 'eoc' itself
