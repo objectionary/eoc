@@ -8,7 +8,16 @@
   <xsl:template match="/">
     <article class="app-block">
       <xsl:for-each select="//o[(@name and (@name != 'φ' and @name != 'λ' and not(starts-with(@name, '+')))) and (not(@base) or (@base != '∅' and @base != 'ξ'))]">
-        <xsl:if test="//comments/comment[@line = current()/@line]">
+        <xsl:variable name="obj" select="."/>
+        <xsl:variable name="docs">
+          <xsl:for-each select="//comments/comment[@line &lt;= $obj/@line]">
+            <xsl:sort select="@line" data-type="number" order="descending"/>
+            <xsl:if test="position() = 1 and not(//o[@name and @line &gt;= current()/@line and @line &lt; $obj/@line])">
+              <xsl:value-of select="."/>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:if test="string($docs) != ''">
           <div class="object-block">
             <xsl:variable name="fullname">
               <xsl:for-each select="ancestor-or-self::o[@name and @name != 'φ']">
@@ -34,7 +43,7 @@
             </p>
             <div class="object-desc">
               <xsl:call-template name="break">
-                <xsl:with-param name="text" select="//comments/comment[@line = current()/@line]"/>
+                <xsl:with-param name="text" select="string($docs)"/>
               </xsl:call-template>
             </div>
           </div>
