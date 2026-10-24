@@ -362,7 +362,6 @@ describe('docs', () => {
     assert(test_content.includes('<code>Code test</code>'), `Markdown not processed correctly in ${test_html}`);
     done();
   });
-
   /**
    * Tests that escaped HTML entities in EO Markdown code spans are not escaped twice.
    * @param {Mocha.Done} done - Callback signaling completion
@@ -391,7 +390,6 @@ describe('docs', () => {
     assert(!page.includes('&amp;lt;'), page);
     done();
   });
-
   /**
    * Tests that unsafe URL schemes in Markdown are rendered as plain text.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
