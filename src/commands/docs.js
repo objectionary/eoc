@@ -101,6 +101,21 @@ function safeMarkdownUrl(href) {
 }
 
 /**
+ * Removes one layer of entity escaping from rendered Markdown code spans.
+ * The XSLT output already contains escaped HTML entities, and marked escapes
+ * those entities again when it renders inline code.
+ * @param {String} html - Rendered HTML
+ * @return {String} HTML with code-span entities restored by one level
+ */
+function unescapeCodeEntities(html) {
+  return html.replace(
+    /(?<opening><code\b[^>]*>)(?<content>[\s\S]*?)(?<closing><\/code>)/gi,
+    (match, opening, content, closing) =>
+      `${opening}${content.replace(/&amp;(?<entity>lt|gt|amp);/g, (entityMatch, entity) => `&${entity};`)}${closing}`
+  );
+}
+
+/**
  * Converts Markdown blocks in documentation to HTML
  * @param {String} html - text of HTML file
  * @return {String} HTML document
@@ -118,7 +133,7 @@ function convertMarkdownToHtml(html) {
   const converted_html = html.replace(
     regex,
     (match, opening_tag, content, closing_tag) =>
-      `${opening_tag}${marked.parse(content, {renderer})}${closing_tag}`
+      `${opening_tag}${unescapeCodeEntities(marked.parse(content, {renderer}))}${closing_tag}`
   );
   return converted_html;
 }
