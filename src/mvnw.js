@@ -48,13 +48,17 @@ function cmd(sh) {
  * literally instead of being stripped, which corrupts the argument.
  * PowerShell, on the other hand, expands "$" and backtick inside double
  * quotes. Each shell needs its own literal quoting style.
+ *
+ * Backslashes at the very end of a value for cmd.exe are doubled, since
+ * otherwise the last one escapes the closing quote, as happens to a path
+ * to a drive root like "E:\".
  * @param {String} value - Argument to quote
  * @param {String} sh - Shell chosen by shell()
  * @return {String} Quoted argument
  */
 module.exports.quote = function(value, sh) {
   return cmd(sh) ?
-    `"${value.replace(/"/g, '""')}"` :
+    `"${value.replace(/"/g, '""').replace(/(?<slashes>\\+)$/u, '$<slashes>$<slashes>')}"` :
     `'${value.replace(/'/g, "''")}'`;
 };
 
@@ -96,11 +100,6 @@ module.exports.executable = function(bin, sh) {
   const quoted = module.exports.quote(bin, sh);
   return cmd(sh) ? quoted : `& ${quoted}`;
 };
-
-let beginning,
-  phase = 'unknown',
-  running = false,
-  target;
 
 /**
  * Prepare options for Maven.
@@ -159,8 +158,7 @@ module.exports.flags = function(opts) {
 module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
-    target = tgt;
-    phase = module.exports.summary(args);
+    const progress = {target: tgt, phase: module.exports.summary(args)};
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
@@ -195,17 +193,17 @@ module.exports.mvnw = function(args, tgt, batch) {
     const result = spawn(executable, argumentsList, options);
     result.on('error', (error) => {
       if (tgt !== undefined && args.includes('--quiet') && !batch) {
-        stop();
+        stop(progress);
       }
       reject(error);
     });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
-        start();
+        start(progress);
       }
       result.on('close', (code) => {
         if (!batch) {
-          stop();
+          stop(progress);
         }
         if (code !== 0) {
           reject(new Error(`The command "${cmdline}" exited with #${code} code`));
@@ -229,13 +227,14 @@ module.exports.cmdLine = cmdLine;
 
 /**
  * Starts mvnw execution status detection.
+ * @param {Object} progress State of this Maven invocation
  */
-function start() {
-  running = true;
-  beginning = Date.now();
+function start(progress) {
+  progress.running = true;
+  progress.beginning = Date.now();
   const check = function() {
-    if (running) {
-      print();
+    if (progress.running) {
+      print(progress);
       setTimeout(check, 1000);
     }
   };
@@ -244,9 +243,10 @@ function start() {
 
 /**
  * Stops mvnw execution status detection.
+ * @param {Object} progress State of this Maven invocation
  */
-function stop() {
-  running = false;
+function stop(progress) {
+  progress.running = false;
   readline.clearLine(process.stdout);
 }
 
@@ -287,9 +287,10 @@ function count(dir, curr) {
 
 /**
  * Prints mvnw execution status.
+ * @param {Object} progress State of this Maven invocation
  */
-function print() {
-  const duration = Date.now() - beginning;
+function print(progress) {
+  const duration = Date.now() - progress.beginning;
   let elapsed;
   if (duration < 1000) {
     elapsed = `${duration}ms`;
@@ -299,7 +300,7 @@ function print() {
     elapsed = `${Math.ceil(duration / (60 * 1000))}min`;
   }
   process.stdout.write(
-    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated so far...`)
+    colors.yellow(`[${progress.phase}] ${elapsed}; ${count(progress.target, 0)} files generated so far...`)
   );
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);

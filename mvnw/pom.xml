@@ -55,7 +55,7 @@
         <artifactId>eo-maven-plugin</artifactId>
         <version>${eo.version}</version>
         <configuration>
-          <excludeSources>**/.eoc/**</excludeSources>
+          <excludeSources>.eoc/**,**/.eoc/**</excludeSources>
           <foreign>${project.build.directory}/eo-foreign.json</foreign>
           <foreignFormat>json</foreignFormat>
         </configuration>
@@ -158,7 +158,7 @@
             <artifactId>eo-maven-plugin</artifactId>
             <version>${eo.version}</version>
             <configuration>
-              <excludeSources>**/.eoc/**</excludeSources>
+              <excludeSources>.eoc/**,**/.eoc/**</excludeSources>
               <foreign>${project.build.directory}/eo-foreign.json</foreign>
               <foreignFormat>json</foreignFormat>
             </configuration>
