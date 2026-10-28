@@ -4,7 +4,7 @@
  */
 
 const assert = require('assert');
-const parserVersion = require('../src/parser-version');
+let parserVersion = require('../src/parser-version');
 const {weAreOnline} = require('./helpers');
 
 describe('parser-version', () => {
@@ -23,6 +23,10 @@ describe('parser-version', () => {
     });
   });
   describe('exists()', () => {
+    beforeEach(() => {
+      delete require.cache[require.resolve('../src/parser-version')];
+      parserVersion = require('../src/parser-version');
+    });
     it('returns true for a known valid version', function () {
       this.timeout(15000);
       const exists = parserVersion.exists('0.28.11');

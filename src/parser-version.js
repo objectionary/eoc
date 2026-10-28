@@ -5,6 +5,7 @@
 
 const {XMLParser} = require('fast-xml-parser');
 const colors = require('colors');
+const checked = new Map();
 const request = require('sync-request'),
 
   /**
@@ -39,11 +40,15 @@ const request = require('sync-request'),
     },
     /**
      * Check if a specific parser version exists in Maven Central.
+     * Remember each result for this process, including checks that failed open.
      * @param {String} ver - Version to check, for example '0.23.1'
      * @param {function} fetch - HTTP call, defaults to sync-request
      * @return {Boolean} True if version exists or cannot be verified, false if confirmed absent
      */
     exists(ver, fetch = request) {
+      if (checked.has(ver)) {
+        return checked.get(ver);
+      }
       let result;
       if (ver && ver !== 'undefined') {
         try {
@@ -60,13 +65,14 @@ const request = require('sync-request'),
           }
         } catch (e) {
           console.warn(colors.yellow(
-            `Cannot verify parser version ${ver} in Maven Central (${e.message}), proceeding anyway`
+            `Cannot verify parser version ${ver} in Maven Central (${e.message || e.code || 'unknown error'}), proceeding anyway`
           ));
           result = true;
         }
       } else {
         result = false;
       }
+      checked.set(ver, result);
       return result;
     }
   };
