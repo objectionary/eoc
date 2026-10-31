@@ -16,7 +16,7 @@ const {execFileSync} = require('child_process'),
     return [
       '--target', args.target,
       '--project', args.project || 'project',
-      '--foreign eo-foreign.json',
+      '--foreign', 'eo-foreign.json',
       '--resources', path.resolve(lib, 'resources'),
       args.alone ? '--alone' : '',
       args.tests ? '--tests' : ''
@@ -49,3 +49,5 @@ const {execFileSync} = require('child_process'),
   };
 
 module.exports = eo2jsw;
+
+module.exports.flags = flags;
