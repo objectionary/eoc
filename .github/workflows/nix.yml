@@ -16,7 +16,7 @@ concurrency:
 jobs:
   nix:
     timeout-minutes: 30
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
