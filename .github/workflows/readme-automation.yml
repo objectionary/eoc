@@ -22,7 +22,7 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v7
         with:
-          node-version: "24.x"
+          node-version: "26.x"
           check-latest: false
       - name: Clean install
         run: npm ci
