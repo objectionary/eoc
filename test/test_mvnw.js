@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-const {mvnw, flags, summary} = require('../src/mvnw');
+const {mvnw, flags, summary, quote, count, executable} = require('../src/mvnw');
+const parserVersion = require('../src/parser-version');
 const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
@@ -88,6 +89,18 @@ describe('mvnw', () => {
     const result = flags(opts);
     assert.ok(result.includes('-Deo.version=1.0-SNAPSHOT'));
   });
+  it('throws when the requested parser version is unavailable', () => {
+    const exists = parserVersion.exists;
+    parserVersion.exists = () => false;
+    try {
+      assert.throws(
+        () => flags({sources: '.', target: 'target', parser: '9.9.9'}),
+        /Parser version 9\.9\.9 is not available in Maven Central/
+      );
+    } finally {
+      parserVersion.exists = exists;
+    }
+  });
   it('rejects when a quiet Maven run exits with a non-zero code', async function () {
     this.timeout(60000);
     await assert.rejects(
@@ -139,6 +152,82 @@ describe('mvnw', () => {
       'flags cannot be excluded from the goal count'
     );
   });
+  it('does not leak a literal quote into an argument passed through cmd.exe', () => {
+    assert.strictEqual(
+      quote('jeo:assemble', 'C:\\Windows\\system32\\cmd.exe'),
+      '"jeo:assemble"',
+      'a goal quoted for cmd.exe cannot come wrapped in single quotes'
+    );
+  });
+  it('doubles an embedded double quote when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('a"b', 'C:\\Windows\\system32\\cmd.exe'),
+      '"a""b"',
+      'an embedded double quote cannot survive unescaped in a cmd.exe argument'
+    );
+  });
+  it('doubles trailing backslashes when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('-Deo.sourcesDir=E:\\', 'C:\\Windows\\system32\\cmd.exe'),
+      '"-Deo.sourcesDir=E:\\\\"',
+      'a trailing backslash cannot be left to escape the closing quote'
+    );
+  });
+  it('keeps inner backslashes and spaces when quoting for cmd.exe', () => {
+    assert.strictEqual(
+      quote('-Dx=C:\\a b\\c', 'C:\\Windows\\system32\\cmd.exe'),
+      '"-Dx=C:\\a b\\c"',
+      'a value that does not end with a backslash must stay as it was'
+    );
+  });
+  it('keeps a trailing backslash as is when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote('E:\\', 'powershell.exe'),
+      "'E:\\'",
+      'single quotes in PowerShell do not treat a backslash as an escape'
+    );
+  });
+  it('passes a drive root sources directory to Maven through cmd.exe', async function () {
+    if (process.platform !== 'win32') {
+      this.skip();
+    }
+    this.timeout(60000);
+    const root = path.parse(process.cwd()).root;
+    const args = await mvnw(
+      [...flags({sources: root, target: 'target', parser: '1.0-SNAPSHOT'}), '--version'],
+      null,
+      true
+    );
+    assert.ok(args.includes(`-Deo.sourcesDir=${root}`));
+  });
+  it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote('-Deo.sourcesDir=C:\\proj\\a$b\\src', 'powershell.exe'),
+      "'-Deo.sourcesDir=C:\\proj\\a$b\\src'",
+      'a "$" cannot survive quoting meant to keep PowerShell from expanding it'
+    );
+  });
+  it('doubles an embedded single quote when quoting for PowerShell', () => {
+    assert.strictEqual(
+      quote("a'b", 'powershell.exe'),
+      "'a''b'",
+      'an embedded single quote cannot survive unescaped in a PowerShell argument'
+    );
+  });
+  it('quotes a path with a space to the executable for cmd.exe', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'C:\\Windows\\system32\\cmd.exe'),
+      '"C:\\Users\\John Smith\\mvnw.cmd"',
+      'a path with a space must reach cmd.exe as one quoted token'
+    );
+  });
+  it('calls a quoted path to the executable through the call operator in PowerShell', () => {
+    assert.equal(
+      executable('C:\\Users\\John Smith\\mvnw.cmd', 'powershell.exe'),
+      "& 'C:\\Users\\John Smith\\mvnw.cmd'",
+      'PowerShell runs a quoted path only behind the call operator'
+    );
+  });
   it('should handle ENOENT race condition in count function', function () {
     this.timeout(3000);
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-enoent-'));
@@ -166,5 +255,42 @@ describe('mvnw', () => {
       return curr;
     }
     assert.strictEqual(count(dir, 0), 1, 'count should skip the vanished entry and tally the real class');
+  });
+  it('skips an unreadable subdirectory while counting progress files', function() {
+    if (process.platform === 'win32' || (process.getuid && process.getuid() === 0)) {
+      this.skip();
+    }
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-denied-'));
+    fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
+    const hidden = path.join(dir, 'hidden');
+    fs.mkdirSync(hidden);
+    fs.writeFileSync(path.join(hidden, 'secret.class'), 'class');
+    fs.chmodSync(hidden, 0);
+    try {
+      assert.strictEqual(
+        count(dir, 0), 1,
+        'an unreadable directory must be skipped without stopping the progress'
+      );
+    } finally {
+      fs.chmodSync(hidden, 0o700);
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
+  });
+  it('skips a directory symlink cycle while counting progress files', function() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-mvnw-cycle-'));
+    fs.writeFileSync(path.join(dir, 'generated.class'), 'class');
+    try {
+      fs.symlinkSync('.', path.join(dir, 'loop'), 'dir');
+    } catch (error) {
+      if (['EACCES', 'EPERM', 'ENOTSUP'].includes(error.code)) {
+        this.skip();
+      }
+      throw error;
+    }
+    try {
+      assert.strictEqual(count(dir, 0), 1, 'count should not follow the directory symlink');
+    } finally {
+      fs.rmSync(dir, {recursive: true, force: true});
+    }
   });
 });

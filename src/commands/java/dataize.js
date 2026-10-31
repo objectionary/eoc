@@ -17,7 +17,11 @@ const {verifyJavac} = require('../../jdk');
  * @return {Promise} Resolves when the JVM exits successfully
  */
 module.exports = function(obj, args, opts, exec, runner = spawn) {
-  verifyJavac(exec);
+  try {
+    verifyJavac(exec);
+  } catch (error) {
+    return Promise.reject(error);
+  }
   const params = [
     '-Dfile.encoding=UTF-8',
     `-Xss${opts.stack}`,
@@ -30,7 +34,9 @@ module.exports = function(obj, args, opts, exec, runner = spawn) {
   console.debug(`+ java ${params.join(' ')}`);
   const child = runner('java', params, {stdio: 'inherit'});
   return new Promise((resolve, reject) => {
-    child.on('error', reject);
+    child.on('error', (error) => {
+      reject(new Error(`JVM could not be started: ${error.message}`, {cause: error}));
+    });
     child.on('close', (code) => {
       if (code === 0) {
         resolve();

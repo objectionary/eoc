@@ -7,6 +7,7 @@ const rel = require('relative');
 const {mvnw, flags} = require('../../mvnw');
 const {elapsed} = require('../../elapsed');
 const path = require('path');
+const {filled} = require('../../stages');
 
 /**
  * Command to transpile XMIR files into target language.
@@ -16,6 +17,7 @@ const path = require('path');
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   return elapsed(async (tracked) => {
+    filled(path.resolve(opts.target, '1-parse'), '.xmir', 'parse');
     const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);
     tracked.print(`Java sources generated in ${rel(sources)}`);
     return r;

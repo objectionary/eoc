@@ -94,6 +94,18 @@ describe('clean', () => {
     assert(fs.existsSync(home), 'the ancestor directory must not be deleted');
     done();
   });
+  it('refuses an ancestor when a descendant path component starts with two dots', (done) => {
+    const sandbox = path.resolve(testDir, 'refuses-dot-prefixed-descendant'),
+      target = path.join(sandbox, 'target'),
+      cwd = path.join(target, '..cache', 'project');
+    fs.mkdirSync(cwd, {recursive: true});
+    const outcome = runOutput(['--target', target, 'clean'], {cwd});
+    const output = `${outcome.stdout}\n${outcome.stderr}`;
+    assert(outcome.status !== 0, output);
+    assert(output.includes('Refusing to delete'), output);
+    assert(fs.existsSync(target), 'the ancestor directory must not be deleted');
+    done();
+  });
   it('refuses to delete the home directory', (done) => {
     const fakeHome = path.resolve(testDir, 'fake-home');
     fs.rmSync(fakeHome, {recursive: true, force: true});
@@ -104,6 +116,20 @@ describe('clean', () => {
     );
     assert(outcome.status !== 0, outcome.stderr);
     assert(fs.existsSync(fakeHome), 'the home directory must not be deleted');
+    done();
+  });
+  it('refuses to delete the global directory with the current directory inside', (done) => {
+    const fakeHome = path.resolve(testDir, 'global-home');
+    const work = path.join(fakeHome, '.eo', 'worktree', 'project');
+    fs.rmSync(fakeHome, {recursive: true, force: true});
+    fs.mkdirSync(work, {recursive: true});
+    fs.writeFileSync(path.join(work, 'keep.eo'), '# sample\n[] > keep\n');
+    const outcome = runOutput(
+      ['clean', '--global'],
+      {env: {...process.env, HOME: fakeHome, USERPROFILE: fakeHome}, cwd: work}
+    );
+    assert(outcome.status !== 0, outcome.stderr);
+    assert(fs.existsSync(path.join(work, 'keep.eo')), 'the working tree must not be deleted');
     done();
   });
 });

@@ -32,10 +32,51 @@ function shell() {
   }
 }
 
-let beginning,
-  phase = 'unknown',
-  running = false,
-  target;
+/**
+ * Whether the given shell is cmd.exe.
+ * @param {String} sh - Shell path, as returned by shell()
+ * @return {Boolean} TRUE if it is cmd.exe
+ */
+function cmd(sh) {
+  return /^(?:.*\\)?cmd(?:\.exe)?$/i.test(sh);
+}
+
+/**
+ * Quote a single argument for the Windows shell that will run it.
+ *
+ * cmd.exe does not understand single quotes; they are passed through
+ * literally instead of being stripped, which corrupts the argument.
+ * PowerShell, on the other hand, expands "$" and backtick inside double
+ * quotes. Each shell needs its own literal quoting style.
+ *
+ * Backslashes at the very end of a value for cmd.exe are doubled, since
+ * otherwise the last one escapes the closing quote, as happens to a path
+ * to a drive root like "E:\".
+ * @param {String} value - Argument to quote
+ * @param {String} sh - Shell chosen by shell()
+ * @return {String} Quoted argument
+ */
+module.exports.quote = function(value, sh) {
+  return cmd(sh) ?
+    `"${value.replace(/"/g, '""').replace(/(?<slashes>\\+)$/u, '$<slashes>$<slashes>')}"` :
+    `'${value.replace(/'/g, "''")}'`;
+};
+
+/**
+ * Make the path to the Maven executable safe for the Windows shell.
+ *
+ * The shell splits an unquoted path at its first space, so a path like
+ * "C:\Users\John Smith\mvnw.cmd" is never found. PowerShell, unlike
+ * cmd.exe, treats a quoted string as a value rather than a command, so
+ * it needs the call operator in front of it.
+ * @param {String} bin - Path to the executable
+ * @param {String} sh - Shell chosen by shell()
+ * @return {String} Executable ready for the shell command line
+ */
+module.exports.executable = function(bin, sh) {
+  const quoted = module.exports.quote(bin, sh);
+  return cmd(sh) ? quoted : `& ${quoted}`;
+};
 
 /**
  * Prepare options for Maven.
@@ -50,19 +91,18 @@ module.exports.flags = function(opts) {
     throw new Error('Target directory is not specified. Please provide it with --target option.');
   }
   const sources = path.resolve(opts.sources);
-  if (!fs.existsSync(sources)) {
+  if (!fs.existsSync(sources) || !fs.statSync(sources).isDirectory()) {
     throw new Error(`Sources directory ${rel(sources)} does not exist.`);
   }
   console.debug('Sources in %s', rel(sources));
   const target = path.resolve(opts.target);
   console.debug('Target in %s', rel(target));
   if (opts.parser && !opts.parser.endsWith('-SNAPSHOT') && !parserVersion.exists(opts.parser)) {
-    console.error(colors.red(
+    throw new Error(
       `Parser version ${opts.parser} is not available in Maven Central.\n` +
       `Please check available versions at: https://repo.maven.apache.org/maven2/org/eolang/eo-maven-plugin/\n` +
       `Or use --latest flag to get the most recent version.`
-    ));
-    process.exit(1);
+    );
   }
   return [
     `-Deo.version=${opts.parser}`,
@@ -95,8 +135,7 @@ module.exports.flags = function(opts) {
 module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
-    target = tgt;
-    phase = module.exports.summary(args);
+    const progress = {target: tgt, phase: module.exports.summary(args)};
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
@@ -111,33 +150,34 @@ module.exports.mvnw = function(args, tgt, batch) {
       '-Dorg.slf4j.simpleLogger.showDateTime=true',
       '-Dorg.slf4j.simpleLogger.dateTimeFormat=yyyy-MM-dd HH:mm:ss',
     ]);
-    const cmd = `${bin} ${params.join(' ')}`;
-    console.debug('+ %s', cmd);
+    const cmdline = `${bin} ${params.join(' ')}`;
+    console.debug('+ %s', cmdline);
+    const sh = shell();
     const result = spawn(
-      bin,
-      process.platform === 'win32' ? params.map((p) => `'${p.replace(/'/g, "''")}'`) : params,
+      process.platform === 'win32' ? module.exports.executable(bin, sh) : bin,
+      process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
       {
         cwd: home,
         stdio: 'inherit',
-        shell: shell(),
+        shell: sh,
       }
     );
     result.on('error', (error) => {
       if (tgt !== undefined && args.includes('--quiet') && !batch) {
-        stop();
+        stop(progress);
       }
       reject(error);
     });
     if (tgt !== undefined && args.includes('--quiet')) {
       if (!batch) {
-        start();
+        start(progress);
       }
       result.on('close', (code) => {
         if (!batch) {
-          stop();
+          stop(progress);
         }
         if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
           return;
         }
         resolve(args);
@@ -145,7 +185,7 @@ module.exports.mvnw = function(args, tgt, batch) {
     } else {
       result.on('close', (code) => {
         if (code !== 0) {
-          reject(new Error(`The command "${cmd}" exited with #${code} code`));
+          reject(new Error(`The command "${cmdline}" exited with #${code} code`));
           return;
         }
         resolve(args);
@@ -156,13 +196,14 @@ module.exports.mvnw = function(args, tgt, batch) {
 
 /**
  * Starts mvnw execution status detection.
+ * @param {Object} progress State of this Maven invocation
  */
-function start() {
-  running = true;
-  beginning = Date.now();
+function start(progress) {
+  progress.running = true;
+  progress.beginning = Date.now();
   const check = function() {
-    if (running) {
-      print();
+    if (progress.running) {
+      print(progress);
       setTimeout(check, 1000);
     }
   };
@@ -171,54 +212,54 @@ function start() {
 
 /**
  * Stops mvnw execution status detection.
+ * @param {Object} progress State of this Maven invocation
  */
-function stop() {
-  running = false;
+function stop(progress) {
+  progress.running = false;
   readline.clearLine(process.stdout);
 }
 
 /**
- * Prints mvnw execution status.
+ * Recursively calculates the number of regular files under a directory.
+ * Symbolic links are skipped so a directory cycle cannot stop Maven progress,
+ * and entries that vanished or can't be read are skipped too, since the count
+ * is only shown to the user.
+ * @param {String} dir - Directory where to count
+ * @param {Integer} curr - Current counter
+ * @return {Integer} Total number of files
  */
-function print() {
-  const duration = Date.now() - beginning;
-  /**
-   * Recursively calculates number of files under a directory.
-   * @param {String} dir - Directory where to count.
-   * @param {Integer} curr - Current counter.
-   * @return {Integer} Total number files.
-   */
-  function count(dir, curr) {
-    if (!fs.existsSync(dir)) {
+function count(dir, curr) {
+  let files;
+  try {
+    files = fs.readdirSync(dir);
+  } catch (error) {
+    if (['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
       return curr;
     }
+    throw error;
+  }
+  for (const file of files) {
+    const next = path.join(dir, file);
     try {
-      const files = fs.readdirSync(dir);
-      for (const f of files) {
-        curr = processFile(path.join(dir, f), curr);
+      const stat = fs.lstatSync(next);
+      if (!stat.isSymbolicLink()) {
+        curr = stat.isDirectory() ? count(next, curr) : curr + 1;
       }
     } catch (error) {
-      if (error.code === 'ENOENT') {
-        return curr;
+      if (!['ENOENT', 'EACCES', 'EPERM'].includes(error.code)) {
+        throw error;
       }
-      throw error;
-    }
-    return curr;
-  }
-  function processFile(filePath, curr) {
-    try {
-      const stat = fs.statSync(filePath);
-      if (stat.isDirectory()) {
-        return count(filePath, curr);
-      }
-      return curr + 1;
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        return curr;
-      }
-      throw error;
     }
   }
+  return curr;
+}
+
+/**
+ * Prints mvnw execution status.
+ * @param {Object} progress State of this Maven invocation
+ */
+function print(progress) {
+  const duration = Date.now() - progress.beginning;
   let elapsed;
   if (duration < 1000) {
     elapsed = `${duration}ms`;
@@ -228,8 +269,10 @@ function print() {
     elapsed = `${Math.ceil(duration / (60 * 1000))}min`;
   }
   process.stdout.write(
-    colors.yellow(`[${phase}] ${elapsed}; ${count(target, 0)} files generated so far...`)
+    colors.yellow(`[${progress.phase}] ${elapsed}; ${count(progress.target, 0)} files generated so far...`)
   );
   readline.clearLine(process.stdout, 1);
   readline.cursorTo(process.stdout, 0);
 }
+
+module.exports.count = count;

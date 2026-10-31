@@ -13,9 +13,17 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.TestEOfoo*#works_fine'),
-      `expected -Dtest=org.eolang.TestEOfoo*#works_fine, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.foo.TestEOapp*#works_fine'),
+      `expected -Dtest=org.eolang.foo.TestEOapp*#works_fine, got: ${captured}`
     );
+  });
+  it('compiles test sources before running them', async () => {
+    let captured;
+    await test(
+      {stack: '64M', heap: '256M', sources: 'src', target: 'target'},
+      (args) => { captured = args; }
+    );
+    assert.deepStrictEqual(captured.slice(0, 2), ['test-compile', 'surefire:test']);
   });
   it('builds -Dtest filter from --object without package', async () => {
     let captured;
@@ -75,8 +83,8 @@ describe('java/test', () => {
       (args) => { captured = args; }
     );
     assert.ok(
-      captured.includes('-Dtest=org.eolang.TestEOfoo*#works_fine'),
-      `expected -Dtest=org.eolang.TestEOfoo*#works_fine, got: ${captured}`
+      captured.includes('-Dtest=org.eolang.foo.bar.TestEOapp*#works_fine'),
+      `expected -Dtest=org.eolang.foo.bar.TestEOapp*#works_fine, got: ${captured}`
     );
   });
   it('omits -Dtest when --object is not provided', async () => {

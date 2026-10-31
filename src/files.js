@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const rel = require('relative');
 
 /**
  * Recursively find all files with given extension in a directory.
@@ -59,29 +60,58 @@ function saveFile(dir, name, content) {
  */
 function copyDir(src, dst, ext, excluded, visited = new Set()) {
   if (!fs.existsSync(src)) {return;}
-  if (excluded && path.resolve(src) === path.resolve(excluded)) {return;}
-  const real = fs.realpathSync(src);
-  if (visited.has(real)) {return;}
-  visited.add(real);
-  fs.mkdirSync(dst, {recursive: true});
-  for (const entry of fs.readdirSync(src, {withFileTypes: true})) {
-    const source = path.join(src, entry.name);
-    const dest = path.join(dst, entry.name);
-    let directory = entry.isDirectory();
-    if (!directory && entry.isSymbolicLink()) {
-      try {
-        directory = fs.statSync(source).isDirectory();
-      } catch (error) {
-        directory = false;
+  let excludedReal = excluded && fs.existsSync(excluded) ? fs.realpathSync(excluded) : null;
+  function copy(sourceDir, destinationDir) {
+    if (!fs.existsSync(sourceDir)) {return;}
+    if (excluded && path.resolve(sourceDir) === path.resolve(excluded)) {return;}
+    if (excluded && !excludedReal && fs.existsSync(excluded)) {
+      excludedReal = fs.realpathSync(excluded);
+    }
+    const real = fs.realpathSync(sourceDir);
+    if (excludedReal) {
+      const relative = path.relative(excludedReal, real);
+      const inside = relative === '' || (
+        relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)
+      );
+      if (inside) {
+        return;
       }
     }
-    if (directory) {
-      copyDir(source, dest, ext, excluded, visited);
-    } else if (!ext || entry.name.endsWith(ext)) {
-      fs.copyFileSync(source, dest);
+    if (visited.has(real)) {return;}
+    visited.add(real);
+    fs.mkdirSync(destinationDir, {recursive: true});
+    for (const entry of fs.readdirSync(sourceDir, {withFileTypes: true})) {
+      const source = path.join(sourceDir, entry.name);
+      const dest = path.join(destinationDir, entry.name);
+      let directory = entry.isDirectory();
+      if (!directory && entry.isSymbolicLink()) {
+        try {
+          directory = fs.statSync(source).isDirectory();
+        } catch (error) {
+          directory = false;
+        }
+      }
+      if (directory) {
+        copy(source, dest);
+      } else if (!ext || entry.name.endsWith(ext)) {
+        fs.copyFileSync(source, dest);
+      }
     }
+    visited.delete(real);
   }
-  visited.delete(real);
+  copy(src, dst);
 }
 
-module.exports = {findFiles, saveFile, copyDir};
+/**
+ * Return the directory, failing when it does not exist.
+ * @param {string} dir - Directory that must exist
+ * @return {string} The same directory
+ */
+function existing(dir) {
+  if (!fs.existsSync(dir)) {
+    throw new Error(`Directory ${rel(dir)} does not exist`);
+  }
+  return dir;
+}
+
+module.exports = {findFiles, saveFile, copyDir, existing};

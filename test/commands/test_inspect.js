@@ -131,6 +131,53 @@ describe('inspect/java', () => {
       /Inspection server exited before opening port .* exit code 7/
     );
   });
+  it('times out when the inspection server accepts a request but never sends JSON', async () => {
+    const previous = global.fetch;
+    global.fetch = async (url, opts) => ({
+      json: () => new Promise((resolve, reject) => {
+        opts.signal.addEventListener('abort', () => reject(opts.signal.reason), {once: true});
+      }),
+    });
+    try {
+      await assert.rejects(
+        () => inspect.ask(8080, Date.now() + 50),
+        /The inspection server has not opened port 8080 in a minute/
+      );
+    } finally {
+      global.fetch = previous;
+    }
+  });
+  it('rejects an unrelated server that returns JSON without a forma', async () => {
+    const server = http.createServer((request, response) => {
+      response.writeHead(200, {'Content-Type': 'application/json'});
+      response.end('{"status":"ok"}');
+    });
+    await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+    const printed = [];
+    const info = console.info;
+    console.info = (line) => printed.push(line);
+    let killed = false;
+    try {
+      await assert.rejects(
+        () => inspect(
+          {target: home, port: server.address().port},
+          () => true,
+          () => ({kill: () => {
+            killed = true;
+          }})
+        ),
+        /Inspection server on port .* returned an invalid response/
+      );
+      assert(killed, 'inspect leaves the child process running on an invalid response');
+      assert(
+        !printed.includes('Ready to traverse the Universe'),
+        'inspect reports an unrelated JSON server as ready'
+      );
+    } finally {
+      console.info = info;
+      server.close();
+    }
+  });
   it('fails fast when javac is not on the PATH', async () => {
     const missing = () => {
       const cause = new Error('spawnSync javac ENOENT');
