@@ -13,6 +13,8 @@ name: eslint
 concurrency:
   group: eslint-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   eslint:
     timeout-minutes: 15
