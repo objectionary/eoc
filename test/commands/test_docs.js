@@ -363,6 +363,35 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that escaped HTML entities in EO Markdown code spans are not escaped twice.
+   * @param {Mocha.Done} done - Callback signaling completion
+   */
+  it('renders EO code spans without double escaping', (done) => {
+    const fixture = fs.readFileSync(
+      path.join(__dirname, '..', 'resources', 'test6.xmir'), 'utf-8'
+    );
+    const marker = '**Strong test**\\n`Code test`';
+    assert(fixture.includes(marker), 'Expected Markdown fixture to contain the replacement marker');
+    const xmir = fixture.replace(
+      marker,
+      'Use `5.plus 6 &gt; sum`\\nwhen `a &lt; b &amp;&amp; c` and literal `&amp;lt;`'
+    );
+    fs.writeFileSync(path.join(parsed, 'code-spans.xmir'), xmir);
+    runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    const page = fs.readFileSync(path.join(docs, 'code-spans.html'), 'utf-8');
+    assert(page.includes('<code>5.plus 6 &gt; sum</code>'), page);
+    assert(page.includes('<code>a &lt; b &amp;&amp; c</code>'), page);
+    assert(!page.includes('<code>5.plus 6 &amp;gt; sum</code>'), page);
+    assert(!page.includes('<code>a &amp;lt; b &amp;amp;&amp;amp; c</code>'), page);
+    assert(page.includes('<code>&amp;lt;</code>'), page);
+    done();
+  });
+  /**
    * Tests that unsafe URL schemes in Markdown are rendered as plain text.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
    */
