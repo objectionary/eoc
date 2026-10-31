@@ -54,7 +54,7 @@ jobs:
       - run: npx grunt
   telegram:
     needs: build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() && github.ref == 'refs/heads/master' }}
     permissions:
       actions: read
