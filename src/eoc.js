@@ -364,7 +364,7 @@ program.command('generate_comments')
     '(only usable with `openai` provider) openai api token')
   .option('--openai_url <url>',
     '(only usable with `openai` provider) url to openai-like api',
-    'https://api.openai.com/')
+    'https://api.openai.com/v1')
   .requiredOption('--source <path>', 'File to process')
   .option('--comment_placeholder <placeholder>',
     'A string placeholder, each instance of which will be replaced with a generated comment',
