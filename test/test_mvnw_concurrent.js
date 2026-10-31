@@ -12,12 +12,14 @@ const {EventEmitter} = require('events');
 
 /**
  * Load the real wrapper with controlled child processes, clock callbacks and terminal output.
+ * @param {Object} terminal Terminal properties of stdout
  * @return {Object} Wrapper exports and captured external effects
  */
-function wrapper() {
+function wrapper(terminal = {isTTY: true}) {
   const children = [];
   const timers = [];
   const lines = [];
+  const controls = [];
   const loaded = {exports: {}};
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-concurrent-progress-'));
   const targets = ['one', 'two'].map(name => path.join(home, name));
@@ -38,19 +40,19 @@ function wrapper() {
         }};
       }
       if (name === 'readline') {
-        return {clearLine: () => true, cursorTo: () => true};
+        return {clearLine: () => controls.push('clear'), cursorTo: () => controls.push('cursor')};
       }
       return name === './parser-version' ? {} : require(name);
     },
     module: loaded,
     __dirname: path.dirname(source),
-    process: {platform: process.platform, env: process.env, stdout: {write: line => lines.push(line)}},
+    process: {platform: process.platform, env: process.env, stdout: {...terminal, write: line => lines.push(line)}},
     console,
     setTimeout: callback => timers.push(callback),
     Date: {now: () => now}
   }, {filename: source});
   return {
-    mvnw: loaded.exports.mvnw, children, timers, lines, targets,
+    mvnw: loaded.exports.mvnw, children, timers, lines, controls, targets,
     advance: millis => { now += millis; },
     dispose: () => fs.rmSync(home, {recursive: true, force: true})
   };
@@ -85,6 +87,51 @@ describe('concurrent Maven progress', () => {
     } finally {
       run.children[1].emit('close', 0);
       await Promise.all([one, two]);
+      run.dispose();
+    }
+  });
+});
+
+describe('Maven progress output', () => {
+  [{}, {isTTY: false}].forEach((terminal) => {
+    it(`leaves redirected stdout untouched when isTTY is ${terminal.isTTY}`, async () => {
+      const run = wrapper(terminal);
+      const pending = run.mvnw(['first-goal', '--quiet'], run.targets[0], false);
+      try {
+        run.children[0].emit('close', 0);
+        await pending;
+        assert.deepStrictEqual(run.lines, [], 'redirected stdout contains progress text');
+        assert.deepStrictEqual(run.controls, [], 'redirected stdout received terminal control sequences');
+        assert.deepStrictEqual(run.timers, [], 'a non-terminal output started the progress timer');
+      } finally {
+        run.dispose();
+      }
+    });
+  });
+  it('does not clear redirected stdout after a spawn error', async () => {
+    const run = wrapper({});
+    const pending = run.mvnw(['first-goal', '--quiet'], run.targets[0], false);
+    try {
+      const failed = assert.rejects(pending, /Maven unavailable/);
+      run.children[0].emit('error', new Error('Maven unavailable'));
+      await failed;
+      assert.deepStrictEqual(run.lines, [], 'the failed process wrote progress to redirected stdout');
+      assert.deepStrictEqual(run.controls, [], 'the failed process cleared a non-terminal output');
+      assert.deepStrictEqual(run.timers, [], 'the failed non-terminal process scheduled progress');
+    } finally {
+      run.dispose();
+    }
+  });
+  it('keeps batch mode quiet even on a terminal', async () => {
+    const run = wrapper();
+    const pending = run.mvnw(['first-goal', '--quiet'], run.targets[0], true);
+    try {
+      run.children[0].emit('close', 0);
+      await pending;
+      assert.deepStrictEqual(run.lines, [], 'batch mode displayed progress');
+      assert.deepStrictEqual(run.controls, [], 'batch mode moved the terminal cursor');
+      assert.deepStrictEqual(run.timers, [], 'batch mode started a progress timer');
+    } finally {
       run.dispose();
     }
   });
