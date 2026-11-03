@@ -10,5 +10,7 @@
   ],
   "ignorePaths": [
     "Formula/**"
-  ]
+  ],
+  "automerge": true,
+  "platformAutomerge": false
 }
