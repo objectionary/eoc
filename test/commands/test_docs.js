@@ -374,7 +374,7 @@ describe('docs', () => {
     assert(fixture.includes(marker), 'Expected Markdown fixture to contain the replacement marker');
     const xmir = fixture.replace(
       marker,
-      'Use `5.plus 6 &gt; sum`\\nwhen `a &lt; b &amp;&amp; c` and literal `&amp;lt;`'
+      'Use `5.plus 6 &gt; sum`\\nwhen `a &lt; b &amp;&amp; c` and literal `&amp;lt;` and `&amp;amp;`'
     );
     fs.writeFileSync(path.join(parsed, 'code-spans.xmir'), xmir);
     runSync([
@@ -389,6 +389,7 @@ describe('docs', () => {
     assert(!page.includes('<code>5.plus 6 &amp;gt; sum</code>'), page);
     assert(!page.includes('<code>a &amp;lt; b &amp;amp;&amp;amp; c</code>'), page);
     assert(page.includes('<code>&amp;lt;</code>'), page);
+    assert(page.includes('<code>&amp;amp;</code>'), page);
     done();
   });
   /**
