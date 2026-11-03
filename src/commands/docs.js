@@ -116,6 +116,8 @@ function convertMarkdownToHtml(html) {
     return link(href, title, text);
   };
   const codespan = renderer.codespan.bind(renderer);
+  // XSLT has already escaped description text once; decode one layer before
+  // Marked escapes the code span for HTML, preserving author-written entities.
   renderer.codespan = (code) => codespan(
     code.replace(/&(?:amp|lt|gt);/g, (entity) => ({
       '&amp;': '&',
