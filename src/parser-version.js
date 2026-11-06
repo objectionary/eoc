@@ -9,20 +9,28 @@ const request = require('sync-request'),
 
   /**
    * Load the latest version from GitHub releases.
+   * @param {function} fetch - HTTP call, defaults to sync-request
    * @return {String} Latest version, for example '0.23.1'
    */
   version = module.exports = {
     value: '',
-    get() {
+    get(fetch = request) {
       if (version.value === '') {
         const repo = 'org/eolang/eo-maven-plugin',
           url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`,
-          res = request('GET', url, {timeout: 100000, socketTimeout: 100000});
+          res = fetch('GET', url, {timeout: 100000, socketTimeout: 100000});
         if (res.statusCode !== 200) {
           throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
         }
-        const xml = new XMLParser().parse(res.body);
-        version.value = xml.metadata.versioning.release;
+        const xml = new XMLParser({parseTagValue: false}).parse(res.body),
+          versioning = xml && xml.metadata ? xml.metadata.versioning : undefined,
+          release = versioning ? versioning.release : undefined;
+        if (release === undefined || release === null || release === '') {
+          throw new Error(
+            `No <release> in the metadata at ${url}: ${String(res.body).slice(0, 200)}`
+          );
+        }
+        version.value = String(release);
         console.info('The latest version of %s at %s is %s', repo, url, version.value);
       }
       return version.value;
