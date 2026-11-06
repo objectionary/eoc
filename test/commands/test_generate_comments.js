@@ -6,9 +6,22 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const {execFileSync} = require('child_process');
 const {runSync, assertFilesExist} = require('../helpers');
 
 describe('generate_comments', () => {
+  it('uses the versioned OpenAI endpoint by default', () => {
+    assert.deepStrictEqual(openaiRequest(), {
+      url: 'https://api.openai.com/v1/chat/completions',
+      method: 'POST'
+    });
+  });
+  it('preserves a custom OpenAI-compatible endpoint', () => {
+    assert.deepStrictEqual(openaiRequest('https://example.invalid/custom'), {
+      url: 'https://example.invalid/custom/chat/completions',
+      method: 'POST'
+    });
+  });
   it('throws error on unknown provider', (done) => {
     const home = makeHome();
     const exampleInput = `<COMMENT-TO-BE-ADDED>`;
@@ -104,6 +117,41 @@ describe('generate_comments', () => {
     assert.strictEqual(globalThis.placeholders, undefined, 'placeholders leaked onto the global object');
   });
 });
+
+/**
+ * Run the real OpenAI provider with its HTTP requests intercepted locally.
+ * @param {String} url - Optional custom base URL
+ * @return {Object} Request URL and method
+ */
+function openaiRequest(url) {
+  const home = makeHome();
+  const capture = path.join(home, 'request.json');
+  const output = path.join(home, 'out.json');
+  const args = [
+    '--require', path.resolve('test/resources/openai.cjs'),
+    path.resolve('src/eoc.js'), '--batch', 'generate_comments',
+    '--provider=openai', '--openai_model=gpt-4o-mini',
+    '--openai_token=local-test-key',
+    `--prompt_template=${makePromptFile(home, '{code}')}`,
+    `--source=${makeInputFile(home, '# <COMMENT-TO-BE-ADDED>\n[] > example')}`,
+    `--output=${output}`
+  ];
+  if (url) {
+    args.push(`--openai_url=${url}`);
+  }
+  execFileSync(process.execPath, args, {
+    windowsHide: true,
+    timeout: 120000,
+    env: {
+      ...process.env,
+      EOC_OPENAI_REQUEST: capture,
+      LANGSMITH_TRACING: 'false',
+      LANGCHAIN_TRACING_V2: 'false'
+    }
+  });
+  verifyGeneratedOutput('', home, output, ['Local test response.']);
+  return JSON.parse(fs.readFileSync(capture, 'utf8'));
+}
 
 /**
  * Assert that the output file exists and contains expected content
