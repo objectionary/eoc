@@ -175,11 +175,11 @@ To run a specific test based on its description, use the following command:
 npm test -- --grep="<test-description>"
 ```
 
-For example, to run a test with the description
-"formats EO files according to expected patterns," execute:
+For example, run the existing test "ignores flags when counting Maven goals"
+directly with Mocha:
 
 ```bash
-npm test -- --grep="formats EO files according to expected patterns"
+npx mocha test/test_mvnw.js --grep="ignores flags when counting Maven goals"
 ```
 
 You can also run a specific test file using `npx grunt`:
