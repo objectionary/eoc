@@ -136,6 +136,7 @@ module.exports.mvnw = function(args, tgt, batch) {
   return new Promise((resolve, reject) => {
     console.debug(`Running mvnw with arguments: ${args.join(' ')}`);
     const progress = {target: tgt, phase: module.exports.summary(args)};
+    const interactive = process.stdout.isTTY && !batch;
     const home = path.resolve(__dirname, '../mvnw');
     let bin = path.resolve(home, 'mvnw') + (process.platform === 'win32' ? '.cmd' : '');
     if (!fs.existsSync(bin)) {
@@ -163,17 +164,17 @@ module.exports.mvnw = function(args, tgt, batch) {
       }
     );
     result.on('error', (error) => {
-      if (tgt !== undefined && args.includes('--quiet') && !batch) {
+      if (tgt !== undefined && args.includes('--quiet') && interactive) {
         stop(progress);
       }
       reject(error);
     });
     if (tgt !== undefined && args.includes('--quiet')) {
-      if (!batch) {
+      if (interactive) {
         start(progress);
       }
       result.on('close', (code) => {
-        if (!batch) {
+        if (interactive) {
           stop(progress);
         }
         if (code !== 0) {
