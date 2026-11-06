@@ -8,22 +8,36 @@ const colors = require('colors');
 const request = require('sync-request'),
 
   /**
-   * Load the latest version from GitHub releases.
-   * @return {String} Latest version, for example '0.23.1'
+   * Load the latest version from Maven Central.
+   *
+   * Answers with an empty string when Maven Central cannot be reached or
+   * refuses, the way `exists` below does, so that a machine with no network
+   * keeps the version the repository pins instead of dying on a stack trace
+   * before the command line is even parsed.
+   * @param {function} fetch - HTTP call, defaults to sync-request
+   * @return {String} Latest version, for example '0.23.1', or an empty string
    */
   version = module.exports = {
     value: '',
-    get() {
+    get(fetch = request) {
       if (version.value === '') {
         const repo = 'org/eolang/eo-maven-plugin',
-          url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`,
-          res = request('GET', url, {timeout: 100000, socketTimeout: 100000});
-        if (res.statusCode !== 200) {
-          throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
+          url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`;
+        try {
+          const res = fetch('GET', url, {timeout: 100000, socketTimeout: 100000});
+          if (res.statusCode === 200) {
+            version.value = new XMLParser().parse(res.body).metadata.versioning.release;
+            console.info('The latest version of %s at %s is %s', repo, url, version.value);
+          } else {
+            console.warn(colors.yellow(
+              `Cannot ask ${url} for the latest version (HTTP ${res.statusCode}), using the pinned one`
+            ));
+          }
+        } catch (e) {
+          console.warn(colors.yellow(
+            `Cannot ask ${url} for the latest version (${e.message}), using the pinned one`
+          ));
         }
-        const xml = new XMLParser().parse(res.body);
-        version.value = xml.metadata.versioning.release;
-        console.info('The latest version of %s at %s is %s', repo, url, version.value);
       }
       return version.value;
     },

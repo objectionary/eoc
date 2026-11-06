@@ -150,7 +150,9 @@ program
 
 program.hook('preAction', (command) => {
   if (command.opts().latest) {
-    command.setOptionValue('parser', require('./parser-version').get());
+    command.setOptionValue(
+      'parser', require('./parser-version').get() || command.opts().parser
+    );
   }
   const dir = command.opts().dir;
   if (path.resolve(dir) !== process.cwd()) {
