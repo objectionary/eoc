@@ -18,6 +18,7 @@ describe('eoc', () => {
     assert(stdout.includes('Usage: eoc'));
     assert(stdout.includes(version.what));
     assert(stdout.includes(version.when));
+    assert(stdout.includes(`(${version.what} built on ${version.when})`));
     done();
   });
   it('enables internal debug logging with --debug', (done) => {
