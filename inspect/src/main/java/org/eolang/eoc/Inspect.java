@@ -14,6 +14,7 @@ import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithType;
 
@@ -96,10 +97,38 @@ public final class Inspect {
                     (Take) req -> new RsWithType.Json(
                         new RsText(String.format("{\"forma\":\"%s\"}", Phi.Φ.forma()))
                     )
+                ),
+                new FkRegex(
+                    "/do",
+                    (Take) req -> new RsWithType.Json(
+                        new RsText(
+                            String.format(
+                                "{\"out\":\"%s\"}",
+                                this.answer(
+                                    new RqHref.Base(req).href().param("verb")
+                                        .iterator().next()
+                                )
+                            )
+                        )
+                    )
                 )
             ),
             this.port()
         ).start(Exit.NEVER);
+    }
+
+    /**
+     * What the server answers to one verb.
+     *
+     * <p>Every verb of the session is refused here until the puzzles above
+     * are resolved, and the refusal names the verb, so that a typo and a
+     * verb that is not written yet look different to the user.</p>
+     *
+     * @param verb The verb the session sent
+     * @return The line to print
+     */
+    private String answer(final String verb) {
+        return String.format("I don't know the verb '%s' yet", verb);
     }
 
     /**
