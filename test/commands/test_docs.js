@@ -82,6 +82,50 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that repeated docs builds remove pages for deleted XMIR files.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('removes stale generated pages and keeps custom HTML and styles', (done) => {
+    const sample = path.join(parsed, 'pkg');
+    fs.mkdirSync(sample, {recursive: true});
+    const stale = path.join(sample, 'stale.xmir');
+    fs.writeFileSync(stale, '<program name="stale" />');
+    fs.writeFileSync(path.join(sample, 'current.xmir'), '<program name="current" />');
+    const run = () => runSync([
+      'docs',
+      '--verbose',
+      '-s', path.resolve(home, 'src'),
+      '-t', home,
+    ]);
+    fs.mkdirSync(docs, {recursive: true});
+    const custom_page = path.join(docs, 'manual.html');
+    const custom_html = '<!DOCTYPE html><html><body><!-- eoc docs page -->Manual page</body></html>';
+    fs.writeFileSync(custom_page, custom_html);
+    run();
+    assert.strictEqual(fs.readFileSync(custom_page, 'utf-8'), custom_html);
+    const nested_page = path.join(docs, 'pkg', 'manual.html');
+    fs.writeFileSync(nested_page, custom_html);
+    const stale_page = path.join(docs, 'pkg', 'stale.html');
+    const current_page = path.join(docs, 'pkg', 'current.html');
+    assert(fs.existsSync(stale_page), 'Expected the first build to create the stale object page');
+    const css = path.join(docs, 'styles.css');
+    const custom = 'body { color: rebeccapurple; }\n';
+    fs.writeFileSync(css, custom);
+    fs.unlinkSync(stale);
+    run();
+    assert(!fs.existsSync(stale_page), 'A deleted XMIR file must not leave an old object page');
+    assert(fs.existsSync(current_page), 'The current object page must still be generated');
+    assert.strictEqual(fs.readFileSync(css, 'utf-8'), custom);
+    assert.strictEqual(fs.readFileSync(custom_page, 'utf-8'), custom_html);
+    assert.strictEqual(fs.readFileSync(nested_page, 'utf-8'), custom_html);
+    fs.unlinkSync(path.join(sample, 'current.xmir'));
+    run();
+    assert(!fs.existsSync(current_page), 'The removed package must not keep its object page');
+    assert(!fs.existsSync(path.join(docs, 'package_pkg.html')));
+    assert.strictEqual(fs.readFileSync(nested_page, 'utf-8'), custom_html);
+    done();
+  });
+  /**
    * Tests that a root-level XMIR is not assigned the "." filesystem
    * marker as its package name.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
