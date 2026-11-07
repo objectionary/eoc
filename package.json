@@ -46,6 +46,7 @@
     "oop"
   ],
   "license": "MIT",
+  "main": "src/eoc.js",
   "name": "eolang",
   "nyc": {
     "all": true,
