@@ -13,6 +13,8 @@ name: typos
 concurrency:
   group: typos-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   typos:
     timeout-minutes: 15

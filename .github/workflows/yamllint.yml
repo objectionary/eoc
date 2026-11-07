@@ -19,6 +19,8 @@ name: yamllint
 concurrency:
   group: yamllint-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   yamllint:
     timeout-minutes: 15

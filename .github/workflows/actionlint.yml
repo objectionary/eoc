@@ -17,6 +17,9 @@ name: actionlint
 concurrency:
   group: actionlint-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
+  checks: write
 jobs:
   actionlint:
     timeout-minutes: 15
