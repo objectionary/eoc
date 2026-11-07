@@ -20,6 +20,8 @@ function wrapper(terminal = {isTTY: true}) {
   const timers = [];
   const lines = [];
   const controls = [];
+  const interfaces = [];
+  const logs = [];
   const loaded = {exports: {}};
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'eoc-concurrent-progress-'));
   const targets = ['one', 'two'].map(name => path.join(home, name));
@@ -35,24 +37,33 @@ function wrapper(terminal = {isTTY: true}) {
       if (name === 'child_process') {
         return {spawn: () => {
           const child = new EventEmitter();
+          child.stdout = new EventEmitter();
           children.push(child);
           return child;
         }};
       }
       if (name === 'readline') {
-        return {clearLine: () => controls.push('clear'), cursorTo: () => controls.push('cursor')};
+        return {
+          clearLine: () => controls.push('clear'),
+          cursorTo: () => controls.push('cursor'),
+          createInterface: () => {
+            const lines = new EventEmitter();
+            interfaces.push(lines);
+            return lines;
+          }
+        };
       }
       return name === './parser-version' ? {} : require(name);
     },
     module: loaded,
     __dirname: path.dirname(source),
     process: {platform: process.platform, env: process.env, stdout: {...terminal, write: line => lines.push(line)}},
-    console,
+    console: Object.assign(Object.create(console), {log: line => logs.push(line)}),
     setTimeout: callback => timers.push(callback),
     Date: {now: () => now}
   }, {filename: source});
   return {
-    mvnw: loaded.exports.mvnw, children, timers, lines, controls, targets,
+    mvnw: loaded.exports.mvnw, children, timers, lines, controls, targets, interfaces, logs,
     advance: millis => { now += millis; },
     dispose: () => fs.rmSync(home, {recursive: true, force: true})
   };
@@ -93,6 +104,33 @@ describe('concurrent Maven progress', () => {
 });
 
 describe('Maven progress output', () => {
+  it('shows the goal that Maven runs now in the progress line', async () => {
+    const run = wrapper();
+    const pending = run.mvnw(['first-goal', '--quiet'], run.targets[0], false);
+    try {
+      run.interfaces[0].emit('line', '2026-10-04 12:40:36 [INFO] --- eo:0.63.1:lint (default-cli) @ eoc ---');
+      run.timers[0]();
+      assert(run.lines.at(-1).includes('[first-goal: eo:lint]'), 'the progress line does not name the running goal');
+      assert.deepStrictEqual(run.logs, [], 'a goal line was forwarded instead of being shown in the progress');
+    } finally {
+      run.children[0].emit('close', 0);
+      await pending;
+      run.dispose();
+    }
+  });
+  it('forwards the output of Maven that is not an INFO line', async () => {
+    const run = wrapper();
+    const pending = run.mvnw(['first-goal', '--quiet'], run.targets[0], false);
+    try {
+      run.interfaces[0].emit('line', '2026-10-04 12:40:36 [INFO] Linted 1 out of 1 XMIR program(s)');
+      run.interfaces[0].emit('line', '[ERROR] Failed to execute goal');
+      assert.deepStrictEqual(run.logs, ['[ERROR] Failed to execute goal'], 'the error of Maven was not forwarded');
+    } finally {
+      run.children[0].emit('close', 0);
+      await pending;
+      run.dispose();
+    }
+  });
   [{}, {isTTY: false}].forEach((terminal) => {
     it(`leaves redirected stdout untouched when isTTY is ${terminal.isTTY}`, async () => {
       const run = wrapper(terminal);
