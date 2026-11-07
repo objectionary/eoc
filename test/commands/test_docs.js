@@ -126,6 +126,47 @@ describe('docs', () => {
     done();
   });
   /**
+   * Tests that a root object named like a package summary keeps its own page.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('keeps a root object apart from the summary of a package', (done) => {
+    fs.mkdirSync(path.join(parsed, 'foo'), {recursive: true});
+    fs.writeFileSync(path.join(parsed, 'package_foo.xmir'), '<program name="package_foo" />');
+    fs.writeFileSync(path.join(parsed, 'foo', 'bar.xmir'), '<program name="bar" />');
+    runSync(['docs', '--verbose', '-s', path.resolve(home, 'src'), '-t', home]);
+    const summary = fs.readFileSync(path.join(docs, 'package_foo.html'), 'utf-8');
+    assert(
+      summary.includes('foo package documentation'),
+      'The package summary must not be replaced by the root object'
+    );
+    const object = fs.readFileSync(path.join(docs, 'package_foo-2.html'), 'utf-8');
+    assert(
+      object.includes('package_foo documentation'),
+      'The root object must get a page of its own'
+    );
+    done();
+  });
+  /**
+   * Tests that two root objects never share one page.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('keeps the root packages object apart from a root object packages-object', (done) => {
+    fs.writeFileSync(path.join(parsed, 'packages.xmir'), '<program name="packages" />');
+    fs.writeFileSync(path.join(parsed, 'packages-object.xmir'), '<program name="packages-object" />');
+    runSync(['docs', '--verbose', '-s', path.resolve(home, 'src'), '-t', home]);
+    const pages = fs.readdirSync(docs).filter((f) => f.startsWith('packages-object'));
+    assert.deepStrictEqual(
+      pages.sort(),
+      ['packages-object-2.html', 'packages-object.html'],
+      'Each of the two objects must have its own page'
+    );
+    const own = fs.readFileSync(path.join(docs, 'packages-object.html'), 'utf-8');
+    assert(own.includes('packages-object documentation'), 'The object keeps the page of its own name');
+    const root = fs.readFileSync(path.join(docs, 'packages-object-2.html'), 'utf-8');
+    assert(root.includes('packages documentation'), 'The packages object moves to the free page');
+    done();
+  });
+  /**
    * Tests that 'docs' does not crash for a package whose name is an
    * inherited object property, such as 'constructor'.
    * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion

@@ -181,6 +181,25 @@ function wrapHtml(name, html, css) {
 }
 
 /**
+ * Picks the path of an object page that no other page of the documentation
+ * uses, adding a numeric suffix to the name when the path is taken.
+ * @param {String} wanted - Path of the page the object would normally get
+ * @param {Set<String>} used - Paths already given to object pages
+ * @param {Set<String>} reserved - Paths of the package and the overall pages
+ * @return {String} The path to write the object page to
+ */
+function freePage(wanted, used, reserved) {
+  let page = wanted;
+  let index = 2;
+  while (used.has(page) || reserved.has(page)) {
+    page = wanted.replace(/\.html$/, `-${index}.html`);
+    index += 1;
+  }
+  used.add(page);
+  return page;
+}
+
+/**
  * Command to generate documentation.
  * @param {Hash} opts - All options
  * @return {Promise<String>} Resolves to the message reporting the summary path
@@ -197,15 +216,30 @@ module.exports = function(opts) {
       }
       const packages_info = new Map();
       const all_xmir_htmls = [];
-      const xmirs = findFiles(input, '.xmir');
+      const isPackages = (xmir) => path.parse(xmir).name === 'packages'
+        && path.dirname(path.relative(input, xmir)) === '.';
+      const xmirs = findFiles(input, '.xmir').sort(
+        (a, b) => Number(isPackages(a)) - Number(isPackages(b)) || (a < b ? -1 : Number(a > b))
+      );
+      const reserved = new Set([path.join(output, 'packages.html')]);
+      for (const xmir of xmirs) {
+        const package_dir = path.dirname(path.relative(input, xmir));
+        if (package_dir !== '.') {
+          reserved.add(path.join(output, `package_${package_dir.split(path.sep).join('.')}.html`));
+        }
+      }
+      const used = new Set();
       for (const xmir of xmirs) {
         const relative = path.relative(input, xmir);
         const name = path.parse(xmir).name;
         const xmir_html = createXmirHtmlBlock(xmir);
         const html_app = path.join(output, path.dirname(relative),`${htmlName(name)}.html`);
         fs.mkdirSync(path.dirname(html_app), {recursive: true});
-        const page = name === 'packages' && path.dirname(relative) === '.'
-          ? path.join(output, 'packages-object.html') : html_app;
+        const page = freePage(
+          isPackages(xmir) ? path.join(output, 'packages-object.html') : html_app,
+          used,
+          reserved
+        );
         fs.writeFileSync(page, wrapHtml(name, xmir_html, css));
         const package_dir = path.dirname(relative);
         if (package_dir !== '.') {
