@@ -44,7 +44,7 @@ nix run github:objectionary/eoc
 {
   inputs = {
     eoc.url = "github:objectionary/eoc";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
   };
 
   outputs = { self, nixpkgs, eoc, ... }: {
