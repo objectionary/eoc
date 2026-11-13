@@ -475,6 +475,26 @@ describe('docs', () => {
       done();
     });
   });
+  it('does not leak a comment on an unnamed argument to a later declaration', () => {
+    const xmir = path.join(parsed, 'unnamed-arg-comment.xmir');
+    fs.writeFileSync(
+      xmir,
+      [
+        '<object>',
+        '  <comments><comment line="3">Argument comment</comment></comments>',
+        '  <o name="app" line="1">',
+        '    <o name="φ" base="Q.seq" line="2">',
+        '      <o base="Q.foo" line="4"/>',
+        '    </o>',
+        '    <o name="bare" line="6"/>',
+        '  </o>',
+        '</object>',
+        '',
+      ].join('\n')
+    );
+    const html = generateDocs.createXmirHtmlBlock(xmir);
+    assert.strictEqual(html, '<article class="app-block"></article>');
+  });
   /**
    * Tests that every package 'docs.js' requires is declared by 'eoc' itself
    * and resolves, instead of being reached transitively through 'eo2js'.

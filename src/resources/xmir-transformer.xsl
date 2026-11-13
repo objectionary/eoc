@@ -12,7 +12,7 @@
         <xsl:variable name="docs">
           <xsl:for-each select="//comments/comment[@line &lt;= $obj/@line]">
             <xsl:sort select="@line" data-type="number" order="descending"/>
-            <xsl:if test="position() = 1 and not(//o[@name and @line &gt;= current()/@line and @line &lt; $obj/@line])">
+            <xsl:if test="position() = 1 and not(//o[@line and @line &gt;= current()/@line and @line &lt; $obj/@line])">
               <xsl:value-of select="."/>
             </xsl:if>
           </xsl:for-each>
