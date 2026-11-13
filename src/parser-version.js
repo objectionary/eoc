@@ -9,17 +9,30 @@ const checked = new Map();
 const request = require('sync-request'),
 
   /**
-   * Load the latest version from GitHub releases.
+   * Load the latest version from Maven Central.
+   *
+   * Answers with an empty string when Maven Central cannot be reached,
+   * the way `exists` below does, so that a machine with no network
+   * keeps the version the repository pins instead of dying on a stack trace
+   * before the command line is even parsed.
    * @param {function} fetch - HTTP call, defaults to sync-request
-   * @return {String} Latest version, for example '0.23.1'
+   * @return {String} Latest version, for example '0.23.1', or an empty string
    */
   version = module.exports = {
     value: '',
     get(fetch = request) {
       if (version.value === '') {
         const repo = 'org/eolang/eo-maven-plugin',
-          url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`,
+          url = `https://repo.maven.apache.org/maven2/${repo}/maven-metadata.xml`;
+        let res;
+        try {
           res = fetch('GET', url, {timeout: 100000, socketTimeout: 100000});
+        } catch (e) {
+          console.warn(colors.yellow(
+            `Cannot ask ${url} for the latest version (${e.message}), using the pinned one`
+          ));
+          return version.value;
+        }
         if (res.statusCode !== 200) {
           throw new Error(`Invalid response status #${res.statusCode} from ${url}: ${res.body}`);
         }
