@@ -13,6 +13,8 @@ name: pdd
 concurrency:
   group: pdd-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   pdd:
     timeout-minutes: 15

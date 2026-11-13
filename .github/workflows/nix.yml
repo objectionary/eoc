@@ -13,6 +13,8 @@ name: nix
 concurrency:
   group: nix-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   nix:
     timeout-minutes: 30
