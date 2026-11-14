@@ -464,4 +464,24 @@ describe('docs', () => {
       );
     });
   });
+  it('keeps stylesheet links valid after moving the documentation', async () => {
+    const nested = path.join(parsed, 'foo', 'bar');
+    fs.mkdirSync(nested, {recursive: true});
+    fs.writeFileSync(path.join(parsed, 'app.xmir'), '<program name="app" />');
+    fs.writeFileSync(path.join(nested, 'item.xmir'), '<program name="item" />');
+    await generateDocs({target: home, sources: path.resolve(home, 'src')});
+    const moved = path.join(home, 'published');
+    fs.renameSync(docs, moved);
+    for (const [file, expected] of [
+      ['app.html', 'styles.css'],
+      ['foo/bar/item.html', '../../styles.css'],
+      ['package_foo.bar.html', 'styles.css'],
+      ['packages.html', 'styles.css']
+    ]) {
+      const page = path.join(moved, file);
+      const html = fs.readFileSync(page, 'utf-8');
+      assert(html.includes(`href="${expected}"`), html);
+      assert(fs.existsSync(path.resolve(path.dirname(page), expected)));
+    }
+  });
 });
