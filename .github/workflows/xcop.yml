@@ -27,6 +27,8 @@ name: xcop
 concurrency:
   group: xcop-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   xcop:
     timeout-minutes: 15
