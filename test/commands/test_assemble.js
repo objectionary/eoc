@@ -14,7 +14,7 @@ describe('assemble', () => {
     const home = path.resolve('temp/test-assemble/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/assemble.eo'), '# sample\n[] > assemble\n');
+    fs.writeFileSync(path.resolve(home, 'src/assemble.eo'), '# sample\n\n[] > assemble\n');
     const stdout = runSync([
       'assemble',
       '--verbose',
@@ -28,7 +28,7 @@ describe('assemble', () => {
       stdout, home,
       [
         'target/eo-foreign.json',
-        'target/1-parse/assemble.xmir'
+        'target/01-parse/assemble.xmir'
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

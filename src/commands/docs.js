@@ -248,7 +248,7 @@ function assignOutputPath(requested, output, kind, relative, reserved, used) {
 module.exports = function(opts) {
   return elapsed(async (tracked) => {
     try {
-      const input = path.resolve(opts.target, '1-parse');
+      const input = path.resolve(opts.target, '01-parse');
       const output = path.resolve(opts.target, 'docs');
       assertNoSymlinkPath(opts.target, output);
       fs.mkdirSync(output, {recursive: true});

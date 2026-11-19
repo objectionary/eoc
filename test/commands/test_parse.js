@@ -15,7 +15,7 @@ describe('parse', () => {
     fs.mkdirSync(path.resolve(dir, 'src'), {recursive: true});
     fs.writeFileSync(
       path.resolve(dir, 'src/simple.eo'),
-      '# sample\n[] > simple\n'
+      '# sample\n\n[] > simple\n'
     );
   };
   it('parses a simple .EO program', (done) => {
@@ -33,7 +33,7 @@ describe('parse', () => {
       stdout, home,
       [
         'target/eo-foreign.json',
-        'target/1-parse/simple.xmir',
+        'target/01-parse/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

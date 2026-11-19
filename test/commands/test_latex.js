@@ -17,7 +17,7 @@ describe('latex', () => {
     const source = path.resolve(home, 'src');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(source, {recursive: true});
-    fs.writeFileSync(path.resolve(source, 'simple.eo'), '# sample\n[] > simple\n');
+    fs.writeFileSync(path.resolve(source, 'simple.eo'), '# sample\n\n[] > simple\n');
     runSync([
       'latex',
       '--verbose',

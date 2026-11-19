@@ -18,7 +18,7 @@ const {filled} = require('../stages');
 module.exports = function(opts) {
   const linting = goals(opts)[0] === 'eo:lint';
   return elapsed(async (tracked) => {
-    filled(path.resolve(opts.target, '1-parse'), '.xmir', 'parse');
+    filled(path.resolve(opts.target, '01-parse'), '.xmir', 'parse');
     try {
       const r = await mvnw(
         goals(opts).concat(flags(opts)).concat(extras(opts)),

@@ -53,8 +53,8 @@ describe('lint', () => {
     assertFilesExist(
       stdout, home,
       [
-        'target/1-parse/simple.xmir',
-        'target/3-lint/simple.xmir',
+        'target/01-parse/simple.xmir',
+        'target/03-lint/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
@@ -76,7 +76,7 @@ describe('lint', () => {
       '-t', path.resolve(home, 'target'),
     ]);
     assert(
-      !fs.existsSync(path.resolve(home, 'target/3-lint/simple.xmir')),
+      !fs.existsSync(path.resolve(home, 'target/03-lint/simple.xmir')),
       'Linting should be skipped with --blind option');
     done();
   });

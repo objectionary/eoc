@@ -17,7 +17,7 @@ const {filled} = require('../../stages');
 module.exports = function(opts) {
   const sources = path.resolve(opts.target, 'generated-sources');
   return elapsed(async (tracked) => {
-    filled(path.resolve(opts.target, '1-parse'), '.xmir', 'parse');
+    filled(path.resolve(opts.target, '01-parse'), '.xmir', 'parse');
     const r = await mvnw(goals().concat(flags(opts)), opts.target, opts.batch);
     tracked.print(`Java sources generated in ${rel(sources)}`);
     return r;

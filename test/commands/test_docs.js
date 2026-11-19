@@ -11,7 +11,7 @@ const generateDocs = require('../../src/commands/docs');
 
 describe('docs', () => {
   const home = path.resolve('temp/test-docs');
-  const parsed = path.resolve(home, '1-parse');
+  const parsed = path.resolve(home, '01-parse');
   const docs = path.join(home, 'docs');
   it('maps Windows device names to safe HTML filenames', () => {
     assert.strictEqual(generateDocs.htmlName('CON', 'win32'), '_CON');

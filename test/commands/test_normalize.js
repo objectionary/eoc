@@ -17,9 +17,9 @@ function setup(name, content = eo, stray = []) {
   const target = path.resolve(home, 'target');
   fs.rmSync(home, {recursive: true, force: true});
   fs.mkdirSync(source, {recursive: true});
-  fs.mkdirSync(path.resolve(target, '1-parse'), {recursive: true});
+  fs.mkdirSync(path.resolve(target, '01-parse'), {recursive: true});
   for (const xmir of stray) {
-    fs.writeFileSync(path.resolve(target, '1-parse', xmir), '<object/>');
+    fs.writeFileSync(path.resolve(target, '01-parse', xmir), '<object/>');
   }
   fs.writeFileSync(path.resolve(source, 'simple.eo'), content);
   runSync([
@@ -112,7 +112,7 @@ describe('normalize', () => {
     const {source} = setup('pulled', eo, ['bytes.xmir']);
     assert.deepStrictEqual(
       fs.readdirSync(source), ['simple.eo'],
-      'An XMIR left in 1-parse by a previous build must not land in the sources'
+      'An XMIR left in 01-parse by a previous build must not land in the sources'
     );
     done();
   });

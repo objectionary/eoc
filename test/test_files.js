@@ -29,7 +29,7 @@ describe('files', () => {
     fs.mkdirSync(home, {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'simple.eo'),
-      '# sample\n[] > simple\n'
+      '# sample\n\n[] > simple\n'
     );
     try {
       copyDir(home, backup, '.eo', target);
@@ -56,7 +56,7 @@ describe('files', () => {
     const real = path.join(home, 'real');
     fs.rmSync(path.resolve('temp/test-files'), {recursive: true, force: true});
     fs.mkdirSync(real, {recursive: true});
-    fs.writeFileSync(path.join(real, 'main.eo'), '# sample\n[] > main\n');
+    fs.writeFileSync(path.join(real, 'main.eo'), '# sample\n\n[] > main\n');
     fs.symlinkSync(real, path.join(home, 'linked'), 'dir');
     fs.symlinkSync(home, path.join(real, 'loop'), 'dir');
     try {
@@ -117,7 +117,7 @@ describe('files', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(source, {recursive: true});
     fs.mkdirSync(target, {recursive: true});
-    fs.writeFileSync(path.join(source, 'main.eo'), '# sample\n[] > main\n');
+    fs.writeFileSync(path.join(source, 'main.eo'), '# sample\n\n[] > main\n');
     fs.symlinkSync(target, path.join(source, 'through-target'), 'dir');
     try {
       copyDir(source, backup, '.eo', target);
