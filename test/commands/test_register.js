@@ -14,7 +14,7 @@ describe('register', () => {
     const home = path.resolve('temp/test-register/simple');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n[] > simple\n');
+    fs.writeFileSync(path.resolve(home, 'src/simple.eo'), '# sample\n\n[] > simple\n');
     const stdout = runSync([
       'register',
       '--verbose',
@@ -35,9 +35,9 @@ describe('register', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, '.eoc', 'print'), {recursive: true});
     fs.mkdirSync(path.resolve(home, '.eoc-x'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'app.eo'), '# sample\n[] > app\n');
-    fs.writeFileSync(path.resolve(home, '.eoc-x/other.eo'), '# sample\n[] > other\n');
-    fs.writeFileSync(path.resolve(home, '.eoc', 'print/app.eo'), '# sample\n[] > app\n');
+    fs.writeFileSync(path.resolve(home, 'app.eo'), '# sample\n\n[] > app\n');
+    fs.writeFileSync(path.resolve(home, '.eoc-x/other.eo'), '# sample\n\n[] > other\n');
+    fs.writeFileSync(path.resolve(home, '.eoc', 'print/app.eo'), '# sample\n\n[] > app\n');
     const stdout = runSync([
       'register',
       '--verbose',
@@ -54,8 +54,8 @@ describe('register', () => {
     const home = path.resolve('temp/test-register/nested-eoc');
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src/sub/.eoc'), {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/sub/a.eo'), '# sample\n[] > a\n');
-    fs.writeFileSync(path.resolve(home, 'src/sub/.eoc/b.eo'), '# sample\n[] > b\n');
+    fs.writeFileSync(path.resolve(home, 'src/sub/a.eo'), '# sample\n\n[] > a\n');
+    fs.writeFileSync(path.resolve(home, 'src/sub/.eoc/b.eo'), '# sample\n\n[] > b\n');
     const stdout = runSync([
       'register',
       '--verbose',

@@ -68,7 +68,7 @@ describe('mvnw', () => {
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.writeFileSync(
       path.resolve(home, 'src/simple.eo'),
-      '# sample\n[] > simple\n'
+      '# sample\n\n[] > simple\n'
     );
     const combined = execSync(
       `node ${path.resolve('./src/eoc.js')} parse --verbose -s ${path.resolve(home, 'src')} -t ${path.resolve(home, 'target')} 2>&1`,

@@ -56,7 +56,7 @@ module.exports = function(opts) {
     copyDir(
       sources, path.join(target, 'before-normalize'), '.eo', target, new Set(), target
     );
-    const parsed = path.join(target, '1-parse');
+    const parsed = path.join(target, '01-parse');
     const normed = path.join(target, 'xmir-normalized');
     fs.rmSync(normed, {recursive: true, force: true});
     const xmirs = findFiles(parsed, '.xmir').filter(

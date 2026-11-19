@@ -22,7 +22,7 @@ describe('clean', () => {
     fs.rmSync(eo, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'src'), {recursive: true});
     fs.mkdirSync(eo, {recursive: true});
-    fs.writeFileSync(path.resolve(home, 'src/clean.eo'), '# sample\n[] > clean\n');
+    fs.writeFileSync(path.resolve(home, 'src/clean.eo'), '# sample\n\n[] > clean\n');
   }
   /**
    * Run clean command.
@@ -123,7 +123,7 @@ describe('clean', () => {
     const work = path.join(fakeHome, '.eo', 'worktree', 'project');
     fs.rmSync(fakeHome, {recursive: true, force: true});
     fs.mkdirSync(work, {recursive: true});
-    fs.writeFileSync(path.join(work, 'keep.eo'), '# sample\n[] > keep\n');
+    fs.writeFileSync(path.join(work, 'keep.eo'), '# sample\n\n[] > keep\n');
     const outcome = runOutput(
       ['clean', '--global'],
       {env: {...process.env, HOME: fakeHome, USERPROFILE: fakeHome}, cwd: work}

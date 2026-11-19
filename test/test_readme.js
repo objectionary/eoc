@@ -52,7 +52,7 @@ describe('README.md', () => {
         '-t', path.resolve(home, 'target'),
       ]);
       const xmir = fs.readFileSync(
-        path.resolve(home, 'target/1-parse/hello.xmir'), 'utf8'
+        path.resolve(home, 'target/01-parse/hello.xmir'), 'utf8'
       );
       assert(
         !xmir.includes('<error'),

@@ -17,8 +17,8 @@ const {execFileSync} = require('child_process');
 const runFailing = function(name, args) {
   const target = path.resolve('temp/test-lint-failure', name);
   fs.rmSync(target, {recursive: true, force: true});
-  fs.mkdirSync(path.resolve(target, '1-parse'), {recursive: true});
-  fs.writeFileSync(path.resolve(target, '1-parse/simple.xmir'), '<object/>');
+  fs.mkdirSync(path.resolve(target, '01-parse'), {recursive: true});
+  fs.writeFileSync(path.resolve(target, '01-parse/simple.xmir'), '<object/>');
   try {
     execFileSync(
       'node',
