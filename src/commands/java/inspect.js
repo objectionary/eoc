@@ -24,7 +24,7 @@ async function jar(opts, build = mvnw) {
   const current = fingerprint(project, args);
   const stored = fs.existsSync(stamp) ? fs.readFileSync(stamp, 'utf-8') : '';
   if (!fs.existsSync(built) || stored !== current) {
-    await build(args, opts.target, opts.batch);
+    await build(['clean', ...args], opts.target, opts.batch);
     fs.writeFileSync(stamp, current);
   }
   return built;

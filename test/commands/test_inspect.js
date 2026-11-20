@@ -57,6 +57,8 @@ describe('inspect', () => {
 
 describe('inspect/java', () => {
   const home = path.resolve('temp/test-inspect-unit');
+  const sources = path.resolve(home, 'sources');
+  const opts = {target: home, sources, port: 0, batch: true};
   let params;
   let printed;
   let killed;
@@ -64,9 +66,7 @@ describe('inspect/java', () => {
     fs.rmSync(home, {recursive: true, force: true});
     fs.mkdirSync(path.resolve(home, 'inspect'), {recursive: true});
     fs.writeFileSync(path.resolve(home, 'inspect', 'inspect.jar'), '');
-    const sources = path.resolve(home, 'sources');
     fs.mkdirSync(sources, {recursive: true});
-    const opts = {target: home, sources, port: 0, batch: true};
     const project = path.resolve(__dirname, '../../inspect');
     const args = ['package', '-f', path.join(project, 'pom.xml')].concat(flags(opts));
     fs.writeFileSync(
@@ -148,7 +148,11 @@ describe('inspect/java', () => {
     fs.mkdirSync(sources, {recursive: true});
     const opts = {target, sources, homeTag: 'first', batch: true};
     let builds = 0;
-    const build = async () => {
+    const build = async (args) => {
+      assert.deepStrictEqual(
+        args.slice(0, 2), ['clean', 'package'],
+        'Maven must remove old classes before packaging the server'
+      );
       builds += 1;
       const output = path.join(target, 'inspect');
       fs.mkdirSync(output, {recursive: true});
@@ -210,7 +214,7 @@ describe('inspect/java', () => {
     try {
       await assert.rejects(
         () => inspect(
-          {target: home, port: server.address().port},
+          {...opts, port: server.address().port},
           () => true,
           () => ({kill: () => {
             killed = true;
@@ -243,7 +247,7 @@ describe('inspect/java', () => {
   it('names the port when the server exits without opening it', async () => {
     await assert.rejects(
       () => inspect(
-        {target: home, port: 1},
+        {...opts, port: 1},
         () => true,
         () => ({
           kill: () => undefined,
