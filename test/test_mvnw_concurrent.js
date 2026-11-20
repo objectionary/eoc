@@ -57,9 +57,10 @@ function wrapper(terminal = {isTTY: true}) {
     },
     module: loaded,
     __dirname: path.dirname(source),
-    process: {platform: process.platform, env: process.env, stdout: {...terminal, write: line => lines.push(line)}},
+    process: Object.assign(new EventEmitter(), {platform: process.platform, env: process.env, stdout: {...terminal, write: line => lines.push(line)}}),
     console: Object.assign(Object.create(console), {log: line => logs.push(line)}),
     setTimeout: callback => timers.push(callback),
+    clearTimeout: () => true,
     Date: {now: () => now}
   }, {filename: source});
   return {
