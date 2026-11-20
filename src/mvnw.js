@@ -28,7 +28,7 @@ module.exports.summary = function(args) {
  */
 function shell() {
   if (process.platform === 'win32') {
-    return 'powershell.exe';
+    return process.env.ComSpec || 'cmd.exe';
   }
 }
 
@@ -61,6 +61,29 @@ module.exports.quote = function(value, sh) {
     `"${value.replace(/"/g, '""').replace(/(?<slashes>\\+)$/u, '$<slashes>$<slashes>')}"` :
     `'${value.replace(/'/g, "''")}'`;
 };
+
+/**
+ * Prepare a cmd.exe invocation with each argument stored in the environment.
+ * This keeps percent signs in argument values out of cmd.exe's command text.
+ * @param {String} bin - Command to execute
+ * @param {String[]} params - Arguments to pass to the command
+ * @param {String} sh - Path to cmd.exe
+ * @return {Object} Command, arguments, and environment for spawn()
+ */
+function cmdLine(bin, params, sh) {
+  const env = {EOC_MVN_BIN: module.exports.quote(bin, sh)};
+  const args = params.map((param, index) => {
+    const variable = `EOC_MVN_ARG_${index}`;
+    env[variable] = module.exports.quote(param, sh);
+    return `%${variable}%`;
+  });
+  return {
+    command: sh,
+    args: ['/d', '/s', '/c', `"%EOC_MVN_BIN% ${args.join(' ')}"`],
+    env,
+    windowsVerbatimArguments: true,
+  };
+}
 
 /**
  * Make the path to the Maven executable safe for the Windows shell.
@@ -166,15 +189,16 @@ module.exports.mvnw = function(args, tgt, batch) {
     const cmdline = `${bin} ${params.join(' ')}`;
     console.debug('+ %s', cmdline);
     const sh = shell();
-    const result = spawn(
-      process.platform === 'win32' ? module.exports.executable(bin, sh) : bin,
-      process.platform === 'win32' ? params.map((p) => module.exports.quote(p, sh)) : params,
-      {
-        cwd: home,
-        stdio: ticking ? ['inherit', 'pipe', 'inherit'] : 'inherit',
-        shell: sh,
-      }
-    );
+    const stdio = ticking ? ['inherit', 'pipe', 'inherit'] : 'inherit';
+    const invocation = process.platform === 'win32'
+      ? cmdLine(bin, params, sh)
+      : {command: bin, args: params, env: {}};
+    const result = spawn(invocation.command, invocation.args, {
+      cwd: home,
+      stdio,
+      env: {...process.env, ...invocation.env},
+      windowsVerbatimArguments: invocation.windowsVerbatimArguments,
+    });
     if (ticking) {
       readline.createInterface({input: result.stdout}).on('line', (line) => {
         const name = module.exports.goal(line);
@@ -218,6 +242,8 @@ module.exports.mvnw = function(args, tgt, batch) {
     }
   });
 };
+
+module.exports.cmdLine = cmdLine;
 
 /**
  * Starts mvnw execution status detection.
