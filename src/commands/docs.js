@@ -9,6 +9,7 @@ const SaxonJS = require('saxon-js');
 const { marked } = require('marked');
 const {elapsed} = require('../elapsed');
 const {findFiles, assertNoSymlinkPath, safeWriteFile} = require('../files');
+const generatedPageHeader = '<!DOCTYPE html>\n<!-- eoc docs page -->';
 
 /**
  * Escape special XML characters.
@@ -134,6 +135,26 @@ function convertMarkdownToHtml(html) {
 }
 
 /**
+ * Removes generated pages that were not written during this docs build.
+ * @param {String} root - Target directory
+ * @param {String} directory - Docs output directory
+ * @param {Set} generated - HTML files produced during the build
+ */
+function removeStaleHtml(root, directory, generated) {
+  assertNoSymlinkPath(root, directory);
+  for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+    const file = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      removeStaleHtml(root, file, generated);
+    } else if (entry.isFile() && path.extname(entry.name) === '.html' && !generated.has(file)
+      && fs.readFileSync(file, 'utf-8').startsWith(generatedPageHeader)) {
+      assertNoSymlinkPath(root, file);
+      fs.unlinkSync(file);
+    }
+  }
+}
+
+/**
  * Creates documentation block from given XMIR
  * @param {String} filepath - path of XMIR
  * @return {String} HTML block
@@ -158,7 +179,7 @@ function createXmirHtmlBlock(filepath) {
 function generatePackageHtml(name, htmls, css) {
   htmls = htmls.filter(item => item !== '<article class="app-block"></article>');
   const date = new Date();
-  return `<!DOCTYPE html>
+  return `${generatedPageHeader}
     <html>
       <head>
         <link href="${css}" rel="stylesheet" type="text/css">
@@ -347,6 +368,9 @@ module.exports = function(opts) {
       }
       lines.push('</eodoc>');
       safeWriteFile(opts.target, summary, lines.join('\n'));
+      removeStaleHtml(opts.target, output, new Set([
+        ...object_pages.values(), ...package_pages.values(), packages
+      ]));
       const located = tracked.print(`Summary XML generated at ${path.relative(process.cwd(), summary)}`);
       tracked.print(`Documentation generation completed in the ${output} directory`);
       return located;
