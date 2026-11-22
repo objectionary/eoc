@@ -18,7 +18,8 @@ describe('transpile', () => {
     fs.writeFileSync(
       path.resolve(home, 'src/transpile.eo'),
       ['+architect yegor256@gmail.com', '+home https://github.com/objectionary/eoc',
-        '+spdx SPDX-License-Identifier: MIT', '+unlint mandatory-package',
+        '+spdx SPDX-License-' +
+        'Identifier: MIT', '+unlint mandatory-package',
         '+unlint unit-test-missing', '+version 0.0.0', '', '[x] > transpile', ''].join('\n')
     );
     const transpiled = path.resolve(home, 'target/8-transpile');
