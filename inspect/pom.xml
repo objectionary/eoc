@@ -15,6 +15,8 @@
     <eo.version>undefined</eo.version>
     <eo.targetDir>${project.basedir}/target</eo.targetDir>
     <takes.version>1.26.0</takes.version>
+    <junit.version>5.10.2</junit.version>
+    <hamcrest.version>2.2</hamcrest.version>
   </properties>
   <dependencies>
     <dependency>
@@ -28,6 +30,18 @@
       <version>${eo.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>inspect</finalName>
@@ -38,6 +52,15 @@
         <version>3.8.1</version>
         <configuration>
           <release>11</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <!-- The version from the bundled Maven distribution, so that the
+             build does not depend on defaults that move. -->
+        <version>3.2.2</version>
+        <configuration>
+          <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
         </configuration>
       </plugin>
       <plugin>

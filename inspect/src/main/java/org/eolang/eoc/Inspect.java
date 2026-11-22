@@ -7,13 +7,16 @@ package org.eolang.eoc;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.eolang.Phi;
+import org.takes.Request;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithType;
 
@@ -74,12 +77,6 @@ public final class Inspect {
      *  put attaches data to the delta asset, and to attaches an object
      *  named elsewhere. All five write into the object, which is what the
      *  base class of objectionary/eo#6273 is meant to allow.
-     * @todo #500:60min Answer the verbs that copy and dispatch.
-     *  Here cp makes a copy of the object we are at and attaches it under
-     *  a name the caller chooses, and dd dispatches one attribute and
-     *  attaches the result the same way. Both need somewhere to keep
-     *  those names, since a name like the one in the session is invented
-     *  by the user and belongs to no object of the program.
      * @todo #500:30min Answer the dataize verb.
      *  Here dataize (or run) dataizes the object the session is at and
      *  answers with its bytes, which the JavaScript side prints the way
@@ -89,17 +86,57 @@ public final class Inspect {
      * @throws IOException If fails
      */
     public void start() throws IOException {
-        new FtBasic(
-            new TkFork(
-                new FkRegex(
-                    "/",
-                    (Take) req -> new RsWithType.Json(
-                        new RsText(String.format("{\"forma\":\"%s\"}", Phi.Φ.forma()))
-                    )
+        new FtBasic(this.fork(new Session(Phi.Φ)), this.port()).start(Exit.NEVER);
+    }
+
+    /**
+     * The routes the server answers, all of them working against one
+     * session.
+     * @param session The state the verbs work against
+     * @return The take to route with
+     */
+    TkFork fork(final Session session) {
+        return new TkFork(
+            new FkRegex(
+                "/",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(String.format("{\"forma\":\"%s\"}", session.forma()))
                 )
             ),
-            this.port()
-        ).start(Exit.NEVER);
+            new FkRegex(
+                "/cp",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.cp(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/dd",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.dd(
+                            Inspect.param(req, "attr"),
+                            Inspect.param(req, "name")
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * The first value of a query parameter, or an empty string.
+     * @param req The request
+     * @param name The name of the parameter
+     * @return The value, or an empty string when absent
+     * @throws IOException If reading the request fails
+     */
+    private static String param(final Request req, final String name) throws IOException {
+        String value = "";
+        final Iterator<String> found = new RqHref.Base(req).href().param(name).iterator();
+        if (found.hasNext()) {
+            value = found.next();
+        }
+        return value;
     }
 
     /**
