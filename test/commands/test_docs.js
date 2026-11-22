@@ -589,7 +589,7 @@ describe('docs', () => {
       runSync(['docs', '-s', path.resolve(root, 'src'), '-t', path.resolve(root, 'target')]);
       const page = fs.readFileSync(path.resolve(root, 'target/docs/hello.html'), 'utf-8');
       assert(page.includes('My first object in EO!'), page);
-      assert(page.includes('hello(args)'), page);
+      assert(page.includes('hello(v🌵args)'), page);
       assert(!page.includes('hello.inner('), page);
       assert(!page.includes('hello.bare('), page);
       done();

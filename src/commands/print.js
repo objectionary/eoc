@@ -24,8 +24,8 @@ module.exports = function(opts) {
         .concat(flags(opts))
         .concat(
           [
-            `-Deo.printSourcesDir=${input}`,
-            `-Deo.printOutputDir=${output}`,
+            `-Deo.print.sources=${input}`,
+            `-Deo.print.output=${output}`,
           ]
         ),
       opts.target, opts.batch

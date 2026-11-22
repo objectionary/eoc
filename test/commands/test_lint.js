@@ -9,7 +9,11 @@ const path = require('path');
 const lint = require('../../src/commands/lint');
 const {runSync, runOutput, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-const simple = ['+architect yegor256@gmail.com', '', '[] > simple', ''].join('\n');
+const simple = [
+  '+architect yegor256@gmail.com', '+home https://github.com/objectionary/eoc',
+  '+spdx SPDX-License-Identifier: MIT', '+unlint mandatory-package',
+  '+unlint unit-test-missing', '+version 0.0.0', '', '[x] > simple', ''
+].join('\n');
 
 describe('lint', () => {
   it('picks a goal for a version semver cannot parse', () => {
@@ -54,7 +58,7 @@ describe('lint', () => {
       stdout, home,
       [
         'target/01-parse/simple.xmir',
-        'target/03-lint/simple.xmir',
+        'target/01-parse/simple.xmir',
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));

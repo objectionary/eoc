@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {runSync, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
@@ -38,11 +39,15 @@ describe('resolve', () => {
     this.timeout(0);
     const home = path.resolve(`temp/test-resolve`),
       stdout = resolve(home);
+    const stage = fs.readdirSync(path.resolve(home, 'target')).find(
+      (dir) => /^\d+-resolve$/.test(dir)
+    );
+    assert.ok(stage, 'the numbered -resolve directory must exist in the target');
     assertFilesExist(
       stdout, home,
       [
-        'target/02-resolve/org.eolang/eo-runtime',
-        'target/02-resolve/net.java.dev.jna/jna',
+        `target/${stage}/org.eolang/eo-runtime`,
+        `target/${stage}/net.java.dev.jna/jna`,
         'target/classes/org/eolang/Phi.class',
         'target/classes/org/eolang/EOdataized.class',
         'target/classes/com/sun/jna',
