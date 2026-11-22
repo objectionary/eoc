@@ -176,7 +176,11 @@ final class Session {
                     out.append("\\t");
                     break;
                 default:
-                    out.append(chr);
+                    if (chr < 0x20) {
+                        out.append(String.format("\\u%04x", (int) chr));
+                    } else {
+                        out.append(chr);
+                    }
                     break;
             }
         }

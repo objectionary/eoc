@@ -5,7 +5,6 @@
 
 package org.eolang.eoc;
 
-
 import org.eolang.PhDefault;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

@@ -31,9 +31,9 @@ final class SessionTest {
         );
         final Phi copy = session.invented("Φ.bar");
         MatcherAssert.assertThat(
-            "cp keeps the object itself, not a copy of it",
-            System.identityHashCode(copy),
-            Matchers.not(Matchers.equalTo(System.identityHashCode(origin)))
+            "cp attached the origin itself instead of a copy of it",
+            copy,
+            Matchers.not(Matchers.sameInstance(origin))
         );
     }
 
@@ -106,6 +106,18 @@ final class SessionTest {
             String.format("dd hides the failure of the runtime: %s", answer),
             answer,
             Matchers.containsString("\"error\":\"no such attribute\"")
+        );
+    }
+
+    @Test
+    void escapesControlCharactersInTheFailure() {
+        final Phi root = SessionTest.broken(String.format("boom%sbang", '\u0001'));
+        final Session session = new Session(root);
+        final String answer = session.dd("foo", "x");
+        MatcherAssert.assertThat(
+            String.format("dd sends a raw control character out: %s", answer),
+            answer,
+            Matchers.containsString("\\u0001")
         );
     }
 
