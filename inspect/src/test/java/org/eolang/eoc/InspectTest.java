@@ -48,9 +48,40 @@ final class InspectTest {
 
     @Test
     void refusesARequestWithoutParameters() throws Exception {
+        for (final String uri : new String[] {
+            "/cp", "/dd", "/add", "/form", "/put", "/to",
+        }) {
+            MatcherAssert.assertThat(
+                String.format(
+                    "the route %s answers without an error on missing parameters",
+                    uri
+                ),
+                InspectTest.body(uri, "root"),
+                Matchers.containsString("\"error\"")
+            );
+        }
+    }
+
+    @Test
+    void routesTheChangingVerbsToTheSession() throws Exception {
         MatcherAssert.assertThat(
-            "the cp route answers without an error on a missing name",
-            InspectTest.body("/cp", "root"),
+            "the add route does not reach the session",
+            InspectTest.body("/add?name=foo", "root"),
+            Matchers.containsString("\"added\":\"foo\"")
+        );
+        MatcherAssert.assertThat(
+            "the form route does not answer about the slot",
+            InspectTest.body("/form?slot=foo", "root"),
+            Matchers.containsString("\"error\"")
+        );
+        MatcherAssert.assertThat(
+            "the put route does not answer about the slot",
+            InspectTest.body("/put?slot=foo&data=04", "root"),
+            Matchers.containsString("\"error\"")
+        );
+        MatcherAssert.assertThat(
+            "the to route does not answer about the name",
+            InspectTest.body("/to?slot=foo&name=%CE%A6", "root"),
             Matchers.containsString("\"error\"")
         );
     }

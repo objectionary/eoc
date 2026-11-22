@@ -10,6 +10,7 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -118,6 +119,138 @@ final class SessionTest {
             String.format("dd sends a raw control character out: %s", answer),
             answer,
             Matchers.containsString("\\u0001")
+        );
+    }
+
+    @Test
+    void putsANewVoidAttributeOnTheObject() {
+        final Session session = new Session(new PhDefault());
+        final String answer = session.add("foo");
+        MatcherAssert.assertThat(
+            String.format("add does not confirm the attribute: %s", answer),
+            answer,
+            Matchers.containsString("\"added\":\"foo\"")
+        );
+        final String filled = session.form("foo");
+        MatcherAssert.assertThat(
+            String.format(
+                "the attribute add made does not accept a formation: %s",
+                filled
+            ),
+            filled,
+            Matchers.containsString("\"formed\":\"foo\"")
+        );
+    }
+
+    @Test
+    void refusesToAddOnAnObjectThatDoesNotTakeAttributes() {
+        final Session session = new Session(SessionTest.broken("no"));
+        final String answer = session.add("foo");
+        MatcherAssert.assertThat(
+            String.format("add does not refuse a foreign object: %s", answer),
+            answer,
+            Matchers.containsString("\"error\"")
+        );
+    }
+
+    @Test
+    void attachesAnEmptyFormationToAVacantSlot() {
+        final PhDefault origin = new PhDefault();
+        origin.add("slot", new AtVoid("slot"));
+        final Session session = new Session(origin);
+        final String answer = session.form("slot");
+        MatcherAssert.assertThat(
+            String.format("form does not confirm the slot: %s", answer),
+            answer,
+            Matchers.containsString("\"formed\":\"slot\"")
+        );
+        MatcherAssert.assertThat(
+            String.format("form attaches something that is not an empty formation: %s", answer),
+            origin.take("slot").forma(),
+            Matchers.equalTo("[]")
+        );
+    }
+
+    @Test
+    void attachesDataToAVacantSlot() {
+        final PhDefault origin = new PhDefault();
+        origin.add("slot", new AtVoid("slot"));
+        final Session session = new Session(origin);
+        final String answer = session.put("slot", "04-05-96");
+        MatcherAssert.assertThat(
+            String.format("put does not confirm the slot: %s", answer),
+            answer,
+            Matchers.containsString("\"put\":\"slot\"")
+        );
+        Assertions.assertArrayEquals(
+            new byte[] {0x04, 0x05, (byte) 0x96},
+            origin.take("slot").delta(),
+            "put attaches wrong bytes"
+        );
+    }
+
+    @Test
+    void refusesDataThatIsNotHexPairs() {
+        final Session session = new Session(new PhDefault());
+        for (final String data : new String[] {"", "xyz", "04:05", "4-5", "04-5"}) {
+            MatcherAssert.assertThat(
+                String.format("put accepts the data \"%s\"", data),
+                session.put("slot", data).contains("\"error\""),
+                Matchers.equalTo(true)
+            );
+        }
+    }
+
+    @Test
+    void attachesAnObjectKnownByNameToAVacantSlot() {
+        final PhDefault origin = new PhDefault();
+        origin.add("slot", new AtVoid("slot"));
+        final Session session = new Session(origin);
+        session.cp("bar");
+        final Phi named = session.invented("Φ.bar");
+        final String answer = session.to("slot", "Φ.bar");
+        MatcherAssert.assertThat(
+            String.format("to does not confirm the slot: %s", answer),
+            answer,
+            Matchers.containsString("\"attached\":\"slot\"")
+        );
+        MatcherAssert.assertThat(
+            "to attaches a different object than the name keeps",
+            origin.take("slot"),
+            Matchers.sameInstance(named)
+        );
+    }
+
+    @Test
+    void refusesToAttachAnObjectOfUnknownName() {
+        final PhDefault origin = new PhDefault();
+        origin.add("slot", new AtVoid("slot"));
+        final Session session = new Session(origin);
+        final String answer = session.to("slot", "Φ.nobody");
+        MatcherAssert.assertThat(
+            String.format("to accepts an unknown name: %s", answer),
+            answer,
+            Matchers.containsString("\"error\"")
+        );
+    }
+
+    @Test
+    void refusesToFillWhatIsNotAVacantAttribute() {
+        final Session session = new Session(new PhDefault());
+        MatcherAssert.assertThat(
+            "form accepts an absent slot",
+            session.form("nowhere").contains("\"error\""),
+            Matchers.equalTo(true)
+        );
+        MatcherAssert.assertThat(
+            "put accepts an absent slot",
+            session.put("nowhere", "04").contains("\"error\""),
+            Matchers.equalTo(true)
+        );
+        MatcherAssert.assertThat(
+            "to accepts an absent slot",
+            session.to("nowhere", "Φ").contains("\"error\""),
+            Matchers.equalTo(true)
         );
     }
 

@@ -71,12 +71,14 @@ public final class Inspect {
      *  steps into one of them, and .. steps back out. All three need the
      *  server to remember where the session currently is, so add that
      *  position here first and let these three verbs move it.
-     * @todo #500:90min Answer the verbs that change the current object.
-     *  Here add (or +foo) puts a new void attribute on the object we are
-     *  at, rm (or -foo) takes one away, form attaches an empty formation,
-     *  put attaches data to the delta asset, and to attaches an object
-     *  named elsewhere. All five write into the object, which is what the
-     *  base class of objectionary/eo#6273 is meant to allow.
+     * @todo #500:30min Answer the rm verb, or refuse it explicitly.
+     *  Here rm (or -foo) takes an attribute away from the object we are
+     *  at, and eo-runtime keeps no door open for that: PhDefault holds
+     *  its attributes in a private map with no removal API, and even the
+     *  Map.remove call on that map is a silent no-op, since its
+     *  entrySet() is a fresh copy. Either teach the runtime to remove
+     *  attributes first, or answer rm here with an explicit refusal,
+     *  instead of letting the session believe the attribute is gone.
      * @todo #500:30min Answer the dataize verb.
      *  Here dataize (or run) dataizes the object the session is at and
      *  answers with its bytes, which the JavaScript side prints the way
@@ -115,6 +117,40 @@ public final class Inspect {
                     new RsText(
                         session.dd(
                             Inspect.param(req, "attr"),
+                            Inspect.param(req, "name")
+                        )
+                    )
+                )
+            ),
+            new FkRegex(
+                "/add",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.add(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/form",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.form(Inspect.param(req, "slot")))
+                )
+            ),
+            new FkRegex(
+                "/put",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.put(
+                            Inspect.param(req, "slot"),
+                            Inspect.param(req, "data")
+                        )
+                    )
+                )
+            ),
+            new FkRegex(
+                "/to",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.to(
+                            Inspect.param(req, "slot"),
                             Inspect.param(req, "name")
                         )
                     )
