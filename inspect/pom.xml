@@ -56,8 +56,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- The version from the bundled Maven distribution, so that the
-             build does not depend on defaults that move. -->
         <version>3.2.2</version>
         <configuration>
           <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
