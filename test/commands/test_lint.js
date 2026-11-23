@@ -55,11 +55,15 @@ describe('lint', () => {
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
+    const linted = fs.readdirSync(path.resolve(home, 'target')).find(
+      (dir) => /^\d+-lint$/.test(dir)
+    );
+    assert.ok(linted, 'the numbered -lint directory must exist in the target');
     assertFilesExist(
       stdout, home,
       [
         'target/01-parse/simple.xmir',
-        'target/01-parse/simple.xmir',
+        `target/${linted}/simple.xmir`,
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
@@ -81,7 +85,9 @@ describe('lint', () => {
       '-t', path.resolve(home, 'target'),
     ]);
     assert(
-      !fs.existsSync(path.resolve(home, 'target/03-lint/simple.xmir')),
+      !fs.readdirSync(path.resolve(home, 'target')).some(
+        (dir) => /^\d+-lint$/.test(dir)
+      ),
       'Linting should be skipped with --blind option');
     done();
   });
