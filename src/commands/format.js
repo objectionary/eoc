@@ -48,5 +48,5 @@ function goals() {
 }
 
 function extras(opts) {
-  return [`-Deo.autoFix=${opts.fix ? 'true' : 'false'}`];
+  return [`-Deo.format.autofix=${opts.fix ? 'true' : 'false'}`];
 }

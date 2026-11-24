@@ -13,7 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <eo.version>undefined</eo.version>
-    <eo.targetDir>${project.basedir}/target</eo.targetDir>
+    <eo.target>${project.basedir}/target</eo.target>
     <takes.version>1.26.0</takes.version>
   </properties>
   <dependencies>
@@ -31,7 +31,7 @@
   </dependencies>
   <build>
     <finalName>inspect</finalName>
-    <directory>${eo.targetDir}/inspect</directory>
+    <directory>${eo.target}/inspect</directory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

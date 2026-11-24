@@ -9,7 +9,12 @@ const path = require('path');
 const lint = require('../../src/commands/lint');
 const {runSync, runOutput, assertFilesExist, parserVersion, homeTag, weAreOnline} = require('../helpers');
 
-const simple = ['+architect yegor256@gmail.com', '', '[] > simple', ''].join('\n');
+const simple = [
+  '+architect yegor256@gmail.com', '+home https://github.com/objectionary/eoc',
+  '+spdx SPDX-License-' +
+        'Identifier: MIT', '+unlint mandatory-package',
+  '+unlint unit-test-missing', '+version 0.0.0', '', '[x] > simple', ''
+].join('\n');
 
 describe('lint', () => {
   it('picks a goal for a version semver cannot parse', () => {
@@ -50,11 +55,15 @@ describe('lint', () => {
       '-s', path.resolve(home, 'src'),
       '-t', path.resolve(home, 'target'),
     ]);
+    const linted = fs.readdirSync(path.resolve(home, 'target')).find(
+      (dir) => /^\d+-lint$/.test(dir)
+    );
+    assert.ok(linted, 'the numbered -lint directory must exist in the target');
     assertFilesExist(
       stdout, home,
       [
         'target/01-parse/simple.xmir',
-        'target/03-lint/simple.xmir',
+        `target/${linted}/simple.xmir`,
       ]
     );
     assert(!fs.existsSync(path.resolve('../../mvnw/target')));
@@ -76,7 +85,9 @@ describe('lint', () => {
       '-t', path.resolve(home, 'target'),
     ]);
     assert(
-      !fs.existsSync(path.resolve(home, 'target/03-lint/simple.xmir')),
+      !fs.readdirSync(path.resolve(home, 'target')).some(
+        (dir) => /^\d+-lint$/.test(dir)
+      ),
       'Linting should be skipped with --blind option');
     done();
   });

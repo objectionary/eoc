@@ -230,8 +230,8 @@ describe('mvnw', () => {
   });
   it('doubles trailing backslashes when quoting for cmd.exe', () => {
     assert.strictEqual(
-      quote('-Deo.sourcesDir=E:\\', 'C:\\Windows\\system32\\cmd.exe'),
-      '"-Deo.sourcesDir=E:\\\\"',
+      quote('-Deo.sources=E:\\', 'C:\\Windows\\system32\\cmd.exe'),
+      '"-Deo.sources=E:\\\\"',
       'a trailing backslash cannot be left to escape the closing quote'
     );
   });
@@ -260,12 +260,12 @@ describe('mvnw', () => {
       null,
       true
     );
-    assert.ok(args.includes(`-Deo.sourcesDir=${root}`));
+    assert.ok(args.includes(`-Deo.sources=${root}`));
   });
   it('wraps an argument in literal single quotes when quoting for PowerShell', () => {
     assert.strictEqual(
-      quote('-Deo.sourcesDir=C:\\proj\\a$b\\src', 'powershell.exe'),
-      "'-Deo.sourcesDir=C:\\proj\\a$b\\src'",
+      quote('-Deo.sources=C:\\proj\\a$b\\src', 'powershell.exe'),
+      "'-Deo.sources=C:\\proj\\a$b\\src'",
       'a "$" cannot survive quoting meant to keep PowerShell from expanding it'
     );
   });
