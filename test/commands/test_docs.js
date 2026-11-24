@@ -51,6 +51,23 @@ describe('docs', () => {
     assert(fs.existsSync(packages_html), `Expected file ${packages_html} but it was not created`);
     const css_html = path.join(docs, 'styles.css');
     assert(fs.existsSync(css_html), `Expected file ${css_html} but it was not created`);
+    const nested = fs.readFileSync(test1_html, 'utf-8');
+    assert(
+      nested.includes('<link href="../../styles.css"'),
+      `Expected a relative stylesheet link in ${test1_html}, got: ${nested.slice(0, 200)}`
+    );
+    const top = fs.readFileSync(packages_html, 'utf-8');
+    assert(
+      top.includes('<link href="styles.css"'),
+      `Expected a relative stylesheet link in ${packages_html}, got: ${top.slice(0, 200)}`
+    );
+    for (const page of [test1_html, test2_html, package_foo_bar_html, packages_html]) {
+      const body = fs.readFileSync(page, 'utf-8');
+      assert(
+        !/<link href="[^"]*[\\:]/.test(body),
+        `Stylesheet link in ${page} is a filesystem path, not a URL: ${body.slice(0, 200)}`
+      );
+    }
     done();
   });
   it('keeps object pages separate from package summaries', (done) => {
@@ -161,6 +178,41 @@ describe('docs', () => {
       !summary.includes('<package name=".">'),
       'The filesystem marker "." must not be exposed as a package name'
     );
+    done();
+  });
+  /**
+   * Tests that a root object named like a package summary keeps its own page.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('keeps a root object apart from the summary of a package', (done) => {
+    fs.mkdirSync(path.join(parsed, 'foo'), {recursive: true});
+    fs.writeFileSync(path.join(parsed, 'package_foo.xmir'), '<program name="package_foo" />');
+    fs.writeFileSync(path.join(parsed, 'foo', 'bar.xmir'), '<program name="bar" />');
+    runSync(['docs', '--verbose', '-s', path.resolve(home, 'src'), '-t', home]);
+    const summary = fs.readFileSync(path.join(docs, '_eoc-conflicts', 'packages', 'foo.html'), 'utf-8');
+    assert(
+      summary.includes('foo package documentation'),
+      'The package summary must not be replaced by the root object'
+    );
+    const object = fs.readFileSync(path.join(docs, 'package_foo.html'), 'utf-8');
+    assert(
+      object.includes('package_foo documentation'),
+      'The root object must get a page of its own'
+    );
+    done();
+  });
+  /**
+   * Tests that two root objects never share one page.
+   * @param {Mocha.Done} done - Mocha callback signaling asynchronous completion
+   */
+  it('keeps the root packages object apart from a root object packages-object', (done) => {
+    fs.writeFileSync(path.join(parsed, 'packages.xmir'), '<program name="packages" />');
+    fs.writeFileSync(path.join(parsed, 'packages-object.xmir'), '<program name="packages-object" />');
+    runSync(['docs', '--verbose', '-s', path.resolve(home, 'src'), '-t', home]);
+    const own = fs.readFileSync(path.join(docs, 'packages-object.html'), 'utf-8');
+    assert(own.includes('packages-object documentation'), 'The object keeps the page of its own name');
+    const root = fs.readFileSync(path.join(docs, '_eoc-conflicts', 'objects', 'packages.html'), 'utf-8');
+    assert(root.includes('packages documentation'), 'The packages object moves to the free page');
     done();
   });
   /**
@@ -537,7 +589,7 @@ describe('docs', () => {
       runSync(['docs', '-s', path.resolve(root, 'src'), '-t', path.resolve(root, 'target')]);
       const page = fs.readFileSync(path.resolve(root, 'target/docs/hello.html'), 'utf-8');
       assert(page.includes('My first object in EO!'), page);
-      assert(page.includes('hello(args)'), page);
+      assert(page.includes('hello(v🌵args)'), page);
       assert(!page.includes('hello.inner('), page);
       assert(!page.includes('hello.bare('), page);
       done();

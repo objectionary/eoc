@@ -110,7 +110,7 @@ describe('compile', () => {
       '-t', path.resolve(home, 'target'),
     ]);
     assert.ok(
-      stdout.includes('Linting is skipped because eo:skipLinting is TRUE'),
+      stdout.includes('Linting is skipped because eo.lint.bypass is TRUE'),
       'Linting should be skipped with --blind option'
     );
   });
