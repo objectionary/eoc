@@ -7,13 +7,16 @@ package org.eolang.eoc;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.eolang.Phi;
+import org.takes.Request;
 import org.takes.Take;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
 import org.takes.http.Exit;
 import org.takes.http.FtBasic;
+import org.takes.rq.RqHref;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithType;
 
@@ -68,18 +71,14 @@ public final class Inspect {
      *  steps into one of them, and .. steps back out. All three need the
      *  server to remember where the session currently is, so add that
      *  position here first and let these three verbs move it.
-     * @todo #500:90min Answer the verbs that change the current object.
-     *  Here add (or +foo) puts a new void attribute on the object we are
-     *  at, rm (or -foo) takes one away, form attaches an empty formation,
-     *  put attaches data to the delta asset, and to attaches an object
-     *  named elsewhere. All five write into the object, which is what the
-     *  base class of objectionary/eo#6273 is meant to allow.
-     * @todo #500:60min Answer the verbs that copy and dispatch.
-     *  Here cp makes a copy of the object we are at and attaches it under
-     *  a name the caller chooses, and dd dispatches one attribute and
-     *  attaches the result the same way. Both need somewhere to keep
-     *  those names, since a name like the one in the session is invented
-     *  by the user and belongs to no object of the program.
+     * @todo #500:30min Answer the rm verb, or refuse it explicitly.
+     *  Here rm (or -foo) takes an attribute away from the object we are
+     *  at, and eo-runtime keeps no door open for that: PhDefault holds
+     *  its attributes in a private map with no removal API, and even the
+     *  Map.remove call on that map is a silent no-op, since its
+     *  entrySet() is a fresh copy. Either teach the runtime to remove
+     *  attributes first, or answer rm here with an explicit refusal,
+     *  instead of letting the session believe the attribute is gone.
      * @todo #500:30min Answer the dataize verb.
      *  Here dataize (or run) dataizes the object the session is at and
      *  answers with its bytes, which the JavaScript side prints the way
@@ -89,17 +88,91 @@ public final class Inspect {
      * @throws IOException If fails
      */
     public void start() throws IOException {
-        new FtBasic(
-            new TkFork(
-                new FkRegex(
-                    "/",
-                    (Take) req -> new RsWithType.Json(
-                        new RsText(String.format("{\"forma\":\"%s\"}", Phi.Φ.forma()))
+        new FtBasic(this.fork(new Session(Phi.Φ)), this.port()).start(Exit.NEVER);
+    }
+
+    /**
+     * The routes the server answers, all of them working against one
+     * session.
+     * @param session The state the verbs work against
+     * @return The take to route with
+     */
+    TkFork fork(final Session session) {
+        return new TkFork(
+            new FkRegex(
+                "/",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(String.format("{\"forma\":\"%s\"}", session.forma()))
+                )
+            ),
+            new FkRegex(
+                "/cp",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.cp(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/dd",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.dd(
+                            Inspect.param(req, "attr"),
+                            Inspect.param(req, "name")
+                        )
                     )
                 )
             ),
-            this.port()
-        ).start(Exit.NEVER);
+            new FkRegex(
+                "/add",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.add(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/form",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.form(Inspect.param(req, "slot")))
+                )
+            ),
+            new FkRegex(
+                "/put",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.put(
+                            Inspect.param(req, "slot"),
+                            Inspect.param(req, "data")
+                        )
+                    )
+                )
+            ),
+            new FkRegex(
+                "/to",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(
+                        session.to(
+                            Inspect.param(req, "slot"),
+                            Inspect.param(req, "name")
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    /**
+     * The first value of a query parameter, or an empty string.
+     * @param req The request
+     * @param name The name of the parameter
+     * @return The value, or an empty string when absent
+     * @throws IOException If reading the request fails
+     */
+    private static String param(final Request req, final String name) throws IOException {
+        String value = "";
+        final Iterator<String> found = new RqHref.Base(req).href().param(name).iterator();
+        if (found.hasNext()) {
+            value = found.next();
+        }
+        return value;
     }
 
     /**
