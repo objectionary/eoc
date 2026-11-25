@@ -67,7 +67,10 @@
     "linux",
     "win32"
   ],
-  "repository": "objectionary/eoc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/objectionary/eoc.git"
+  },
   "scripts": {
     "coverage": "nyc --reporter=lcov --reporter=text-summary mocha test/**/*.js --timeout 1200000",
     "test": "mocha \"test/**/*.js\" --timeout 1200000"

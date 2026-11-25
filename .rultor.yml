@@ -6,8 +6,6 @@ docker:
   image: yegor256/python
 ec2:
   type: t2.2xlarge
-assets:
-  npmrc: yegor256/objectionary-secrets#npmrc
 install: |
   sudo /usr/bin/install-node.sh
   pip install git+https://chromium.googlesource.com/external/gyp
@@ -23,8 +21,6 @@ release:
     sed -i "s/0000-00-00/$(date +%Y-%m-%d)/" src/version.js
     npx grunt --no-color
     git commit -am "set version to ${tag}"
-    chmod 600 ../npmrc
-    npm publish --no-color --userconfig=../npmrc
 merge:
   script: |-
     npx grunt --no-color

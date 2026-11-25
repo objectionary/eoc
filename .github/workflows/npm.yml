@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2022-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: npm
+'on':
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+concurrency:
+  group: npm-${{ github.ref }}
+  cancel-in-progress: false
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  npm:
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+      - run: npm install -g npm@latest
+      - run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "The version in package.json is '${version}', while the tag is '${GITHUB_REF_NAME}'"
+            exit 1
+          fi
+      - run: npm install
+      - run: npm publish --provenance --access public
