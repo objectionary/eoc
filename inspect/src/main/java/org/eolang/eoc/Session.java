@@ -178,6 +178,28 @@ final class Session {
     }
 
     /**
+     * Take an attribute away from the object the session is at, as in
+     * {@code rm foo}.
+     *
+     * <p>The runtime keeps no door open for that: {@link PhDefault}
+     * holds its attributes in a private map with no removal API, so an
+     * answer of success would let the session believe the attribute is
+     * gone while it stays. The verb is refused explicitly, whatever
+     * name it names.</p>
+     *
+     * @param name The name of the attribute to take away
+     * @return JSON answer
+     */
+    String rm(final String name) {
+        return Session.error(
+            String.format(
+                "The runtime gives me no way to take an attribute away, so \"%s\" stays where it is",
+                name
+            )
+        );
+    }
+
+    /**
      * Attach an empty formation to the slot the caller names, as in
      * {@code form}.
      *

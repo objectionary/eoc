@@ -49,7 +49,7 @@ final class InspectTest {
     @Test
     void refusesARequestWithoutParameters() throws Exception {
         for (final String uri : new String[] {
-            "/cp", "/dd", "/add", "/form", "/put", "/to",
+            "/cp", "/dd", "/add", "/rm", "/form", "/put", "/to",
         }) {
             MatcherAssert.assertThat(
                 String.format(
@@ -82,6 +82,15 @@ final class InspectTest {
         MatcherAssert.assertThat(
             "the to route does not answer about the name",
             InspectTest.body("/to?slot=foo&name=%CE%A6", "root"),
+            Matchers.containsString("\"error\"")
+        );
+    }
+
+    @Test
+    void routesRmToTheSession() throws Exception {
+        MatcherAssert.assertThat(
+            "the rm route does not reach the session",
+            InspectTest.body("/rm?name=foo", "root"),
             Matchers.containsString("\"error\"")
         );
     }
