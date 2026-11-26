@@ -16,7 +16,7 @@
     <eo.target>${project.basedir}/target</eo.target>
     <takes.version>1.26.0</takes.version>
     <junit.version>5.14.4</junit.version>
-    <hamcrest.version>2.2</hamcrest.version>
+    <hamcrest.version>3.0</hamcrest.version>
   </properties>
   <dependencies>
     <dependency>
