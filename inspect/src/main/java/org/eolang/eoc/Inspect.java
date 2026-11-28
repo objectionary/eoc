@@ -65,12 +65,6 @@ public final class Inspect {
     /**
      * Start the server and serve until the process is killed.
      *
-     * @todo #500:90min Answer the verbs that only read the tree.
-     *  The session in this issue moves around before it changes anything:
-     *  ls prints the attributes of the object we are at, go (or .foo)
-     *  steps into one of them, and .. steps back out. All three need the
-     *  server to remember where the session currently is, so add that
-     *  position here first and let these three verbs move it.
      * @todo #500:30min Answer the rm verb, or refuse it explicitly.
      *  Here rm (or -foo) takes an attribute away from the object we are
      *  at, and eo-runtime keeps no door open for that: PhDefault holds
@@ -127,6 +121,20 @@ public final class Inspect {
                 (Take) req -> new RsWithType.Json(
                     new RsText(session.add(Inspect.param(req, "name")))
                 )
+            ),
+            new FkRegex(
+                "/ls",
+                (Take) req -> new RsWithType.Json(new RsText(session.ls()))
+            ),
+            new FkRegex(
+                "/go",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.go(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/up",
+                (Take) req -> new RsWithType.Json(new RsText(session.up()))
             ),
             new FkRegex(
                 "/form",

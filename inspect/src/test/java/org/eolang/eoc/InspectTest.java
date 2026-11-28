@@ -5,10 +5,13 @@
 
 package org.eolang.eoc;
 
+import org.eolang.AtVoid;
 import org.eolang.PhDefault;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.takes.facets.fork.TkFork;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
 
@@ -49,7 +52,7 @@ final class InspectTest {
     @Test
     void refusesARequestWithoutParameters() throws Exception {
         for (final String uri : new String[] {
-            "/cp", "/dd", "/add", "/form", "/put", "/to",
+            "/cp", "/dd", "/add", "/go", "/form", "/put", "/to",
         }) {
             MatcherAssert.assertThat(
                 String.format(
@@ -86,6 +89,42 @@ final class InspectTest {
         );
     }
 
+    @Test
+    void routesLsToTheAttributesOfTheCurrentObject() throws Exception {
+        MatcherAssert.assertThat(
+            "the ls route does not print the attributes of the object we are at",
+            InspectTest.body("/ls", InspectTest.rootWithFoo()),
+            Matchers.containsString("\"attributes\":[\"foo\"]")
+        );
+    }
+
+    @Test
+    void routesGoAndUpThroughTheTree() throws Exception {
+        MatcherAssert.assertThat(
+            "go and up do not move the session along the tree",
+            InspectTest.walk("/go?name=foo", "/ls", "/up"),
+            Matchers.allOf(
+                Matchers.containsString("\"at\":\"Φ.foo\""),
+                Matchers.containsString("\"attributes\":[]"),
+                Matchers.containsString("\"at\":\"Φ\"")
+            )
+        );
+    }
+
+    @Test
+    void refusesToReadWhatIsNotThere() throws Exception {
+        MatcherAssert.assertThat(
+            "go into an unknown attribute does not refuse",
+            InspectTest.body("/go?name=absent", "root"),
+            Matchers.containsString("\"error\"")
+        );
+        MatcherAssert.assertThat(
+            "up above the root does not refuse",
+            InspectTest.body("/up", "root"),
+            Matchers.containsString("\"error\"")
+        );
+    }
+
     /**
      * The body the fork answers the URI with, the session being at an
      * object of the given forma.
@@ -100,6 +139,53 @@ final class InspectTest {
                 new RqFake("GET", uri)
             )
         ).printBody();
+    }
+
+    /**
+     * The body the fork answers the URI with, the session being at the
+     * given object.
+     * @param uri The URI to ask
+     * @param root The object the session starts at
+     * @return The body
+     * @throws Exception If fails
+     */
+    private static String body(final String uri, final Phi root) throws Exception {
+        return new RsPrint(
+            new Inspect("--port", "8080").fork(new Session(root)).act(
+                new RqFake("GET", uri)
+            )
+        ).printBody();
+    }
+
+    /**
+     * The bodies one session answers the URIs with, the session being at
+     * an object with one attribute.
+     * @param uris The URIs to ask, in order, against the same session
+     * @return All the bodies, joined
+     * @throws Exception If fails
+     */
+    private static String walk(final String... uris) throws Exception {
+        final TkFork fork = new Inspect("--port", "8080").fork(
+            new Session(InspectTest.rootWithFoo())
+        );
+        final StringBuilder out = new StringBuilder(0);
+        for (final String uri : uris) {
+            out.append(' ').append(
+                new RsPrint(fork.act(new RqFake("GET", uri))).printBody()
+            );
+        }
+        return out.toString();
+    }
+
+    /**
+     * An object with one attribute holding another object.
+     * @return The object
+     */
+    private static PhDefault rootWithFoo() {
+        final InspectTest.At root = new InspectTest.At("root");
+        root.add("foo", new AtVoid("foo"));
+        root.put("foo", new InspectTest.At("foo"));
+        return root;
     }
 
     /**

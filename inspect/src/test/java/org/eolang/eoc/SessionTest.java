@@ -82,6 +82,52 @@ final class SessionTest {
     }
 
     @Test
+    void movesAroundWithTheReadingVerbs() {
+        final PhDefault origin = new PhDefault();
+        origin.add("foo", new AtVoid("foo"));
+        origin.put("foo", new PhDefault());
+        final Session session = new Session(origin);
+        final String listing = session.ls();
+        MatcherAssert.assertThat(
+            String.format("ls does not print the attributes of the object we are at: %s",
+                listing
+            ),
+            listing,
+            Matchers.containsString("\"foo\"")
+        );
+        final String into = session.go("foo");
+        MatcherAssert.assertThat(
+            String.format("go does not step into the attribute: %s", into),
+            into,
+            Matchers.containsString("\"at\":\"Φ.foo\"")
+        );
+        final String inside = session.ls();
+        MatcherAssert.assertThat(
+            String.format("ls does not see the empty object we stepped into: %s",
+                inside
+            ),
+            inside,
+            Matchers.containsString("\"attributes\":[]")
+        );
+        final String out = session.up();
+        MatcherAssert.assertThat(
+            String.format("up does not step back out: %s", out),
+            out,
+            Matchers.containsString("\"at\":\"Φ\"")
+        );
+        MatcherAssert.assertThat(
+            "up above the root does not refuse",
+            session.up(),
+            Matchers.containsString("\"error\"")
+        );
+        MatcherAssert.assertThat(
+            "go into an unknown attribute does not refuse",
+            session.go("absent"),
+            Matchers.containsString("\"error\"")
+        );
+    }
+
+    @Test
     void refusesNamesItCannotInvent() {
         final Session session = new Session(new PhDefault());
         for (final String name : new String[] {"", "Φ.bar", "a-b", "a b", "a.b"}) {

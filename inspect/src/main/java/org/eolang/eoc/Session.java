@@ -5,11 +5,16 @@
 
 package org.eolang.eoc;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
 import org.eolang.PhDefault;
+import org.eolang.PhTerminator;
 import org.eolang.Phi;
 
 /**
@@ -37,7 +42,19 @@ final class Session {
     /**
      * The object the session is currently at.
      */
-    private final Phi current;
+    private Phi current;
+
+    /**
+     * The objects the session passed through, the one under the top of
+     * this stack being the one to return to on the way back out.
+     */
+    private final Deque<Phi> above;
+
+    /**
+     * The names the session stepped through on its way from the root to
+     * the object it is currently at.
+     */
+    private final Deque<String> trail;
 
     /**
      * The object the session started at, the root of the tree.
@@ -55,6 +72,8 @@ final class Session {
      */
     Session(final Phi root) {
         this.current = root;
+        this.above = new ArrayDeque<>(0);
+        this.trail = new ArrayDeque<>(0);
         this.root = root;
         this.invented = new ConcurrentHashMap<>(0);
     }
@@ -65,6 +84,135 @@ final class Session {
      */
     String forma() {
         return this.current.forma();
+    }
+
+    /**
+     * The names of the attributes the object the session is at holds, as
+     * in {@code ls}.
+     *
+     * <p>The runtime keeps no door open for the session to ask which
+     * names an object has, so the names come out of the term the object
+     * renders of itself, one name before every {@code ->} it prints at
+     * the outermost level.</p>
+     *
+     * @return JSON answer
+     */
+    String ls() {
+        final List<String> names = Session.names(this.current.φTerm());
+        final List<String> quoted = new ArrayList<>(names.size());
+        for (final String name : names) {
+            quoted.add(String.format("\"%s\"", Session.json(name)));
+        }
+        return String.format(
+            "{\"attributes\":[%s]}",
+            String.join(",", quoted)
+        );
+    }
+
+    /**
+     * Step into the attribute the name spells, as in {@code go foo} or
+     * {@code .foo}.
+     *
+     * @param name The name of the attribute to step into
+     * @return JSON answer
+     */
+    String go(final String name) {
+        String answer;
+        if (name.isEmpty()) {
+            answer = Session.error("The name to go to is empty, as in \"go foo\"");
+        } else {
+            try {
+                final Phi next = this.current.take(name);
+                if (next instanceof PhTerminator) {
+                    answer = Session.error(
+                        String.format(
+                            "The attribute \"%s\" is not one I can go to",
+                            name
+                        )
+                    );
+                } else {
+                    this.above.push(this.current);
+                    this.trail.push(name);
+                    this.current = next;
+                    answer = String.format(
+                        "{\"at\":\"%s\"}",
+                        Session.json(this.at())
+                    );
+                }
+            } catch (final RuntimeException ex) {
+                answer = Session.error(ex.getMessage());
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * Step back out to the object the session came from, as in {@code ..}.
+     *
+     * @return JSON answer
+     */
+    String up() {
+        final String answer;
+        if (this.above.isEmpty()) {
+            answer = Session.error(
+                "The session is at the root \"Φ\" already, there is nothing to step out of"
+            );
+        } else {
+            this.current = this.above.pop();
+            this.trail.pop();
+            answer = String.format("{\"at\":\"%s\"}", Session.json(this.at()));
+        }
+        return answer;
+    }
+
+    /**
+     * The path the session walked from the root, as in {@code "Φ.foo"}.
+     * @return The path
+     */
+    private String at() {
+        final StringBuilder path = new StringBuilder(0).append('Φ');
+        final java.util.Iterator<String> steps = this.trail.descendingIterator();
+        while (steps.hasNext()) {
+            path.append('.').append(steps.next());
+        }
+        return path.toString();
+    }
+
+    /**
+     * The names the term of an object prints at its outermost level, one
+     * before every {@code ->}.
+     * @param term The term the object renders of itself
+     * @return The names
+     */
+    private static List<String> names(final String term) {
+        final List<String> names = new ArrayList<>(0);
+        int depth = 0;
+        int start = 1;
+        for (int idx = 0; idx < term.length(); ++idx) {
+            final char chr = term.charAt(idx);
+            if (chr == '[') {
+                if (depth == 0) {
+                    start = idx + 1;
+                }
+                ++depth;
+            } else if (chr == ']') {
+                if (depth == 1) {
+                    names.add(term.substring(start, idx));
+                }
+                --depth;
+            } else if (chr == ',' && depth == 1) {
+                names.add(term.substring(start, idx));
+                start = idx + 1;
+            }
+        }
+        final List<String> clean = new ArrayList<>(names.size());
+        for (final String entry : names) {
+            final int arrow = entry.indexOf("->");
+            if (arrow > 0) {
+                clean.add(entry.substring(0, arrow));
+            }
+        }
+        return clean;
     }
 
     /**
