@@ -56,7 +56,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.6.1</version>
         <configuration>
           <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
         </configuration>
