@@ -25,17 +25,11 @@ import org.takes.rs.RsWithType;
  *
  * <p>It is started by the JavaScript side as a background process, with
  * the linked program on the classpath, and it answers HTTP requests about
- * the tree of objects that lives in its own memory. Nothing is read from
- * the classpath or from XMIR: the objects are asked directly.</p>
+ * the tree of objects that lives in its own memory. The objects of the
+ * program are all loaded once, at startup, before the server answers its
+ * first question, and nothing is read from XMIR: the objects are asked
+ * directly.</p>
  *
- * @todo #500:60min Load the whole tree of objects at startup.
- *  Right now the only object this server can reach is the root, and it
- *  reaches it lazily through {@link Phi}. A package object learns that a
- *  child exists only when that child is taken by name, so listing
- *  everything under the root is impossible until every object is loaded
- *  into memory once, at startup, the way the session in this issue shows
- *  with its "Loaded 56 objects" line. Load them here and keep them, so
- *  that the verbs below walk a tree that is already there.
  * @since 0.0.0
  */
 public final class Inspect {
@@ -65,12 +59,6 @@ public final class Inspect {
     /**
      * Start the server and serve until the process is killed.
      *
-     * @todo #500:90min Answer the verbs that only read the tree.
-     *  The session in this issue moves around before it changes anything:
-     *  ls prints the attributes of the object we are at, go (or .foo)
-     *  steps into one of them, and .. steps back out. All three need the
-     *  server to remember where the session currently is, so add that
-     *  position here first and let these three verbs move it.
      * @todo #500:30min Answer the rm verb, or refuse it explicitly.
      *  Here rm (or -foo) takes an attribute away from the object we are
      *  at, and eo-runtime keeps no door open for that: PhDefault holds
@@ -127,6 +115,20 @@ public final class Inspect {
                 (Take) req -> new RsWithType.Json(
                     new RsText(session.add(Inspect.param(req, "name")))
                 )
+            ),
+            new FkRegex(
+                "/ls",
+                (Take) req -> new RsWithType.Json(new RsText(session.ls()))
+            ),
+            new FkRegex(
+                "/go",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.go(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/up",
+                (Take) req -> new RsWithType.Json(new RsText(session.up()))
             ),
             new FkRegex(
                 "/form",
