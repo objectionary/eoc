@@ -71,14 +71,6 @@ public final class Inspect {
      *  steps into one of them, and .. steps back out. All three need the
      *  server to remember where the session currently is, so add that
      *  position here first and let these three verbs move it.
-     * @todo #500:30min Answer the rm verb, or refuse it explicitly.
-     *  Here rm (or -foo) takes an attribute away from the object we are
-     *  at, and eo-runtime keeps no door open for that: PhDefault holds
-     *  its attributes in a private map with no removal API, and even the
-     *  Map.remove call on that map is a silent no-op, since its
-     *  entrySet() is a fresh copy. Either teach the runtime to remove
-     *  attributes first, or answer rm here with an explicit refusal,
-     *  instead of letting the session believe the attribute is gone.
      * @todo #500:30min Answer the dataize verb.
      *  Here dataize (or run) dataizes the object the session is at and
      *  answers with its bytes, which the JavaScript side prints the way
@@ -126,6 +118,12 @@ public final class Inspect {
                 "/add",
                 (Take) req -> new RsWithType.Json(
                     new RsText(session.add(Inspect.param(req, "name")))
+                )
+            ),
+            new FkRegex(
+                "/rm",
+                (Take) req -> new RsWithType.Json(
+                    new RsText(session.rm(Inspect.param(req, "name")))
                 )
             ),
             new FkRegex(

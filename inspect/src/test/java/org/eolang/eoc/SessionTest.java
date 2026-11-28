@@ -154,6 +154,24 @@ final class SessionTest {
     }
 
     @Test
+    void refusesToTakeAnAttributeAway() {
+        final PhDefault origin = new PhDefault();
+        origin.add("foo", new AtVoid("foo"));
+        final Session session = new Session(origin);
+        final String answer = session.rm("foo");
+        MatcherAssert.assertThat(
+            String.format("rm does not refuse to take the attribute away: %s", answer),
+            answer,
+            Matchers.containsString("\"error\"")
+        );
+        MatcherAssert.assertThat(
+            "rm took the attribute away although the runtime keeps it",
+            origin.φTerm().contains("foo"),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void attachesAnEmptyFormationToAVacantSlot() {
         final PhDefault origin = new PhDefault();
         origin.add("slot", new AtVoid("slot"));
