@@ -5,11 +5,14 @@
 
 package org.eolang.eoc;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import org.eolang.AtVoid;
@@ -67,6 +70,14 @@ final class Session {
     private final Map<String, Phi> invented;
 
     /**
+     * The objects of the program, loaded once at startup, by the name
+     * they go by. A session planted on a synthetic object brings no
+     * tree, since the objects of the program live only under the global
+     * package.
+     */
+    private final SortedMap<String, Phi> tree;
+
+    /**
      * Ctor.
      * @param root The object the session starts at
      */
@@ -76,6 +87,18 @@ final class Session {
         this.trail = new ArrayDeque<>(0);
         this.root = root;
         this.invented = new ConcurrentHashMap<>(0);
+        if (root == Phi.Φ) {
+            try {
+                this.tree = new Tree(System.getProperty("java.class.path")).load();
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    "The tree of objects cannot be read from the classpath",
+                    ex
+                );
+            }
+        } else {
+            this.tree = Collections.emptySortedMap();
+        }
     }
 
     /**
@@ -93,12 +116,21 @@ final class Session {
      * <p>The runtime keeps no door open for the session to ask which
      * names an object has, so the names come out of the term the object
      * renders of itself, one name before every {@code ->} it prints at
-     * the outermost level.</p>
+     * the outermost level. At the root, where the objects of the program
+     * hang, the tree loaded at startup is named as well: a package
+     * prints none of its children in the term.</p>
      *
      * @return JSON answer
      */
     String ls() {
         final List<String> names = Session.names(this.current.φTerm());
+        if (this.current == this.root) {
+            for (final String name : this.tree.keySet()) {
+                if (!names.contains(name)) {
+                    names.add(name);
+                }
+            }
+        }
         final List<String> quoted = new ArrayList<>(names.size());
         for (final String name : names) {
             quoted.add(String.format("\"%s\"", Session.json(name)));

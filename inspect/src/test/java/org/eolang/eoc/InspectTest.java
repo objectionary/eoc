@@ -112,6 +112,27 @@ final class InspectTest {
     }
 
     @Test
+    void listsTheTreeItLoadedAtStartup() {
+        MatcherAssert.assertThat(
+            "the session does not load the objects of the program at startup",
+            new Session(Phi.Φ).ls(),
+            Matchers.containsString("\"dataized\"")
+        );
+    }
+
+    @Test
+    void keepsTheLoadedTreeAfterTheSessionWalksIt() {
+        final Session session = new Session(Phi.Φ);
+        session.go("dataized");
+        session.up();
+        MatcherAssert.assertThat(
+            "the loaded tree does not survive the session walking it",
+            session.ls(),
+            Matchers.containsString("\"dataized\"")
+        );
+    }
+
+    @Test
     void refusesToReadWhatIsNotThere() throws Exception {
         MatcherAssert.assertThat(
             "go into an unknown attribute does not refuse",

@@ -25,17 +25,11 @@ import org.takes.rs.RsWithType;
  *
  * <p>It is started by the JavaScript side as a background process, with
  * the linked program on the classpath, and it answers HTTP requests about
- * the tree of objects that lives in its own memory. Nothing is read from
- * the classpath or from XMIR: the objects are asked directly.</p>
+ * the tree of objects that lives in its own memory. The objects of the
+ * program are all loaded once, at startup, before the server answers its
+ * first question, and nothing is read from XMIR: the objects are asked
+ * directly.</p>
  *
- * @todo #500:60min Load the whole tree of objects at startup.
- *  Right now the only object this server can reach is the root, and it
- *  reaches it lazily through {@link Phi}. A package object learns that a
- *  child exists only when that child is taken by name, so listing
- *  everything under the root is impossible until every object is loaded
- *  into memory once, at startup, the way the session in this issue shows
- *  with its "Loaded 56 objects" line. Load them here and keep them, so
- *  that the verbs below walk a tree that is already there.
  * @since 0.0.0
  */
 public final class Inspect {
